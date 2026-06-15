@@ -110,6 +110,7 @@ def handlebar(ContextInfo):
 
     # 前 MA_LONG+10 个 bar 数据不够，跳过
     if bar < MA_LONG + 10:
+        print("[跳过] bar=%d 数据不足(需>=%d)" % (bar, MA_LONG + 10))
         return
 
     # 同一根 bar 只执行一次（实盘中 handlebar 每 tick 都触发！）
@@ -117,10 +118,16 @@ def handlebar(ContextInfo):
         return
     State.last_barpos = bar
 
+    date_str = _log_time(ContextInfo)
+    print("=" * 40)
+    print("[触发] bar=%d 时间=%s 持仓=%d只 现金=%.0f" % (
+        bar, date_str, len(State.positions), State.cash))
+
     # ========== 1. 获取行情数据 (精选池35只, 每次调用很快) ==========
     hist_c   = ContextInfo.get_history_data(MA_LONG + 5, '1d', 'close')
     hist_h   = ContextInfo.get_history_data(ATR_PERIOD + 5, '1d', 'high')
     hist_l   = ContextInfo.get_history_data(ATR_PERIOD + 5, '1d', 'low')
+    print("[数据] close=%d stocks" % len(hist_c))
 
     # ========== 2. 更新账户信息 ==========
     _update_account(ContextInfo)
@@ -129,9 +136,12 @@ def handlebar(ContextInfo):
     State.market_ok = _market_ok(hist_c)
     if not State.market_ok:
         print("[市场] HS300 < MA60, 防御模式")
+    else:
+        print("[市场] HS300 > MA60, 可交易")
 
     # ========== 4. 同步持仓 ==========
     _sync_positions(ContextInfo)
+    print("[持仓] %d 只" % len(State.positions))
 
     # ========== 5. 执行止损/止盈 ==========
     _check_exits(ContextInfo, hist_c)
@@ -142,6 +152,20 @@ def handlebar(ContextInfo):
 
     # ========== 7. 选股评分 ==========
     candidates = _rank_stocks(ContextInfo, hist_c)
+    print("[选股] 候选 %d 只" % len(candidates))
+    if len(candidates) == 0:
+        # 诊断：为什么没有候选？
+        pass_count = 0
+        total_count = 0
+        for code in State.filtered_pool:
+            if code in hist_c and len(hist_c[code]) >= MA_LONG:
+                total_count += 1
+                arr = np.array(hist_c[code], dtype=float)
+                if arr[-1] > np.mean(arr[-MA_LONG:]):
+                    pass_count += 1
+        print("[诊断] %d/%d 只股票价格在MA60之上" % (pass_count, total_count))
+        if total_count == 0:
+            print("[诊断] hist_c中没有任何股票数据! 示例key:", list(hist_c.keys())[:3])
 
     # ========== 8. 开新仓 ==========
     if len(State.positions) < MAX_POSITIONS and candidates:
@@ -153,6 +177,11 @@ def handlebar(ContextInfo):
         px = _get_price(ContextInfo, code, hist_c)
         if px > 0 and px > pos['highest']:
             pos['highest'] = px
+
+    # ========== 10. 打印汇总 ==========
+    print("[汇总] bar=%d 持仓=%d只 现金=%.0f 总资产=%.0f 市场=%s" % (
+        bar, len(State.positions), State.cash, State.total_assets,
+        "可交易" if State.market_ok else "防御"))
 
 
 # ============================================================
@@ -257,7 +286,7 @@ def _close_position(ContextInfo, code):
         return
     try:
         order_shares(code, -shares, 'COMPETE', ContextInfo, State.acc_id)
-        print("[平仓] %s %d股" % (code, shares))
+        print("[平仓] %s %d股  %s" % (code, shares, _log_time(ContextInfo)))
     except Exception:
         pass
     State.positions.pop(code, None)
@@ -292,13 +321,13 @@ def _rank_stocks(ContextInfo, hist_c):
 
     for code in pool:
         try:
-            if code not in hist_c or len(hist_c[code]) < MA_LONG:
+            if code not in hist_c or len(hist_c[code]) < MA_SHORT:
                 continue
             arr = np.array(hist_c[code], dtype=float)
 
-            # --- 趋势过滤: 价格 > MA60 ---
-            ma60 = np.mean(arr[-MA_LONG:])
-            if arr[-1] < ma60:
+            # --- 趋势过滤: 价格 > MA20 (短趋势, 比MA60宽松) ---
+            ma20 = np.mean(arr[-MA_SHORT:])
+            if arr[-1] < ma20:
                 continue
 
             # --- 因子 1: 20日动量 (涨幅) ---
@@ -348,18 +377,24 @@ def _open_positions(ContextInfo, candidates, hist_c, hist_h, hist_l):
         return
 
     opened = 0
-    for code, _ in candidates:
+    print("[开仓] slots=%d 候选%d只 现金=%.0f 总资产=%.0f 风险预算=%.0f" % (
+        slots, len(candidates), State.cash, State.total_assets,
+        State.total_assets * RISK_PER_TRADE))
+    for code, score in candidates:
         if opened >= slots:
             break
         if code in held:
+            print("[开仓] %s 已有持仓,跳过" % code)
             continue
 
         px = _get_price(ContextInfo, code, hist_c)
         if px <= 0:
+            print("[开仓] %s 价格<=0,跳过" % code)
             continue
 
         atr = _calc_atr(code, hist_h, hist_l, hist_c)
         if atr <= 0:
+            print("[开仓] %s ATR<=0,跳过 评分=%.3f" % (code, score))
             continue
 
         # 风险预算: 总资产 × 单笔风险比例
@@ -382,11 +417,13 @@ def _open_positions(ContextInfo, candidates, hist_c, hist_h, hist_l):
         if shares * px > State.cash * 0.95:
             shares = int(State.cash * 0.95 / px / 100) * 100
         if shares < 100:
+            print("[开仓] %s 资金不足: shares=%d price=%.2f need=%.0f cash=%.0f" % (
+                code, shares, px, shares*px, State.cash))
             continue
 
         try:
             order_shares(code, shares, 'COMPETE', ContextInfo, State.acc_id)
-            print("[开仓] %s %d股 @%.2f, ATR=%.2f" % (code, shares, px, atr))
+            print("[开仓] %s %d股 @%.2f, ATR=%.2f  %s" % (code, shares, px, atr, _log_time(ContextInfo)))
             State.positions[code] = {
                 'shares': shares,
                 'entry_price': px,
@@ -395,8 +432,8 @@ def _open_positions(ContextInfo, candidates, hist_c, hist_h, hist_l):
                 'atr': atr,
             }
             opened += 1
-        except Exception:
-            pass
+        except Exception as e:
+            print("[开仓失败] %s 下单异常: %s" % (code, str(e)))
 
 
 def _calc_atr(code, hist_h, hist_l, hist_c):
@@ -428,3 +465,12 @@ def _get_price(ContextInfo, code, hist_c):
     if code in hist_c and len(hist_c[code]) > 0:
         return hist_c[code][-1]
     return 0
+
+
+def _log_time(ContextInfo):
+    """获取可读时间字符串"""
+    try:
+        t = ContextInfo.get_bar_timetag(ContextInfo.barpos)
+        return timetag_to_datetime(t, '%Y-%m-%d %H:%M')
+    except Exception:
+        return ""
