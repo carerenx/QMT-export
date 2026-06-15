@@ -31,46 +31,61 @@ MA_SHORT = 20                  # 短周期均线
 MA_LONG = 60                   # 长周期均线
 MA_MARKET = 60                 # 市场过滤器均线周期
 MIN_DAILY_AMOUNT = 1e8         # 最低日均成交额 (1亿)
-CANDIDATE_N = 15               # 选股评分前 N 名
+CANDIDATE_N = 10               # 选股评分前 N 名
 ATR_PERIOD = 14                # ATR 计算周期
 
 # ============================================================
 # 全局状态 (模块级变量，持久化)
 # ============================================================
 class State:
-    stock_pool = []      # 股票池
+    stock_pool = []      # 股票池（原始）
+    filtered_pool = []   # 过滤后的候选池（去ST、去无效）
     positions = {}       # {code: {shares, entry_price, bars_held, highest, atr}}
     cash = 0
     total_assets = 0
     market_ok = True     # 市场过滤器结果
     acc_id = 'testS'
     capital = 10000000   # 初始资金
+    last_barpos = -1     # 上次处理的 barpos，防止同根 bar 重复执行
 
 
 def init(ContextInfo):
     """策略初始化"""
 
-    # 股票池：沪深300成分股
-    stocks = ContextInfo.get_sector('000300.SH')
-    if not stocks or len(stocks) == 0:
-        stocks = [
-            '600519.SH', '000858.SZ', '601318.SH', '600036.SH', '000333.SZ',
-            '601166.SH', '600900.SH', '600887.SH', '601328.SH', '600030.SH',
-            '601398.SH', '600028.SH', '601988.SH', '600104.SH', '000002.SZ',
-            '600585.SH', '601888.SH', '600276.SH', '600309.SH', '002415.SZ',
-            '601288.SH', '600016.SH', '601857.SH', '600031.SH', '000001.SZ',
-            '002594.SZ', '300750.SZ', '601012.SH', '600809.SH',
-        ]
-    # 过滤无效代码：取不到名称的视为无效
+    # 精选股票池（沪深300中最活跃的35只，避免全量300只拖慢QMT）
+    stocks = [
+        # 酒
+        '600519.SH', '000858.SZ', '600809.SH', '000568.SZ',
+        # 金融
+        '601318.SH', '600036.SH', '601166.SH', '600030.SH', '601398.SH',
+        '601328.SH', '601288.SH', '600016.SH', '600000.SH',
+        # 家电/制造
+        '000333.SZ', '600690.SH', '000651.SZ',
+        # 新能源/汽车
+        '300750.SZ', '002594.SZ', '601012.SH',
+        # 医药
+        '600276.SH', '300760.SZ', '000538.SZ',
+        # 科技
+        '002415.SZ', '688981.SH', '603986.SH',
+        # 资源/周期
+        '601857.SH', '600028.SH', '600585.SH', '601088.SH',
+        # 基建/地产
+        '601668.SH', '000002.SZ', '600031.SH',
+        # 其他蓝筹
+        '600887.SH', '600900.SH', '601888.SH', '002714.SZ',
+    ]
+    # 过滤无效代码 + 预先剔除 ST（避免每 bar 重复 API 调用）
     valid = []
     for c in stocks:
         try:
             n = ContextInfo.get_stock_name(c)
             if n and len(n) > 0:
-                valid.append(c)
+                if 'ST' not in n and '*' not in n:
+                    valid.append(c)
         except Exception:
             pass
     State.stock_pool = valid
+    State.filtered_pool = valid[:]
     ContextInfo.set_universe(valid)
 
     # 以下为回测参数，实盘模式下为只读，用 try 保护
@@ -97,12 +112,15 @@ def handlebar(ContextInfo):
     if bar < MA_LONG + 10:
         return
 
-    # ========== 1. 批量获取数据 (只调一次) ==========
-    # close: MA_LONG+5 天, high/low: ATR_PERIOD+5 天, volume: 10天
+    # 同一根 bar 只执行一次（实盘中 handlebar 每 tick 都触发！）
+    if bar == State.last_barpos:
+        return
+    State.last_barpos = bar
+
+    # ========== 1. 获取行情数据 (精选池35只, 每次调用很快) ==========
     hist_c   = ContextInfo.get_history_data(MA_LONG + 5, '1d', 'close')
     hist_h   = ContextInfo.get_history_data(ATR_PERIOD + 5, '1d', 'high')
     hist_l   = ContextInfo.get_history_data(ATR_PERIOD + 5, '1d', 'low')
-    hist_v   = ContextInfo.get_history_data(10, '1d', 'volume')
 
     # ========== 2. 更新账户信息 ==========
     _update_account(ContextInfo)
@@ -123,7 +141,7 @@ def handlebar(ContextInfo):
         _reduce_half(ContextInfo)
 
     # ========== 7. 选股评分 ==========
-    candidates = _rank_stocks(ContextInfo, hist_c, hist_v)
+    candidates = _rank_stocks(ContextInfo, hist_c)
 
     # ========== 8. 开新仓 ==========
     if len(State.positions) < MAX_POSITIONS and candidates:
@@ -265,20 +283,15 @@ def _reduce_half(ContextInfo):
             _close_position(ContextInfo, perf[i][0])
 
 
-def _rank_stocks(ContextInfo, hist_c, hist_v):
+def _rank_stocks(ContextInfo, hist_c):
     """
-    多因子评分选股 (在 hist_c/hist_v 上操作, 不再重复调 get_history_data)
+    多因子评分选股 (精选池已过滤ST/无效, 直接评分)
     """
-    pool = State.stock_pool
+    pool = State.filtered_pool
     scores = {}
 
     for code in pool:
         try:
-            # --- 基础过滤 ---
-            name = ContextInfo.get_stock_name(code)
-            if name and ('ST' in name or '*' in name):
-                continue
-
             if code not in hist_c or len(hist_c[code]) < MA_LONG:
                 continue
             arr = np.array(hist_c[code], dtype=float)
@@ -287,12 +300,6 @@ def _rank_stocks(ContextInfo, hist_c, hist_v):
             ma60 = np.mean(arr[-MA_LONG:])
             if arr[-1] < ma60:
                 continue
-
-            # --- 成交额过滤 ---
-            if code in hist_v and len(hist_v[code]) >= 5:
-                avg_vol = np.mean(hist_v[code][-5:])
-                if avg_vol * arr[-1] < MIN_DAILY_AMOUNT:
-                    continue
 
             # --- 因子 1: 20日动量 (涨幅) ---
             mom = (arr[-1] - arr[-20]) / max(arr[-20], 0.01)
