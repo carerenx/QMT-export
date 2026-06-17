@@ -157,13 +157,24 @@ def handlebar(ContextInfo):
         # 诊断：为什么没有候选？
         pass_count = 0
         total_count = 0
+        fail_ma = 0
+        fail_data = 0
+        fail_other = 0
         for code in State.filtered_pool:
-            if code in hist_c and len(hist_c[code]) >= MA_LONG:
-                total_count += 1
+            if code not in hist_c or len(hist_c[code]) < MA_SHORT:
+                fail_data += 1
+                continue
+            try:
                 arr = np.array(hist_c[code], dtype=float)
-                if arr[-1] > np.mean(arr[-MA_LONG:]):
+                total_count += 1
+                if arr[-1] > np.mean(arr[-MA_SHORT:]):
                     pass_count += 1
-        print("[诊断] %d/%d 只股票价格在MA60之上" % (pass_count, total_count))
+                else:
+                    fail_ma += 1
+            except Exception:
+                fail_other += 1
+        print("[诊断] 可评分=%d 通过MA20=%d 未过MA20=%d 缺数据=%d 其他失败=%d" % (
+            total_count, pass_count, fail_ma, fail_data, fail_other))
         if total_count == 0:
             print("[诊断] hist_c中没有任何股票数据! 示例key:", list(hist_c.keys())[:3])
 
@@ -334,7 +345,7 @@ def _rank_stocks(ContextInfo, hist_c):
             mom = (arr[-1] - arr[-20]) / max(arr[-20], 0.01)
 
             # --- 因子 2: 低波动 (回报率标准差倒数) ---
-            rets = (arr[1:] - arr[:-1]) / max(arr[:-1], 0.01)
+            rets = (arr[1:] - arr[:-1]) / np.maximum(arr[:-1], 0.01)
             vol = np.std(rets[-20:]) if len(rets) >= 20 else 0.5
             lv = 1.0 / max(vol, 0.01)
 
@@ -344,7 +355,8 @@ def _rank_stocks(ContextInfo, hist_c):
 
             scores[code] = (mom, lv, ts)
 
-        except Exception:
+        except Exception as e:
+            print("[评分异常] %s: %s" % (code, str(e)[:60]))
             continue
 
     if not scores:
@@ -442,10 +454,12 @@ def _calc_atr(code, hist_h, hist_l, hist_c):
         return 0
     h = np.array(hist_h[code], dtype=float)
     l = np.array(hist_l[code], dtype=float)
-    c = np.array(hist_c[code], dtype=float)
+    c_all = np.array(hist_c[code], dtype=float)
     if len(h) < ATR_PERIOD + 2:
         return 0
 
+    # hist_c 可能比 hist_h/hist_l 长, 截取尾部对齐
+    c = c_all[-len(h):]
     prev_c = c[:-1]
     tr = np.maximum(
         h[1:] - l[1:],
