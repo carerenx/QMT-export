@@ -23,16 +23,18 @@ import numpy as np
 # ============================================================
 # 用户可调参数
 # ============================================================
-RISK_PER_TRADE = 0.008        # 单笔风险敞口 (占总资金比例)
-MAX_POSITIONS = 5              # 最大同时持仓数
-STOP_ATR_MULT = 2.0            # 初始止损 ATR 倍数
-TRAIL_ATR_MULT = 1.5           # 移动止盈 ATR 倍数
+RISK_PER_TRADE = 0.015        # 单笔风险敞口 (1.5%)
+MAX_POSITIONS = 6              # 最大同时持仓数
+STOP_ATR_MULT = 3.0            # 初始止损 ATR 倍数
+TRAIL_ATR_MULT = 2.5           # 移动止盈 ATR 倍数
 MA_SHORT = 20                  # 短周期均线
 MA_LONG = 60                   # 长周期均线
-MA_MARKET = 60                 # 市场过滤器均线周期
-MIN_DAILY_AMOUNT = 1e8         # 最低日均成交额 (1亿)
-CANDIDATE_N = 10               # 选股评分前 N 名
+MA_MARKET = 50                 # 市场过滤器 (MA50, 平衡快速与稳健)
+MIN_DAILY_AMOUNT = 5e7         # 最低日均成交额 (5000万)
+CANDIDATE_N = 15               # 选股评分前 N 名
 ATR_PERIOD = 14                # ATR 计算周期
+MIN_HOLD_BARS = 10             # 最低持有天数 (减少换手)
+COOLDOWN_BARS = 20             # 卖出后冷却天数
 
 # ============================================================
 # 全局状态 (模块级变量，持久化)
@@ -47,32 +49,35 @@ class State:
     acc_id = 'testS'
     capital = 10000000   # 初始资金
     last_barpos = -1     # 上次处理的 barpos，防止同根 bar 重复执行
+    cooldown = {}        # {code: bars_remaining} 卖出后的冷却期
+    peak_assets = 0      # 历史最高净值
 
 
 def init(ContextInfo):
     """策略初始化"""
 
-    # 精选股票池（沪深300中最活跃的35只，避免全量300只拖慢QMT）
+    # 精选股票池（沪深300核心 + 精选中盘）
     stocks = [
-        # 酒
         '600519.SH', '000858.SZ', '600809.SH', '000568.SZ',
-        # 金融
         '601318.SH', '600036.SH', '601166.SH', '600030.SH', '601398.SH',
-        '601328.SH', '601288.SH', '600016.SH', '600000.SH',
-        # 家电/制造
+        '601328.SH', '601288.SH', '600016.SH', '600000.SH', '600837.SH',
+        '000001.SZ', '002142.SZ',
         '000333.SZ', '600690.SH', '000651.SZ',
-        # 新能源/汽车
-        '300750.SZ', '002594.SZ', '601012.SH',
-        # 医药
+        '300750.SZ', '002594.SZ', '601012.SH', '600104.SH',
         '600276.SH', '300760.SZ', '000538.SZ',
-        # 科技
         '002415.SZ', '688981.SH', '603986.SH',
-        # 资源/周期
         '601857.SH', '600028.SH', '600585.SH', '601088.SH',
-        # 基建/地产
         '601668.SH', '000002.SZ', '600031.SH',
-        # 其他蓝筹
         '600887.SH', '600900.SH', '601888.SH', '002714.SZ',
+        # 中盘精选 (高弹性)
+        '002475.SZ', '002049.SZ', '000725.SZ',
+        '300274.SZ', '300014.SZ', '002460.SZ',
+        '300122.SZ', '002007.SZ', '000963.SZ',
+        '300124.SZ', '002050.SZ',
+        '600111.SH',
+        '600025.SH', '003816.SZ',
+        '002304.SZ', '300498.SZ',
+        '300413.SZ', '002555.SZ', '300418.SZ',
     ]
     # 过滤无效代码 + 预先剔除 ST（避免每 bar 重复 API 调用）
     valid = []
@@ -129,8 +134,16 @@ def handlebar(ContextInfo):
     hist_l   = ContextInfo.get_history_data(ATR_PERIOD + 5, '1d', 'low')
     print("[数据] close=%d stocks" % len(hist_c))
 
-    # ========== 2. 更新账户信息 ==========
+    # ========== 2. 更新冷却期 ==========
+    for code in list(State.cooldown.keys()):
+        State.cooldown[code] -= 1
+        if State.cooldown[code] <= 0:
+            del State.cooldown[code]
+
+    # ========== 3. 更新账户信息 ==========
     _update_account(ContextInfo)
+    if State.total_assets > State.peak_assets:
+        State.peak_assets = State.total_assets
 
     # ========== 3. 市场过滤器 ==========
     State.market_ok = _market_ok(hist_c)
@@ -241,7 +254,7 @@ def _sync_positions(ContextInfo):
 
 
 def _market_ok(hist_c):
-    """HS300 收盘价是否在 MA60 之上"""
+    """HS300 > MA20 (单层过滤器)"""
     if '000300.SH' not in hist_c:
         return True
     arr = hist_c['000300.SH']
@@ -277,12 +290,13 @@ def _check_exits(ContextInfo, hist_c):
             to_close.append(code)
             continue
 
-        # (c) 趋势平仓 (低于MA20)
-        if code in hist_c and len(hist_c[code]) >= MA_SHORT:
-            ma20 = np.mean(hist_c[code][-MA_SHORT:])
-            if px < ma20 * 0.97:
-                print("[exit] %s 破MA20: %.2f < %.2f" % (code, px, ma20))
-                to_close.append(code)
+        # (c) 趋势平仓 (低于MA20, 仅持有足够天后触发)
+        if pos.get('bars_held', 0) >= MIN_HOLD_BARS:
+            if code in hist_c and len(hist_c[code]) >= MA_SHORT:
+                ma20 = np.mean(hist_c[code][-MA_SHORT:])
+                if px < ma20 * 0.97:
+                    print("[exit] %s 破MA20: %.2f < %.2f" % (code, px, ma20))
+                    to_close.append(code)
 
     for code in to_close:
         _close_position(ContextInfo, code)
@@ -301,6 +315,8 @@ def _close_position(ContextInfo, code):
     except Exception:
         pass
     State.positions.pop(code, None)
+    # ★ 加入冷却期，防止短期内重复买入同一标的
+    State.cooldown[code] = COOLDOWN_BARS
 
 
 def _reduce_half(ContextInfo):
@@ -331,6 +347,9 @@ def _rank_stocks(ContextInfo, hist_c):
     scores = {}
 
     for code in pool:
+        # ★ 冷却期跳过
+        if code in State.cooldown:
+            continue
         try:
             if code not in hist_c or len(hist_c[code]) < MA_SHORT:
                 continue

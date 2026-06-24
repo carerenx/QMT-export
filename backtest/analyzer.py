@@ -165,6 +165,9 @@ class PerformanceAnalyzer:
         # ---- 月度/年度收益 ----
         self._calc_period_returns(df)
 
+        # ---- 基准相对指标 (Alpha/Beta/IR) ----
+        self._calc_benchmark_metrics(df)
+
         return self.metrics
 
     def _calc_drawdown_duration(self, drawdown):
@@ -250,6 +253,66 @@ class PerformanceAnalyzer:
         df_yearly = df.set_index('date')['total_value'].resample('YE').last()
         self.yearly_returns = df_yearly.pct_change().dropna()
 
+    def _calc_benchmark_metrics(self, df):
+        """计算 Alpha, Beta, Information Ratio (需基准数据)"""
+        benchmark_code = getattr(config, 'BENCHMARK_CODE', '000905.SH')
+        # 尝试从 engine 获取基准数据
+        engine = getattr(self, '_engine', None)
+        if engine is None or not hasattr(engine, 'data'):
+            self.metrics['alpha'] = 0.0
+            self.metrics['beta'] = 0.0
+            self.metrics['information_ratio'] = 0.0
+            return
+
+        try:
+            data_provider = engine.data
+            bm_prices = []
+            for date in df['date']:
+                # Find bar index for this date
+                bar = None
+                for i, d in enumerate(data_provider.dates_list):
+                    if d == date:
+                        bar = i
+                        break
+                if bar is not None:
+                    px = data_provider.get_value(benchmark_code, 'close', bar)
+                    bm_prices.append(float(px) if px else None)
+                else:
+                    bm_prices.append(None)
+
+            bm_series = pd.Series(bm_prices, index=df.index)
+            bm_returns = bm_series.pct_change()
+
+            # Align strategy and benchmark returns
+            strategy_ret = df['return'].dropna()
+            aligned = pd.DataFrame({'strategy': strategy_ret, 'benchmark': bm_returns}).dropna()
+
+            if len(aligned) > 10:
+                # Beta
+                cov = aligned.cov().iloc[0, 1]
+                var = aligned['benchmark'].var()
+                beta = cov / var if var > 0 else 0
+
+                # Alpha (annualized excess return)
+                excess = aligned['strategy'] - beta * aligned['benchmark']
+                ann_excess = (1 + excess).prod() ** (252 / len(excess)) - 1
+
+                # Information Ratio
+                tracking_err = excess.std() * np.sqrt(252)
+                info_ratio = ann_excess / tracking_err if tracking_err > 0 else 0
+
+                self.metrics['alpha'] = ann_excess
+                self.metrics['beta'] = beta
+                self.metrics['information_ratio'] = info_ratio
+            else:
+                self.metrics['alpha'] = 0.0
+                self.metrics['beta'] = 0.0
+                self.metrics['information_ratio'] = 0.0
+        except Exception:
+            self.metrics['alpha'] = 0.0
+            self.metrics['beta'] = 0.0
+            self.metrics['information_ratio'] = 0.0
+
     def print_report(self):
         """打印绩效报告到控制台"""
         if not self.metrics:
@@ -278,6 +341,10 @@ class PerformanceAnalyzer:
         print("    年化波动率:     %.2f%%" % (m['volatility'] * 100))
         print("    夏普比率:       %.2f" % m['sharpe_ratio'])
         print("    最大回撤:       %.2f%%" % (m['max_drawdown'] * 100))
+        if m.get('alpha', 0) != 0 or m.get('beta', 0) != 0:
+            print("    Alpha:          %+.2f%%" % (m.get('alpha', 0) * 100))
+            print("    Beta:           %.3f" % m.get('beta', 0))
+            print("    信息比率:       %.2f" % m.get('information_ratio', 0))
         if m.get('max_drawdown_start'):
             dd_start = m['max_drawdown_start'].strftime('%Y-%m-%d') if hasattr(m['max_drawdown_start'], 'strftime') else str(m['max_drawdown_start'])
             dd_end = m['max_drawdown_end'].strftime('%Y-%m-%d') if hasattr(m['max_drawdown_end'], 'strftime') else str(m['max_drawdown_end'])

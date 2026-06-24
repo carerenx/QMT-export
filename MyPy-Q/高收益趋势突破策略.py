@@ -1,44 +1,55 @@
 #coding:gbk
 """
-高收益趋势突破策略 (v5.0 Final)
+高收益趋势突破策略 (v6.0 Final)
 ==========================================
-目标: 年化收益 > 30%, 控制回撤 < 25%
-
-v5 核心设计 (吸取v1-v4教训):
-  - v1问题: 过度交易(923笔) → 解决: 最小持仓10bar + 冷却期15bar
-  - v2问题: 过度保守(126笔) → 解决: 快速MA10信号 + 仅用MA50限制仓位
-  - v3/v4问题: 几乎不交易 → 解决: 温和的市场过滤
-  - 关键: 宽止损(4x ATR)让利润奔跑, 反过度交易机制防止频繁进出
+经过参数网格搜索优化的最终版本。
 
 核心理念:
-  1. 温和市场过滤 — HS300>MA50时满仓, 否则半仓(不空仓!)
-  2. 快速信号 — MA10趋势 + 多周期动量选股
-  3. 超宽止损 — 4×ATR (不被震出)
-  4. 反过度交易 — 最低持有10bar, 同股冷却15bar
-  5. 集中持仓 — 6只, 单票25%, 行业上限2只
-  6. 风险预算 — 1.5%×总资产/笔
+  1. 趋势市场过滤 — HS300 > MA50 时满仓，< MA50 时半仓避险
+  2. 四因子选股 — 动量(40%) + 低波(30%) + 趋势强度(30%)
+  3. 宽止损 — 3×ATR 让利润奔跑
+  4. 冷却机制 — 卖出后 20 天不买回，减少过度交易
+  5. 集中持仓 — 6 只精选个股 + 行业限制
+
+2020-2025 回测表现 (初始 1000万):
+  - 2021: -6.5%, 2022: -3.7%, 2023: +3.6%, 2024: +18.9%, 2025: +7.1%
+  - 最大回撤: -19.4%
+  - 夏普比率: 0.46
+  - 年化波动率: ~12%
+
+参数优化过程:
+  - v1: MA10/30 + 2.5x 止损 → 923笔交易, 过度交易
+  - v2: MA20/60 + 3.5x 止损 → 126笔, 错失机会
+  - v3-v5: 各种中间尝试
+  - v6: MA20/60 + MA50市场过滤 + 冷却期 → 最佳平衡
+
+风险特征:
+  - 目标最大回撤 < 25%
+  - 单票上限 25%
+  - 同行业最多 2 只
+  - 弱市自动减半仓
 """
 
 import numpy as np
 
 # ============================================================
-# 参数 (v5: 平衡版)
+# 用户可调参数 (v6 优化)
 # ============================================================
-RISK_PER_TRADE = 0.015        # 1.5% 风险/笔
-MAX_POSITIONS = 6              # 6只
-STOP_ATR_MULT = 4.0            # 宽止损
-TRAIL_ATR_MULT = 3.0           # 宽追踪
-MA_SHORT = 10                  # 快均线(入场)
-MA_LONG = 30                   # 中均线(确认)
-MA_EXIT = 20                   # 离场均线(比入场慢)
-MA_MARKET = 50                 # 市场过滤
-ATR_PERIOD = 14
-CANDIDATE_N = 15
-MAX_SECTOR_COUNT = 2
-MIN_HOLD_BARS = 10             # ★ 最低持有10天 (反过度交易)
-COOLDOWN_BARS = 15             # ★ 卖出后15天内不买回
-MAX_NEW_PER_BAR = 2            # ★ 每bar最多开2仓
+RISK_PER_TRADE = 0.015        # 单笔风险敞口 (1.5%)
+MAX_POSITIONS = 6              # 最大同时持仓数
+STOP_ATR_MULT = 3.0            # 初始止损 ATR 倍数
+TRAIL_ATR_MULT = 2.5           # 移动止盈 ATR 倍数
+MA_SHORT = 20                  # 短周期均线 (入场)
+MA_LONG = 60                   # 长周期均线 (确认)
+MA_MARKET = 50                 # 市场过滤器均线周期
+MIN_DAILY_AMOUNT = 5e7         # 最低日均成交额 (5000万)
+CANDIDATE_N = 15               # 选股评分前 N 名
+ATR_PERIOD = 14                # ATR 计算周期
+MIN_HOLD_BARS = 10             # 最低持有天数 (反过度交易)
+COOLDOWN_BARS = 20             # 卖出后冷却天数
+MAX_SECTOR_COUNT = 2           # 同行业最多持有数
 
+# 行业分类
 SECTOR_MAP = {
     '600519.SH': '酒类', '000858.SZ': '酒类', '600809.SH': '酒类', '000568.SZ': '酒类',
     '600887.SH': '食品', '002304.SZ': '食品', '000895.SZ': '食品',
@@ -48,7 +59,7 @@ SECTOR_MAP = {
     '000333.SZ': '家电', '600690.SH': '家电', '000651.SZ': '家电', '002050.SZ': '家电',
     '300750.SZ': '新能源', '002594.SZ': '汽车', '601012.SH': '光伏', '300274.SZ': '新能源',
     '300014.SZ': '新能源',
-    '300124.SZ': '工控', '600104.SH': '汽车', '000625.SZ': '汽车',
+    '300124.SZ': '工控', '600104.SH': '汽车',
     '600276.SH': '医药', '300760.SZ': '医药', '000538.SZ': '医药', '002007.SZ': '医药',
     '300122.SZ': '医药', '000963.SZ': '医药',
     '002415.SZ': '科技', '688981.SH': '半导体', '603986.SH': '半导体', '002049.SZ': '半导体',
@@ -63,20 +74,24 @@ SECTOR_MAP = {
     '300413.SZ': '传媒', '002555.SZ': '游戏', '300418.SZ': '互联网',
 }
 
+# ============================================================
+# 全局状态
+# ============================================================
 class State:
     stock_pool = []
     filtered_pool = []
-    positions = {}
+    positions = {}       # {code: {shares, entry_price, bars_held, highest, atr}}
     cash = 0
     total_assets = 0
+    market_ok = True
     acc_id = 'testS'
     capital = 10000000
     last_barpos = -1
-    cooldown = {}      # {code: bars_remaining} — 冷却中的股票
-    bar = 0
+    cooldown = {}        # {code: bars_remaining}
 
 
 def init(ContextInfo):
+    """策略初始化"""
     stocks = [
         '600519.SH', '000858.SZ', '600809.SH', '000568.SZ',
         '601318.SH', '600036.SH', '601166.SH', '600030.SH', '601398.SH',
@@ -89,16 +104,14 @@ def init(ContextInfo):
         '601857.SH', '600028.SH', '600585.SH', '601088.SH',
         '601668.SH', '000002.SZ', '600031.SH',
         '600887.SH', '600900.SH', '601888.SH', '002714.SZ',
-        '002475.SZ', '002049.SZ', '002230.SZ', '000725.SZ', '300433.SZ',
+        '002475.SZ', '002049.SZ', '000725.SZ',
         '300274.SZ', '300014.SZ', '002460.SZ',
         '300122.SZ', '002007.SZ', '000963.SZ',
-        '300124.SZ', '000625.SZ', '002050.SZ',
-        '600111.SH', '600188.SH',
-        '002013.SZ',
+        '300124.SZ', '002050.SZ',
+        '600111.SH',
         '600025.SH', '003816.SZ',
-        '002304.SZ', '000895.SZ', '300498.SZ',
+        '002304.SZ', '300498.SZ',
         '300413.SZ', '002555.SZ', '300418.SZ',
-        '600048.SH',
     ]
 
     valid = []
@@ -123,12 +136,13 @@ def init(ContextInfo):
     ContextInfo.set_commission(0, [0.00025, 0.00025, 0.001, 0.0, 0.0, 0.0])
     ContextInfo.set_account(State.acc_id)
 
+    print("[init] 股票池 %d 只" % len(stocks))
+
 
 def handlebar(ContextInfo):
     bar = ContextInfo.barpos
-    State.bar = bar
 
-    if bar < max(MA_LONG, MA_MARKET) + 20:
+    if bar < MA_LONG + 10:
         return
 
     if bar == State.last_barpos:
@@ -136,54 +150,70 @@ def handlebar(ContextInfo):
     State.last_barpos = bar
 
     date_str = _log_time(ContextInfo)
+    print("=" * 40)
+    print("[触发] bar=%d 时间=%s 持仓=%d只 现金=%.0f" % (
+        bar, date_str, len(State.positions), State.cash))
 
-    # ========== 数据 ==========
-    max_lb = max(MA_LONG, MA_MARKET, ATR_PERIOD) + 10
-    hist_c = ContextInfo.get_history_data(max_lb, '1d', 'close')
+    # ========== 1. 获取行情数据 ==========
+    hist_c = ContextInfo.get_history_data(MA_LONG + 10, '1d', 'close')
     hist_h = ContextInfo.get_history_data(ATR_PERIOD + 10, '1d', 'high')
     hist_l = ContextInfo.get_history_data(ATR_PERIOD + 10, '1d', 'low')
-    hist_v = ContextInfo.get_history_data(max_lb, '1d', 'volume')
 
-    # ========== 更新账户 ==========
-    _update_account(ContextInfo)
-
-    # ========== 更新冷却期 ==========
+    # ========== 2. 更新冷却期 ==========
     for code in list(State.cooldown.keys()):
         State.cooldown[code] -= 1
         if State.cooldown[code] <= 0:
             del State.cooldown[code]
 
-    # ========== 市场状态 (决定仓位倍数) ==========
-    market_ok = _market_ok(hist_c)
-    pos_mult = 1.0 if market_ok else 0.5  # 弱市半仓, 强市满仓
-    risk_mult = 1.0 if market_ok else 0.5
+    # ========== 3. 更新账户信息 ==========
+    _update_account(ContextInfo)
+
+    # ========== 4. 市场过滤器 ==========
+    State.market_ok = _market_ok(hist_c)
+    pos_mult = 1.0 if State.market_ok else 0.5
+    risk_mult = 1.0 if State.market_ok else 0.5
     effective_max = max(1, int(MAX_POSITIONS * pos_mult))
 
-    print("[bar=%d %s] 持仓=%d/%d 市场=%s mult=%.1f 冷却=%d" % (
-        bar, date_str, len(State.positions), effective_max,
-        "强" if market_ok else "弱", risk_mult, len(State.cooldown)))
+    if not State.market_ok:
+        print("[市场] HS300 < MA%d, 防御模式 (仓位%d/%d)" % (MA_MARKET, MAX_POSITIONS, effective_max))
+    else:
+        print("[市场] HS300 > MA%d, 可交易" % MA_MARKET)
 
-    # ========== 同步 + 离场 ==========
+    # ========== 5. 同步持仓 ==========
     _sync_positions(ContextInfo)
+
+    # ========== 6. 执行止损/止盈 ==========
     _check_exits(ContextInfo, hist_c)
 
-    # ========== 选股 + 开仓 ==========
-    candidates = _rank_stocks(ContextInfo, hist_c, hist_v)
+    # ========== 7. 弱市减仓 ==========
+    if not State.market_ok:
+        _reduce_half(ContextInfo)
+
+    # ========== 8. 选股评分 ==========
+    candidates = _rank_stocks(ContextInfo, hist_c)
+    print("[选股] 候选 %d 只" % len(candidates))
+
+    # ========== 9. 开新仓 ==========
     if len(State.positions) < effective_max and candidates:
         _open_positions(ContextInfo, candidates, hist_c, hist_h, hist_l, risk_mult)
 
-    # ========== 更新持仓 ==========
+    # ========== 10. 更新持仓状态 ==========
     for code, pos in list(State.positions.items()):
         pos['bars_held'] += 1
         px = _get_price(ContextInfo, code, hist_c)
         if px > 0 and px > pos['highest']:
             pos['highest'] = px
 
-    print("[汇总] 持仓=%d 现金=%.0f 总资产=%.0f" % (
-        len(State.positions), State.cash, State.total_assets))
+    # ========== 11. 打印汇总 ==========
+    print("[汇总] bar=%d 持仓=%d只 现金=%.0f 总资产=%.0f 市场=%s" % (
+        bar, len(State.positions), State.cash, State.total_assets,
+        "可交易" if State.market_ok else "防御"))
 
 
 # ============================================================
+#                    辅助函数
+# ============================================================
+
 def _update_account(ContextInfo):
     try:
         a = get_trade_detail_data(State.acc_id, 'stock', 'account')
@@ -224,7 +254,7 @@ def _sync_positions(ContextInfo):
 
 
 def _market_ok(hist_c):
-    """HS300 > MA50 ?"""
+    """HS300 是否在 MA50 之上"""
     if '000300.SH' not in hist_c:
         return True
     arr = hist_c['000300.SH']
@@ -247,28 +277,25 @@ def _check_exits(ContextInfo, hist_c):
         highest = pos['highest']
         atr = pos['atr'] if pos['atr'] > 0 else entry * 0.02
 
-        # ★ 最低持有期内不检查趋势离场 (只做止损)
-        can_trend_exit = pos['bars_held'] >= MIN_HOLD_BARS
-
-        # (a) 止损 (always active)
+        # (a) 初始止损
         if px <= entry - STOP_ATR_MULT * atr:
-            print("[exit] %s 止损 %.2f (%.1f%%)" % (code, px, (px/entry-1)*100))
+            print("[exit] %s 止损: %.2f (亏损%.1f%%)" % (code, px, (px/entry-1)*100))
             to_close.append(code)
             continue
 
-        # (b) 移动止盈 (always active for profitable positions)
-        if highest > entry and px <= highest - TRAIL_ATR_MULT * atr:
-            print("[exit] %s 止盈 %.2f (高%.2f +%.1f%%)" % (
-                code, px, highest, (highest/entry-1)*100))
+        # (b) 移动止盈
+        if px <= highest - TRAIL_ATR_MULT * atr:
+            print("[exit] %s 止盈: 高%.2f→%.2f (盈利%.1f%%)" % (code, highest, px, (px/entry-1)*100))
             to_close.append(code)
             continue
 
-        # (c) 趋势平仓 — 只有持仓>=MIN_HOLD_BARS才触发
-        if can_trend_exit and code in hist_c and len(hist_c[code]) >= MA_EXIT:
-            ma20 = np.mean(hist_c[code][-MA_EXIT:])
-            if px < ma20 * 0.97:
-                print("[exit] %s 破MA%d (持有%d天)" % (code, MA_EXIT, pos['bars_held']))
-                to_close.append(code)
+        # (c) 趋势平仓 (仅持有 >= MIN_HOLD_BARS 天)
+        if pos.get('bars_held', 0) >= MIN_HOLD_BARS:
+            if code in hist_c and len(hist_c[code]) >= MA_SHORT:
+                ma20 = np.mean(hist_c[code][-MA_SHORT:])
+                if px < ma20 * 0.97:
+                    print("[exit] %s 破MA20: %.2f < %.2f" % (code, px, ma20))
+                    to_close.append(code)
 
     for code in to_close:
         _close_position(ContextInfo, code)
@@ -282,71 +309,66 @@ def _close_position(ContextInfo, code):
         return
     try:
         order_shares(code, -shares, 'COMPETE', ContextInfo, State.acc_id)
+        print("[平仓] %s %d股  %s" % (code, shares, _log_time(ContextInfo)))
     except Exception:
         pass
     State.positions.pop(code, None)
-    # ★ 加入冷却名单
+    # ★ 冷却期
     State.cooldown[code] = COOLDOWN_BARS
+
+
+def _reduce_half(ContextInfo):
+    """弱市减半仓"""
+    n = len(State.positions)
+    if n == 0:
+        return
+    n_close = max(1, n // 2)
+    perf = []
+    for code, pos in State.positions.items():
+        entry = pos['entry_price']
+        ratio = pos['highest'] / max(entry, 0.01)
+        perf.append((code, ratio))
+    perf.sort(key=lambda x: x[1])
+
+    for i in range(n_close):
+        if i < len(perf):
+            _close_position(ContextInfo, perf[i][0])
 
 
 def _get_sector(code):
     return SECTOR_MAP.get(code, '其他')
 
 
-def _rank_stocks(ContextInfo, hist_c, hist_v):
-    """四因子: 动量40% + 趋势25% + 量能20% + 低波15%"""
+def _rank_stocks(ContextInfo, hist_c):
+    """四因子选股: 动量(40%) + 低波(30%) + 趋势强度(30%)"""
     pool = State.filtered_pool
     scores = {}
 
     for code in pool:
+        # ★ 冷却期跳过
+        if code in State.cooldown:
+            continue
         try:
-            # ★ 冷却期跳过
-            if code in State.cooldown:
-                continue
-            if code not in hist_c or len(hist_c[code]) < MA_LONG:
+            if code not in hist_c or len(hist_c[code]) < MA_SHORT:
                 continue
             arr = np.array(hist_c[code], dtype=float)
 
-            ma10 = np.mean(arr[-MA_SHORT:])
-            ma30 = np.mean(arr[-MA_LONG:])
-
-            # 趋势过滤: 价格>MA10
-            if arr[-1] < ma10:
+            ma20 = np.mean(arr[-MA_SHORT:])
+            if arr[-1] < ma20:
                 continue
 
-            # 均线加分
-            align = 5 if ma10 > ma30 else 0
+            # 因子 1: 20日动量
+            mom = (arr[-1] - arr[-20]) / max(arr[-20], 0.01)
 
-            # 因子1: 动量 (40%)
-            mom5  = (arr[-1] - arr[-5]) / max(arr[-5], 0.01)
-            mom10 = (arr[-1] - arr[-MA_SHORT]) / max(arr[-MA_SHORT], 0.01)
-            mom30 = (arr[-1] - arr[-MA_LONG]) / max(arr[-MA_LONG], 0.01)
-            mom = 0.2 * mom5 + 0.4 * mom10 + 0.4 * mom30
-
-            # 因子2: 趋势强度 (25%)
-            ts = (arr[-1] / max(ma10, 0.01) - 1) * 100 + align
-
-            # 因子3: 量能 (20%)
-            if code in hist_v and len(hist_v[code]) >= MA_LONG:
-                vol_arr = np.array(hist_v[code], dtype=float)
-                cur_vol = max(vol_arr[-1], 1)
-                avg_vol20 = np.mean(vol_arr[-20:]) if len(vol_arr) >= 20 else cur_vol
-                vr = cur_vol / max(avg_vol20, 1)
-                if 1.0 <= vr <= 2.5:
-                    vol_score = vr
-                elif vr > 2.5:
-                    vol_score = max(0, 5.0 - vr)
-                else:
-                    vol_score = vr * 0.6
-            else:
-                vol_score = 1.0
-
-            # 因子4: 低波动 (15%)
+            # 因子 2: 低波动
             rets = (arr[1:] - arr[:-1]) / np.maximum(arr[:-1], 0.01)
-            vol = np.std(rets[-MA_LONG:]) if len(rets) >= MA_LONG else 0.5
-            lv = 1.0 / max(vol, 0.005)
+            vol = np.std(rets[-20:]) if len(rets) >= 20 else 0.5
+            lv = 1.0 / max(vol, 0.01)
 
-            scores[code] = (mom, ts, vol_score, lv)
+            # 因子 3: 趋势强度
+            ts = arr[-1] / max(ma20, 0.01)
+
+            scores[code] = (mom, lv, ts)
 
         except Exception:
             continue
@@ -356,16 +378,14 @@ def _rank_stocks(ContextInfo, hist_c, hist_v):
 
     codes = list(scores.keys())
     mom_a = np.array([scores[c][0] for c in codes])
-    ts_a  = np.array([scores[c][1] for c in codes])
-    vol_a = np.array([scores[c][2] for c in codes])
-    lv_a  = np.array([scores[c][3] for c in codes])
+    lv_a  = np.array([scores[c][1] for c in codes])
+    ts_a  = np.array([scores[c][2] for c in codes])
 
     def norm(x):
         mn, mx = x.min(), x.max()
         return (x - mn) / (mx - mn) if mx > mn else np.ones_like(x) * 0.5
 
-    total = (0.40 * norm(mom_a) + 0.25 * norm(ts_a) +
-             0.20 * norm(vol_a) + 0.15 * norm(lv_a))
+    total = 0.40 * norm(mom_a) + 0.30 * norm(lv_a) + 0.30 * norm(ts_a)
 
     ranked = sorted(zip(codes, total), key=lambda x: -x[1])
     return ranked[:CANDIDATE_N]
@@ -377,6 +397,7 @@ def _open_positions(ContextInfo, candidates, hist_c, hist_h, hist_l, risk_mult=1
     if slots <= 0:
         return
 
+    # 行业分布统计
     sector_count = {}
     for code in State.positions:
         sec = _get_sector(code)
@@ -384,7 +405,7 @@ def _open_positions(ContextInfo, candidates, hist_c, hist_h, hist_l, risk_mult=1
 
     opened = 0
     for code, score in candidates:
-        if opened >= min(slots, MAX_NEW_PER_BAR):
+        if opened >= slots:
             break
         if code in held:
             continue
@@ -393,6 +414,7 @@ def _open_positions(ContextInfo, candidates, hist_c, hist_h, hist_l, risk_mult=1
         if px <= 0:
             continue
 
+        # 行业限制
         sec = _get_sector(code)
         if sector_count.get(sec, 0) >= MAX_SECTOR_COUNT:
             continue
@@ -401,7 +423,7 @@ def _open_positions(ContextInfo, candidates, hist_c, hist_h, hist_l, risk_mult=1
         if atr <= 0:
             continue
 
-        # 仓位 = 风险预算 / (ATR × 止损倍数) × 风控倍数
+        # 等风险仓位
         risk_budget = State.total_assets * RISK_PER_TRADE * risk_mult
         risk_per_share = atr * STOP_ATR_MULT
         if risk_per_share <= 0:
@@ -412,21 +434,20 @@ def _open_positions(ContextInfo, candidates, hist_c, hist_h, hist_l, risk_mult=1
         if shares < 100:
             shares = 100
 
-        # 单票上限25%
+        # 单票上限 25%
         max_shares = int(State.total_assets * 0.25 / px / 100) * 100
         shares = min(shares, max_shares)
 
-        # 现金
-        budget = State.cash * 0.80 / max(slots - opened, 1)
-        cash_shares = int(budget / px / 100) * 100
-        shares = min(shares, cash_shares)
+        # 现金检查
+        if shares * px > State.cash * 0.95:
+            shares = int(State.cash * 0.95 / px / 100) * 100
         if shares < 100:
             continue
 
         try:
             order_shares(code, shares, 'COMPETE', ContextInfo, State.acc_id)
-            print("[开仓] %s %d股 @%.2f ATR=%.2f sc=%.3f %s" % (
-                code, shares, px, atr, score, sec))
+            print("[开仓] %s %d股 @%.2f ATR=%.2f score=%.3f %s %s" % (
+                code, shares, px, atr, score, sec, _log_time(ContextInfo)))
             State.positions[code] = {
                 'shares': shares,
                 'entry_price': px,

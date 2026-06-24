@@ -76,7 +76,7 @@ def bs_login():
 # 个股数据获取
 # ============================================================
 
-def fetch_single_stock(code, start, end, cache_dir):
+def fetch_single_stock(code, start, end, cache_dir, retry=3):
     """
     获取单只股票日线数据，优先从缓存读取。
 
@@ -92,60 +92,71 @@ def fetch_single_stock(code, start, end, cache_dir):
             if len(df) > 0:
                 first_date = df['date'].min()
                 last_date = df['date'].max()
-                if first_date <= pd.Timestamp(start) and last_date >= pd.Timestamp(end):
+                # 允许 ±5 天容差 (start/end 可能是非交易日)
+                if (first_date <= pd.Timestamp(start) + pd.Timedelta(days=5) and
+                    last_date >= pd.Timestamp(end) - pd.Timedelta(days=5)):
                     logger.debug("缓存命中: %s (%d行)", code, len(df))
                     return df
         except Exception as e:
             logger.warning("缓存读取失败 %s: %s，重新获取", code, e)
 
-    # 从 baostock 获取
-    try:
-        import baostock as bs
-        bs_login()
+    # 从 baostock 获取 (带重试)
+    import baostock as bs
 
-        bs_code = code_to_bs(code)
-        rs = bs.query_history_k_data_plus(
-            bs_code,
-            fields='date,open,high,low,close,preclose,volume,amount',
-            start_date=start,
-            end_date=end,
-            frequency='d',
-            adjustflag='3'  # 前复权
-        )
-        if rs.error_code != '0':
-            logger.warning("查询失败 %s: %s", code, rs.error_msg)
+    for attempt in range(retry):
+        try:
+            bs_login()
+
+            bs_code = code_to_bs(code)
+            rs = bs.query_history_k_data_plus(
+                bs_code,
+                fields='date,open,high,low,close,preclose,volume,amount',
+                start_date=start,
+                end_date=end,
+                frequency='d',
+                adjustflag='3'  # 前复权
+            )
+            if rs.error_code != '0':
+                logger.warning("查询失败 %s: %s", code, rs.error_msg)
+                return None
+
+            rows = []
+            while rs.next():
+                rows.append(rs.get_row_data())
+
+            if not rows:
+                logger.warning("无数据: %s", code)
+                return None
+
+            # 转 DataFrame
+            df = pd.DataFrame(rows, columns=['date', 'open', 'high', 'low', 'close', 'preclose', 'volume', 'amount'])
+            # 字符串转数值
+            for col in ['open', 'high', 'low', 'close', 'volume', 'amount', 'preclose']:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+
+            df['date'] = pd.to_datetime(df['date'])
+            df = df.sort_values('date').reset_index(drop=True)
+
+            # 保存缓存
+            os.makedirs(cache_dir, exist_ok=True)
+            df.to_csv(cache_file, index=False, encoding='utf-8-sig')
+            logger.info("已获取: %s (%d行)", code, len(df))
+            return df
+
+        except ImportError:
+            logger.error("需要安装 baostock: pip install baostock")
             return None
-
-        rows = []
-        while rs.next():
-            rows.append(rs.get_row_data())
-
-        if not rows:
-            logger.warning("无数据: %s", code)
-            return None
-
-        # 转 DataFrame
-        df = pd.DataFrame(rows, columns=['date', 'open', 'high', 'low', 'close', 'preclose', 'volume', 'amount'])
-        # 字符串转数值
-        for col in ['open', 'high', 'low', 'close', 'volume', 'amount', 'preclose']:
-            df[col] = pd.to_numeric(df[col], errors='coerce')
-
-        df['date'] = pd.to_datetime(df['date'])
-        df = df.sort_values('date').reset_index(drop=True)
-
-        # 保存缓存
-        os.makedirs(cache_dir, exist_ok=True)
-        df.to_csv(cache_file, index=False, encoding='utf-8-sig')
-        logger.info("已获取: %s (%d行)", code, len(df))
-        return df
-
-    except ImportError:
-        logger.error("需要安装 baostock: pip install baostock")
-        return None
-    except Exception as e:
-        logger.warning("获取失败 %s: %s", code, e)
-        time.sleep(0.5)
-        return None
+        except Exception as e:
+            if attempt < retry - 1:
+                wait = (attempt + 1) * 2  # 2s, 4s
+                logger.debug("获取失败 %s (尝试%d/%d): %s，%ds后重试", code, attempt + 1, retry, e, wait)
+                time.sleep(wait)
+                # 重新登录
+                global _bs_logged_in
+                _bs_logged_in = False
+            else:
+                logger.warning("获取失败 %s: %s (已重试%d次)", code, e, retry)
+                return None
 
 
 # ============================================================
@@ -197,7 +208,7 @@ class DataProvider:
         cache_dir = config.CACHE_DIR
         os.makedirs(cache_dir, exist_ok=True)
 
-        # 逐只获取
+        # 逐只获取 (添加延迟避免baostock限流)
         all_dfs = {}
         total = len(codes)
         for i, code in enumerate(codes):
@@ -205,6 +216,12 @@ class DataProvider:
             df = fetch_single_stock(code, start, end, cache_dir)
             if df is not None and len(df) > 0:
                 all_dfs[code] = df
+            # baostock 限流: 每20只暂停0.5秒, 每50只重新登录
+            if (i + 1) % 20 == 0:
+                time.sleep(0.5)
+            if (i + 1) % 50 == 0:
+                global _bs_logged_in
+                _bs_logged_in = False
         print("[数据] 完成，成功获取 %d/%d 只" % (len(all_dfs), total))
 
         if not all_dfs:

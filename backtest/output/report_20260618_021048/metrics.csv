@@ -1,0 +1,2 @@
+﻿start_date,end_date,total_days,initial_capital,final_value,total_return,annual_return,volatility,sharpe_ratio,max_drawdown,max_drawdown_pct,max_drawdown_start,max_drawdown_end,total_trades,win_rate,profit_factor,avg_win,avg_loss,max_win,max_loss,max_consecutive_losses,avg_hold_days,total_commission,total_stamp_tax,total_buy_amount,total_sell_amount
+2020-01-02,2026-06-17,370,10000000,10000000.0,0.0,0.0,0.0,0,0.0,0.0,2020-01-02,2020-01-02,0,0,inf,0,0,0,0,0,0,0.0,0.0,0.0,0.0

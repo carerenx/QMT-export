@@ -1,0 +1,31 @@
+"""
+Mock xtquant.xtconstant — provides constants needed by OSkhQuant khTrade.py
+"""
+# Account types
+SECURITY_ACCOUNT = 1
+FUTURE_ACCOUNT = 2
+
+# Order types
+STOCK_BUY = 23
+STOCK_SELL = 24
+
+# Price types
+FIX_PRICE = 5
+MARKET_PRICE = 1
+LATEST_PRICE = 5
+
+# Order status
+ORDER_PENDING = 0
+ORDER_PARTIALLY_FILLED = 1
+ORDER_SUCCEEDED = 2
+ORDER_CANCELLED = 3
+ORDER_REJECTED = 4
+
+# Direction flags
+DIRECTION_FLAG_LONG = 1
+DIRECTION_FLAG_SHORT = 2
+
+# Offset flags
+OFFSET_FLAG_OPEN = 1
+OFFSET_FLAG_CLOSE = 2
+OFFSET_FLAG_FORCECLOSE = 3

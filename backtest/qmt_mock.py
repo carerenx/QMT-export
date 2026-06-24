@@ -87,6 +87,11 @@ class MockContextInfo:
         bar = self._barpos
         codes = self.universe if self.universe else self._data.code_list
 
+        # ★ 关键修复: 始终将基准指数加入查询, 否则策略的 _market_ok() 永远返回 True
+        benchmark = getattr(self, 'benchmark', None) or '000300.SH'
+        if benchmark and benchmark not in codes:
+            codes = list(codes) + [benchmark]
+
         for code in codes:
             values = self._data.get_field_series(code, field)
             if values is None or len(values) == 0:
@@ -167,6 +172,58 @@ class MockContextInfo:
 # ============================================================
 # 模块级模拟函数
 # ============================================================
+
+def passorder(opType, orderType, accountid, orderCode, prType, modelprice, volume,
+              strategyName='', quickTrade=0, userOrderId='', ContextInfo=None):
+    """
+    模拟 QMT passorder 函数。
+    映射到内部的 order_shares 逻辑。
+    """
+    # opType: 23=buy, 24=sell (只支持股票买卖)
+    if opType == 23:
+        direction = 'buy'
+    elif opType == 24:
+        direction = 'sell'
+    else:
+        logger.warning("passorder: 不支持的 opType=%d", opType)
+        return
+
+    eng = _module_state.engine
+    if eng is None:
+        logger.warning("passorder: 引擎未连接")
+        return
+
+    if volume <= 0:
+        return
+
+    # 价格: prType=5(最新价)→None, prType=11(指定价)→modelprice
+    price_to_use = None
+    if prType == 11:
+        price_to_use = modelprice if modelprice > 0 else None
+
+    if price_to_use is None:
+        # 用最新价
+        tick = ContextInfo.get_full_tick([orderCode]) if ContextInfo else {}
+        info = tick.get(orderCode, {})
+        price_to_use = info.get('lastPrice', 0)
+
+    if price_to_use <= 0:
+        logger.warning("passorder %s: 价格 <= 0", orderCode)
+        return
+
+    # volume 单位: orderType 后缀 1=股/手, 支持直接
+    shares = int(volume)
+
+    if shares < 100:
+        return
+
+    eng._pending_orders.append({
+        'code': orderCode,
+        'direction': direction,
+        'shares': shares,
+        'price': price_to_use,
+    })
+
 
 def order_shares(stockcode, shares, style='LATEST', price=None, ContextInfo=None, accId=None):
     """

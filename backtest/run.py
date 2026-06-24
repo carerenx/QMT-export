@@ -98,7 +98,7 @@ def main():
     parser.add_argument('--start', default=None,
                         help='回测开始日期 (默认: 2020-01-01)')
     parser.add_argument('--end', default=None,
-                        help='回测结束日期 (默认: 2025-12-31)')
+                        help='回测结束日期 (默认: 2026-6-17)')
     parser.add_argument('--no-plot', action='store_true',
                         help='跳过生成图表')
     parser.add_argument('--param', nargs=2, action='append', metavar=('KEY', 'VALUE'),
@@ -111,7 +111,7 @@ def main():
         strategy_path = config.DEFAULT_STRATEGY
     elif not os.path.isabs(strategy_path):
         strategy_path = os.path.join(PROJECT_ROOT, strategy_path)
-
+    print("strategy_path : ",strategy_path)
     bt_start = args.start or config.BACKTEST_START
     bt_end = args.end or config.BACKTEST_END
 
@@ -132,7 +132,7 @@ def main():
     from .engine import BacktestEngine
     from .analyzer import PerformanceAnalyzer
     from .qmt_mock import (
-        MockContextInfo, order_shares, get_trade_detail_data, timetag_to_datetime
+        MockContextInfo, order_shares, passorder, get_trade_detail_data, timetag_to_datetime
     )
 
     # ---- 3. 加载数据 ----
@@ -150,6 +150,7 @@ def main():
     # ---- 5. 加载策略 ----
     mock_globals = {
         'order_shares': order_shares,
+        'passorder': passorder,
         'get_trade_detail_data': get_trade_detail_data,
         'timetag_to_datetime': timetag_to_datetime,
     }
@@ -157,6 +158,8 @@ def main():
 
     # ---- 6. 创建 MockContextInfo ----
     context = MockContextInfo(data, engine)
+    # ★ 注入股票池, 使 get_sector() 返回已加载的股票列表
+    context.stock_pool = config.STOCK_POOL
 
     # ---- 7. 运行回测 ----
     print("[回测] 开始运行...")
@@ -164,6 +167,7 @@ def main():
 
     # ---- 8. 绩效分析 ----
     analyzer = PerformanceAnalyzer(engine)
+    analyzer._engine = engine  # 注入引擎引用 (用于基准对比)
     analyzer.calculate()
     analyzer.print_report()
 
