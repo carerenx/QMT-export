@@ -1,3 +1,4 @@
 {
-    "terminal.integrated.scrollback": 500000
+    "terminal.integrated.scrollback": 500000,
+    "cloude-code-toolbox.tokenOptimization.enabled": false
 }

@@ -1,0 +1,89 @@
+{
+  "stock": {
+    "code": "601869",
+    "name": "长飞光纤"
+  },
+  "period": {
+    "start": "2025-06-25",
+    "end": "2026-06-26",
+    "bars": 244
+  },
+  "initial_capital": 1000000,
+  "benchmark": {
+    "buy_hold_return": "1319.2%",
+    "sharpe": "3.89",
+    "max_drawdown": "-39.6%"
+  },
+  "strategies": {
+    "S1_MA_Cross": {
+      "Total Return": "206.9%",
+      "Annual Return": "218.4%",
+      "Sharpe Ratio": "2.47",
+      "Max Drawdown": "-22.6%",
+      "Calmar Ratio": "9.66",
+      "Total Trades": 5,
+      "Win Rate": "80.0%",
+      "Final Equity": "3,068,706"
+    },
+    "S2_Bollinger": {
+      "Total Return": "8.4%",
+      "Annual Return": "8.7%",
+      "Sharpe Ratio": "0.63",
+      "Max Drawdown": "-12.3%",
+      "Calmar Ratio": "0.71",
+      "Total Trades": 1,
+      "Win Rate": "100.0%",
+      "Final Equity": "1,084,101"
+    },
+    "S3_Vol_Break": {
+      "Total Return": "1101.9%",
+      "Annual Return": "1204.0%",
+      "Sharpe Ratio": "3.75",
+      "Max Drawdown": "-38.9%",
+      "Calmar Ratio": "30.97",
+      "Total Trades": 1,
+      "Win Rate": "100.0%",
+      "Final Equity": "12,019,273"
+    },
+    "S4_TrendTrail": {
+      "Total Return": "351.6%",
+      "Annual Return": "374.5%",
+      "Sharpe Ratio": "3.08",
+      "Max Drawdown": "-16.1%",
+      "Calmar Ratio": "23.20",
+      "Total Trades": 7,
+      "Win Rate": "71.4%",
+      "Final Equity": "4,515,726"
+    },
+    "S5_MACD": {
+      "Total Return": "510.3%",
+      "Annual Return": "547.6%",
+      "Sharpe Ratio": "3.43",
+      "Max Drawdown": "-16.9%",
+      "Calmar Ratio": "32.39",
+      "Total Trades": 9,
+      "Win Rate": "77.8%",
+      "Final Equity": "6,102,884"
+    },
+    "S6_Composite": {
+      "Total Return": "507.0%",
+      "Annual Return": "544.0%",
+      "Sharpe Ratio": "3.43",
+      "Max Drawdown": "-17.3%",
+      "Calmar Ratio": "31.52",
+      "Total Trades": 1,
+      "Win Rate": "100.0%",
+      "Final Equity": "6,069,857"
+    },
+    "S7_FundFlow": {
+      "Total Return": "182.4%",
+      "Annual Return": "192.2%",
+      "Sharpe Ratio": "2.72",
+      "Max Drawdown": "-18.1%",
+      "Calmar Ratio": "10.64",
+      "Total Trades": 7,
+      "Win Rate": "57.1%",
+      "Final Equity": "2,824,021"
+    }
+  }
+}
