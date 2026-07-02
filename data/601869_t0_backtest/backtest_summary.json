@@ -1,0 +1,108 @@
+{
+  "stock": {
+    "code": "601869",
+    "name": "长飞光纤"
+  },
+  "period": {
+    "start": "2024-08-02",
+    "end": "2026-07-01",
+    "trading_days": 461
+  },
+  "config": {
+    "initial_capital": 5000000,
+    "base_position_pct": 0.3,
+    "max_t_ratio": 0.5,
+    "daily_amplitude_mean": "5.54%",
+    "atr_mean": "7.59"
+  },
+  "benchmark": {
+    "stock_return": "2165.28%",
+    "total_return": "649.38%"
+  },
+  "strategies": {
+    "A_VolBand": {
+      "name": "A_VolBand",
+      "total_days": 461,
+      "active_days": 44,
+      "activity_rate": "9.5%",
+      "total_pnl": "4,415,259",
+      "total_return": "88.31%",
+      "annual_return": "41.34%",
+      "avg_daily_pnl": "9,578",
+      "avg_active_pnl": "100,347",
+      "win_rate": "100.0%",
+      "profit_factor": "inf",
+      "sharpe": "3.05",
+      "max_drawdown": "0",
+      "max_drawdown_pct": "0.00%",
+      "calmar": "0.00",
+      "avg_t_shares": "16,600",
+      "total_return_val": 88.30517447009852,
+      "sharpe_val": 3.0451213098006615,
+      "max_dd_val": 0.0
+    },
+    "B_Grid": {
+      "name": "B_Grid",
+      "total_days": 461,
+      "active_days": 145,
+      "activity_rate": "31.5%",
+      "total_pnl": "4,566,007",
+      "total_return": "91.32%",
+      "annual_return": "42.57%",
+      "avg_daily_pnl": "9,905",
+      "avg_active_pnl": "31,490",
+      "win_rate": "100.0%",
+      "profit_factor": "inf",
+      "sharpe": "5.66",
+      "max_drawdown": "0",
+      "max_drawdown_pct": "0.00%",
+      "calmar": "0.00",
+      "avg_t_shares": "6,110",
+      "total_return_val": 91.32014058663049,
+      "sharpe_val": 5.661489214694371,
+      "max_dd_val": 0.0
+    },
+    "C_Momentum": {
+      "name": "C_Momentum",
+      "total_days": 461,
+      "active_days": 123,
+      "activity_rate": "26.7%",
+      "total_pnl": "13,852,765",
+      "total_return": "277.06%",
+      "annual_return": "106.58%",
+      "avg_daily_pnl": "30,049",
+      "avg_active_pnl": "112,624",
+      "win_rate": "100.0%",
+      "profit_factor": "inf",
+      "sharpe": "4.92",
+      "max_drawdown": "0",
+      "max_drawdown_pct": "0.00%",
+      "calmar": "0.00",
+      "avg_t_shares": "21,054",
+      "total_return_val": 277.05530992529435,
+      "sharpe_val": 4.9160909765617,
+      "max_dd_val": 0.0
+    },
+    "D_Adaptive": {
+      "name": "D_Adaptive",
+      "total_days": 461,
+      "active_days": 136,
+      "activity_rate": "29.5%",
+      "total_pnl": "11,010,516",
+      "total_return": "220.21%",
+      "annual_return": "88.93%",
+      "avg_daily_pnl": "23,884",
+      "avg_active_pnl": "80,960",
+      "win_rate": "100.0%",
+      "profit_factor": "inf",
+      "sharpe": "5.00",
+      "max_drawdown": "0",
+      "max_drawdown_pct": "0.00%",
+      "calmar": "0.00",
+      "avg_t_shares": "15,135",
+      "total_return_val": 220.21032797021377,
+      "sharpe_val": 5.00353580740662,
+      "max_dd_val": 0.0
+    }
+  }
+}

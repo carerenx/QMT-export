@@ -1,11 +1,13 @@
 # Claude Code — project context
 
 
+
+
 <!-- cloude-code-toolbox:mcp-skills-awareness-begin -->
 
 ### MCP & Skills awareness (Cloude Code ToolBox)
 
-_Last synced: 2026-06-30T09:41:58.459Z._
+_Last synced: 2026-07-02T08:24:59.037Z._
 
 - **Full report:** `.claude/cloude-code-toolbox-mcp-skills-awareness.md` in this workspace (auto-overwritten on each scan). Use it as ground truth for configured servers and skill folders.
 - **MCP:** For **live tools** in Claude Code, enable the matching server via `/mcp`. Servers are configured in `~/.claude.json` (user) and `.mcp.json` (project).
@@ -20,9 +22,13 @@ _No active workspace servers in mcp.json._
 
 #### User MCP
 
-- `C:\Users\pp313\.claude.json` — _no servers defined_
+- `C:\Users\pp313\.claude.json` — _servers defined_
 
-_No active user-scoped servers in mcp.json._
+| Server id | Kind | Detail |
+|-----------|------|--------|
+| ppt-mcp | stdio | uvx ppt-mcp |
+| pptmasterdeck-mcp | http | https://pptmasterdeck.clauxel.com/mcp |
+| pptogo-mcp | http | https://pptogo.com/api/mcp |
 
 #### Project skills
 
@@ -39,6 +45,8 @@ _None found (or no workspace open)._
 - **CCU-export** — `C:\Users\pp313\.claude\skills\CCU-export` — >
 
 - **diag-expert** — `C:\Users\pp313\.claude\skills\diag-expert` — >
+
+- **QMT-export** — `C:\Users\pp313\.claude\skills\QMT-export` — >
 
 - **serenity-skill** — `C:\Users\pp313\.claude\skills\serenity-skill` — Turn an investment agent into a supply-chain bottleneck hunter. Use this skill for source-backed investment research, live market/theme scans, AI/semi/technology value-chain mapping, A-share/HK/US stock screening, thesis
 
