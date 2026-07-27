@@ -98,11 +98,14 @@ File encoding must be `# -*- coding: gbk -*-` for Chinese QMT client.
 - Strategy parameters are hardcoded as module-level constants (not JSON/YAML configs)
 - Account ID is stored as `ACCOUNT = '8890145315'` in each strategy file
 
+
+
+
 <!-- cloude-code-toolbox:mcp-skills-awareness-begin -->
 
 ### MCP & Skills awareness (Cloude Code ToolBox)
 
-_Last synced: 2026-07-10T06:18:00.840Z._
+_Last synced: 2026-07-24T06:57:25.133Z._
 
 - **Full report:** `.claude/cloude-code-toolbox-mcp-skills-awareness.md` in this workspace (auto-overwritten on each scan). Use it as ground truth for configured servers and skill folders.
 - **MCP:** For **live tools** in Claude Code, enable the matching server via `/mcp`. Servers are configured in `~/.claude.json` (user) and `.mcp.json` (project).
@@ -121,13 +124,13 @@ _No active workspace servers in mcp.json._
 
 | Server id | Kind | Detail |
 |-----------|------|--------|
-| ppt-mcp | stdio | uvx ppt-mcp |
 | pptmasterdeck-mcp | http | https://pptmasterdeck.clauxel.com/mcp |
 | pptogo-mcp | http | https://pptogo.com/api/mcp |
+| ppt-mcp | stdio | uvx ppt-mcp |
 
 #### Project skills
 
-_None found (or no workspace open)._
+- **signal-validation** — `d:\02Project\QMT-export\.claude\skills\signal-validation` — Validate A-stock sell/top-detection signals against historical data. Run when asked to validate trading signals, backtest sell rules, check momentum indicators, evaluate escape-top signals, or verify technical indicators
 
 #### User skills
 

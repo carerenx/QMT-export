@@ -1,4 +1,5 @@
 {
     "terminal.integrated.scrollback": 500000,
-    "cloude-code-toolbox.tokenOptimization.enabled": false
+    "cloude-code-toolbox.tokenOptimization.enabled": false,
+    "python-envs.defaultEnvManager": "ms-python.python:system"
 }
