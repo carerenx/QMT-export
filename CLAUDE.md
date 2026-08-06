@@ -101,11 +101,14 @@ File encoding must be `# -*- coding: gbk -*-` for Chinese QMT client.
 
 
 
+
+
+
 <!-- cloude-code-toolbox:mcp-skills-awareness-begin -->
 
 ### MCP & Skills awareness (Cloude Code ToolBox)
 
-_Last synced: 2026-07-24T06:57:25.133Z._
+_Last synced: 2026-08-05T00:53:50.092Z._
 
 - **Full report:** `.claude/cloude-code-toolbox-mcp-skills-awareness.md` in this workspace (auto-overwritten on each scan). Use it as ground truth for configured servers and skill folders.
 - **MCP:** For **live tools** in Claude Code, enable the matching server via `/mcp`. Servers are configured in `~/.claude.json` (user) and `.mcp.json` (project).
@@ -125,8 +128,8 @@ _No active workspace servers in mcp.json._
 | Server id | Kind | Detail |
 |-----------|------|--------|
 | pptmasterdeck-mcp | http | https://pptmasterdeck.clauxel.com/mcp |
-| pptogo-mcp | http | https://pptogo.com/api/mcp |
 | ppt-mcp | stdio | uvx ppt-mcp |
+| pptogo-mcp | http | https://pptogo.com/api/mcp |
 
 #### Project skills
 
