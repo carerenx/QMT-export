@@ -1,0 +1,505 @@
+# -*- coding: utf-8 -*-
+"""
+infra/connector.py — MiniQMT 连接层 + QMT 接口模拟
+===================================================
+  MiniQMTConnector  : 封装 xtdata + xttrader (行情/交易)
+  MockContextInfo    : 模拟 QMT ContextInfo 对象
+  MockPosition/Account : 模拟 QMT 持仓/账户对象
+  get_trade_detail_data / order_shares : 模拟 QMT 全局函数
+"""
+import time as _time
+import traceback as _traceback
+from datetime import datetime, timedelta
+from typing import Optional
+
+from core import config as cfg
+from .logger import _log
+
+# ============================================================================
+# 全局引用 (策略主循环中初始化)
+# ============================================================================
+
+_global_conn: Optional['MiniQMTConnector'] = None
+_global_dry_run = False
+
+
+def set_global_conn(conn: 'MiniQMTConnector', dry_run: bool = False):
+    """设置全局连接引用 (StrategyRunner.run() 中调用)"""
+    global _global_conn, _global_dry_run
+    _global_conn = conn
+    _global_dry_run = dry_run
+
+
+# ============================================================================
+# MiniQMTConnector
+# ============================================================================
+
+class MiniQMTConnector:
+    """封装 xtdata + xttrader 连接, 提供行情/交易查询/下单接口"""
+
+    def __init__(self):
+        self.xtdata = None
+        self.xttrader = None
+        self.trader = None
+        self.callback = None
+        self._data_connected = False
+        self._trade_connected = False
+        self._account_obj = None
+        self._daily_data_cache = None
+
+        self.last_order_status = None
+        self.last_trade = None
+        self.order_pending = False
+
+    # ── 连接 / 断开 ──
+
+    def connect_data(self):
+        """连接行情 (xtdata)"""
+        from xtquant import xtdata as _xtdata
+        self.xtdata = _xtdata
+        try:
+            _xtdata.connect()
+            self._data_connected = True
+            _log('[连接] MiniQMT 行情服务已连接')
+            return True
+        except Exception as e:
+            _log(f'[连接] 行情服务连接失败: {e}')
+            _log('[提示] 请先启动 MiniQMT (QMT → 右上角"极简mode")')
+            return False
+
+    def connect_trade(self, account_id=cfg.ACCOUNT, path=cfg.MINIQMT_PATH, session=cfg.SESSION_ID):
+        """连接交易 (xttrader)"""
+        from xtquant import xttrader as _xttrader, xtconstant
+
+        class _Callback(_xttrader.XtQuantTraderCallback):
+            def __init__(self, parent):
+                super().__init__()
+                self.parent = parent
+
+            def on_connected(self):
+                _log('[交易] MiniQMT 交易服务已连接')
+
+            def on_disconnected(self, reason):
+                _log(f'[交易] 连接断开: {reason}')
+
+            def on_stock_order(self, order):
+                from xtquant import xtconstant
+                sm = {
+                    xtconstant.ORDER_UNREPORTED: '未报',
+                    xtconstant.ORDER_WAIT_REPORTING: '待报',
+                    xtconstant.ORDER_REPORTED: '已报',
+                    xtconstant.ORDER_REPORTED_CANCEL: '已报待撤',
+                    xtconstant.ORDER_PARTSUCC_CANCEL: '部成待撤',
+                    xtconstant.ORDER_PART_CANCEL: '部撤',
+                    xtconstant.ORDER_CANCELED: '已撤',
+                    xtconstant.ORDER_PART_SUCC: '部成',
+                    xtconstant.ORDER_SUCCEEDED: '全成',
+                    xtconstant.ORDER_JUNK: '废单',
+                }
+                status = getattr(order, 'm_nOrderStatus', -1)
+                if status in sm:
+                    # 股票 m_nDirection 永远是 48 (OFFSET_FLAG_OPEN),
+                    # 买卖方向由 m_nOffsetFlag 判断: 48=开(买), 49=平(卖)
+                    offset_flag = getattr(order, 'm_nOffsetFlag', 0)
+                    d = '买' if offset_flag == xtconstant.OFFSET_FLAG_OPEN else '卖'
+                    p = getattr(order, 'm_dLimitPrice', 0)
+                    vt = getattr(order, 'm_nVolumeTraded', 0)
+                    vo = getattr(order, 'm_nVolumeTotalOriginal', 0)
+                    _log(f'[委托] {d} Y{p:.2f} {vt}/{vo}股 -> {sm[status]}')
+                    # 终态: 已撤/废单/全成 → 清除pending
+                    if status in (xtconstant.ORDER_CANCELED, xtconstant.ORDER_JUNK,
+                                  xtconstant.ORDER_SUCCEEDED):
+                        self.parent.order_pending = False
+                    # 废单时dump全部字段用于排错
+                    if status == xtconstant.ORDER_JUNK:
+                        _log('[废单诊断] 委托对象字段:')
+                        for attr in dir(order):
+                            if not attr.startswith('_'):
+                                try:
+                                    _log(f'  {attr} = {getattr(order, attr)}')
+                                except Exception:
+                                    pass
+                self.parent.last_order_status = status
+
+            def on_stock_trade(self, trade):
+                from xtquant import xtconstant
+                # 股票成交: 方向由 m_nOffsetFlag 判断
+                offset_flag = getattr(trade, 'm_nOffsetFlag', 0)
+                d = '买' if offset_flag == xtconstant.OFFSET_FLAG_OPEN else '卖'
+                p = getattr(trade, 'm_dPrice', 0)
+                v = getattr(trade, 'm_nVolume', 0)
+                code = getattr(trade, 'm_strInstrumentID', '')
+                _log(f'[成交] {d} {code} Y{p:.2f} x {v}股 = Y{p*v:,.0f}')
+                self.parent.last_trade = trade
+                self.parent.order_pending = False
+
+            def on_stock_position(self, position):
+                pass
+
+            def on_stock_asset(self, asset):
+                pass
+
+            def on_order_error(self, order_error):
+                msg = getattr(order_error, 'error_msg', str(order_error))
+                _log(f'[下单错误] {msg}')
+                self.parent.order_pending = False
+
+            def on_cancel_error(self, cancel_error):
+                _log(f'[撤单错误] {cancel_error}')
+
+            def on_account_status(self, account_status):
+                # 提取字段 (XtAccountStatus: account_id, account_type, status)
+                acc_id = getattr(account_status, 'account_id', '?')
+                acc_type = getattr(account_status, 'account_type', -1)
+                acc_stat = getattr(account_status, 'status', -1)
+
+                # 状态映射
+                stat_map = {
+                    xtconstant.ACCOUNT_STATUS_OK: '正常',
+                    xtconstant.ACCOUNT_STATUS_WAITING_LOGIN: '等待登录',
+                    xtconstant.ACCOUNT_STATUS_FAIL: '失败',
+                    xtconstant.ACCOUNT_STATUS_INITING: '初始化中',
+                    xtconstant.ACCOUNT_STATUS_CORRECTING: '校正中',
+                    xtconstant.ACCOUNT_STATUS_CLOSED: '已关闭',
+                    xtconstant.ACCOUNT_STATUS_ASSIS_FAIL: '辅助失败',
+                    xtconstant.ACCOUNT_STATUS_DISABLEBYSYS: '系统禁用',
+                    xtconstant.ACCOUNT_STATUS_DISABLEBYUSER: '用户禁用',
+                }
+                type_map = xtconstant.ACCOUNT_TYPE_DICT
+                stat_name = stat_map.get(acc_stat, f'未知({acc_stat})')
+                type_name = type_map.get(acc_type, f'未知({acc_type})')
+
+                # 去重: 只有状态变化时才打印
+                last = getattr(self.parent, '_last_acc_status', None)
+                new_key = (acc_id, acc_type, acc_stat)
+                if new_key != last:
+                    self.parent._last_acc_status = new_key
+                    _log(f'[账号状态] {acc_id} {type_name}: {stat_name}')
+                # 非正常状态始终打印(不管是否重复)
+                elif acc_stat != xtconstant.ACCOUNT_STATUS_OK:
+                    _log(f'[账号状态] {acc_id} {type_name}: {stat_name} (重复)')
+
+        self.callback = _Callback(self)
+        self.xttrader = _xttrader
+        self.trader = _xttrader.XtQuantTrader(path, session, self.callback)
+
+        try:
+            self.trader.start()
+            ret = self.trader.connect()
+            if ret != 0:
+                _log(f'[交易] 连接失败, 返回码: {ret}')
+                return False
+
+            accounts = self.trader.query_account_infos()
+            if not accounts:
+                _log('[交易] 未找到资金账号 — 请在MiniQMT中登录账号')
+                return False
+
+            for acc in accounts:
+                if acc.account_id == account_id:
+                    self._account_obj = acc
+                    break
+            if self._account_obj is None:
+                self._account_obj = accounts[0]
+                _log(f'[交易] 使用账号: {self._account_obj.account_id}')
+
+            self.trader.subscribe(self._account_obj)
+            _time.sleep(0.5)
+            self._trade_connected = True
+            _log(f'[交易] 已订阅账号 {self._account_obj.account_id}')
+            return True
+        except Exception as e:
+            _log(f'[交易] 连接异常: {e}')
+            _traceback.print_exc()
+            return False
+
+    def disconnect(self):
+        """断开所有连接"""
+        if self._trade_connected and self._account_obj:
+            try:
+                self.trader.unsubscribe(self._account_obj)
+                self.trader.stop()
+            except Exception:
+                pass
+            self._trade_connected = False
+        if self._data_connected:
+            try:
+                self.xtdata.disconnect()
+            except Exception:
+                pass
+            self._data_connected = False
+
+    @property
+    def data_connected(self):
+        return self._data_connected
+
+    @property
+    def trade_connected(self):
+        return self._trade_connected
+
+    # ── 数据查询 ──
+
+    def get_intraday_bars(self, period='10m', count=200):
+        """
+        Fetch intraday bar data from xtdata.
+
+        Args:
+            period: bar period ('1m', '5m', '10m', '15m', '30m', '1h')
+            count: number of bars to fetch
+
+        Returns:
+            dict with 'close', 'open', 'high', 'low' lists, or None
+        """
+        code = cfg.STOCK_QMT
+        try:
+            # Step 1: auto-download missing intraday bars from server
+            self.xtdata.download_history_data(
+                code, period=period, start_time='', end_time=''
+            )
+
+            # Step 2: read from local cache
+            df = self.xtdata.get_market_data(
+                field_list=['open', 'high', 'low', 'close', 'volume'],
+                stock_list=[code],
+                period=period,
+                count=count,
+                dividend_type='front',
+            )
+            if df is not None and len(df) > 0:
+                # get_market_data returns DataFrame directly (single stock)
+                if len(df) > count:
+                    df = df.iloc[-count:]
+                return {
+                    'close': df['close'].values.tolist(),
+                    'open': df['open'].values.tolist(),
+                    'high': df['high'].values.tolist(),
+                    'low': df['low'].values.tolist(),
+                    'volume': df['volume'].values.tolist(),
+                }
+            return None
+        except Exception as e:
+            _log(f'[Intraday] fetch error: {e}')
+            return None
+
+    def get_history_data(self, length, period, field):
+        """对应 QMT: ContextInfo.get_history_data(N, '1d', field)"""
+        code = cfg.STOCK_QMT
+        if self._daily_data_cache is None:
+            end = datetime.now().strftime('%Y%m%d')
+            start = (datetime.now() - timedelta(days=365 * 6)).strftime('%Y%m%d')
+            data = self.xtdata.get_local_data(
+                field_list=['open', 'high', 'low', 'close', 'volume', 'amount'],
+                stock_list=[code],
+                period='1d',
+                start_time=start,
+                end_time=end,
+                dividend_type='front',
+                data_dir='C:/QMT/datadir',
+            )
+            if code in data and len(data[code]) > 0:
+                self._daily_data_cache = data[code]
+            else:
+                return {}
+
+        df = self._daily_data_cache
+        field_map = {
+            'close': 'close', 'open': 'open', 'high': 'high',
+            'low': 'low', 'volume': 'volume', 'amount': 'amount',
+        }
+        col = field_map.get(field, field)
+        if col in df.columns:
+            vals = df[col].values.tolist()
+            if len(vals) > length:
+                vals = vals[-length:]
+            return {code: vals}
+        return {}
+
+    def get_full_tick(self, codes):
+        """对应 QMT: ContextInfo.get_full_tick([code])"""
+        try:
+            tick = self.xtdata.get_full_tick(codes)
+            return tick if tick else {}
+        except Exception:
+            return {}
+
+    # ── 交易查询 ──
+
+    def query_positions(self):
+        if not self._trade_connected:
+            return []
+        try:
+            positions = self.trader.query_stock_positions(self._account_obj)
+            return positions or []
+        except Exception:
+            return []
+
+    def query_account(self):
+        if not self._trade_connected:
+            return None
+        try:
+            return self.trader.query_stock_asset(self._account_obj)
+        except Exception:
+            return None
+
+    # ── 下单 ──
+
+    def order_stock(self, stock_code, shares, style, price=None):
+        """对应 QMT: order_shares(...)"""
+        from xtquant import xtconstant
+
+        if not self._trade_connected:
+            _log('[下单跳过-未连接交易]')
+            return
+
+        if shares > 0:
+            order_type = xtconstant.STOCK_BUY
+            dir_name = '买入'
+        else:
+            order_type = xtconstant.STOCK_SELL
+            shares = abs(shares)
+            dir_name = '卖出'
+
+        order_price = price if price and price > 0 else 0
+        price_type = xtconstant.FIX_PRICE
+
+        _log('  >>> 下单{}: Y{:.2f} x {}股 {}'.format(dir_name, order_price, shares, stock_code))
+
+        try:
+            ret = self.trader.order_stock(
+                self._account_obj, stock_code, order_type, shares,
+                price_type, order_price,
+                cfg.STRATEGY_NAME, '迷你反T_{}'.format(dir_name),
+            )
+            self.order_pending = True
+            return ret
+        except Exception as e:
+            _log('[下单异常] {}'.format(e))
+            self.order_pending = False
+            return None
+
+
+# ============================================================================
+# QMT ContextInfo 模拟
+# ============================================================================
+
+class MockContextInfo:
+    """模拟 QMT 的 ContextInfo 对象, 提供策略需要的接口"""
+
+    def __init__(self, connector: MiniQMTConnector):
+        self.conn = connector
+        self.st = {}
+        self.accID = cfg.ACCOUNT
+        self._barpos = 0
+
+    @property
+    def barpos(self):
+        return self._barpos
+
+    @barpos.setter
+    def barpos(self, value):
+        self._barpos = value
+
+    def set_universe(self, stock_list):
+        pass
+
+    def set_account(self, acc_id):
+        self.accID = acc_id
+
+    def get_history_data(self, length, period, field, dividend_type=0, skip_paused=True):
+        if period != '1d':
+            _log(f'[警告] 仅支持1d周期, 收到: {period}')
+            return {}
+        return self.conn.get_history_data(length, period, field)
+
+    def get_full_tick(self, codes):
+        return self.conn.get_full_tick(codes)
+
+    def is_last_bar(self):
+        return True
+
+    def run_time(self, func_name, interval, start_time='', market=''):
+        pass
+
+    def get_stock_name(self, code):
+        return cfg.STOCK_NAME
+
+    def get_open_date(self, code):
+        return '20140701'
+
+
+# ============================================================================
+# QMT 数据结构模拟
+# ============================================================================
+
+class MockPosition:
+    """模拟 QMT 的持仓对象"""
+    def __init__(self, xt_pos=None):
+        if xt_pos is not None:
+            self.m_strInstrumentID = xt_pos.stock_code.split('.')[0] if hasattr(xt_pos, 'stock_code') else ''
+            self.m_nVolume = getattr(xt_pos, 'volume', 0)
+            self.m_dOpenPrice = getattr(xt_pos, 'open_price', 0.0)
+            self.m_nCanUseVolume = getattr(xt_pos, 'can_use_volume', getattr(xt_pos, 'volume', 0))
+        else:
+            self.m_strInstrumentID = ''
+            self.m_nVolume = 0
+            self.m_dOpenPrice = 0.0
+            self.m_nCanUseVolume = 0
+
+
+class MockAccount:
+    """模拟 QMT 的账户对象"""
+    def __init__(self, asset=None):
+        if asset is not None:
+            self.m_dAvailable = getattr(asset, 'cash', 0.0)
+            self.m_dBalance = getattr(asset, 'total_asset', 0.0)
+        else:
+            self.m_dAvailable = 0.0
+            self.m_dBalance = 0.0
+
+
+# ============================================================================
+# QMT 全局函数模拟
+# ============================================================================
+
+def get_trade_detail_data(account_id, account_type, data_type):
+    """模拟 QMT: get_trade_detail_data(account, 'STOCK', 'POSITION'/'ACCOUNT')"""
+    conn = _global_conn
+    if conn is None:
+        return []
+
+    if data_type.upper() == 'POSITION':
+        xt_positions = conn.query_positions()
+        return [MockPosition(xp) for xp in xt_positions]
+
+    elif data_type.upper() == 'ACCOUNT':
+        asset = conn.query_account()
+        if asset is not None:
+            return [MockAccount(asset)]
+        return [MockAccount()]
+
+    return []
+
+
+def order_shares(stockcode, shares, style='LATEST', price=None,
+                 ContextInfo=None, accId=None):
+    """
+    模拟 QMT: order_shares(code, shares, style, price, ContextInfo, accId)
+    兼容 QMT 的多种参数重排调用方式。
+    """
+    conn = _global_conn
+    if conn is None:
+        _log('[order_shares] 未连接, 跳过')
+        return
+
+    _price = price
+    if price is not None and not isinstance(price, (int, float)):
+        # price 参数实际传的是 ContextInfo
+        _price = None
+
+    if _global_dry_run:
+        direction = '买入' if shares > 0 else '卖出'
+        px = _price if _price else '(对手价)'
+        _log(f'[模拟] {direction} {stockcode} {px} x {abs(shares)}股')
+        return 0
+
+    return conn.order_stock(stockcode, shares, style, _price)
