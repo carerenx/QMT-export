@@ -1,6 +1,6 @@
 # Cloude Code ToolBox — MCP & Skills awareness
 
-_Generated: 2026-08-05T00:53:49.656Z_
+_Generated: 2026-08-13T01:01:44.927Z_
 
 ## How to use this report
 
@@ -33,6 +33,9 @@ _No active workspace servers in mcp.json._
 
 ### Project-scoped
 
+- **run-qmt-export** — `d:\02Project\QMT-export\.claude\skills\run-qmt-export`
+  - Build, run, smoke-test, and drive the QMT-export quantitative trading backtest system. Use when asked to run a backtest, verify the engine works, validate a strategy, test data loading, or check that the backtest system 
+
 - **signal-validation** — `d:\02Project\QMT-export\.claude\skills\signal-validation`
   - Validate A-stock sell/top-detection signals against historical data. Run when asked to validate trading signals, backtest sell rules, check momentum indicators, evaluate escape-top signals, or verify technical indicators
 
@@ -61,6 +64,9 @@ _No active workspace servers in mcp.json._
 
 - **serenity-skill** — `C:\Users\pp313\.claude\skills\serenity-skill`
   - Turn an investment agent into a supply-chain bottleneck hunter. Use this skill for source-backed investment research, live market/theme scans, AI/semi/technology value-chain mapping, A-share/HK/US stock screening, thesis
+
+- **solution-verify** — `C:\Users\pp313\.claude\skills\solution-verify`
+  - >
 
 - **tricore-expert** — `C:\Users\pp313\.claude\skills\tricore-expert`
   - >

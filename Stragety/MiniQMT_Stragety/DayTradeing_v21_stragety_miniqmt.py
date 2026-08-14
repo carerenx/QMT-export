@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 """
 ================================================================================
- MiniQMT — QMT day trading v20 + 无换行紧凑日志
+ MiniQMT — QMT day trading v21 + 成交日志优化
 ================================================================================
 
- [v20 改动] (vs v19)
-   ★ 彻底消除空白行 — 所有 _log() 之间不留空行
-   ★ 信号摘要 & 交易计划合并输出, 无 ── 分隔线
-   ★ 每行都是有效信息, 无纯装饰行
+ [v21 改动] (vs v20)
+   ★ 成交日志优化 — [成交] 行清晰打印价格 × 数量 + 持仓变化
+   ★ _verify_trade 重构 — 主输出为简洁 [成交] 行, [校验] 仅异常时打印
+   ★ 每笔下单前增加 [下单] 日志, 明确意图
 
  [run mode]
-   signal:  python "Stragety/MiniQMT_Stragety/DayTradeing_v20_stragety_miniqmt.py" --mode signal
-   live:    python "Stragety/MiniQMT_Stragety/DayTradeing_v20_stragety_miniqmt.py" --mode live
-   backtest:python "Stragety/MiniQMT_Stragety/DayTradeing_v20_stragety_miniqmt.py" --mode backtest
+ python "Stragety/MiniQMT_Stragety/DayTradeing_v21_stragety_miniqmt.py" --mode signal
+ python "Stragety/MiniQMT_Stragety/DayTradeing_v21_stragety_miniqmt.py" --mode live
+ python "Stragety/MiniQMT_Stragety/DayTradeing_v21_stragety_miniqmt.py" --mode backtest
 
 ================================================================================
 """
@@ -40,12 +40,12 @@ STATE_BT_SPIKING = cfg.STATE_BT_SPIKING
 
 
 class StrategyRunner:
-    """MiniQMT v20 — 紧凑日志"""
+    """MiniQMT v21 — 成交日志优化"""
 
     def __init__(self, dry_run=False):
         logger = get_logger()
         if logger is None:
-            logger = FileLogger(STOCK_CODE, version='v20')
+            logger = FileLogger(STOCK_CODE, version='v21')
             set_logger(logger)
         self.conn = MiniQMTConnector()
         set_global_conn(self.conn, dry_run)
@@ -70,7 +70,7 @@ class StrategyRunner:
             'state_enter_time': '', 'sell_elapsed_bars': 0,
             'locked': False, 'lock_reason': '', 'lock_since': '',
             'lock_cooldown_until': 0.0, 'price_history': deque(),
-            '_pre_market_done': '',
+            '_pre_market_done': '', '_market_open_logged': False,
         })
 
     def _reset_daily(self):
@@ -85,7 +85,7 @@ class StrategyRunner:
                    'bt_sellback_target', 'bt_max_trail', 'bt_sell_peak_price'):
             self.st[k] = 0.0
         self.st['locked'] = False; self.st['lock_reason'] = ''; self.st['lock_since'] = ''
-        self.st['_pre_market_done'] = ''
+        self.st['_pre_market_done'] = ''; self.st['_market_open_logged'] = False
 
     def _daily_init(self):
         today = datetime.now().strftime('%Y%m%d')
@@ -222,29 +222,35 @@ class StrategyRunner:
         return {'shares': shares, 'can_use': can_use, 'cash': cash,
                 'cost': cost, 'total_asset': shares * price + cash, 'price': price}
 
+    # ★ v21: 成交日志优化 — 清晰打印价格×数量+持仓变化
     def _verify_trade(self, snap_before, label, trade_price, trade_shares):
         _time.sleep(0.3)
         snap_after = self._snapshot_account()
         d_shares = snap_after['shares'] - snap_before['shares']
         d_cash = snap_after['cash'] - snap_before['cash']
-        d_asset = snap_after['total_asset'] - snap_before['total_asset']
         if abs(trade_shares) == TRADE_LOT_SIZE:
             status = 'OK' if d_shares == trade_shares else ('PENDING' if d_shares == 0 else 'PARTIAL')
         else:
             status = 'SENT'
-        _log('[校验] {}: {}股@Y{:.2f} {} | 持仓{:+d}({}→{}) | 资金Δ{:+,.0f} | 资产Δ{:+,.0f}'.format(
-            label, '{:+d}'.format(trade_shares), trade_price, status,
-            d_shares, snap_before['shares'], snap_after['shares'], d_cash, d_asset))
-        if abs(trade_shares) == TRADE_LOT_SIZE and d_shares != trade_shares:
-            _log('[异常] 持仓变化不匹配! 预期{:+d} 实际{:+d}'.format(trade_shares, d_shares))
+
+        # ★ v21: [成交] 行 — 价格 × 数量 + 持仓变化
+        price_str = '市价' if trade_price <= 0 else 'Y{:.2f}'.format(trade_price)
+        _log('[成交-{}] {} × {}股 | 持仓{}→{} | 资金{:+,.0f}'.format(
+            label, price_str, abs(trade_shares),
+            snap_before['shares'], snap_after['shares'], d_cash))
+
+        # 仅在异常时输出校验详情
+        if status != 'OK':
+            _log('[校验] {}: 状态{} | 预期{:+d} 实际{:+d} | 资金Δ{:+,.0f}'.format(
+                label, status, trade_shares, d_shares, d_cash))
+
         self.st['base_shares'] = snap_after['shares']
         self.st['base_can_use'] = snap_after['can_use']
         self.st['base_cost'] = snap_after['cost']
 
-    # ═══ v20: 信号+计划合并输出 (无分隔线, 无空行) ═══
+    # ═══ v21: 信号+计划合并输出 (无分隔线, 无空行) ═══
 
     def _print_daily_brief(self, signal):
-        """★ v20: 信号摘要+交易计划合并为一段, 无分隔线, 无空行"""
         trend = signal.get('trend', '?')
         trend_labels = {'strong_bull': '强牛', 'weak_bull': '弱牛', 'sideways': '震荡', 'bear': '熊市'}
         open_p = signal.get('open_price', 0); close_y = signal.get('close_yday', 0)
@@ -332,13 +338,14 @@ class StrategyRunner:
         if price > st['peak_price']: st['peak_price'] = price
         peak = st['peak_price']; pullback = (peak - price) / peak if peak > 0 else 0
         if pullback >= cfg.PULLBACK_PCT:
-            _log('[反T卖出] 峰值Y{:.2f} 回落{:.2f}% → Y{:.2f}'.format(peak, pullback * 100, price))
+            _log('[反T卖出触发] 峰值Y{:.2f} 回落{:.2f}% → Y{:.2f}'.format(peak, pullback * 100, price))
             atr_pct = st['daily_signal']['atr_pct']; buyback_pct = atr_pct * cfg.BUYBACK_TRIGGER_MULT
             buyback_target = round(price * (1.0 - buyback_pct), 2)
             st['sell_fill_price'] = price; st['buyback_target'] = buyback_target
             st['buyback_target_pct'] = buyback_pct * 100
             st['sell_elapsed_bars'] = 0; st['state_enter_time'] = cfg.now_hms()
             snap = self._snapshot_account()
+            _log('[下单-反T卖出] Y{:.2f} × {}股'.format(price, TRADE_LOT_SIZE))
             order_shares(STOCK_QMT, -TRADE_LOT_SIZE, 'COMPETE', price, self.ctx, ACCOUNT)
             st['fstate'] = STATE_SOLD if self._wait_for_fill(
                 snap, -TRADE_LOT_SIZE, '反T卖出', price, -TRADE_LOT_SIZE, STATE_SOLD) else STATE_SOLD
@@ -346,7 +353,7 @@ class StrategyRunner:
     def _handle_sold(self, price):
         st = self.st; sp = st['sell_fill_price']; bt = st['buyback_target']
         if price >= sp * (1.0 + cfg.EMERGENCY_BUYBACK_PCT):
-            _log('[紧急买回] Y{:.2f}→Y{:.2f}(+{:.2f}%)'.format(sp, price, (price - sp) / sp * 100))
+            _log('[紧急买回触发] Y{:.2f}→Y{:.2f}(+{:.2f}%)'.format(sp, price, (price - sp) / sp * 100))
             self._do_buyback(price, '紧急'); return
         tightened_bt = bt
         if st['sell_elapsed_bars'] > 30 and price > sp * 0.995:
@@ -365,7 +372,7 @@ class StrategyRunner:
         dip = st['dip_price'] or price; bounce = (price - dip) / dip if dip > 0 else 0
         if bounce >= cfg.BOUNCE_PCT:
             sp = st['sell_fill_price']; gross = (sp - price) * TRADE_LOT_SIZE
-            _log('[反T买回] 低Y{:.2f} 回{:.2f}% → Y{:.2f} 毛利~Y{:,.0f}'.format(dip, bounce * 100, price, gross))
+            _log('[反T买回触发] 低Y{:.2f} 回{:.2f}% → Y{:.2f} 毛利~Y{:,.0f}'.format(dip, bounce * 100, price, gross))
             self._do_buyback(price, '正常')
             self.total_t_days += 1; self.total_pnl += gross
 
@@ -376,12 +383,15 @@ class StrategyRunner:
         if avail < need:
             _log('[买回失败-{}] 资金不足 (需Y{:,.0f}>Y{:,.0f})'.format(reason, need, avail)); return
         snap = self._snapshot_account()
+        _log('[下单-反T买回({})] Y{:.2f} × {}股'.format(reason, price, TRADE_LOT_SIZE))
         order_shares(STOCK_QMT, TRADE_LOT_SIZE, 'COMPETE', price, self.ctx, ACCOUNT)
-        self._wait_for_fill(snap, TRADE_LOT_SIZE, f'反T买回({reason})', price, TRADE_LOT_SIZE, STATE_DONE)
+        self._wait_for_fill(snap, TRADE_LOT_SIZE, '反T买回({})'.format(reason), price, TRADE_LOT_SIZE, STATE_DONE)
         self.st['fstate'] = STATE_DONE; self._maybe_resume_trading()
 
     def _force_buyback(self):
+        _log('[强制买回触发]')
         snap = self._snapshot_account()
+        _log('[下单-反T强制买回] 市价 × {}股'.format(TRADE_LOT_SIZE))
         order_shares(STOCK_QMT, TRADE_LOT_SIZE, 'COMPETE', 0, self.ctx, ACCOUNT)
         self._wait_for_fill(snap, TRADE_LOT_SIZE, '反T强制买回', 0, TRADE_LOT_SIZE, STATE_FORCED)
         self.st['fstate'] = STATE_FORCED
@@ -391,12 +401,13 @@ class StrategyRunner:
         if price < st.get('bt_dip_price', price): st['bt_dip_price'] = price
         dip = st.get('bt_dip_price', price) or price; bounce = (price - dip) / dip if dip > 0 else 0
         if bounce >= cfg.BOUNCE_PCT:
-            _log('[正T买入] 低Y{:.2f} 回{:.2f}% → Y{:.2f}'.format(dip, bounce * 100, price))
+            _log('[正T买入触发] 低Y{:.2f} 回{:.2f}% → Y{:.2f}'.format(dip, bounce * 100, price))
             need = price * TRADE_LOT_SIZE * 1.001
             account = get_trade_detail_data(ACCOUNT, 'STOCK', 'ACCOUNT')
             avail = account[0].m_dAvailable if account else 0.0
             if avail < need: _log('[正T买入失败] 资金不足'); st['fstate'] = STATE_IDLE; return
             snap = self._snapshot_account()
+            _log('[下单-正T买入] Y{:.2f} × {}股'.format(price, TRADE_LOT_SIZE))
             order_shares(STOCK_QMT, TRADE_LOT_SIZE, 'COMPETE', price, self.ctx, ACCOUNT)
             self._wait_for_fill(snap, TRADE_LOT_SIZE, '正T买入', price, TRADE_LOT_SIZE, STATE_BT_BOUGHT)
             st['fstate'] = STATE_BT_BOUGHT; st['bt_buy_fill_price'] = price
@@ -405,7 +416,7 @@ class StrategyRunner:
     def _handle_bt_bought(self, price):
         st = self.st; target = st.get('bt_sellback_target', 999999); bp = st.get('bt_buy_fill_price', 0)
         if bp > 0 and price <= bp * (1.0 - cfg.STOP_LOSS_PCT):
-            _log('[正T止损] 买Y{:.2f} 现Y{:.2f}({:.1f}%)'.format(bp, price, (price - bp) / bp * 100))
+            _log('[正T止损触发] 买Y{:.2f} 现Y{:.2f}({:.1f}%)'.format(bp, price, (price - bp) / bp * 100))
             self._do_bt_force_sell(); return
         if price >= target:
             st['fstate'] = STATE_BT_SPIKING; st['bt_sell_peak_price'] = price
@@ -417,16 +428,19 @@ class StrategyRunner:
         peak = st.get('bt_sell_peak_price', price); pullback = (peak - price) / peak if peak > 0 else 0
         if pullback >= cfg.PULLBACK_PCT:
             bp = st['bt_buy_fill_price']; gross = (price - bp) * TRADE_LOT_SIZE
-            _log('[正T卖出] 峰值Y{:.2f} 回落{:.2f}% → Y{:.2f} 毛利~Y{:,.0f}'.format(
+            _log('[正T卖出触发] 峰值Y{:.2f} 回落{:.2f}% → Y{:.2f} 毛利~Y{:,.0f}'.format(
                 peak, pullback * 100, price, gross))
             snap = self._snapshot_account()
+            _log('[下单-正T卖出] Y{:.2f} × {}股'.format(price, TRADE_LOT_SIZE))
             order_shares(STOCK_QMT, -TRADE_LOT_SIZE, 'COMPETE', price, self.ctx, ACCOUNT)
             self._wait_for_fill(snap, -TRADE_LOT_SIZE, '正T卖出', price, -TRADE_LOT_SIZE, STATE_DONE)
             st['fstate'] = STATE_DONE; self.total_t_days += 1; self.total_pnl += gross
             self._maybe_resume_trading()
 
     def _do_bt_force_sell(self):
+        _log('[正T强制卖出触发]')
         snap = self._snapshot_account()
+        _log('[下单-正T强制卖出] 市价 × {}股'.format(TRADE_LOT_SIZE))
         order_shares(STOCK_QMT, -TRADE_LOT_SIZE, 'COMPETE', 0, self.ctx, ACCOUNT)
         self._wait_for_fill(snap, -TRADE_LOT_SIZE, '正T强制卖出', 0, -TRADE_LOT_SIZE, STATE_FORCED)
         self.st['fstate'] = STATE_FORCED
@@ -485,7 +499,7 @@ class StrategyRunner:
         else:
             if not self.conn.connect_data(): _log('[错误] 行情连接失败'); return
         self._init_state()
-        _log('[启动] {} v20 {} {}'.format(STOCK_NAME, '实盘' if not self.dry_run else '信号', STOCK_QMT))
+        _log('[启动] {} v21 {} {}'.format(STOCK_NAME, '实盘' if not self.dry_run else '信号', STOCK_QMT))
 
         try:
             self._daily_init()
@@ -546,6 +560,17 @@ class StrategyRunner:
                 if STOCK_QMT not in tick: _time.sleep(1); continue
                 price = tick[STOCK_QMT].get('lastPrice', 0)
                 if price <= 0: _time.sleep(1); continue
+                # ★ v21: 开盘首个有效tick打印行情确认
+                if not self.st.get('_market_open_logged', True):
+                    self.st['_market_open_logged'] = True
+                    sig_chk = self.st.get('daily_signal', {})
+                    st_trig = sig_chk.get('sell_trigger', 0)
+                    bt_trig = sig_chk.get('buy_trigger', 0)
+                    bits = ['开盘', 'Y{:.2f}'.format(price)]
+                    if st_trig > 0: bits.append('反T触发Y{:.2f}(需涨{:.2f}%)'.format(st_trig, (st_trig - price) / price * 100))
+                    if bt_trig > 0: bits.append('正T触发Y{:.2f}(需跌{:.2f}%)'.format(bt_trig, (price - bt_trig) / price * 100))
+                    if self.st.get('locked'): bits.append('锁仓')
+                    _log('[{}]'.format('] ['.join(bits)))
                 signal = self.st.get('daily_signal')
                 do_short = self.st.get('do_short', False); do_long = self.st.get('do_long', False)
                 if signal is None or (not do_short and not do_long):
@@ -579,7 +604,7 @@ class StrategyRunner:
         finally:
             self.conn.disconnect()
             if self.st.get('fstate', '') in (STATE_SOLD, STATE_DIPPING): _log('[警告] 未买回头寸!')
-            _log('[停止] {} v20 累计{}天 毛利~Y{:,.0f}'.format(STOCK_NAME, self.total_t_days, self.total_pnl))
+            _log('[停止] {} v21 累计{}天 毛利~Y{:,.0f}'.format(STOCK_NAME, self.total_t_days, self.total_pnl))
             logger = get_logger()
             if logger is not None: logger.close()
 
@@ -629,7 +654,7 @@ class StrategyRunner:
 
 
 def run_backtest_mode(start='20250801', end='20260806'):
-    print('=' * 55 + '\n  回测 QMT 迷你反T v20\n  区间: {} ~ {}\n'.format(start, end) + '=' * 55)
+    print('=' * 55 + '\n  回测 QMT 迷你反T v21\n  区间: {} ~ {}\n'.format(start, end) + '=' * 55)
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
     from backtest.backtest_v10_xtdata import XTDataManager, BacktestEngine
     data_mgr = XTDataManager('601869.SH', data_dir='C:/QMT/datadir')
@@ -639,12 +664,12 @@ def run_backtest_mode(start='20250801', end='20260806'):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='MiniQMT 迷你反T v20 — 紧凑日志')
+    parser = argparse.ArgumentParser(description='MiniQMT 迷你反T v21 — 成交日志优化')
     parser.add_argument('--mode', '-m', default='signal', choices=['signal', 'live', 'backtest'])
     parser.add_argument('--start', default='20250801'); parser.add_argument('--end', default='20260806')
     args = parser.parse_args()
     if args.mode == 'backtest': run_backtest_mode(args.start, args.end); return
-    logger = FileLogger(STOCK_CODE, version='v20'); set_logger(logger)
+    logger = FileLogger(STOCK_CODE, version='v21'); set_logger(logger)
     dry_run = (args.mode == 'signal')
     if args.mode == 'live':
         print('\n!!! 实盘启动确认 !!!\n标的: {}({}) 账号: {}'.format(STOCK_NAME, STOCK_CODE, ACCOUNT))

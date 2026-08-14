@@ -15,7 +15,7 @@ STOCK_NAME     = '长飞光纤'
 STOCK_QMT      = f'{STOCK_CODE}.SH'
 STRATEGY_NAME  = 'mini反T_v15'
 
-TRADE_LOT_SIZE = 100
+TRADE_LOT_SIZE = 200
 MIN_LOT        = 100
 
 # ============================================================================
@@ -29,6 +29,10 @@ ATR_PERIOD = 14
 SELL_TRIGGER_BASE_BEAR      = 0.40
 SELL_TRIGGER_BASE_SIDEWAYS  = 0.55
 SELL_TRIGGER_BASE_WEAK_BULL = 0.65
+
+# 反T触发价缩放系数: 作用于"涨幅"部分 (curr_atr_pct × sell_mult)。
+# <1.0 下调触发价, 使阈值更易触发; >1.0 上调。0.50 = 涨幅整体下调 50%。
+SELL_TRIGGER_SCALE = 0.50
 
 DYNAMIC_MULT_MIN = 0.20
 DYNAMIC_MULT_MAX = 1.50
@@ -72,8 +76,8 @@ LOCK_COOLDOWN_SEC = 120
 # 仓位管理
 # ============================================================================
 MAX_POSITION_LOTS = 5
-MIN_POSITION_LOTS = 1
-MAX_DAILY_TRADES  = 3
+MIN_POSITION_LOTS = 0
+MAX_DAILY_TRADES  = 5
 
 # ============================================================================
 # MiniQMT 连接

@@ -6,7 +6,8 @@ calc_dynamic_sell_mult() : 多因子动态乘数
 compute_signal()         : 每日信号综合计算
 """
 from . import config as cfg
-from .indicators import sma, atr, rsi, up_streak, daily_range_ma
+from .indicators import sma, up_streak, daily_range_ma
+from .indicators_np import atr, rsi
 
 
 def calc_dynamic_sell_mult(trend, atr_pct, atr_ratio, vol_ratio, rsi_val, up_streak_val):
@@ -38,7 +39,7 @@ def calc_dynamic_sell_mult(trend, atr_pct, atr_ratio, vol_ratio, rsi_val, up_str
         else:                       d = +0.05
     else:
         d = 0.00
-    deviations['趋势'] = d
+    deviations['trend'] = d
     total_deviation += d
 
     # 因子2: 波动率 (ATR绝对值 + 相对值)
@@ -60,7 +61,7 @@ def calc_dynamic_sell_mult(trend, atr_pct, atr_ratio, vol_ratio, rsi_val, up_str
 
     vol_d = atr_d * 0.55 + atrd_d * 0.45
     vol_d = max(-0.35, min(0.30, vol_d))
-    deviations['波动率'] = round(vol_d, 2)
+    deviations['volatility'] = round(vol_d, 2)
     total_deviation += vol_d
 
     # 因子3: 成交量
@@ -71,7 +72,7 @@ def calc_dynamic_sell_mult(trend, atr_pct, atr_ratio, vol_ratio, rsi_val, up_str
     elif vol_ratio > 0.60:       d = +0.12
     elif vol_ratio > 0.40:       d = +0.20
     else:                        d = +0.25
-    deviations['成交量'] = d
+    deviations['volume'] = d
     total_deviation += d
 
     # 因子4: RSI
@@ -92,12 +93,14 @@ def calc_dynamic_sell_mult(trend, atr_pct, atr_ratio, vol_ratio, rsi_val, up_str
     return round(final, 2), deviations, base
 
 
-def compute_signal(opens, highs, lows, closes, volumes):
+def compute_signal(opens, highs, lows, closes, volumes, yesterday_close=None):
     """
-    计算当日反T信号。
+    计算当日信号。
 
     Args:
         opens, highs, lows, closes, volumes: list[float], 日线数据 (最后一条是今日/昨日)
+        yesterday_close: float | None, 昨收(真实价, 来自实时tick lastClose)。
+            用于触发价基准, 与今开同源; 缺省时回退到日线 closes[-1](前复权)。
 
     Returns:
         dict | None: 信号字典, 数据不足时返回 None
@@ -145,7 +148,12 @@ def compute_signal(opens, highs, lows, closes, volumes):
     max_trigger_by_range = co * (1.0 + daily_range_ma10 * cfg.DAILY_RANGE_CAP_MULT)
     range_capped = False
 
-    sell_trigger_raw = co + curr_atr * sell_mult
+    # ★ 触发基准价: 取今开与昨收的较高者。卖出触发价必须站上"今开/昨收的高水位",
+    #   保证触发价始终高于开盘价(不会出现"需涨为负"的错误)。
+    #   昨收优先用实时tick的 lastClose(与今开同源, 真实价), 缺失时回退到日线 closes[-1]。
+    # ref_close = yesterday_close if (yesterday_close and yesterday_close > 0) else cc
+    ref = co
+    sell_trigger_raw = ref * (1.0 + curr_atr_pct * sell_mult * cfg.SELL_TRIGGER_SCALE)
 
     if cfg.DAILY_RANGE_CAP_ENABLED and sell_trigger_raw > max_trigger_by_range:
         sell_trigger = round(max_trigger_by_range, 2)
@@ -158,21 +166,32 @@ def compute_signal(opens, highs, lows, closes, volumes):
 
     if trend == 'strong_bull':
         do_short = False
-        reason = '强牛禁反T(连涨>=5+RSI>70)'
+        reason = 'strong bull blocks REV-T (streak>=5 + RSI>70)'
     elif curr_vr < cfg.VOLUME_FILTER_RATIO:
         do_short = False
-        reason = f'缩量(量比{curr_vr:.2f})'
+        reason = f'low volume (vol_ratio {curr_vr:.2f})'
     elif curr_rsi > cfg.RSI_OVERBOUGHT:
         do_short = False
-        reason = f'RSI超买({curr_rsi:.0f})'
+        reason = f'RSI overbought ({curr_rsi:.0f})'
 
     return {
-        'do_short': do_short, 'blocked_reason': reason, 'trend': trend,
-        'sell_trigger': sell_trigger, 'sell_trigger_raw': round(sell_trigger_raw, 2),
-        'range_capped': range_capped, 'open_price': co, 'close_yday': cc,
-        'atr': curr_atr, 'atr_pct': curr_atr_pct, 'rsi': curr_rsi,
-        'vol_ratio': curr_vr, 'sell_mult': sell_mult, 'sell_mult_base': base_used,
-        'factor_details': factor_details, 'atr_ratio': atr_ratio,
-        'up_streak': up_streak_val, 'buyback_mult': cfg.BUYBACK_TRIGGER_MULT,
+        'do_short': do_short, 
+        'blocked_reason': reason, 
+        'trend': trend,
+        'sell_trigger': sell_trigger, 
+        'sell_trigger_raw': round(sell_trigger_raw, 2),
+        'range_capped': range_capped, 
+        'open_price': co, 
+        'close_yday': cc,
+        'atr': curr_atr, 
+        'atr_pct': curr_atr_pct, 
+        'rsi': curr_rsi,
+        'vol_ratio': curr_vr, 
+        'sell_mult': sell_mult, 
+        'sell_mult_base': base_used,
+        'factor_details': factor_details, 
+        'atr_ratio': atr_ratio,
+        'up_streak': up_streak_val, 
+        'buyback_mult': cfg.BUYBACK_TRIGGER_MULT,
         'bounce_pct': cfg.BOUNCE_PCT,
     }

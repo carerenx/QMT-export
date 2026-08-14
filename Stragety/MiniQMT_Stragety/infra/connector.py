@@ -30,6 +30,24 @@ def set_global_conn(conn: 'MiniQMTConnector', dry_run: bool = False):
     _global_dry_run = dry_run
 
 
+def _pick(obj, *names, default=None):
+    """按顺序取第一个存在的字段值。
+
+    兼容 xttrader 委托/成交对象的两种字段命名:
+      - 官方 XtOrder/XtTrade: order_status / price / traded_volume / order_volume ...
+      - 部分版本推送原生 C++ 对象: m_nOrderStatus / m_dPrice / m_nTradedVolume ...
+    """
+    for n in names:
+        if hasattr(obj, n):
+            try:
+                v = getattr(obj, n)
+            except Exception:
+                continue
+            if v is not None:
+                return v
+    return default
+
+
 # ============================================================================
 # MiniQMTConnector
 # ============================================================================
@@ -48,6 +66,7 @@ class MiniQMTConnector:
         self._daily_data_cache = None
 
         self.last_order_status = None
+        self.last_order_id = None
         self.last_trade = None
         self.order_pending = False
 
@@ -96,15 +115,24 @@ class MiniQMTConnector:
                     xtconstant.ORDER_SUCCEEDED: '全成',
                     xtconstant.ORDER_JUNK: '废单',
                 }
-                status = getattr(order, 'm_nOrderStatus', -1)
+                # ★ xttrader 委托对象字段 (XtOrder): order_status/price/traded_volume/order_volume
+                #   _pick 兼容原生 m_ 前缀字段 (m_nOrderStatus/m_dPrice/m_nTradedVolume/m_nOrderVolume)
+                status = _pick(order, 'order_status', 'm_nOrderStatus', default=-1)
                 if status in sm:
-                    # 股票 m_nDirection 永远是 48 (OFFSET_FLAG_OPEN),
-                    # 买卖方向由 m_nOffsetFlag 判断: 48=开(买), 49=平(卖)
-                    offset_flag = getattr(order, 'm_nOffsetFlag', 0)
-                    d = '买' if offset_flag == xtconstant.OFFSET_FLAG_OPEN else '卖'
-                    p = getattr(order, 'm_dLimitPrice', 0)
-                    vt = getattr(order, 'm_nVolumeTraded', 0)
-                    vo = getattr(order, 'm_nVolumeTotalOriginal', 0)
+                    # 买卖方向: 优先 order_type(23买/24卖), 回退 offset_flag(48开/49平)
+                    otype = _pick(order, 'order_type', 'm_nOrderType', default=0)
+                    offset_flag = _pick(order, 'offset_flag', 'm_nOffsetFlag', default=0)
+                    if otype == xtconstant.STOCK_BUY:
+                        d = '买'
+                    elif otype == xtconstant.STOCK_SELL:
+                        d = '卖'
+                    elif offset_flag == xtconstant.OFFSET_FLAG_CLOSE:
+                        d = '卖'
+                    else:
+                        d = '买'
+                    p = _pick(order, 'price', 'm_dPrice', 'm_dLimitPrice', default=0.0)
+                    vt = _pick(order, 'traded_volume', 'm_nTradedVolume', 'm_nVolumeTraded', default=0)
+                    vo = _pick(order, 'order_volume', 'm_nOrderVolume', 'm_nVolumeTotalOriginal', default=0)
                     _log(f'[委托] {d} Y{p:.2f} {vt}/{vo}股 -> {sm[status]}')
                     # 终态: 已撤/废单/全成 → 清除pending
                     if status in (xtconstant.ORDER_CANCELED, xtconstant.ORDER_JUNK,
@@ -120,15 +148,26 @@ class MiniQMTConnector:
                                 except Exception:
                                     pass
                 self.parent.last_order_status = status
+                oid = _pick(order, 'order_id', 'm_nOrderID', default=None)
+                if oid is not None:
+                    self.parent.last_order_id = oid
 
             def on_stock_trade(self, trade):
                 from xtquant import xtconstant
-                # 股票成交: 方向由 m_nOffsetFlag 判断
-                offset_flag = getattr(trade, 'm_nOffsetFlag', 0)
-                d = '买' if offset_flag == xtconstant.OFFSET_FLAG_OPEN else '卖'
-                p = getattr(trade, 'm_dPrice', 0)
-                v = getattr(trade, 'm_nVolume', 0)
-                code = getattr(trade, 'm_strInstrumentID', '')
+                # 股票成交: 方向优先 order_type(23买/24卖), 回退 offset_flag(48开/49平)
+                otype = _pick(trade, 'order_type', 'm_nOrderType', default=0)
+                offset_flag = _pick(trade, 'offset_flag', 'm_nOffsetFlag', default=0)
+                if otype == xtconstant.STOCK_BUY:
+                    d = '买'
+                elif otype == xtconstant.STOCK_SELL:
+                    d = '卖'
+                elif offset_flag == xtconstant.OFFSET_FLAG_CLOSE:
+                    d = '卖'
+                else:
+                    d = '买'
+                p = _pick(trade, 'traded_price', 'm_dTradedPrice', 'm_dPrice', default=0.0)
+                v = _pick(trade, 'traded_volume', 'm_nTradedVolume', 'm_nVolume', default=0)
+                code = _pick(trade, 'stock_code', 'm_strInstrumentID', default='')
                 _log(f'[成交] {d} {code} Y{p:.2f} x {v}股 = Y{p*v:,.0f}')
                 self.parent.last_trade = trade
                 self.parent.order_pending = False
@@ -281,12 +320,23 @@ class MiniQMTConnector:
             _log(f'[Intraday] fetch error: {e}')
             return None
 
+    def refresh_daily_cache(self):
+        """强制刷新日线数据缓存（跨日时调用）"""
+        self._daily_data_cache = None
+
     def get_history_data(self, length, period, field):
         """对应 QMT: ContextInfo.get_history_data(N, '1d', field)"""
         code = cfg.STOCK_QMT
         if self._daily_data_cache is None:
             end = datetime.now().strftime('%Y%m%d')
             start = (datetime.now() - timedelta(days=365 * 6)).strftime('%Y%m%d')
+            # ★ 先下载最新日线，确保本地数据包含最近交易日
+            try:
+                self.xtdata.download_history_data(
+                    code, period='1d', start_time='', end_time=''
+                )
+            except Exception:
+                pass
             data = self.xtdata.get_local_data(
                 field_list=['open', 'high', 'low', 'close', 'volume', 'amount'],
                 stock_list=[code],
@@ -376,6 +426,18 @@ class MiniQMTConnector:
             _log('[下单异常] {}'.format(e))
             self.order_pending = False
             return None
+
+    def cancel_order(self, order_id):
+        """撤单 (按 order_id)。超时未成交时调用, 避免委托挂单残留。"""
+        if not self._trade_connected or order_id is None:
+            return False
+        try:
+            self.trader.cancel_order_stock(self._account_obj, order_id)
+            _log(f'[撤单] order_id={order_id}')
+            return True
+        except Exception as e:
+            _log(f'[撤单异常] {e}')
+            return False
 
 
 # ============================================================================

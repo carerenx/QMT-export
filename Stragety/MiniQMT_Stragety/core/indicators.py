@@ -8,11 +8,16 @@ core/indicators.py — 技术指标计算
 
 
 def sma(values, period):
-    """简单移动平均"""
+    """简单移动平均 — 滑动窗口 O(n)"""
     n = len(values)
     result = [0.0] * n
-    for i in range(period - 1, n):
-        result[i] = sum(values[i - period + 1 : i + 1]) / period
+    if n == 0 or period <= 0 or period > n:
+        return result
+    window_sum = sum(values[:period])
+    result[period - 1] = window_sum / period
+    for i in range(period, n):
+        window_sum += values[i] - values[i - period]
+        result[i] = window_sum / period
     return result
 
 

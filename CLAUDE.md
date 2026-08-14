@@ -104,11 +104,15 @@ File encoding must be `# -*- coding: gbk -*-` for Chinese QMT client.
 
 
 
+
+
+
+
 <!-- cloude-code-toolbox:mcp-skills-awareness-begin -->
 
 ### MCP & Skills awareness (Cloude Code ToolBox)
 
-_Last synced: 2026-08-05T00:53:50.092Z._
+_Last synced: 2026-08-13T01:03:05.551Z._
 
 - **Full report:** `.claude/cloude-code-toolbox-mcp-skills-awareness.md` in this workspace (auto-overwritten on each scan). Use it as ground truth for configured servers and skill folders.
 - **MCP:** For **live tools** in Claude Code, enable the matching server via `/mcp`. Servers are configured in `~/.claude.json` (user) and `.mcp.json` (project).
@@ -133,6 +137,8 @@ _No active workspace servers in mcp.json._
 
 #### Project skills
 
+- **run-qmt-export** — `d:\02Project\QMT-export\.claude\skills\run-qmt-export` — Build, run, smoke-test, and drive the QMT-export quantitative trading backtest system. Use when asked to run a backtest, verify the engine works, validate a strategy, test data loading, or check that the backtest system 
+
 - **signal-validation** — `d:\02Project\QMT-export\.claude\skills\signal-validation` — Validate A-stock sell/top-detection signals against historical data. Run when asked to validate trading signals, backtest sell rules, check momentum indicators, evaluate escape-top signals, or verify technical indicators
 
 #### User skills
@@ -152,6 +158,8 @@ _No active workspace servers in mcp.json._
 - **QMT-expert** — `C:\Users\pp313\.claude\skills\QMT-expert` — >
 
 - **serenity-skill** — `C:\Users\pp313\.claude\skills\serenity-skill` — Turn an investment agent into a supply-chain bottleneck hunter. Use this skill for source-backed investment research, live market/theme scans, AI/semi/technology value-chain mapping, A-share/HK/US stock screening, thesis
+
+- **solution-verify** — `C:\Users\pp313\.claude\skills\solution-verify` — >
 
 - **tricore-expert** — `C:\Users\pp313\.claude\skills\tricore-expert` — >
 
