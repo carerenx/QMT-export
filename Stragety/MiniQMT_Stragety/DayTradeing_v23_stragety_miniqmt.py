@@ -368,7 +368,7 @@ class StrategyRunner:
         trend_cn = trend_labels.get(trend, trend)
 
         # 行1: 核心指标
-        _log('[SIGNAL] {} open Y{:.2f} ATR{:.1f}% RSI{:.0f} vol_ratio{:.2f} mult{:.2f} trig Y{:.2f}{} {}'.format(
+        _log('[SIGNAL] {} open Y{:.2f} | ATR{:.1f}% | RSI{:.0f} | vol_ratio{:.2f} | mult{:.2f} | trig Y{:.2f}{} {}'.format(
             trend_cn, open_p, atr_pct, rsi_v, vol_r, sell_mult, sell_trig,
             '(range-capped)' if range_capped else '',
             '⛔REV-T blocked:{}'.format(signal.get('blocked_reason', '')) if not do_short else ''))
@@ -659,7 +659,7 @@ class StrategyRunner:
         cool_ok = now_ts >= st.get('lock_cooldown_until', 0)
         if should_lock and not st.get('locked'):
             st['locked'] = True; st['lock_since'] = cfg.now_hms()
-            st['lock_reason'] = '+{:.1f}% M{:.2f}% D{:.2f}%'.format(
+            st['lock_reason'] = 'P+{:.1f}% M{:.2f}% D{:.2f}%'.format(
                 (pn / open_price - 1) * 100, (pn - p5) / p5 * 100, (dh - pn) / dh * 100 if dh > 0 else 0)
             _log('[LOCK] {}'.format(st['lock_reason']))
         elif not should_lock and st.get('locked') and cool_ok:
@@ -848,7 +848,7 @@ def run_backtest_mode(start='20250801', end='20260806'):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='MiniQMT 迷你反T v23 — 严格成交判定 + 下单前仓位检查')
+    parser = argparse.ArgumentParser(description='MiniQMT internal daily Trading v23 — 严格成交判定 + 下单前仓位检查')
     parser.add_argument('--mode', '-m', default='signal', choices=['signal', 'live', 'backtest'])
     parser.add_argument('--start', default='20250801'); parser.add_argument('--end', default='20260806')
     args = parser.parse_args()

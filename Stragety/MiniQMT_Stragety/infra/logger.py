@@ -43,7 +43,7 @@ class FileLogger:
     def _write_header(self):
         self._file.write(f'{"="*60}\n')
         self._file.write(f'  日志文件创建: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n')
-        self._file.write(f'  策略版本: {self.version} (MiniQMT, 模块化拆分)\n')
+        self._file.write(f'  策略版本: {self.version} (for MiniQMT Evn)\n')
         self._file.write(f'  标的: {self.stock_code}\n')
         self._file.write(f'{"="*60}\n')
         self._file.flush()
