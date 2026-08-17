@@ -1,6 +1,6 @@
 # Cloude Code ToolBox — MCP & Skills awareness
 
-_Generated: 2026-08-13T01:01:44.927Z_
+_Generated: 2026-08-17T10:24:06.747Z_
 
 ## How to use this report
 
@@ -25,13 +25,17 @@ _No active workspace servers in mcp.json._
 
 | Server id | Kind | Detail |
 |-----------|------|--------|
-| pptmasterdeck-mcp | http | https://pptmasterdeck.clauxel.com/mcp |
 | ppt-mcp | stdio | uvx ppt-mcp |
+| drawio | stdio | cmd /c npx -y drawio-mcp-server --editor |
+| pptmasterdeck-mcp | http | https://pptmasterdeck.clauxel.com/mcp |
 | pptogo-mcp | http | https://pptogo.com/api/mcp |
 
 ## Skills (local `SKILL.md` folders)
 
 ### Project-scoped
+
+- **git-commit** — `d:\02Project\QMT-export\.claude\skills\git-commit`
+  - Execute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions "/commit".
 
 - **run-qmt-export** — `d:\02Project\QMT-export\.claude\skills\run-qmt-export`
   - Build, run, smoke-test, and drive the QMT-export quantitative trading backtest system. Use when asked to run a backtest, verify the engine works, validate a strategy, test data loading, or check that the backtest system 
@@ -60,6 +64,9 @@ _No active workspace servers in mcp.json._
   - >
 
 - **QMT-expert** — `C:\Users\pp313\.claude\skills\QMT-expert`
+  - >
+
+- **rollout-check** — `C:\Users\pp313\.claude\skills\rollout-check`
   - >
 
 - **serenity-skill** — `C:\Users\pp313\.claude\skills\serenity-skill`

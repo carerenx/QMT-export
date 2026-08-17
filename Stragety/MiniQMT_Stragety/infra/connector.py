@@ -33,18 +33,26 @@ def set_global_conn(conn: 'MiniQMTConnector', dry_run: bool = False):
 def _pick(obj, *names, default=None):
     """按顺序取第一个存在的字段值。
 
-    兼容 xttrader 委托/成交对象的两种字段命名:
+    兼容 xttrader 委托/成交对象的多种结构:
       - 官方 XtOrder/XtTrade: order_status / price / traded_volume / order_volume ...
-      - 部分版本推送原生 C++ 对象: m_nOrderStatus / m_dPrice / m_nTradedVolume ...
+      - 原生 C++ 对象: m_nOrderStatus / m_dPrice / m_nTradedVolume ...
+      - dict / SON 对象: obj['字段'] 下标访问 (兜底)
     """
     for n in names:
-        if hasattr(obj, n):
-            try:
-                v = getattr(obj, n)
-            except Exception:
-                continue
-            if v is not None:
-                return v
+        # 1) 属性访问 (pybind11 C++ 对象 / Python 类)
+        try:
+            v = getattr(obj, n)
+        except Exception:
+            v = None
+        if v is not None:
+            return v
+        # 2) 下标访问 (dict / SON)
+        try:
+            v = obj[n]
+        except Exception:
+            continue
+        if v is not None:
+            return v
     return default
 
 
@@ -69,6 +77,9 @@ class MiniQMTConnector:
         self.last_order_id = None
         self.last_trade = None
         self.order_pending = False
+        # ★ 下单快照 (方向, 价格, 数量, 代码) — 推送对象价格/数量字段为 0 时用于回退
+        self.last_order_info = None
+        self._order_field_dumped = False
 
     # ── 连接 / 断开 ──
 
@@ -133,6 +144,24 @@ class MiniQMTConnector:
                     p = _pick(order, 'price', 'm_dPrice', 'm_dLimitPrice', default=0.0)
                     vt = _pick(order, 'traded_volume', 'm_nTradedVolume', 'm_nVolumeTraded', default=0)
                     vo = _pick(order, 'order_volume', 'm_nOrderVolume', 'm_nVolumeTotalOriginal', default=0)
+                    # ★ 一次性诊断: 推送对象价格/委托量字段为 0 时 dump 全部字段, 排查真实字段名/值
+                    if (p <= 0 and vo <= 0) and not self.parent._order_field_dumped:
+                        self.parent._order_field_dumped = True
+                        _log('[委托诊断] 推送对象字段值:')
+                        for attr in dir(order):
+                            if not attr.startswith('_'):
+                                try:
+                                    _log(f'  {attr} = {getattr(order, attr)}')
+                                except Exception:
+                                    pass
+                    # ★ 回退: 推送对象价格/委托量字段为 0 时, 用下单快照补齐真实价格/手数
+                    sub = self.parent.last_order_info
+                    if sub is not None:
+                        _, _sub_price, _sub_shares, _ = sub
+                        if p <= 0:
+                            p = _sub_price
+                        if vo <= 0:
+                            vo = _sub_shares
                     _log(f'[委托] {d} Y{p:.2f} {vt}/{vo}股 -> {sm[status]}')
                     # 终态: 已撤/废单/全成 → 清除pending
                     if status in (xtconstant.ORDER_CANCELED, xtconstant.ORDER_JUNK,
@@ -168,6 +197,18 @@ class MiniQMTConnector:
                 p = _pick(trade, 'traded_price', 'm_dTradedPrice', 'm_dPrice', default=0.0)
                 v = _pick(trade, 'traded_volume', 'm_nTradedVolume', 'm_nVolume', default=0)
                 code = _pick(trade, 'stock_code', 'm_strInstrumentID', default='')
+                # ★ 回退: 推送对象价格/数量/代码字段为空时, 用下单快照补齐
+                sub = self.parent.last_order_info
+                if sub is not None:
+                    _, _sub_price, _sub_shares, _sub_code = sub
+                    if p <= 0:
+                        p = _sub_price
+                    if v <= 0:
+                        v = _sub_shares
+                    if not code:
+                        code = _sub_code
+                if not code:
+                    code = cfg.STOCK_QMT
                 _log(f'[成交] {d} {code} Y{p:.2f} x {v}股 = Y{p*v:,.0f}')
                 self.parent.last_trade = trade
                 self.parent.order_pending = False
@@ -411,6 +452,9 @@ class MiniQMTConnector:
 
         order_price = price if price and price > 0 else 0
         price_type = xtconstant.FIX_PRICE
+
+        # ★ 记录下单快照, 供委托/成交推送回调在价格/数量字段为 0 时回退显示真实值
+        self.last_order_info = (dir_name, order_price, shares, stock_code)
 
         _log('  >>> 下单{}: Y{:.2f} x {}股 {}'.format(dir_name, order_price, shares, stock_code))
 

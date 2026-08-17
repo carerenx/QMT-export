@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 """
 ================================================================================
- MiniQMT — QMT day trading v23 + 阶梯加仓机制 + 严格成交判定
+ MiniQMT — QMT day trading v24 + 阶梯加仓机制 + 严格成交判定
 ================================================================================
+
+ [v24 改动] (vs v23)
+   ★ 心跳日志优化 — [HB] IDLE 行当价格已越过监控触发价时, 在 need 后打印
+     ! 提示已触发 (REV-T 涨超卖点 / FWD-T 跌破买点), 并修正 need 值正负号显示
 
  [v23 改动] (vs v22)
    ★ 严格成交判定 — _wait_for_fill 只在"满额成交"时判成功, 返回
@@ -22,9 +26,9 @@
    ★ 多腿仓位管理 — 追加的每手计入未平仓腿, 买回/卖出时一次性平掉全部腿
 
  [run mode]
- python "Stragety/MiniQMT_Stragety/DayTradeing_v23_stragety_miniqmt.py" --mode signal
- python "Stragety/MiniQMT_Stragety/DayTradeing_v23_stragety_miniqmt.py" --mode live
- python "Stragety/MiniQMT_Stragety/DayTradeing_v23_stragety_miniqmt.py" --mode backtest
+ python "Stragety/MiniQMT_Stragety/DayTradeing_v24_stragety_miniqmt.py" --mode signal
+ python "Stragety/MiniQMT_Stragety/DayTradeing_v24_stragety_miniqmt.py" --mode live
+ python "Stragety/MiniQMT_Stragety/DayTradeing_v24_stragety_miniqmt.py" --mode backtest
 
 ================================================================================
 """
@@ -59,12 +63,12 @@ FILL_TIMEOUT_SEC = 8.0   # 等待满额成交的超时秒数
 
 
 class StrategyRunner:
-    """MiniQMT v23 — 阶梯加仓 + 严格成交判定 + 下单前仓位检查"""
+    """MiniQMT v24 — 阶梯加仓 + 严格成交判定 + 下单前仓位检查"""
 
     def __init__(self, dry_run=False):
         logger = get_logger()
         if logger is None:
-            logger = FileLogger(STOCK_CODE, version='v23')
+            logger = FileLogger(STOCK_CODE, version='v24')
             set_logger(logger)
         self.conn = MiniQMTConnector()
         set_global_conn(self.conn, dry_run)
@@ -679,7 +683,7 @@ class StrategyRunner:
         else:
             if not self.conn.connect_data(): _log('[ERROR] market data connect failed'); return
         self._init_state()
-        _log('[START] {} v23 {} {}'.format(STOCK_NAME, 'LIVE' if not self.dry_run else 'SIGNAL', STOCK_QMT))
+        _log('[START] {} v24 {} {}'.format(STOCK_NAME, 'LIVE' if not self.dry_run else 'SIGNAL', STOCK_QMT))
 
         try:
             self._daily_init()
@@ -784,7 +788,7 @@ class StrategyRunner:
         finally:
             self.conn.disconnect()
             if self.st.get('fstate', '') in (STATE_SOLD, STATE_DIPPING): _log('[WARN] position not bought back!')
-            _log('[STOP] {} v23 cum {} days gross~Y{:,.0f}'.format(STOCK_NAME, self.total_t_days, self.total_pnl))
+            _log('[STOP] {} v24 cum {} days gross~Y{:,.0f}'.format(STOCK_NAME, self.total_t_days, self.total_pnl))
             logger = get_logger()
             if logger is not None: logger.close()
 
@@ -805,11 +809,15 @@ class StrategyRunner:
             parts = []
             if self.st.get('do_short'):
                 st_trig = sig.get('sell_trigger', 0)
-                parts.append('REV-T: need +{:.2f} to Y{:.2f}'.format(st_trig - price, st_trig))
+                # ★ v24: 价格已涨超卖点(触发价)时, need 后加 ! 提示已触发
+                over = '!' if price >= st_trig else ''
+                parts.append('REV-T: need{} {:+.2f} to Y{:.2f}'.format(over, st_trig - price, st_trig))
             else: parts.append('REV-T: off')
             if self.st.get('do_long'):
                 bt_dyn = sig.get('buy_trigger', 0)
-                parts.append('FWD-T: need -{:.2f} to Y{:.2f}'.format(price - bt_dyn, bt_dyn))
+                # ★ v24: 价格已跌破买点(触发价)时, need 后加 ! 提示已触发
+                over = '!' if price <= bt_dyn else ''
+                parts.append('FWD-T: need{} {:+.2f} to Y{:.2f}'.format(over, bt_dyn - price, bt_dyn))
             else: parts.append('FWD-T: off')
             if self.st.get('locked'): parts.append('LOCKED')
             _log('[HB] {} Y{:.2f} {}'.format(fs, price, ' | '.join(parts)))
@@ -838,7 +846,7 @@ class StrategyRunner:
 
 
 def run_backtest_mode(start='20250801', end='20260806'):
-    print('=' * 55 + '\n  Backtest QMT mini REV-T v23\n  Range: {} ~ {}\n'.format(start, end) + '=' * 55)
+    print('=' * 55 + '\n  Backtest QMT mini REV-T v24\n  Range: {} ~ {}\n'.format(start, end) + '=' * 55)
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
     from backtest.backtest_v10_xtdata import XTDataManager, BacktestEngine
     data_mgr = XTDataManager('601869.SH', data_dir='C:/QMT/datadir')
@@ -848,12 +856,12 @@ def run_backtest_mode(start='20250801', end='20260806'):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='MiniQMT internal daily Trading v23 — 严格成交判定 + 下单前仓位检查')
+    parser = argparse.ArgumentParser(description='MiniQMT internal daily Trading v24 — 严格成交判定 + 下单前仓位检查')
     parser.add_argument('--mode', '-m', default='signal', choices=['signal', 'live', 'backtest'])
     parser.add_argument('--start', default='20250801'); parser.add_argument('--end', default='20260806')
     args = parser.parse_args()
     if args.mode == 'backtest': run_backtest_mode(args.start, args.end); return
-    logger = FileLogger(STOCK_CODE, version='v23'); set_logger(logger)
+    logger = FileLogger(STOCK_CODE, version='v24'); set_logger(logger)
     dry_run = (args.mode == 'signal')
     if args.mode == 'live':
         print('\n!!! LIVE TRADING CONFIRMATION !!!\nTarget: {}({}) Account: {}'.format(STOCK_NAME, STOCK_CODE, ACCOUNT))
