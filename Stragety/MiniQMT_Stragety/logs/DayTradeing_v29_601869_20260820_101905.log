@@ -1,0 +1,14 @@
+============================================================
+  日志文件创建: 2026-08-20 10:19:05
+  策略版本: v29 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[10:19:07] [连接] MiniQMT 行情服务已连接
+[10:19:07] [START] 长飞光纤 v29 SIGNAL 601869.SH
+[10:19:08] [DATA-DBG] hist_open[-3:]= [270.81, 267.0, 270.0] | tick_open=349.66 | lastClose=345.24
+[10:19:08] [SIGNAL] BEAR | Open Y349.66 | ATR 11.1% | RSI 35 | Vol_ratio 1.00 | Mult 0.20 | Trig Y354.34 
+[10:19:08] [FACTOR] trend -0.15 |  volatility -0.17 |  volume +0.00 |  RSI +0.10 | 
+[10:19:08] [ACCOUNT] Position:0 sh Y0(0%) | Cash:Y0 | T+0:0 lots(0 sh)
+[10:19:08] [ERROR] init failed: 'gbk' codec can't encode character '\u2705' in position 19: illegal multibyte sequence
+[10:19:08] [OPEN] [Y356.83] [REV-T trig Y354.34(need +-0.70%)] [FWD-T trig Y349.69(need -2.00%)]
+[10:19:08] [HB] IDLE Y356.83 REV-T: need! -2.49 to Y354.34 | FWD-T: need -7.14 to Y349.69

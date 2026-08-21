@@ -1,0 +1,221 @@
+============================================================
+  日志文件创建: 2026-08-20 09:21:51
+  策略版本: v28 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[09:21:54] [连接] MiniQMT 行情服务已连接
+[09:22:22] [交易] 已订阅账号 8890145315
+[09:22:22] [START] 长飞光纤 v28 LIVE 601869.SH
+[09:22:22] [SIGNAL] BEAR | Open Y270.00 | ATR 11.1% | RSI 35 | Vol_ratio 1.00 | Mult 0.20 | Trig Y273.61 
+[09:22:22] [FACTOR] trend -0.15 |  volatility -0.17 |  volume +0.00 |  RSI +0.10 | 
+[09:22:22] [ACCOUNT] Position:300 sh Y103,551(100%) | Cash:Y107 | T+0:3 lots(300 sh)
+[09:22:22] [REV-T] ✅ 3 lots trig Y273.61 buyback=sell×(1-ATR%×0.15) emerg +3% / emergTrigFalse
+[09:22:22] [FWD-T] ✅ 0 lots buy Y338.27 sell Y342.33(+1.2%) 1 lot≈Y34,517
+[09:22:22] [MOM] 2min±2×ATR10m(1.0%~6.0%) 反T买回-1.2% 正T卖回+1.5% 1手(100sh) 上限3次 紧急买回关
+[09:22:22] [WAIT 09:22:22] to open 7分38秒
+[09:27:22] [WAIT 09:27:22] to open 2分38秒
+[09:30:02] [SELL-TRIG RECALC] open Y270.00→Y349.66 trig Y273.61→Y354.34 (Mult 0.20 ATR 11.1%)
+[09:30:02] [OPEN] [Y349.66] [REV-T trig Y354.34(need +1.34%)] [FWD-T trig Y338.27(need -3.26%)]
+[09:30:02] [HB] IDLE Y349.66 REV-T: need +4.68 to Y354.34 | FWD-T: need -6.99 to Y342.67
+[09:31:02] [HB] IDLE Y348.80 REV-T: need +5.54 to Y354.34 | FWD-T: need -6.13 to Y342.67
+[09:31:54] [FWD-T dip #1/5] Y342.13 <= Y342.67(-0.16%)
+[09:32:00] [MOM dip] 2min -1.29% (2×ATR10m 1.29%) Y342.14 → 探底回升买入监测
+[09:32:00] [MOM-HB] 探底回升买入: dip Y342.14 Y342.14 trig±1.29%
+[09:32:03] [HB] BT_DIPPING Y342.14 dip Y342.13 bounce 0.00%
+[09:32:30] [MOM buy trig] low Y341.10 回升0.18% → Y341.70
+[09:32:30] [MOM long SKIP] 现金 不足: planned 100 actual 0
+[09:32:30] [FWD-T buy trig] low Y341.10 bounce 0.18% → Y341.70
+[09:32:30] [FWD-T buy SKIP] 现金 不足: planned 100 actual 0
+[09:32:30] [MOM dip] 2min -1.29% (2×ATR10m 1.29%) Y341.70 → 探底回升买入监测
+[09:32:30] [FWD-T dip #1/5] Y341.70 <= Y342.67(-0.28%)
+[09:32:36] [MOM buy trig] low Y341.70 回升0.39% → Y343.02
+[09:32:36] [MOM long SKIP] 现金 不足: planned 100 actual 0
+[09:32:36] [FWD-T buy trig] low Y341.70 bounce 0.39% → Y343.02
+[09:32:36] [FWD-T buy SKIP] 现金 不足: planned 100 actual 0
+[09:32:36] [MOM dip] 2min -1.28% (2×ATR10m 1.28%) Y343.02 → 探底回升买入监测
+[09:32:39] [MOM buy trig] low Y343.02 回升0.39% → Y344.36
+[09:32:39] [MOM long SKIP] 现金 不足: planned 100 actual 0
+[09:33:03] [HB] IDLE Y344.88 REV-T: need +9.46 to Y354.34 | FWD-T: need -2.21 to Y342.67
+[09:33:24] [FWD-T dip #1/5] Y342.40 <= Y342.67(-0.08%)
+[09:33:33] [FWD-T buy trig] low Y342.39 bounce 0.23% → Y343.19
+[09:33:33] [FWD-T buy SKIP] 现金 不足: planned 100 actual 0
+[09:34:03] [HB] IDLE Y344.88 REV-T: need +9.46 to Y354.34 | FWD-T: need -2.21 to Y342.67
+[09:35:03] [HB] IDLE Y345.81 REV-T: need +8.53 to Y354.34 | FWD-T: need -3.14 to Y342.67
+[09:36:03] [HB] IDLE Y346.00 REV-T: need +8.34 to Y354.34 | FWD-T: need -3.33 to Y342.67
+[09:36:57] [FWD-T dip #1/5] Y342.41 <= Y342.67(-0.08%)
+[09:37:03] [HB] BT_DIPPING Y342.39 dip Y342.39 bounce 0.00%
+[09:37:27] [MOM dip] 2min -1.58% (2×ATR10m 1.58%) Y341.22 → 探底回升买入监测
+[09:37:27] [MOM-HB] 探底回升买入: dip Y341.22 Y341.22 trig±1.58%
+[09:37:42] [MOM buy trig] low Y341.10 回升0.11% → Y341.49
+[09:37:42] [MOM long SKIP] 现金 不足: planned 100 actual 0
+[09:37:42] [FWD-T buy trig] low Y341.10 bounce 0.11% → Y341.49
+[09:37:42] [FWD-T buy SKIP] 现金 不足: planned 100 actual 0
+[09:37:43] [MOM dip] 2min -1.57% (2×ATR10m 1.57%) Y341.49 → 探底回升买入监测
+[09:37:43] [FWD-T dip #1/5] Y341.49 <= Y342.67(-0.34%)
+[09:37:52] [MOM buy trig] low Y341.49 回升0.18% → Y342.12
+[09:37:52] [MOM long SKIP] 现金 不足: planned 100 actual 0
+[09:37:52] [FWD-T buy trig] low Y341.49 bounce 0.18% → Y342.12
+[09:37:52] [FWD-T buy SKIP] 现金 不足: planned 100 actual 0
+[09:37:53] [MOM dip] 2min -1.57% (2×ATR10m 1.57%) Y342.12 → 探底回升买入监测
+[09:37:53] [FWD-T dip #1/5] Y342.12 <= Y342.67(-0.16%)
+[09:38:03] [MOM buy trig] low Y342.12 回升0.26% → Y343.00
+[09:38:03] [MOM long SKIP] 现金 不足: planned 100 actual 0
+[09:38:03] [FWD-T buy trig] low Y342.12 bounce 0.26% → Y343.00
+[09:38:03] [FWD-T buy SKIP] 现金 不足: planned 100 actual 0
+[09:38:04] [HB] IDLE Y343.00 REV-T: need +11.34 to Y354.34 | FWD-T: need -0.33 to Y342.67
+[09:39:04] [HB] IDLE Y345.04 REV-T: need +9.30 to Y354.34 | FWD-T: need -2.37 to Y342.67
+[09:40:04] [HB] IDLE Y345.11 REV-T: need +9.23 to Y354.34 | FWD-T: need -2.44 to Y342.67
+[09:41:04] [HB] IDLE Y347.49 REV-T: need +6.85 to Y354.34 | FWD-T: need -4.82 to Y342.67
+[09:41:48] [MOM spike] 2min +1.18% (2×ATR10m 1.18%) Y347.90 → 冲高回落卖出监测
+[09:41:48] [MOM-HB] 冲高回落卖出: peak Y347.90 Y347.90 trig±1.18%
+[09:42:04] [HB] IDLE Y347.83 REV-T: need +6.51 to Y354.34 | FWD-T: need -5.16 to Y342.67
+[09:42:07] [MOM sell trig] peak Y348.00 回落0.28% → Y347.02
+[09:42:07] [ORDER-MOM short] Y347.02 × 100 sh
+[09:42:07]   >>> 下单卖出: Y347.02 x 100股 601869.SH
+[09:42:07] [委托] 卖 Y347.02 0/100股 -> 已报
+[09:42:16] [FILL-MOM short(TIMEOUT)] Y347.02 × 100 sh | pos 300→300 | cash +0
+[09:42:16] [VERIFY] MOM short(TIMEOUT): status PENDING | exp -100 act +0 | cashΔ +0
+[09:42:16] [撤单] order_id=1098930527
+[09:42:16] [MOM short TIMEOUT] 未成交, 回 IDLE
+[09:42:16] [委托] 卖 Y347.02 0/100股 -> 已撤
+[09:43:04] [HB] IDLE Y346.82 REV-T: need +7.52 to Y354.34 | FWD-T: need -4.15 to Y342.67
+[09:44:05] [HB] IDLE Y348.51 REV-T: need +5.83 to Y354.34 | FWD-T: need -5.84 to Y342.67
+[09:44:39] [MOM spike] 2min +1.00% (2×ATR10m 1.00%) Y349.80 → 冲高回落卖出监测
+[09:44:39] [MOM-HB] 冲高回落卖出: peak Y349.80 Y349.80 trig±1.00%
+[09:45:05] [HB] IDLE Y351.06 REV-T: need +3.28 to Y354.34 | FWD-T: need -7.02 to Y344.04
+[09:45:39] [MOM-HB] 冲高回落卖出: peak Y352.55 Y352.55 trig±1.06%
+[09:46:03] [MOM sell trig] peak Y353.55 回落0.10% → Y353.18
+[09:46:03] [ORDER-MOM short] Y353.18 × 100 sh
+[09:46:03]   >>> 下单卖出: Y353.18 x 100股 601869.SH
+[09:46:03] [委托] 卖 Y353.18 0/100股 -> 已报
+[09:46:03] [成交] 卖 601869.SH Y353.18 x 100股 = Y35,318
+[09:46:03] [委托] 卖 Y353.18 100/100股 -> 全成
+[09:46:04] [FILL-MOM short] Y353.18 × 100 sh | pos 300→200 | cash +35,318
+[09:46:04] [MOM sold] Y353.18 x 100 sh | 买回触发 ≤Y348.94
+[09:46:05] [HB] IDLE Y353.18 REV-T: need +1.16 to Y354.34 | FWD-T: need -7.06 to Y346.12
+[09:46:40] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y353.48 trig±1.06%
+[09:47:05] [HB] IDLE Y353.00 REV-T: need +1.34 to Y354.34 | FWD-T: need -6.88 to Y346.12
+[09:47:40] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y351.18 trig±1.03%
+[09:48:06] [HB] IDLE Y352.72 REV-T: need +1.62 to Y354.34 | FWD-T: need -6.60 to Y346.12
+[09:48:40] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y353.87 trig±1.00%
+[09:49:06] [HB] IDLE Y352.62 REV-T: need +1.72 to Y354.34 | FWD-T: need -6.50 to Y346.12
+[09:49:40] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y352.00 trig±1.05%
+[09:50:06] [HB] IDLE Y353.00 REV-T: need +1.34 to Y354.34 | FWD-T: need -6.88 to Y346.12
+[09:50:40] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y353.18 trig±1.00%
+[09:51:06] [HB] IDLE Y353.61 REV-T: need +0.73 to Y354.34 | FWD-T: need -7.07 to Y346.54
+[09:51:09] [REV-T spike #1/5] Y354.69 >= Y354.34
+[09:51:30] [REV-T sell trig] peak Y355.24 pullback 0.12% → Y354.82
+[09:51:30] [ORDER-REV-T sell] Y354.82 × 100 sh
+[09:51:30]   >>> 下单卖出: Y354.82 x 100股 601869.SH
+[09:51:30] [委托] 卖 Y354.82 0/100股 -> 已报
+[09:51:30] [成交] 卖 601869.SH Y354.82 x 100股 = Y35,482
+[09:51:30] [委托] 卖 Y354.82 100/100股 -> 全成
+[09:51:30] [FILL-REV-T sell] Y354.82 × 100 sh | pos 200→100 | cash +35,482
+[09:51:41] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y354.99 trig±1.00%
+[09:52:07] [HB] SOLD Y354.90 sell Y354.82 +0.0% buyback Y348.89 ladder Y360.14
+[09:52:41] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y355.17 trig±1.00%
+[09:53:07] [HB] SOLD Y354.75 sell Y354.82 -0.0% buyback Y348.89 ladder Y360.14
+[09:53:41] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y353.10 trig±1.01%
+[09:54:07] [HB] SOLD Y352.88 sell Y354.82 -0.5% buyback Y348.89 ladder Y360.14
+[09:54:41] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y353.72 trig±1.00%
+[09:55:07] [HB] SOLD Y353.63 sell Y354.82 -0.3% buyback Y348.89 ladder Y360.14
+[09:55:42] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y353.31 trig±1.00%
+[09:56:07] [HB] SOLD Y352.80 sell Y354.82 -0.6% buyback Y348.89 ladder Y360.14
+[09:56:42] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y352.50 trig±1.00%
+[09:57:07] [HB] SOLD Y355.88 sell Y354.82 +0.3% buyback Y348.89 ladder Y360.14
+[09:57:42] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y355.80 trig±1.00%
+[09:58:07] [HB] SOLD Y355.88 sell Y354.82 +0.3% buyback Y348.89 ladder Y360.14
+[09:58:42] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y357.35 trig±1.00%
+[09:59:08] [HB] SOLD Y358.11 sell Y354.82 +0.9% buyback Y348.89 ladder Y360.14
+[09:59:42] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y357.73 trig±1.00%
+[10:00:08] [HB] SOLD Y358.58 sell Y354.82 +1.1% buyback Y348.89 ladder Y360.14
+[10:00:42] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y359.93 trig±1.00%
+[10:01:08] [HB] SOLD Y360.00 sell Y354.82 +1.5% buyback Y348.89 ladder Y360.14
+[10:01:15] [REV-T ladder sell #2/5] Y360.33 >= Y360.14(sell+1.50%)
+[10:01:42] [REV-T sell trig] peak Y362.45 pullback 0.12% → Y362.03
+[10:01:42] [ORDER-REV-T sell] Y362.03 × 100 sh
+[10:01:42]   >>> 下单卖出: Y362.03 x 100股 601869.SH
+[10:01:42] [委托] 卖 Y362.03 0/100股 -> 已报
+[10:01:42] [成交] 卖 601869.SH Y362.03 x 100股 = Y36,203
+[10:01:42] [委托] 卖 Y362.03 100/100股 -> 全成
+[10:01:42] [FILL-REV-T sell] Y362.03 × 100 sh | pos 100→0 | cash +36,203
+[10:01:43] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y362.03 trig±1.00%
+[10:02:08] [HB] SOLD Y360.57 sell Y362.03 -0.4% buyback Y355.98 ladder Y367.46
+[10:02:43] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y359.55 trig±1.00%
+[10:03:08] [HB] SOLD Y359.50 sell Y362.03 -0.7% buyback Y355.98 ladder Y367.46
+[10:03:43] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y361.30 trig±1.00%
+[10:04:08] [HB] SOLD Y360.99 sell Y362.03 -0.3% buyback Y355.98 ladder Y367.46
+[10:04:43] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y359.20 trig±1.01%
+[10:05:08] [HB] SOLD Y359.20 sell Y362.03 -0.8% buyback Y355.98 ladder Y367.46
+[10:05:44] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y359.38 trig±1.00%
+[10:06:09] [HB] SOLD Y358.66 sell Y362.03 -0.9% buyback Y355.98 ladder Y367.46
+[10:06:44] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y357.66 trig±1.01%
+[10:07:09] [HB] SOLD Y357.33 sell Y362.03 -1.3% buyback Y355.98 ladder Y367.46
+[10:07:44] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y356.99 trig±1.01%
+[10:08:09] [HB] SOLD Y359.20 sell Y362.03 -0.8% buyback Y355.98 ladder Y367.46
+[10:08:44] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y359.77 trig±1.01%
+[10:09:09] [HB] SOLD Y360.01 sell Y362.03 -0.6% buyback Y355.98 ladder Y367.46
+[10:09:44] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y359.83 trig±1.01%
+[10:10:09] [HB] SOLD Y359.60 sell Y362.03 -0.7% buyback Y355.98 ladder Y367.46
+[10:10:44] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y359.83 trig±1.01%
+[10:11:09] [HB] SOLD Y359.83 sell Y362.03 -0.6% buyback Y355.98 ladder Y367.46
+[10:11:44] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y359.00 trig±1.00%
+[10:12:09] [HB] SOLD Y357.88 sell Y362.03 -1.1% buyback Y355.98 ladder Y367.46
+[10:12:45] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y360.15 trig±1.00%
+[10:13:10] [HB] SOLD Y358.73 sell Y362.03 -0.9% buyback Y355.98 ladder Y367.46
+[10:13:45] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y359.35 trig±1.00%
+[10:14:10] [HB] SOLD Y358.44 sell Y362.03 -1.0% buyback Y355.98 ladder Y367.46
+[10:14:45] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y359.08 trig±1.00%
+[10:15:10] [HB] SOLD Y359.03 sell Y362.03 -0.8% buyback Y355.98 ladder Y367.46
+[10:15:45] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y358.69 trig±1.00%
+[10:16:10] [HB] SOLD Y358.45 sell Y362.03 -1.0% buyback Y355.98 ladder Y367.46
+[10:16:45] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y356.99 trig±1.00%
+[10:17:10] [HB] SOLD Y358.12 sell Y362.03 -1.1% buyback Y355.98 ladder Y367.46
+[10:17:45] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y358.11 trig±1.00%
+[10:18:10] [HB] SOLD Y357.93 sell Y362.03 -1.1% buyback Y355.98 ladder Y367.46
+[10:18:46] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y357.37 trig±1.00%
+[10:19:11] [HB] SOLD Y356.80 sell Y362.03 -1.4% buyback Y355.98 ladder Y367.46
+[10:19:30] [Buyback trig ] Y355.89(-1.70%)
+[10:19:46] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y354.78 trig±1.00%
+[10:20:00] [REV-T buyback trig] low Y354.78 bounce 0.20% → Y355.50 gross~Y585
+[10:20:00] [ORDER-REV-T buyback(NORMAL)] Y355.50 × 200 sh
+[10:20:00]   >>> 下单买入: Y355.50 x 200股 601869.SH
+[10:20:00] [委托] 买 Y355.50 0/200股 -> 已报
+[10:20:00] [成交] 买 601869.SH Y355.50 x 100股 = Y35,550
+[10:20:00] [委托] 买 Y355.50 100/200股 -> 部成
+[10:20:00] [成交] 买 601869.SH Y355.50 x 100股 = Y35,550
+[10:20:00] [委托] 买 Y355.50 200/200股 -> 全成
+[10:20:01] [FILL-REV-T buyback(NORMAL)] Y355.50 × 200 sh | pos 0→200 | cash -71,100
+[10:20:01] [SELL-TRIG UPD] Y354.34→Y362.03 (已消耗, 提升至实际卖出价)
+[10:20:01] [RESUME] → IDLE (REV-T 2/5, FWD-T 0/5)
+[10:20:11] [HB] IDLE Y355.37 REV-T: need +6.66 to Y362.03 | FWD-T: need -7.11 to Y348.26
+[10:20:46] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y354.50 trig±1.00%
+[10:21:11] [HB] IDLE Y354.99 REV-T: need +7.04 to Y362.03 | FWD-T: need -6.73 to Y348.26
+[10:21:46] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y354.00 trig±1.00%
+[10:22:11] [HB] IDLE Y354.57 REV-T: need +7.46 to Y362.03 | FWD-T: need -6.31 to Y348.26
+[10:22:47] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y355.87 trig±1.00%
+[10:24:09] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y355.97 trig±1.00%
+[10:24:09] [HB] IDLE Y355.97 REV-T: need +6.06 to Y362.03 | FWD-T: need -7.12 to Y348.85
+[10:24:14] [账号状态] 8890145315 STOCK: 等待登录
+[10:24:29] [账号状态] 8890145315 STOCK: 未知(2)
+[10:24:29] [账号状态] 8890145315 STOCK: 初始化中
+[10:24:29] [账号状态] 8890145315 STOCK: 正常
+[10:25:09] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y355.97 trig±1.00%
+[10:25:09] [HB] IDLE Y355.97 REV-T: need +6.06 to Y362.03 | FWD-T: need -7.12 to Y348.85
+[10:25:18] [LOCK] P+2.1% M 0.54% D 0.00%
+[10:25:20] [UNLOCK]
+[10:25:21] [LOCK] P+2.1% M 0.54% D 0.00%
+[10:26:00] [UNLOCK]
+[10:26:00] [LOCK] P+2.1% M 0.56% D 0.16%
+[10:26:03] [UNLOCK]
+[10:26:06] [LOCK] P+2.0% M 0.56% D 0.23%
+[10:26:09] [UNLOCK]
+[10:26:09] [MOM-HB] 已卖Y353.18 等跌1.2%买回 Y356.49 trig±1.00%
+[10:26:09] [HB] IDLE Y356.49 REV-T: need +5.54 to Y362.03 | FWD-T: need -7.13 to Y349.36
+[10:26:19] Interrupted by user
+[10:26:19] [WARN] MOM short leg not bought back!
+[10:26:19] [STOP] 长飞光纤 v28 cum 1 days gross~Y585
+
+============================================================
+  日志结束: 2026-08-20 10:26:19
+============================================================

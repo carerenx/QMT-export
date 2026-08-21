@@ -1,0 +1,461 @@
+============================================================
+  日志文件创建: 2026-08-18 09:12:02
+  策略版本: v26 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[09:12:04] [连接] MiniQMT 行情服务已连接
+[09:12:04] [交易] 已订阅账号 8890145315
+[09:12:04] [START] 长飞光纤 v26 LIVE 601869.SH
+[09:12:05] [SIGNAL] BEAR | Open Y376.54 | ATR 11.1% | RSI 35 | Vol_ratio 1.00 | Mult 0.20 | Trig Y380.74 
+[09:12:05] [FACTOR] trend -0.15 |  volatility -0.17 |  volume +0.00 |  RSI +0.10 | 
+[09:12:05] [ACCOUNT] Position:200 sh Y75,308(67%) | Cash:Y37,586 | T+0:1 lots(200 sh)
+[09:12:05] [REV-T] ✅ 1 lots trig Y380.74 buyback=sell×(1-ATR%×0.15) emerg +3%
+[09:12:05] [FWD-T] ✅ 0 lots buy Y369.01 sell Y373.44(+1.2%) 1 lot≈Y75,308
+[09:12:05] [MOM] 2min±2×ATR10m(1.0%~6.0%) 反T买回-1.2% 正T卖回+1.5% 1手(200sh) 上限3次
+[09:12:05] [WAIT 09:12:05] to open 17分55秒
+[09:17:05] [WAIT 09:17:05] to open 12分55秒
+[09:22:05] [WAIT 09:22:05] to open 7分55秒
+[09:25:05] [PRE-MKT 09:25:05] computing signal...
+[09:25:05] [SIGNAL] BEAR | Open Y376.54 | ATR 11.1% | RSI 35 | Vol_ratio 1.00 | Mult 0.20 | Trig Y380.74 
+[09:25:05] [FACTOR] trend -0.15 |  volatility -0.17 |  volume +0.00 |  RSI +0.10 | 
+[09:25:05] [ACCOUNT] Position:200 sh Y75,308(67%) | Cash:Y37,586 | T+0:1 lots(200 sh)
+[09:25:05] [REV-T] ✅ 1 lots trig Y380.74 buyback=sell×(1-ATR%×0.15) emerg +3%
+[09:25:05] [FWD-T] ✅ 0 lots buy Y369.01 sell Y373.44(+1.2%) 1 lot≈Y75,308
+[09:25:05] [MOM] 2min±2×ATR10m(1.0%~6.0%) 反T买回-1.2% 正T卖回+1.5% 1手(200sh) 上限3次
+[09:26:05] [PRE-MKT 09:26:05] to open 3分55秒
+[09:27:05] [PRE-MKT 09:27:05] to open 2分55秒
+[09:28:05] [PRE-MKT 09:28:05] to open 1分55秒
+[09:29:05] [PRE-MKT 09:29:05] to open 55秒
+[09:30:00] [OPEN] [Y376.54] [REV-T trig Y380.74(need +1.12%)] [FWD-T trig Y369.01(need -2.00%)]
+[09:30:05] [HB] IDLE Y376.54 REV-T: need +4.20 to Y380.74 | FWD-T: need -7.53 to Y369.01
+[09:31:05] [HB] IDLE Y371.73 REV-T: need +9.01 to Y380.74 | FWD-T: need -2.72 to Y369.01
+[09:32:05] [HB] IDLE Y377.55 REV-T: need +3.19 to Y380.74 | FWD-T: need -7.55 to Y370.00
+[09:33:05] [HB] IDLE Y375.77 REV-T: need +4.97 to Y380.74 | FWD-T: need -5.77 to Y370.00
+[09:34:05] [HB] IDLE Y376.96 REV-T: need +3.78 to Y380.74 | FWD-T: need -6.96 to Y370.00
+[09:34:59] [REV-T spike #1/5] Y380.86 >= Y380.74
+[09:35:05] [HB] SPIKING Y380.50 peak Y380.86 pullback 0.09%
+[09:35:56] [REV-T sell trig] peak Y385.68 pullback 0.41% → Y384.08
+[09:35:56] [ORDER-REV-T sell] Y384.08 × 200 sh
+[09:35:56]   >>> 下单卖出: Y384.08 x 200股 601869.SH
+[09:35:56] [委托] 卖 Y384.08 0/200股 -> 已报
+[09:35:56] [成交] 卖 601869.SH Y385.06 x 200股 = Y77,012
+[09:35:56] [委托] 卖 Y384.08 200/200股 -> 全成
+[09:35:57] [FILL-REV-T sell] Y384.08 × 200 sh | pos 200→0 | cash +77,012
+[09:36:06] [HB] SOLD Y384.08 sell Y384.08 +0.0% buyback Y377.66 ladder Y389.84
+[09:37:06] [HB] SOLD Y384.80 sell Y384.08 +0.2% buyback Y377.66 ladder Y389.84
+[09:38:06] [HB] SOLD Y386.23 sell Y384.08 +0.6% buyback Y377.66 ladder Y389.84
+[09:39:06] [HB] SOLD Y388.84 sell Y384.08 +1.2% buyback Y377.66 ladder Y389.84
+[09:40:06] [HB] SOLD Y389.56 sell Y384.08 +1.4% buyback Y377.66 ladder Y389.84
+[09:41:06] [HB] SOLD Y388.67 sell Y384.08 +1.2% buyback Y377.66 ladder Y389.84
+[09:42:06] [HB] SOLD Y390.00 sell Y384.08 +1.5% buyback Y377.66 ladder Y389.84
+[09:43:06] [HB] SOLD Y391.60 sell Y384.08 +2.0% buyback Y377.66 ladder Y389.84
+[09:44:07] [HB] SOLD Y390.96 sell Y384.08 +1.8% buyback Y377.66 ladder Y389.84
+[09:45:07] [HB] SOLD Y392.05 sell Y384.08 +2.1% buyback Y377.66 ladder Y389.84
+[09:46:07] [HB] SOLD Y389.56 sell Y384.08 +1.4% buyback Y377.66 ladder Y389.84
+[09:47:07] [HB] SOLD Y388.67 sell Y384.08 +1.2% buyback Y377.66 ladder Y389.84
+[09:48:07] [HB] SOLD Y389.32 sell Y384.08 +1.4% buyback Y377.66 ladder Y389.84
+[09:48:46] [MOM spike] 2min +1.28% (2×ATR10m 1.28%) Y394.76 → 冲高回落卖出监测
+[09:48:47] [MOM-HB] 冲高回落卖出: peak Y394.88 Y394.88 trig±1.28%
+[09:48:56] [EMERG buyback trig] Y384.08→Y395.80(+3.05%)
+[09:48:56] [ORDER-REV-T buyback(EMERG)] Y395.80 × 200 sh
+[09:48:56]   >>> 下单买入: Y395.80 x 200股 601869.SH
+[09:48:56] [委托] 买 Y395.80 0/200股 -> 已报
+[09:48:56] [成交] 买 601869.SH Y395.80 x 100股 = Y39,580
+[09:48:56] [委托] 买 Y395.80 100/200股 -> 部成
+[09:48:56] [成交] 买 601869.SH Y395.80 x 100股 = Y39,580
+[09:48:56] [委托] 买 Y395.80 200/200股 -> 全成
+[09:48:57] [FILL-REV-T buyback(EMERG)] Y395.80 × 200 sh | pos 0→200 | cash -79,160
+[09:48:57] [RESUME] → IDLE (REV-T 1/5, FWD-T 0/5)
+[09:49:08] [HB] IDLE Y397.00 REV-T: need! -16.26 to Y380.74 | FWD-T: need -7.94 to Y389.06
+[09:49:14] [LOCK] P+5.7% M0.54% D0.00%
+[09:49:29] [MOM sell trig] peak Y398.00 回落0.25% → Y397.01
+[09:49:29] [MOM short SKIP] 可卖 不足: planned 200 actual 0
+[09:49:29] [UNLOCK]
+[09:49:30] [MOM spike] 2min +1.29% (2×ATR10m 1.29%) Y397.01 → 冲高回落卖出监测
+[09:49:35] [MOM sell trig] peak Y397.46 回落0.11% → Y397.01
+[09:49:35] [MOM short SKIP] 可卖 不足: planned 200 actual 0
+[09:49:36] [MOM spike] 2min +1.29% (2×ATR10m 1.29%) Y397.01 → 冲高回落卖出监测
+[09:49:44] [MOM sell trig] peak Y397.01 回落0.16% → Y396.38
+[09:49:44] [MOM short SKIP] 可卖 不足: planned 200 actual 0
+[09:49:45] [MOM spike] 2min +1.29% (2×ATR10m 1.29%) Y396.38 → 冲高回落卖出监测
+[09:49:48] [MOM-HB] 冲高回落卖出: peak Y396.87 Y396.87 trig±1.29%
+[09:49:59] [LOCK] P+5.6% M0.50% D0.05%
+[09:50:08] [HB] IDLE Y397.80 REV-T: need! -17.06 to Y380.74 | FWD-T: need -7.96 to Y389.84 | LOCKED
+[09:50:19] [MOM sell trig] peak Y397.80 回落0.23% → Y396.87
+[09:50:19] [MOM short SKIP] 可卖 不足: planned 200 actual 0
+[09:50:19] [UNLOCK]
+[09:50:20] [MOM spike] 2min +1.07% (2×ATR10m 1.07%) Y396.98 → 冲高回落卖出监测
+[09:50:23] [MOM sell trig] peak Y396.98 回落0.26% → Y395.96
+[09:50:23] [MOM short SKIP] 可卖 不足: planned 200 actual 0
+[09:50:24] [MOM spike] 2min +1.07% (2×ATR10m 1.07%) Y395.96 → 冲高回落卖出监测
+[09:50:48] [MOM-HB] 冲高回落卖出: peak Y396.03 Y396.03 trig±1.06%
+[09:51:08] [HB] IDLE Y396.74 REV-T: need! -16.00 to Y380.74 | FWD-T: need -6.90 to Y389.84
+[09:51:23] [MOM sell trig] peak Y397.05 回落0.20% → Y396.24
+[09:51:23] [MOM short SKIP] 可卖 不足: planned 200 actual 0
+[09:52:08] [HB] IDLE Y396.05 REV-T: need! -15.31 to Y380.74 | FWD-T: need -6.21 to Y389.84
+[09:53:09] [HB] IDLE Y394.88 REV-T: need! -14.14 to Y380.74 | FWD-T: need -5.04 to Y389.84
+[09:54:09] [HB] IDLE Y394.97 REV-T: need! -14.23 to Y380.74 | FWD-T: need -5.13 to Y389.84
+[09:55:09] [HB] IDLE Y394.10 REV-T: need! -13.36 to Y380.74 | FWD-T: need -4.26 to Y389.84
+[09:56:09] [HB] IDLE Y394.46 REV-T: need! -13.72 to Y380.74 | FWD-T: need -4.62 to Y389.84
+[09:57:09] [HB] IDLE Y393.01 REV-T: need! -12.27 to Y380.74 | FWD-T: need -3.17 to Y389.84
+[09:58:09] [HB] IDLE Y391.98 REV-T: need! -11.24 to Y380.74 | FWD-T: need -2.14 to Y389.84
+[09:59:09] [HB] IDLE Y391.00 REV-T: need! -10.26 to Y380.74 | FWD-T: need -1.16 to Y389.84
+[10:00:09] [HB] IDLE Y391.12 REV-T: need! -10.38 to Y380.74 | FWD-T: need -1.28 to Y389.84
+[10:01:09] [HB] IDLE Y392.75 REV-T: need! -12.01 to Y380.74 | FWD-T: need -2.91 to Y389.84
+[10:02:09] [HB] IDLE Y392.06 REV-T: need! -11.32 to Y380.74 | FWD-T: need -2.22 to Y389.84
+[10:02:49] [LOCK] P+4.8% M0.62% D0.00%
+[10:02:50] [UNLOCK]
+[10:03:09] [HB] IDLE Y393.23 REV-T: need! -12.49 to Y380.74 | FWD-T: need -3.39 to Y389.84
+[10:04:09] [HB] IDLE Y390.20 REV-T: need! -9.46 to Y380.74 | FWD-T: need -0.36 to Y389.84
+[10:05:10] [HB] IDLE Y390.96 REV-T: need! -10.22 to Y380.74 | FWD-T: need -1.12 to Y389.84
+[10:05:24] [MOM dip] 2min -1.00% (2×ATR10m 1.00%) Y389.20 → 探底回升买入监测
+[10:05:25] [MOM-HB] 探底回升买入: dip Y389.20 Y389.20 trig±1.00%
+[10:06:10] [HB] IDLE Y388.02 REV-T: need! -7.28 to Y380.74 | FWD-T: need! +1.82 to Y389.84
+[10:06:25] [MOM-HB] 探底回升买入: dip Y388.00 Y388.18 trig±1.00%
+[10:07:10] [HB] IDLE Y387.00 REV-T: need! -6.26 to Y380.74 | FWD-T: need! +2.84 to Y389.84
+[10:07:25] [MOM-HB] 探底回升买入: dip Y386.49 Y386.49 trig±1.00%
+[10:07:35] [MOM buy trig] low Y386.34 回升0.13% → Y386.86
+[10:07:35] [MOM long SKIP] 现金 不足: planned 200 actual 91
+[10:08:10] [HB] IDLE Y388.18 REV-T: need! -7.44 to Y380.74 | FWD-T: need! +1.66 to Y389.84
+[10:09:10] [HB] IDLE Y388.18 REV-T: need! -7.44 to Y380.74 | FWD-T: need! +1.66 to Y389.84
+[10:10:10] [HB] IDLE Y388.78 REV-T: need! -8.04 to Y380.74 | FWD-T: need! +1.06 to Y389.84
+[10:11:10] [HB] IDLE Y387.74 REV-T: need! -7.00 to Y380.74 | FWD-T: need! +2.10 to Y389.84
+[10:11:32] [LOCK] P+3.4% M0.57% D0.04%
+[10:11:34] [UNLOCK]
+[10:11:35] [LOCK] P+3.5% M0.53% D0.00%
+[10:12:10] [HB] IDLE Y390.00 REV-T: need! -9.26 to Y380.74 | FWD-T: need -0.16 to Y389.84 | LOCKED
+[10:12:34] [UNLOCK]
+[10:13:10] [HB] IDLE Y387.01 REV-T: need! -6.27 to Y380.74 | FWD-T: need! +2.83 to Y389.84
+[10:14:10] [HB] IDLE Y386.10 REV-T: need! -5.36 to Y380.74 | FWD-T: need! +3.74 to Y389.84
+[10:15:10] [HB] IDLE Y386.19 REV-T: need! -5.45 to Y380.74 | FWD-T: need! +3.65 to Y389.84
+[10:16:10] [HB] IDLE Y385.25 REV-T: need! -4.51 to Y380.74 | FWD-T: need! +4.59 to Y389.84
+[10:17:11] [HB] IDLE Y383.38 REV-T: need! -2.64 to Y380.74 | FWD-T: need! +6.46 to Y389.84
+[10:17:42] [MOM dip] 2min -1.00% (2×ATR10m 1.00%) Y381.38 → 探底回升买入监测
+[10:17:43] [MOM-HB] 探底回升买入: dip Y381.38 Y381.38 trig±1.00%
+[10:17:56] [MOM buy trig] low Y381.38 回升0.19% → Y382.11
+[10:17:56] [MOM long SKIP] 现金 不足: planned 200 actual 92
+[10:18:00] [MOM dip] 2min -1.00% (2×ATR10m 1.00%) Y381.41 → 探底回升买入监测
+[10:18:03] [MOM buy trig] low Y381.41 回升0.15% → Y382.00
+[10:18:03] [MOM long SKIP] 现金 不足: planned 200 actual 92
+[10:18:11] [HB] IDLE Y382.00 REV-T: need! -1.26 to Y380.74 | FWD-T: need! +7.84 to Y389.84
+[10:19:11] [HB] IDLE Y383.00 REV-T: need! -2.26 to Y380.74 | FWD-T: need! +6.84 to Y389.84
+[10:20:11] [HB] IDLE Y383.82 REV-T: need! -3.08 to Y380.74 | FWD-T: need! +6.02 to Y389.84
+[10:21:11] [HB] IDLE Y383.16 REV-T: need! -2.42 to Y380.74 | FWD-T: need! +6.68 to Y389.84
+[10:22:11] [HB] IDLE Y381.41 REV-T: need! -0.67 to Y380.74 | FWD-T: need! +8.43 to Y389.84
+[10:23:11] [HB] IDLE Y382.80 REV-T: need! -2.06 to Y380.74 | FWD-T: need! +7.04 to Y389.84
+[10:24:11] [HB] IDLE Y381.34 REV-T: need! -0.60 to Y380.74 | FWD-T: need! +8.50 to Y389.84
+[10:25:08] [FWD-T dip #1/5] Y380.58 <= Y389.84(-2.38%)
+[10:25:11] [HB] BT_DIPPING Y380.45 dip Y380.45 bounce 0.00%
+[10:25:41] [FWD-T buy trig] low Y380.20 bounce 0.18% → Y380.87
+[10:25:41] [FWD-T buy SKIP] 现金 不足: planned 200 actual 92
+[10:25:44] [FWD-T dip #1/5] Y380.22 <= Y389.84(-2.47%)
+[10:25:47] [FWD-T buy trig] low Y380.22 bounce 0.17% → Y380.88
+[10:25:47] [FWD-T buy SKIP] 现金 不足: planned 200 actual 92
+[10:26:12] [HB] IDLE Y381.71 REV-T: need! -0.97 to Y380.74 | FWD-T: need! +8.13 to Y389.84
+[10:27:12] [HB] IDLE Y382.01 REV-T: need! -1.27 to Y380.74 | FWD-T: need! +7.83 to Y389.84
+[10:27:41] [FWD-T dip #1/5] Y380.71 <= Y389.84(-2.34%)
+[10:28:12] [HB] BT_DIPPING Y380.90 dip Y380.71 bounce 0.05%
+[10:28:32] [FWD-T buy trig] low Y380.71 bounce 0.15% → Y381.30
+[10:28:32] [FWD-T buy SKIP] 现金 不足: planned 200 actual 92
+[10:29:12] [HB] IDLE Y382.35 REV-T: need! -1.61 to Y380.74 | FWD-T: need! +7.49 to Y389.84
+[10:29:53] [LOCK] P+1.7% M0.52% D0.00%
+[10:29:56] [UNLOCK]
+[10:29:59] [LOCK] P+1.8% M0.57% D0.00%
+[10:30:12] [HB] IDLE Y382.93 REV-T: need! -2.19 to Y380.74 | FWD-T: need! +6.91 to Y389.84 | LOCKED
+[10:31:12] [HB] IDLE Y384.87 REV-T: need! -4.13 to Y380.74 | FWD-T: need! +4.97 to Y389.84 | LOCKED
+[10:32:06] [UNLOCK]
+[10:32:08] [LOCK] P+2.0% M0.51% D0.33%
+[10:32:09] [UNLOCK]
+[10:32:13] [HB] IDLE Y383.65 REV-T: need! -2.91 to Y380.74 | FWD-T: need! +6.19 to Y389.84
+[10:32:17] [LOCK] P+1.9% M0.55% D0.44%
+[10:33:13] [HB] IDLE Y383.42 REV-T: need! -2.68 to Y380.74 | FWD-T: need! +6.42 to Y389.84 | LOCKED
+[10:33:30] [UNLOCK]
+[10:34:13] [HB] IDLE Y384.00 REV-T: need! -3.26 to Y380.74 | FWD-T: need! +5.84 to Y389.84
+[10:34:15] [LOCK] P+2.1% M0.51% D0.26%
+[10:35:13] [HB] IDLE Y386.00 REV-T: need! -5.26 to Y380.74 | FWD-T: need! +3.84 to Y389.84 | LOCKED
+[10:35:41] [UNLOCK]
+[10:35:44] [LOCK] P+2.5% M0.58% D0.04%
+[10:36:05] [UNLOCK]
+[10:36:08] [LOCK] P+2.7% M0.63% D0.00%
+[10:36:13] [HB] IDLE Y386.90 REV-T: need! -6.16 to Y380.74 | FWD-T: need! +2.94 to Y389.84 | LOCKED
+[10:36:20] [UNLOCK]
+[10:36:23] [LOCK] P+2.8% M0.52% D0.00%
+[10:36:26] [UNLOCK]
+[10:37:11] [LOCK] P+2.4% M0.51% D0.36%
+[10:37:13] [HB] IDLE Y385.61 REV-T: need! -4.87 to Y380.74 | FWD-T: need! +4.23 to Y389.84 | LOCKED
+[10:38:13] [HB] IDLE Y385.82 REV-T: need! -5.08 to Y380.74 | FWD-T: need! +4.02 to Y389.84 | LOCKED
+[10:38:38] [UNLOCK]
+[10:38:41] [LOCK] P+2.3% M0.52% D0.44%
+[10:38:44] [UNLOCK]
+[10:39:13] [HB] IDLE Y384.44 REV-T: need! -3.70 to Y380.74 | FWD-T: need! +5.40 to Y389.84
+[10:40:13] [HB] IDLE Y384.00 REV-T: need! -3.26 to Y380.74 | FWD-T: need! +5.84 to Y389.84
+[10:41:13] [HB] IDLE Y383.13 REV-T: need! -2.39 to Y380.74 | FWD-T: need! +6.71 to Y389.84
+[10:42:13] [HB] IDLE Y384.00 REV-T: need! -3.26 to Y380.74 | FWD-T: need! +5.84 to Y389.84
+[10:43:13] [HB] IDLE Y384.42 REV-T: need! -3.68 to Y380.74 | FWD-T: need! +5.42 to Y389.84
+[10:44:14] [HB] IDLE Y383.03 REV-T: need! -2.29 to Y380.74 | FWD-T: need! +6.81 to Y389.84
+[10:45:14] [HB] IDLE Y382.90 REV-T: need! -2.16 to Y380.74 | FWD-T: need! +6.94 to Y389.84
+[10:46:14] [HB] IDLE Y381.87 REV-T: need! -1.13 to Y380.74 | FWD-T: need! +7.97 to Y389.84
+[10:47:14] [HB] IDLE Y381.00 REV-T: need! -0.26 to Y380.74 | FWD-T: need! +8.84 to Y389.84
+[10:48:14] [HB] IDLE Y380.99 REV-T: need! -0.25 to Y380.74 | FWD-T: need! +8.85 to Y389.84
+[10:49:14] [HB] IDLE Y381.93 REV-T: need! -1.19 to Y380.74 | FWD-T: need! +7.91 to Y389.84
+[10:50:14] [HB] IDLE Y383.00 REV-T: need! -2.26 to Y380.74 | FWD-T: need! +6.84 to Y389.84
+[10:51:14] [HB] IDLE Y382.25 REV-T: need! -1.51 to Y380.74 | FWD-T: need! +7.59 to Y389.84
+[10:52:14] [HB] IDLE Y381.30 REV-T: need! -0.56 to Y380.74 | FWD-T: need! +8.54 to Y389.84
+[10:53:14] [HB] IDLE Y380.93 REV-T: need! -0.19 to Y380.74 | FWD-T: need! +8.91 to Y389.84
+[10:54:14] [HB] IDLE Y382.00 REV-T: need! -1.26 to Y380.74 | FWD-T: need! +7.84 to Y389.84
+[10:55:14] [HB] IDLE Y382.52 REV-T: need! -1.78 to Y380.74 | FWD-T: need! +7.32 to Y389.84
+[10:56:14] [HB] IDLE Y382.79 REV-T: need! -2.05 to Y380.74 | FWD-T: need! +7.05 to Y389.84
+[10:56:55] [LOCK] P+1.7% M0.50% D0.00%
+[10:56:56] [UNLOCK]
+[10:57:14] [HB] IDLE Y381.76 REV-T: need! -1.02 to Y380.74 | FWD-T: need! +8.08 to Y389.84
+[10:58:15] [HB] IDLE Y380.93 REV-T: need! -0.19 to Y380.74 | FWD-T: need! +8.91 to Y389.84
+[10:59:15] [HB] IDLE Y381.50 REV-T: need! -0.76 to Y380.74 | FWD-T: need! +8.34 to Y389.84
+[11:00:15] [HB] IDLE Y381.00 REV-T: need! -0.26 to Y380.74 | FWD-T: need! +8.84 to Y389.84
+[11:01:15] [HB] IDLE Y383.27 REV-T: need! -2.53 to Y380.74 | FWD-T: need! +6.57 to Y389.84
+[11:01:38] [LOCK] P+2.2% M0.51% D0.00%
+[11:01:44] [UNLOCK]
+[11:01:56] [LOCK] P+2.1% M0.53% D0.09%
+[11:02:15] [HB] IDLE Y384.06 REV-T: need! -3.32 to Y380.74 | FWD-T: need! +5.78 to Y389.84 | LOCKED
+[11:03:15] [HB] IDLE Y383.64 REV-T: need! -2.90 to Y380.74 | FWD-T: need! +6.20 to Y389.84 | LOCKED
+[11:03:44] [UNLOCK]
+[11:04:15] [HB] IDLE Y382.77 REV-T: need! -2.03 to Y380.74 | FWD-T: need! +7.07 to Y389.84
+[11:05:15] [HB] IDLE Y382.68 REV-T: need! -1.94 to Y380.74 | FWD-T: need! +7.16 to Y389.84
+[11:06:15] [HB] IDLE Y381.22 REV-T: need! -0.48 to Y380.74 | FWD-T: need! +8.62 to Y389.84
+[11:07:15] [HB] IDLE Y381.22 REV-T: need! -0.48 to Y380.74 | FWD-T: need! +8.62 to Y389.84
+[11:08:15] [HB] IDLE Y381.80 REV-T: need! -1.06 to Y380.74 | FWD-T: need! +8.04 to Y389.84
+[11:09:15] [HB] IDLE Y381.15 REV-T: need! -0.41 to Y380.74 | FWD-T: need! +8.69 to Y389.84
+[11:10:15] [HB] IDLE Y380.88 REV-T: need! -0.14 to Y380.74 | FWD-T: need! +8.96 to Y389.84
+[11:10:24] [FWD-T dip #1/5] Y380.72 <= Y389.84(-2.34%)
+[11:11:09] [FWD-T buy trig] low Y380.45 bounce 0.11% → Y380.88
+[11:11:09] [FWD-T buy SKIP] 现金 不足: planned 200 actual 92
+[11:11:16] [HB] IDLE Y380.95 REV-T: need! -0.21 to Y380.74 | FWD-T: need! +8.89 to Y389.84
+[11:12:16] [HB] IDLE Y382.73 REV-T: need! -1.99 to Y380.74 | FWD-T: need! +7.11 to Y389.84
+[11:13:16] [HB] IDLE Y383.60 REV-T: need! -2.86 to Y380.74 | FWD-T: need! +6.24 to Y389.84
+[11:13:41] [LOCK] P+1.9% M0.57% D0.03%
+[11:13:47] [UNLOCK]
+[11:13:50] [LOCK] P+1.9% M0.50% D0.05%
+[11:13:53] [UNLOCK]
+[11:14:14] [LOCK] P+1.7% M0.51% D0.16%
+[11:14:16] [HB] IDLE Y383.09 REV-T: need! -2.35 to Y380.74 | FWD-T: need! +6.75 to Y389.84 | LOCKED
+[11:14:17] [UNLOCK]
+[11:14:20] [LOCK] P+1.7% M0.50% D0.19%
+[11:14:26] [UNLOCK]
+[11:14:29] [LOCK] P+1.8% M0.65% D0.05%
+[11:15:16] [HB] IDLE Y384.68 REV-T: need! -3.94 to Y380.74 | FWD-T: need! +5.16 to Y389.84 | LOCKED
+[11:16:16] [HB] IDLE Y383.88 REV-T: need! -3.14 to Y380.74 | FWD-T: need! +5.96 to Y389.84 | LOCKED
+[11:16:26] [UNLOCK]
+[11:17:16] [HB] IDLE Y382.50 REV-T: need! -1.76 to Y380.74 | FWD-T: need! +7.34 to Y389.84
+[11:18:16] [HB] IDLE Y383.99 REV-T: need! -3.25 to Y380.74 | FWD-T: need! +5.85 to Y389.84
+[11:19:16] [HB] IDLE Y384.49 REV-T: need! -3.75 to Y380.74 | FWD-T: need! +5.35 to Y389.84
+[11:20:16] [HB] IDLE Y384.73 REV-T: need! -3.99 to Y380.74 | FWD-T: need! +5.11 to Y389.84
+[11:21:16] [HB] IDLE Y384.04 REV-T: need! -3.30 to Y380.74 | FWD-T: need! +5.80 to Y389.84
+[11:22:16] [HB] IDLE Y384.08 REV-T: need! -3.34 to Y380.74 | FWD-T: need! +5.76 to Y389.84
+[11:22:44] [LOCK] P+2.2% M0.52% D0.00%
+[11:22:52] [UNLOCK]
+[11:23:16] [HB] IDLE Y385.29 REV-T: need! -4.55 to Y380.74 | FWD-T: need! +4.55 to Y389.84
+[11:24:17] [HB] IDLE Y384.90 REV-T: need! -4.16 to Y380.74 | FWD-T: need! +4.94 to Y389.84
+[11:25:17] [HB] IDLE Y386.00 REV-T: need! -5.26 to Y380.74 | FWD-T: need! +3.84 to Y389.84
+[11:25:29] [LOCK] P+2.6% M0.52% D0.00%
+[11:26:17] [HB] IDLE Y387.29 REV-T: need! -6.55 to Y380.74 | FWD-T: need! +2.55 to Y389.84 | LOCKED
+[11:27:17] [HB] IDLE Y386.81 REV-T: need! -6.07 to Y380.74 | FWD-T: need! +3.03 to Y389.84 | LOCKED
+[11:28:17] [HB] IDLE Y388.00 REV-T: need! -7.26 to Y380.74 | FWD-T: need! +1.84 to Y389.84 | LOCKED
+[11:29:17] [HB] IDLE Y387.00 REV-T: need! -6.26 to Y380.74 | FWD-T: need! +2.84 to Y389.84 | LOCKED
+[11:29:23] [UNLOCK]
+[11:29:29] [LOCK] P+3.0% M0.70% D0.15%
+[11:29:33] [UNLOCK]
+[11:29:35] [LOCK] P+3.0% M0.75% D0.11%
+[11:34:21] [LUNCH 11:34:21]
+[11:39:21] [LUNCH 11:39:21]
+[11:44:21] [LUNCH 11:44:21]
+[11:49:21] [LUNCH 11:49:21]
+[11:54:21] [LUNCH 11:54:21]
+[11:59:21] [LUNCH 11:59:21]
+[12:04:21] [LUNCH 12:04:21]
+[12:09:21] [LUNCH 12:09:21]
+[12:14:21] [LUNCH 12:14:21]
+[12:16:26] [账号状态] 8890145315 STOCK: 等待登录
+[12:16:41] [账号状态] 8890145315 STOCK: 正常
+[12:19:49] [账号状态] 8890145315 STOCK: 等待登录
+[12:19:49] [LUNCH 12:19:49]
+[12:20:04] [账号状态] 8890145315 STOCK: 正常
+[12:23:23] [账号状态] 8890145315 STOCK: 等待登录
+[12:24:01] [账号状态] 8890145315 STOCK: 未知(2)
+[12:24:01] [账号状态] 8890145315 STOCK: 初始化中
+[12:24:03] [账号状态] 8890145315 STOCK: 正常
+[12:24:50] [LUNCH 12:24:50]
+[12:26:55] [账号状态] 8890145315 STOCK: 等待登录
+[12:27:11] [账号状态] 8890145315 STOCK: 正常
+[12:30:23] [LUNCH 12:30:23]
+[12:30:25] [账号状态] 8890145315 STOCK: 等待登录
+[12:30:40] [账号状态] 8890145315 STOCK: 未知(2)
+[12:30:40] [账号状态] 8890145315 STOCK: 初始化中
+[12:30:40] [账号状态] 8890145315 STOCK: 正常
+[12:33:57] [账号状态] 8890145315 STOCK: 等待登录
+[12:34:12] [账号状态] 8890145315 STOCK: 正常
+[12:35:31] [LUNCH 12:35:31]
+[12:37:25] [账号状态] 8890145315 STOCK: 等待登录
+[12:37:41] [账号状态] 8890145315 STOCK: 正常
+[12:40:55] [LUNCH 12:40:55]
+[12:40:59] [账号状态] 8890145315 STOCK: 等待登录
+[12:41:14] [账号状态] 8890145315 STOCK: 正常
+[12:44:31] [账号状态] 8890145315 STOCK: 等待登录
+[12:44:46] [账号状态] 8890145315 STOCK: 正常
+[12:45:56] [LUNCH 12:45:56]
+[12:47:59] [账号状态] 8890145315 STOCK: 等待登录
+[12:48:14] [账号状态] 8890145315 STOCK: 正常
+[12:51:30] [账号状态] 8890145315 STOCK: 等待登录
+[12:51:34] [LUNCH 12:51:34]
+[12:51:46] [账号状态] 8890145315 STOCK: 正常
+[12:55:04] [账号状态] 8890145315 STOCK: 等待登录
+[12:55:19] [账号状态] 8890145315 STOCK: 正常
+[12:56:37] [LUNCH 12:56:37]
+[12:58:31] [账号状态] 8890145315 STOCK: 等待登录
+[12:58:46] [账号状态] 8890145315 STOCK: 正常
+[13:00:07] [HB] IDLE Y388.01 REV-T: need! -7.27 to Y380.74 | FWD-T: need! +1.83 to Y389.84 | LOCKED
+[13:00:16] [UNLOCK]
+[13:01:57] [HB] IDLE Y385.00 REV-T: need! -4.26 to Y380.74 | FWD-T: need! +4.84 to Y389.84
+[13:02:02] [账号状态] 8890145315 STOCK: 等待登录
+[13:02:17] [账号状态] 8890145315 STOCK: 正常
+[13:02:57] [HB] IDLE Y384.53 REV-T: need! -3.79 to Y380.74 | FWD-T: need! +5.31 to Y389.84
+[13:03:57] [HB] IDLE Y383.00 REV-T: need! -2.26 to Y380.74 | FWD-T: need! +6.84 to Y389.84
+[13:05:27] [HB] IDLE Y382.01 REV-T: need! -1.27 to Y380.74 | FWD-T: need! +7.83 to Y389.84
+[13:05:34] [账号状态] 8890145315 STOCK: 等待登录
+[13:05:49] [账号状态] 8890145315 STOCK: 正常
+[13:06:27] [HB] IDLE Y384.01 REV-T: need! -3.27 to Y380.74 | FWD-T: need! +5.83 to Y389.84
+[13:07:27] [HB] IDLE Y384.00 REV-T: need! -3.26 to Y380.74 | FWD-T: need! +5.84 to Y389.84
+[13:08:55] [HB] IDLE Y384.47 REV-T: need! -3.73 to Y380.74 | FWD-T: need! +5.37 to Y389.84
+[13:08:59] [账号状态] 8890145315 STOCK: 等待登录
+[13:09:09] [LOCK] P+2.1% M0.64% D0.09%
+[13:09:12] [UNLOCK]
+[13:09:15] [账号状态] 8890145315 STOCK: 正常
+[13:09:15] [LOCK] P+2.1% M0.65% D0.09%
+[13:09:47] [UNLOCK]
+[13:09:48] [LOCK] P+2.0% M0.52% D0.21%
+[13:09:55] [HB] IDLE Y384.00 REV-T: need! -3.26 to Y380.74 | FWD-T: need! +5.84 to Y389.84 | LOCKED
+[13:10:06] [UNLOCK]
+[13:10:09] [LOCK] P+2.0% M0.52% D0.21%
+[13:10:15] [UNLOCK]
+[13:10:55] [HB] IDLE Y382.54 REV-T: need! -1.80 to Y380.74 | FWD-T: need! +7.30 to Y389.84
+[13:12:28] [HB] IDLE Y383.01 REV-T: need! -2.27 to Y380.74 | FWD-T: need! +6.83 to Y389.84
+[13:12:32] [账号状态] 8890145315 STOCK: 等待登录
+[13:12:47] [账号状态] 8890145315 STOCK: 正常
+[13:13:28] [HB] IDLE Y383.10 REV-T: need! -2.36 to Y380.74 | FWD-T: need! +6.74 to Y389.84
+[13:14:28] [HB] IDLE Y383.39 REV-T: need! -2.65 to Y380.74 | FWD-T: need! +6.45 to Y389.84
+[13:16:00] [HB] IDLE Y383.15 REV-T: need! -2.41 to Y380.74 | FWD-T: need! +6.69 to Y389.84
+[13:16:04] [账号状态] 8890145315 STOCK: 等待登录
+[13:16:19] [账号状态] 8890145315 STOCK: 正常
+[13:17:00] [HB] IDLE Y383.58 REV-T: need! -2.84 to Y380.74 | FWD-T: need! +6.26 to Y389.84
+[13:18:00] [HB] IDLE Y384.87 REV-T: need! -4.13 to Y380.74 | FWD-T: need! +4.97 to Y389.84
+[13:19:30] [HB] IDLE Y385.23 REV-T: need! -4.49 to Y380.74 | FWD-T: need! +4.61 to Y389.84
+[13:19:34] [账号状态] 8890145315 STOCK: 等待登录
+[13:19:39] [LOCK] P+2.3% M0.53% D0.00%
+[13:19:55] [UNLOCK]
+[13:19:55] [账号状态] 8890145315 STOCK: 正常
+[13:20:09] [LOCK] P+2.3% M0.51% D0.07%
+[13:20:30] [HB] IDLE Y386.58 REV-T: need! -5.84 to Y380.74 | FWD-T: need! +3.26 to Y389.84 | LOCKED
+[13:21:30] [HB] IDLE Y386.49 REV-T: need! -5.75 to Y380.74 | FWD-T: need! +3.35 to Y389.84 | LOCKED
+[13:21:39] [UNLOCK]
+[13:23:01] [HB] IDLE Y385.10 REV-T: need! -4.36 to Y380.74 | FWD-T: need! +4.74 to Y389.84
+[13:23:07] [账号状态] 8890145315 STOCK: 等待登录
+[13:24:01] [HB] IDLE Y385.10 REV-T: need! -4.36 to Y380.74 | FWD-T: need! +4.74 to Y389.84
+[13:24:21] [账号状态] 8890145315 STOCK: 正常
+[13:25:01] [HB] IDLE Y386.44 REV-T: need! -5.70 to Y380.74 | FWD-T: need! +3.40 to Y389.84
+[13:26:30] [HB] IDLE Y386.10 REV-T: need! -5.36 to Y380.74 | FWD-T: need! +3.74 to Y389.84
+[13:26:34] [账号状态] 8890145315 STOCK: 等待登录
+[13:26:49] [账号状态] 8890145315 STOCK: 正常
+[13:27:30] [HB] IDLE Y385.95 REV-T: need! -5.21 to Y380.74 | FWD-T: need! +3.89 to Y389.84
+[13:28:30] [HB] IDLE Y386.02 REV-T: need! -5.28 to Y380.74 | FWD-T: need! +3.82 to Y389.84
+[13:30:02] [HB] IDLE Y386.00 REV-T: need! -5.26 to Y380.74 | FWD-T: need! +3.84 to Y389.84
+[13:30:07] [账号状态] 8890145315 STOCK: 等待登录
+[13:30:22] [账号状态] 8890145315 STOCK: 正常
+[13:31:02] [HB] IDLE Y385.00 REV-T: need! -4.26 to Y380.74 | FWD-T: need! +4.84 to Y389.84
+[13:32:02] [HB] IDLE Y383.90 REV-T: need! -3.16 to Y380.74 | FWD-T: need! +5.94 to Y389.84
+[13:33:02] [HB] IDLE Y384.77 REV-T: need! -4.03 to Y380.74 | FWD-T: need! +5.07 to Y389.84
+[13:34:02] [HB] IDLE Y386.01 REV-T: need! -5.27 to Y380.74 | FWD-T: need! +3.83 to Y389.84
+[13:35:21] [HB] IDLE Y386.44 REV-T: need! -5.70 to Y380.74 | FWD-T: need! +3.40 to Y389.84
+[13:35:26] [账号状态] 8890145315 STOCK: 等待登录
+[13:35:41] [账号状态] 8890145315 STOCK: 正常
+[13:35:52] [LOCK] P+2.9% M0.52% D0.00%
+[13:36:21] [HB] IDLE Y387.24 REV-T: need! -6.50 to Y380.74 | FWD-T: need! +2.60 to Y389.84 | LOCKED
+[13:37:21] [HB] IDLE Y386.00 REV-T: need! -5.26 to Y380.74 | FWD-T: need! +3.84 to Y389.84 | LOCKED
+[13:37:33] [UNLOCK]
+[13:38:21] [HB] IDLE Y386.00 REV-T: need! -5.26 to Y380.74 | FWD-T: need! +3.84 to Y389.84
+[13:39:22] [HB] IDLE Y386.13 REV-T: need! -5.39 to Y380.74 | FWD-T: need! +3.71 to Y389.84
+[13:40:22] [HB] IDLE Y385.50 REV-T: need! -4.76 to Y380.74 | FWD-T: need! +4.34 to Y389.84
+[13:41:22] [HB] IDLE Y385.20 REV-T: need! -4.46 to Y380.74 | FWD-T: need! +4.64 to Y389.84
+[13:42:22] [HB] IDLE Y386.08 REV-T: need! -5.34 to Y380.74 | FWD-T: need! +3.76 to Y389.84
+[13:43:22] [HB] IDLE Y385.94 REV-T: need! -5.20 to Y380.74 | FWD-T: need! +3.90 to Y389.84
+[13:44:22] [HB] IDLE Y385.50 REV-T: need! -4.76 to Y380.74 | FWD-T: need! +4.34 to Y389.84
+[13:45:22] [HB] IDLE Y385.08 REV-T: need! -4.34 to Y380.74 | FWD-T: need! +4.76 to Y389.84
+[13:46:22] [HB] IDLE Y385.02 REV-T: need! -4.28 to Y380.74 | FWD-T: need! +4.82 to Y389.84
+[13:47:22] [HB] IDLE Y385.21 REV-T: need! -4.47 to Y380.74 | FWD-T: need! +4.63 to Y389.84
+[13:48:22] [HB] IDLE Y385.20 REV-T: need! -4.46 to Y380.74 | FWD-T: need! +4.64 to Y389.84
+[13:49:22] [HB] IDLE Y385.19 REV-T: need! -4.45 to Y380.74 | FWD-T: need! +4.65 to Y389.84
+[13:50:22] [HB] IDLE Y386.04 REV-T: need! -5.30 to Y380.74 | FWD-T: need! +3.80 to Y389.84
+[13:51:22] [HB] IDLE Y386.23 REV-T: need! -5.49 to Y380.74 | FWD-T: need! +3.61 to Y389.84
+[13:52:22] [HB] IDLE Y386.68 REV-T: need! -5.94 to Y380.74 | FWD-T: need! +3.16 to Y389.84
+[13:53:23] [HB] IDLE Y386.93 REV-T: need! -6.19 to Y380.74 | FWD-T: need! +2.91 to Y389.84
+[13:54:23] [HB] IDLE Y386.98 REV-T: need! -6.24 to Y380.74 | FWD-T: need! +2.86 to Y389.84
+[13:55:23] [HB] IDLE Y386.30 REV-T: need! -5.56 to Y380.74 | FWD-T: need! +3.54 to Y389.84
+[13:55:52] [LOCK] P+3.0% M0.50% D0.00%
+[13:55:55] [UNLOCK]
+[13:56:23] [HB] IDLE Y387.98 REV-T: need! -7.24 to Y380.74 | FWD-T: need! +1.86 to Y389.84
+[13:56:40] [LOCK] P+3.2% M0.58% D0.00%
+[13:57:23] [HB] IDLE Y389.48 REV-T: need! -8.74 to Y380.74 | FWD-T: need! +0.36 to Y389.84 | LOCKED
+[13:58:23] [HB] IDLE Y389.20 REV-T: need! -8.46 to Y380.74 | FWD-T: need! +0.64 to Y389.84 | LOCKED
+[13:58:28] [UNLOCK]
+[13:59:23] [HB] IDLE Y388.07 REV-T: need! -7.33 to Y380.74 | FWD-T: need! +1.77 to Y389.84
+[14:00:23] [HB] IDLE Y387.26 REV-T: need! -6.52 to Y380.74 | FWD-T: need! +2.58 to Y389.84
+[14:01:23] [HB] IDLE Y386.80 REV-T: need! -6.06 to Y380.74 | FWD-T: need! +3.04 to Y389.84
+[14:02:23] [HB] IDLE Y388.63 REV-T: need! -7.89 to Y380.74 | FWD-T: need! +1.21 to Y389.84
+[14:03:23] [HB] IDLE Y389.26 REV-T: need! -8.52 to Y380.74 | FWD-T: need! +0.58 to Y389.84
+[14:04:23] [HB] IDLE Y389.44 REV-T: need! -8.70 to Y380.74 | FWD-T: need! +0.40 to Y389.84
+[14:05:15] [LOCK] P+3.4% M0.52% D0.06%
+[14:05:18] [UNLOCK]
+[14:05:24] [HB] IDLE Y388.99 REV-T: need! -8.25 to Y380.74 | FWD-T: need! +0.85 to Y389.84
+[14:06:24] [HB] IDLE Y388.11 REV-T: need! -7.37 to Y380.74 | FWD-T: need! +1.73 to Y389.84
+[14:07:24] [HB] IDLE Y387.27 REV-T: need! -6.53 to Y380.74 | FWD-T: need! +2.57 to Y389.84
+[14:08:24] [HB] IDLE Y387.54 REV-T: need! -6.80 to Y380.74 | FWD-T: need! +2.30 to Y389.84
+[14:09:20] [账号状态] 8890145315 STOCK: 等待登录
+[14:09:24] [HB] IDLE Y387.28 REV-T: need! -6.54 to Y380.74 | FWD-T: need! +2.56 to Y389.84
+[14:10:24] [HB] IDLE Y387.28 REV-T: need! -6.54 to Y380.74 | FWD-T: need! +2.56 to Y389.84
+[14:10:44] [账号状态] 8890145315 STOCK: 正常
+[14:11:24] [HB] IDLE Y385.50 REV-T: need! -4.76 to Y380.74 | FWD-T: need! +4.34 to Y389.84
+[14:12:05] [账号状态] 8890145315 STOCK: 等待登录
+[14:12:24] [HB] IDLE Y386.03 REV-T: need! -5.29 to Y380.74 | FWD-T: need! +3.81 to Y389.84
+[14:12:35] [账号状态] 8890145315 STOCK: 正常
+[14:13:24] [HB] IDLE Y386.04 REV-T: need! -5.30 to Y380.74 | FWD-T: need! +3.80 to Y389.84
+[14:14:24] [HB] IDLE Y385.99 REV-T: need! -5.25 to Y380.74 | FWD-T: need! +3.85 to Y389.84
+[14:15:24] [HB] IDLE Y385.92 REV-T: need! -5.18 to Y380.74 | FWD-T: need! +3.92 to Y389.84
+[14:16:24] [HB] IDLE Y385.53 REV-T: need! -4.79 to Y380.74 | FWD-T: need! +4.31 to Y389.84
+[14:17:25] [HB] IDLE Y385.50 REV-T: need! -4.76 to Y380.74 | FWD-T: need! +4.34 to Y389.84
+[14:18:25] [HB] IDLE Y385.09 REV-T: need! -4.35 to Y380.74 | FWD-T: need! +4.75 to Y389.84
+[14:19:25] [HB] IDLE Y384.20 REV-T: need! -3.46 to Y380.74 | FWD-T: need! +5.64 to Y389.84
+[14:20:25] [HB] IDLE Y384.81 REV-T: need! -4.07 to Y380.74 | FWD-T: need! +5.03 to Y389.84
+[14:21:25] [HB] IDLE Y385.80 REV-T: need! -5.06 to Y380.74 | FWD-T: need! +4.04 to Y389.84
+[14:22:25] [HB] IDLE Y386.06 REV-T: need! -5.32 to Y380.74 | FWD-T: need! +3.78 to Y389.84
+[14:23:21] [LOCK] P+2.8% M0.52% D0.00%
+[14:23:25] [HB] IDLE Y387.20 REV-T: need! -6.46 to Y380.74 | FWD-T: need! +2.64 to Y389.84 | LOCKED
+[14:24:25] [HB] IDLE Y387.27 REV-T: need! -6.53 to Y380.74 | FWD-T: need! +2.57 to Y389.84 | LOCKED
+[14:25:25] [HB] IDLE Y387.20 REV-T: need! -6.46 to Y380.74 | FWD-T: need! +2.64 to Y389.84 | LOCKED
+[14:25:39] [UNLOCK]
+[14:26:18] [LOCK] P+3.0% M0.56% D0.00%
+[14:26:25] [HB] IDLE Y388.00 REV-T: need! -7.26 to Y380.74 | FWD-T: need! +1.84 to Y389.84 | LOCKED
+[14:27:25] [HB] IDLE Y388.08 REV-T: need! -7.34 to Y380.74 | FWD-T: need! +1.76 to Y389.84 | LOCKED
+[14:27:30] [UNLOCK]
+[14:28:26] [HB] IDLE Y388.00 REV-T: need! -7.26 to Y380.74 | FWD-T: need! +1.84 to Y389.84
+[14:29:26] [HB] IDLE Y388.20 REV-T: need! -7.46 to Y380.74 | FWD-T: need! +1.64 to Y389.84
+[14:30:26] [HB] IDLE Y387.85 REV-T: need! -7.11 to Y380.74 | FWD-T: need! +1.99 to Y389.84
+[14:31:26] [HB] IDLE Y387.50 REV-T: need! -6.76 to Y380.74 | FWD-T: need! +2.34 to Y389.84
+[14:32:26] [HB] IDLE Y387.79 REV-T: need! -7.05 to Y380.74 | FWD-T: need! +2.05 to Y389.84
+[14:33:26] [HB] IDLE Y387.50 REV-T: need! -6.76 to Y380.74 | FWD-T: need! +2.34 to Y389.84
+[14:34:26] [HB] IDLE Y387.61 REV-T: need! -6.87 to Y380.74 | FWD-T: need! +2.23 to Y389.84
+[14:35:26] [HB] IDLE Y387.66 REV-T: need! -6.92 to Y380.74 | FWD-T: need! +2.18 to Y389.84
+[14:36:26] [HB] IDLE Y387.78 REV-T: need! -7.04 to Y380.74 | FWD-T: need! +2.06 to Y389.84
+[14:37:26] [HB] IDLE Y387.66 REV-T: need! -6.92 to Y380.74 | FWD-T: need! +2.18 to Y389.84
+[14:38:26] [HB] IDLE Y387.41 REV-T: need! -6.67 to Y380.74 | FWD-T: need! +2.43 to Y389.84
+[14:39:26] [HB] IDLE Y387.47 REV-T: need! -6.73 to Y380.74 | FWD-T: need! +2.37 to Y389.84
+[14:40:27] [HB] IDLE Y387.24 REV-T: need! -6.50 to Y380.74 | FWD-T: need! +2.60 to Y389.84
+[14:41:27] [HB] IDLE Y387.00 REV-T: need! -6.26 to Y380.74 | FWD-T: need! +2.84 to Y389.84
+[14:42:27] [HB] IDLE Y386.94 REV-T: need! -6.20 to Y380.74 | FWD-T: need! +2.90 to Y389.84
+[14:43:27] [HB] IDLE Y387.01 REV-T: need! -6.27 to Y380.74 | FWD-T: need! +2.83 to Y389.84

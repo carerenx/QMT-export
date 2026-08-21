@@ -1,6 +1,6 @@
 # Cloude Code ToolBox — MCP & Skills awareness
 
-_Generated: 2026-08-17T10:24:06.747Z_
+_Generated: 2026-08-21T10:13:07.372Z_
 
 ## How to use this report
 
@@ -26,9 +26,9 @@ _No active workspace servers in mcp.json._
 | Server id | Kind | Detail |
 |-----------|------|--------|
 | ppt-mcp | stdio | uvx ppt-mcp |
-| drawio | stdio | cmd /c npx -y drawio-mcp-server --editor |
 | pptmasterdeck-mcp | http | https://pptmasterdeck.clauxel.com/mcp |
 | pptogo-mcp | http | https://pptogo.com/api/mcp |
+| drawio | stdio | cmd /c npx -y drawio-mcp-server --editor |
 
 ## Skills (local `SKILL.md` folders)
 
@@ -41,6 +41,15 @@ _No active workspace servers in mcp.json._
   - Build, run, smoke-test, and drive the QMT-export quantitative trading backtest system. Use when asked to run a backtest, verify the engine works, validate a strategy, test data loading, or check that the backtest system 
 
 - **signal-validation** — `d:\02Project\QMT-export\.claude\skills\signal-validation`
+  - Validate A-stock sell/top-detection signals against historical data. Run when asked to validate trading signals, backtest sell rules, check momentum indicators, evaluate escape-top signals, or verify technical indicators
+
+- **git-commit** — `d:\02Project\QMT-export\.agents\skills\git-commit`
+  - Execute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions "/commit".
+
+- **run-qmt-export** — `d:\02Project\QMT-export\.agents\skills\run-qmt-export`
+  - Build, run, smoke-test, and drive the QMT-export quantitative trading backtest system. Use when asked to run a backtest, verify the engine works, validate a strategy, test data loading, or check that the backtest system 
+
+- **signal-validation** — `d:\02Project\QMT-export\.agents\skills\signal-validation`
   - Validate A-stock sell/top-detection signals against historical data. Run when asked to validate trading signals, backtest sell rules, check momentum indicators, evaluate escape-top signals, or verify technical indicators
 
 ### User-scoped
@@ -78,8 +87,23 @@ _No active workspace servers in mcp.json._
 - **tricore-expert** — `C:\Users\pp313\.claude\skills\tricore-expert`
   - >
 
+- **a-stock-data** — `C:\Users\pp313\.agents\skills\a-stock-data`
+  - A股全栈数据工具包 — 覆盖行情(mootdx+腾讯+百度K线)、研报(东财+同花顺+iwencai)、信号(同花顺热点+北向+龙虎榜+解禁+行业)、资金面(融资融券+大宗交易+股东户数+分红+资金流分钟级+资金流120日)、新闻(东财个股+全球资讯)、基础数据(mootdx财务/F10+东财+新浪三表)、公告(巨潮)七层数据源，内嵌全部调用代码，自包含零依赖外部文件。优先用通达信(mootdx)/腾讯(不封IP)，东财接口已内置限流防
+
+- **A15-expert** — `C:\Users\pp313\.agents\skills\A15-expert`
+  - >
+
 - **ask-matt** — `C:\Users\pp313\.agents\skills\ask-matt`
   - Ask which skill or flow fits your situation. A router over the skills in this repo.
+
+- **autosar-bsw-expert** — `C:\Users\pp313\.agents\skills\autosar-bsw-expert`
+  - >
+
+- **CCU-expert** — `C:\Users\pp313\.agents\skills\CCU-expert`
+  - >
+
+- **check-expert** — `C:\Users\pp313\.agents\skills\check-expert`
+  - 我将为你提供一套 **核对模块** 的功能性核对点。请你扮演系统核查专家，针对**每一个核对点**，严格按照预设的专家角色、输出规范和目录结构，生成3份相互关联的Markdown报告。
 
 - **claude-handoff** — `C:\Users\pp313\.agents\skills\claude-handoff`
   - Hand the current conversation off to a fresh background agent that picks up the work immediately.
@@ -92,6 +116,9 @@ _No active workspace servers in mcp.json._
 
 - **design-an-interface** — `C:\Users\pp313\.agents\skills\design-an-interface`
   - Generate multiple radically different interface designs for a module using parallel sub-agents. Use when user wants to design an API, explore interface options, compare module shapes, or mentions "design it twice".
+
+- **diag-expert** — `C:\Users\pp313\.agents\skills\diag-expert`
+  - >
 
 - **diagnosing-bugs** — `C:\Users\pp313\.agents\skills\diagnosing-bugs`
   - Diagnosis loop for hard bugs and performance regressions. Use when the user says "diagnose"/"debug this", or reports something broken/throwing/failing/slow.
@@ -141,6 +168,9 @@ _No active workspace servers in mcp.json._
 - **qa** — `C:\Users\pp313\.agents\skills\qa`
   - Interactive QA session where user reports bugs or issues conversationally, and the agent files GitHub issues. Explores the codebase in the background for context and domain language. Use when user wants to report bugs, d
 
+- **QMT-expert** — `C:\Users\pp313\.agents\skills\QMT-expert`
+  - >
+
 - **request-refactor-plan** — `C:\Users\pp313\.agents\skills\request-refactor-plan`
   - Create a detailed refactor plan with tiny commits via user interview, then file it as a GitHub issue. Use when user wants to plan a refactor, create a refactoring RFC, or break a refactor into safe incremental steps.
 
@@ -150,14 +180,23 @@ _No active workspace servers in mcp.json._
 - **resolving-merge-conflicts** — `C:\Users\pp313\.agents\skills\resolving-merge-conflicts`
   - Use when you need to resolve an in-progress git merge/rebase conflict.
 
+- **rollout-check** — `C:\Users\pp313\.agents\skills\rollout-check`
+  - >
+
 - **scaffold-exercises** — `C:\Users\pp313\.agents\skills\scaffold-exercises`
   - Create exercise directory structures with sections, problems, solutions, and explainers that pass linting. Use when user wants to scaffold exercises, create exercise stubs, or set up a new course section.
+
+- **serenity-skill** — `C:\Users\pp313\.agents\skills\serenity-skill`
+  - Turn an investment agent into a supply-chain bottleneck hunter. Use this skill for source-backed investment research, live market/theme scans, AI/semi/technology value-chain mapping, A-share/HK/US stock screening, thesis
 
 - **setup-matt-pocock-skills** — `C:\Users\pp313\.agents\skills\setup-matt-pocock-skills`
   - Configure this repo for the engineering skills — set up its issue tracker, triage label vocabulary, and domain doc layout. Run once before first use of the other engineering skills.
 
 - **setup-pre-commit** — `C:\Users\pp313\.agents\skills\setup-pre-commit`
   - Set up Husky pre-commit hooks with lint-staged (Prettier), type checking, and tests in the current repo. Use when user wants to add pre-commit hooks, set up Husky, configure lint-staged, or add commit-time formatting/typ
+
+- **solution-verify** — `C:\Users\pp313\.agents\skills\solution-verify`
+  - >
 
 - **tdd** — `C:\Users\pp313\.agents\skills\tdd`
   - Test-driven development. Use when the user wants to build features or fix bugs test-first, mentions "red-green-refactor", or wants integration tests.
@@ -173,6 +212,9 @@ _No active workspace servers in mcp.json._
 
 - **triage** — `C:\Users\pp313\.agents\skills\triage`
   - Move issues and external PRs through a state machine of triage roles — categorise, verify, grill if needed, and write agent-ready briefs.
+
+- **tricore-expert** — `C:\Users\pp313\.agents\skills\tricore-expert`
+  - >
 
 - **ubiquitous-language** — `C:\Users\pp313\.agents\skills\ubiquitous-language`
   - Extract a DDD-style ubiquitous language glossary from the current conversation, flagging ambiguities and proposing canonical terms. Saves to UBIQUITOUS_LANGUAGE.md. Use when user wants to define domain terms, build a glo

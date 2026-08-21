@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 关于策略的py文件如果有改动，则新建py文件
 ## Repository Purpose
 
@@ -8,7 +8,7 @@ A股量化交易策略开发与实盘运行环境。核心标的是**长飞光�
 
 ## Key Rules via `/QMT-export` Skill
 
-When answering QMT API questions, the Skill at `C:\Users\pp313\.claude\skills\QMT-export\SKILL.md` mandates:
+When answering QMT API questions, the Skill at `C:\Users\pp313\.Codex\skills\QMT-export\SKILL.md` mandates:
 - **Never invent** function names, parameters, or features — verify against `references/md/python/python_api.md` first
 - **Cite sources** as `[Python API, p.XX]` or `[系统功能, p.XX]`
 - **Answer completely in one reply** — don't pause mid-response to ask "should I continue?"
@@ -114,15 +114,14 @@ File encoding must be `# -*- coding: gbk -*-` for Chinese QMT client.
 
 
 
-
 <!-- cloude-code-toolbox:mcp-skills-awareness-begin -->
 
 ### MCP & Skills awareness (Cloude Code ToolBox)
 
-_Last synced: 2026-08-21T10:13:07.402Z._
+_Last synced: 2026-08-20T01:18:51.909Z._
 
-- **Full report:** `.claude/cloude-code-toolbox-mcp-skills-awareness.md` in this workspace (auto-overwritten on each scan). Use it as ground truth for configured servers and skill folders.
-- **MCP:** For **live tools** in Claude Code, enable the matching server via `/mcp`. Servers are configured in `~/.claude.json` (user) and `.mcp.json` (project).
+- **Full report:** `.Codex/cloude-code-toolbox-mcp-skills-awareness.md` in this workspace (auto-overwritten on each scan). Use it as ground truth for configured servers and skill folders.
+- **MCP:** For **live tools** in Codex, enable the matching server via `/mcp`. Servers are configured in `~/.Codex.json` (user) and `.mcp.json` (project).
 - **When the user’s task matches a server** (e.g. Confluence work and a **Confluence** / **Atlassian** MCP is listed), **prefer that server id** and plan on tool use—not only file search.
 - **Skills:** Folders below contain `SKILL.md`; attach or cite paths in chat when relevant.
 
@@ -134,74 +133,56 @@ _No active workspace servers in mcp.json._
 
 #### User MCP
 
-- `C:\Users\pp313\.claude.json` — _servers defined_
+- `C:\Users\pp313\.Codex.json` — _servers defined_
 
 | Server id | Kind | Detail |
 |-----------|------|--------|
-| ppt-mcp | stdio | uvx ppt-mcp |
 | pptmasterdeck-mcp | http | https://pptmasterdeck.clauxel.com/mcp |
-| pptogo-mcp | http | https://pptogo.com/api/mcp |
 | drawio | stdio | cmd /c npx -y drawio-mcp-server --editor |
+| ppt-mcp | stdio | uvx ppt-mcp |
+| pptogo-mcp | http | https://pptogo.com/api/mcp |
 
 #### Project skills
 
-- **git-commit** — `d:\02Project\QMT-export\.claude\skills\git-commit` — Execute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions "/commit".
+- **git-commit** — `d:\02Project\QMT-export\.Codex\skills\git-commit` — Execute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions "/commit".
 
-- **run-qmt-export** — `d:\02Project\QMT-export\.claude\skills\run-qmt-export` — Build, run, smoke-test, and drive the QMT-export quantitative trading backtest system. Use when asked to run a backtest, verify the engine works, validate a strategy, test data loading, or check that the backtest system 
+- **run-qmt-export** — `d:\02Project\QMT-export\.Codex\skills\run-qmt-export` — Build, run, smoke-test, and drive the QMT-export quantitative trading backtest system. Use when asked to run a backtest, verify the engine works, validate a strategy, test data loading, or check that the backtest system 
 
-- **signal-validation** — `d:\02Project\QMT-export\.claude\skills\signal-validation` — Validate A-stock sell/top-detection signals against historical data. Run when asked to validate trading signals, backtest sell rules, check momentum indicators, evaluate escape-top signals, or verify technical indicators
-
-- **git-commit** — `d:\02Project\QMT-export\.agents\skills\git-commit` — Execute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions "/commit".
-
-- **run-qmt-export** — `d:\02Project\QMT-export\.agents\skills\run-qmt-export` — Build, run, smoke-test, and drive the QMT-export quantitative trading backtest system. Use when asked to run a backtest, verify the engine works, validate a strategy, test data loading, or check that the backtest system 
-
-- **signal-validation** — `d:\02Project\QMT-export\.agents\skills\signal-validation` — Validate A-stock sell/top-detection signals against historical data. Run when asked to validate trading signals, backtest sell rules, check momentum indicators, evaluate escape-top signals, or verify technical indicators
+- **signal-validation** — `d:\02Project\QMT-export\.Codex\skills\signal-validation` — Validate A-stock sell/top-detection signals against historical data. Run when asked to validate trading signals, backtest sell rules, check momentum indicators, evaluate escape-top signals, or verify technical indicators
 
 #### User skills
 
-- **a-stock-data** — `C:\Users\pp313\.claude\skills\a-stock-data` — A股全栈数据工具包 — 覆盖行情(mootdx+腾讯+百度K线)、研报(东财+同花顺+iwencai)、信号(同花顺热点+北向+龙虎榜+解禁+行业)、资金面(融资融券+大宗交易+股东户数+分红+资金流分钟级+资金流120日)、新闻(东财个股+全球资讯)、基础数据(mootdx财务/F10+东财+新浪三表)、公告(巨潮)七层数据源，内嵌全部调用代码，自包含零依赖外部文件。优先用通达信(mootdx)/腾讯(不封IP)，东财接口已内置限流防
+- **a-stock-data** — `C:\Users\pp313\.Codex\skills\a-stock-data` — A股全栈数据工具包 — 覆盖行情(mootdx+腾讯+百度K线)、研报(东财+同花顺+iwencai)、信号(同花顺热点+北向+龙虎榜+解禁+行业)、资金面(融资融券+大宗交易+股东户数+分红+资金流分钟级+资金流120日)、新闻(东财个股+全球资讯)、基础数据(mootdx财务/F10+东财+新浪三表)、公告(巨潮)七层数据源，内嵌全部调用代码，自包含零依赖外部文件。优先用通达信(mootdx)/腾讯(不封IP)，东财接口已内置限流防
 
-- **A15-expert** — `C:\Users\pp313\.claude\skills\A15-expert` — >
+- **A15-expert** — `C:\Users\pp313\.Codex\skills\A15-expert` — >
 
-- **autosar-bsw-expert** — `C:\Users\pp313\.claude\skills\autosar-bsw-expert` — >
+- **autosar-bsw-expert** — `C:\Users\pp313\.Codex\skills\autosar-bsw-expert` — >
 
-- **CCU-expert** — `C:\Users\pp313\.claude\skills\CCU-expert` — >
+- **CCU-expert** — `C:\Users\pp313\.Codex\skills\CCU-expert` — >
 
-- **check-expert** — `C:\Users\pp313\.claude\skills\check-expert` — 我将为你提供一套 **核对模块** 的功能性核对点。请你扮演系统核查专家，针对**每一个核对点**，严格按照预设的专家角色、输出规范和目录结构，生成3份相互关联的Markdown报告。
+- **check-expert** — `C:\Users\pp313\.Codex\skills\check-expert` — 我将为你提供一套 **核对模块** 的功能性核对点。请你扮演系统核查专家，针对**每一个核对点**，严格按照预设的专家角色、输出规范和目录结构，生成3份相互关联的Markdown报告。
 
-- **diag-expert** — `C:\Users\pp313\.claude\skills\diag-expert` — >
+- **diag-expert** — `C:\Users\pp313\.Codex\skills\diag-expert` — >
 
-- **QMT-expert** — `C:\Users\pp313\.claude\skills\QMT-expert` — >
+- **QMT-expert** — `C:\Users\pp313\.Codex\skills\QMT-expert` — >
 
-- **rollout-check** — `C:\Users\pp313\.claude\skills\rollout-check` — >
+- **rollout-check** — `C:\Users\pp313\.Codex\skills\rollout-check` — >
 
-- **serenity-skill** — `C:\Users\pp313\.claude\skills\serenity-skill` — Turn an investment agent into a supply-chain bottleneck hunter. Use this skill for source-backed investment research, live market/theme scans, AI/semi/technology value-chain mapping, A-share/HK/US stock screening, thesis
+- **serenity-skill** — `C:\Users\pp313\.Codex\skills\serenity-skill` — Turn an investment agent into a supply-chain bottleneck hunter. Use this skill for source-backed investment research, live market/theme scans, AI/semi/technology value-chain mapping, A-share/HK/US stock screening, thesis
 
-- **solution-verify** — `C:\Users\pp313\.claude\skills\solution-verify` — >
+- **solution-verify** — `C:\Users\pp313\.Codex\skills\solution-verify` — >
 
-- **tricore-expert** — `C:\Users\pp313\.claude\skills\tricore-expert` — >
-
-- **a-stock-data** — `C:\Users\pp313\.agents\skills\a-stock-data` — A股全栈数据工具包 — 覆盖行情(mootdx+腾讯+百度K线)、研报(东财+同花顺+iwencai)、信号(同花顺热点+北向+龙虎榜+解禁+行业)、资金面(融资融券+大宗交易+股东户数+分红+资金流分钟级+资金流120日)、新闻(东财个股+全球资讯)、基础数据(mootdx财务/F10+东财+新浪三表)、公告(巨潮)七层数据源，内嵌全部调用代码，自包含零依赖外部文件。优先用通达信(mootdx)/腾讯(不封IP)，东财接口已内置限流防
-
-- **A15-expert** — `C:\Users\pp313\.agents\skills\A15-expert` — >
+- **tricore-expert** — `C:\Users\pp313\.Codex\skills\tricore-expert` — >
 
 - **ask-matt** — `C:\Users\pp313\.agents\skills\ask-matt` — Ask which skill or flow fits your situation. A router over the skills in this repo.
 
-- **autosar-bsw-expert** — `C:\Users\pp313\.agents\skills\autosar-bsw-expert` — >
-
-- **CCU-expert** — `C:\Users\pp313\.agents\skills\CCU-expert` — >
-
-- **check-expert** — `C:\Users\pp313\.agents\skills\check-expert` — 我将为你提供一套 **核对模块** 的功能性核对点。请你扮演系统核查专家，针对**每一个核对点**，严格按照预设的专家角色、输出规范和目录结构，生成3份相互关联的Markdown报告。
-
-- **claude-handoff** — `C:\Users\pp313\.agents\skills\claude-handoff` — Hand the current conversation off to a fresh background agent that picks up the work immediately.
+- **Codex-handoff** — `C:\Users\pp313\.agents\skills\Codex-handoff` — Hand the current conversation off to a fresh background agent that picks up the work immediately.
 
 - **code-review** — `C:\Users\pp313\.agents\skills\code-review` — Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating is
 
 - **codebase-design** — `C:\Users\pp313\.agents\skills\codebase-design` — Shared vocabulary for designing deep modules. Use when the user wants to design or improve a module's interface, find deepening opportunities, decide where a seam goes, make code more testable or AI-navigable, or when an
 
 - **design-an-interface** — `C:\Users\pp313\.agents\skills\design-an-interface` — Generate multiple radically different interface designs for a module using parallel sub-agents. Use when user wants to design an API, explore interface options, compare module shapes, or mentions "design it twice".
-
-- **diag-expert** — `C:\Users\pp313\.agents\skills\diag-expert` — >
 
 - **diagnosing-bugs** — `C:\Users\pp313\.agents\skills\diagnosing-bugs` — Diagnosis loop for hard bugs and performance regressions. Use when the user says "diagnose"/"debug this", or reports something broken/throwing/failing/slow.
 
@@ -211,7 +192,7 @@ _No active workspace servers in mcp.json._
 
 - **find-skills** — `C:\Users\pp313\.agents\skills\find-skills` — Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", "is there a skill that can...", or express interest in extending capabilities. This skill should be used w
 
-- **git-guardrails-claude-code** — `C:\Users\pp313\.agents\skills\git-guardrails-claude-code` — Set up Claude Code hooks to block dangerous git commands (push, reset --hard, clean, branch -D, etc.) before they execute. Use when user wants to prevent destructive git operations, add git safety hooks, or block git pus
+- **git-guardrails-Codex** — `C:\Users\pp313\.agents\skills\git-guardrails-Codex` — Set up Codex hooks to block dangerous git commands (push, reset --hard, clean, branch -D, etc.) before they execute. Use when user wants to prevent destructive git operations, add git safety hooks, or block git pus
 
 - **grill-me** — `C:\Users\pp313\.agents\skills\grill-me` — A relentless interview to sharpen a plan or design.
 
@@ -235,25 +216,17 @@ _No active workspace servers in mcp.json._
 
 - **qa** — `C:\Users\pp313\.agents\skills\qa` — Interactive QA session where user reports bugs or issues conversationally, and the agent files GitHub issues. Explores the codebase in the background for context and domain language. Use when user wants to report bugs, d
 
-- **QMT-expert** — `C:\Users\pp313\.agents\skills\QMT-expert` — >
-
 - **request-refactor-plan** — `C:\Users\pp313\.agents\skills\request-refactor-plan` — Create a detailed refactor plan with tiny commits via user interview, then file it as a GitHub issue. Use when user wants to plan a refactor, create a refactoring RFC, or break a refactor into safe incremental steps.
 
 - **research** — `C:\Users\pp313\.agents\skills\research` — Investigate a question against high-trust primary sources and capture the findings as a Markdown file in the repo. Use when the user wants a topic researched, docs or API facts gathered, or reading legwork delegated to a
 
 - **resolving-merge-conflicts** — `C:\Users\pp313\.agents\skills\resolving-merge-conflicts` — Use when you need to resolve an in-progress git merge/rebase conflict.
 
-- **rollout-check** — `C:\Users\pp313\.agents\skills\rollout-check` — >
-
 - **scaffold-exercises** — `C:\Users\pp313\.agents\skills\scaffold-exercises` — Create exercise directory structures with sections, problems, solutions, and explainers that pass linting. Use when user wants to scaffold exercises, create exercise stubs, or set up a new course section.
-
-- **serenity-skill** — `C:\Users\pp313\.agents\skills\serenity-skill` — Turn an investment agent into a supply-chain bottleneck hunter. Use this skill for source-backed investment research, live market/theme scans, AI/semi/technology value-chain mapping, A-share/HK/US stock screening, thesis
 
 - **setup-matt-pocock-skills** — `C:\Users\pp313\.agents\skills\setup-matt-pocock-skills` — Configure this repo for the engineering skills — set up its issue tracker, triage label vocabulary, and domain doc layout. Run once before first use of the other engineering skills.
 
 - **setup-pre-commit** — `C:\Users\pp313\.agents\skills\setup-pre-commit` — Set up Husky pre-commit hooks with lint-staged (Prettier), type checking, and tests in the current repo. Use when user wants to add pre-commit hooks, set up Husky, configure lint-staged, or add commit-time formatting/typ
-
-- **solution-verify** — `C:\Users\pp313\.agents\skills\solution-verify` — >
 
 - **tdd** — `C:\Users\pp313\.agents\skills\tdd` — Test-driven development. Use when the user wants to build features or fix bugs test-first, mentions "red-green-refactor", or wants integration tests.
 
@@ -264,8 +237,6 @@ _No active workspace servers in mcp.json._
 - **to-prd** — `C:\Users\pp313\.agents\skills\to-prd` — Turn the current conversation into a PRD and publish it to the project issue tracker — no interview, just synthesis of what you've already discussed.
 
 - **triage** — `C:\Users\pp313\.agents\skills\triage` — Move issues and external PRs through a state machine of triage roles — categorise, verify, grill if needed, and write agent-ready briefs.
-
-- **tricore-expert** — `C:\Users\pp313\.agents\skills\tricore-expert` — >
 
 - **ubiquitous-language** — `C:\Users\pp313\.agents\skills\ubiquitous-language` — Extract a DDD-style ubiquitous language glossary from the current conversation, flagging ambiguities and proposing canonical terms. Saves to UBIQUITOUS_LANGUAGE.md. Use when user wants to define domain terms, build a glo
 

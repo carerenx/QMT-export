@@ -13,11 +13,12 @@ ACCOUNT    = '8890145315'
 STOCK_CODE     = '601869'
 STOCK_NAME     = '长飞光纤'
 STOCK_QMT      = f'{STOCK_CODE}.SH'
-STRATEGY_NAME  = 'mini反T_v15'
+STRATEGY_NAME  = 'Daily trading buy and sell'
 
-TRADE_LOT_SIZE = 200
+TRADE_LOT_SIZE = 100
 MIN_LOT        = 100
 
+TRADE_LOT_SIZE_MOM = 100
 # ============================================================================
 # 技术指标参数
 # ============================================================================
@@ -32,7 +33,7 @@ SELL_TRIGGER_BASE_WEAK_BULL = 0.65
 
 # 反T触发价缩放系数: 作用于"涨幅"部分 (curr_atr_pct × sell_mult)。
 # <1.0 下调触发价, 使阈值更易触发; >1.0 上调。0.50 = 涨幅整体下调 50%。
-SELL_TRIGGER_SCALE = 0.50
+SELL_TRIGGER_SCALE = 0.6
 
 DYNAMIC_MULT_MIN = 0.20
 DYNAMIC_MULT_MAX = 1.50
@@ -50,6 +51,7 @@ RSI_OVERBOUGHT      = 75
 STRONG_BULL_RSI     = 70
 STRONG_BULL_STREAK  = 5
 
+EMERGENCY_BUYBACK = False
 EMERGENCY_BUYBACK_PCT = 0.03
 STOP_LOSS_PCT         = 0.015
 
