@@ -5,8 +5,8 @@
 ================================================================================
 
  [v31 改动] (vs v30)
-   ? MOM/REV-T 买回改用卖一价上浮0.05%的FIX限价，避免对手价按涨停价冻结资金
-   ? askPrice盘口缺失时回退到触发价，最终价格统一向上取整到0.01元
+   - MOM/REV-T 买回改用卖一价FIX限价，避免对手价按涨停价冻结资金
+   - askPrice盘口缺失时回退到触发价，并用FIX报价记录买回收益
 
  [v29 改动] (vs v28)
    ★ MOM短线机制屏蔽 — 新增 MOM_ENABLED=False 开关, 完全屏蔽短线动量反转机制:
@@ -90,9 +90,8 @@ LADDER_DOWN_STEP_PCT = 0.015   # 正T: 买入后价格再跌 -1.5% → 追加探底回升买入
 FILL_TIMEOUT_SEC = 8.0   # 等待满额成交的超时秒数
 
 # ★ v25/v26: 短线动量反转机制 (2分钟事件驱动, 独立于日线信号)
-# v31: MOM/REV-T buybacks use an explicit ask-based limit to avoid
-# peer-price orders reserving cash at the daily upper-limit price.
-BUYBACK_FIX_SLIPPAGE_PCT = 0.0005  # 0.05%
+# v31: MOM/REV-T buybacks use an explicit ask1 limit to avoid peer-price
+# orders reserving cash at the daily upper-limit price.
 
 MOM_ENABLED           = True
 MOM_WINDOW_SEC        = 120           # 检测窗口: 2分钟内价格变化
@@ -316,22 +315,23 @@ class StrategyRunner:
         return sum((p - buyback_price) * s for p, s in legs)
 
     def _buyback_limit_price(self, fallback_price):
-        """Use ask1 plus 0.05%; fall back to the trigger price if ask1 is absent."""
+        """Use ask1 directly; fall back to the trigger price if ask1 is absent."""
         tick = self.ctx.get_full_tick([STOCK_QMT]).get(STOCK_QMT, {})
         ask_prices = tick.get('askPrice', []) or []
         ask1 = float(ask_prices[0]) if len(ask_prices) > 0 and ask_prices[0] else 0.0
         base_price = ask1 if ask1 > 0 else float(fallback_price or 0.0)
         if base_price <= 0:
             return 0.0
-        return float(np.ceil(base_price * (1.0 + BUYBACK_FIX_SLIPPAGE_PCT) * 100.0) / 100.0)
+        return round(base_price, 2)
 
     def _submit_buyback_order(self, shares, fallback_price, label):
         limit_price = self._buyback_limit_price(fallback_price)
         if limit_price <= 0:
             _log('[{} SKIP] FIX buyback price unavailable'.format(label))
             return 'SKIP', 0
-        _log('[FIX-BUYBACK] reference Y{:.2f} -> limit Y{:.2f} (+{:.2f}%)'.format(
-            fallback_price, limit_price, BUYBACK_FIX_SLIPPAGE_PCT * 100))
+        self._last_buyback_price = limit_price
+        _log('[FIX-BUYBACK] trigger Y{:.2f} -> ask1/fallback limit Y{:.2f}'.format(
+            fallback_price, limit_price))
         return self._submit_order(shares, limit_price, label, style='FIX')
 
     def _submit_order(self, shares, price, label, style='COMPETE'):
@@ -457,7 +457,7 @@ class StrategyRunner:
         _log('[SIGNAL] {} | Open Y{:.2f} | ATR {:.1f}% | RSI {:.0f} | Vol_ratio {} | Mult {:.2f} | Trig Y{:.2f}{} {}'.format(
             trend_cn, open_p, atr_pct, rsi_v, vol_display, sell_mult, sell_trig,
             '(range-capped)' if range_capped else '',
-            '?REV-T blocked:{}'.format(signal.get('blocked_reason', '')) if not do_short else ''))
+            '[REV-T blocked:{}]'.format(signal.get('blocked_reason', '')) if not do_short else ''))
         _log('[VOLUME] last {:.0f} / prev20_avg {:.0f} | n={} | {}'.format(
             signal.get('volume_current', 0), signal.get('volume_avg20', 0),
             signal.get('volume_baseline_count', 0), 'VALID' if volume_valid else 'INVALID-neutral'))
@@ -475,19 +475,19 @@ class StrategyRunner:
 
         # 行3-4: 反T / 正T
         if do_short:
-            _log('[REV-T] ? {} lots trig Y{:.2f} buyback=sell×(1-ATR%×{:.2f}) emerg +{:.0f}% / emergTrig{}'.format(
+            _log('[REV-T] ENABLED {} lots trig Y{:.2f} buyback=sell×(1-ATR%×{:.2f}) emerg +{:.0f}% / emergTrig{}'.format(
                 short_lots, sell_trig, cfg.BUYBACK_TRIGGER_MULT, cfg.EMERGENCY_BUYBACK_PCT * 100,
                 'True' if cfg.EMERGENCY_BUYBACK else 'False'))
         else:
             reason = signal.get('short_reason', signal.get('blocked_reason', 'unknown'))
-            _log('[REV-T] ? {}'.format(reason))
+            _log('[REV-T] BLOCKED {}'.format(reason))
         if do_long:
             buy_trig = signal.get('buy_trigger', 0)
             sell_hint = signal.get('sellback_target_hint', 0)
-            _log('[FWD-T] ? {} lots buy Y{:.2f} sell Y{:.2f}(+{:.1f}%) 1 lot≈Y{:,.0f}'.format(
+            _log('[FWD-T] ENABLED {} lots buy Y{:.2f} sell Y{:.2f}(+{:.1f}%) 1 lot≈Y{:,.0f}'.format(
                 long_lots, buy_trig, sell_hint, cfg.SELLBACK_RISE_PCT * 100, curr_price * TRADE_LOT_SIZE))
         else:
-            _log('[FWD-T] ? {}  1 lot≈Y{:,.0f}'.format(self.st.get('long_reason', 'unknown'), curr_price * TRADE_LOT_SIZE))
+            _log('[FWD-T] BLOCKED {}  1 lot≈Y{:,.0f}'.format(self.st.get('long_reason', 'unknown'), curr_price * TRADE_LOT_SIZE))
 
         # ★ v25/v26/v27: 短线动量反转机制 (独立于日线信号, 触发幅度自适应ATR)
         # ★ v29: MOM_ENABLED=False 时显示"已屏蔽"
@@ -596,12 +596,16 @@ class StrategyRunner:
         if bounce >= cfg.BOUNCE_PCT:
             legs = st['short_legs'] or [(st['sell_fill_price'], TRADE_LOT_SIZE)]
             total_shares = self._leg_shares(legs)
-            gross = self._short_gross(legs, price)
-            _log('[REV-T buyback trig] low Y{:.2f} bounce {:.2f}% → Y{:.2f} gross~Y{:,.0f}'.format(dip, bounce * 100, price, gross))
+            _log('[REV-T buyback trig] low Y{:.2f} bounce {:.2f}% → Y{:.2f}'.format(
+                dip, bounce * 100, price))
             bought = self._do_buyback(price, 'NORMAL')
             if bought >= total_shares and total_shares > 0:
+                buyback_price = getattr(self, '_last_buyback_price', price)
+                gross = self._short_gross(legs, buyback_price)
                 self.total_t_days += 1
                 self.total_pnl += gross
+                _log('[REV-T done] buyback Y{:.2f} x {}sh gross~Y{:,.0f}'.format(
+                    buyback_price, bought, gross))
 
     def _do_buyback(self, price, reason=''):
         st = self.st
@@ -954,9 +958,11 @@ class StrategyRunner:
             shares = st.get('mom_leg_shares', 0) or MOM_LOT_SIZE
             _, delta = self._submit_buyback_order(shares, price, 'MOM emrg buyback')
             if delta > 0:
-                gross = (sp - price) * delta
+                buyback_price = getattr(self, '_last_buyback_price', price)
+                gross = (sp - buyback_price) * delta
                 self.total_t_days += 1; self.total_pnl += gross
-                _log('[MOM short done(EMERG)] 卖Y{:.2f} 买Y{:.2f} gross~Y{:,.0f}'.format(sp, price, gross))
+                _log('[MOM short done(EMERG)] 卖Y{:.2f} 买Y{:.2f} gross~Y{:,.0f}'.format(
+                    sp, buyback_price, gross))
                 st['mom_state'] = 'MOM_IDLE'
                 st['mom_sell_price'] = 0.0; st['mom_leg_shares'] = 0
             return
@@ -980,10 +986,11 @@ class StrategyRunner:
             if delta <= 0:
                 _log('[MOM buyback FAIL] 未成交, 保持 DIPPING')
                 return
-            gross = (st['mom_sell_price'] - price) * delta
+            buyback_price = getattr(self, '_last_buyback_price', price)
+            gross = (st['mom_sell_price'] - buyback_price) * delta
             self.total_t_days += 1; self.total_pnl += gross
             _log('[MOM short done] 卖Y{:.2f} 买Y{:.2f} x {}sh gross~Y{:,.0f}'.format(
-                st['mom_sell_price'], price, delta, gross))
+                st['mom_sell_price'], buyback_price, delta, gross))
             st['mom_state'] = 'MOM_IDLE'
             st['mom_sell_price'] = 0.0; st['mom_dip'] = 0.0; st['mom_leg_shares'] = 0
 
