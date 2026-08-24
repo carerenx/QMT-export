@@ -450,13 +450,30 @@ class MiniQMTConnector:
             shares = abs(shares)
             dir_name = '卖出'
 
-        order_price = price if price and price > 0 else 0
-        price_type = xtconstant.FIX_PRICE
+        # 将策略层的报价风格显式映射到 XtQuant 报价类型。
+        # 非指定价委托的 price 必须传 0，由 QMT 按对应规则取价。
+        style_name = str(style or 'FIX').upper()
+        if style_name == 'COMPETE':
+            price_type = xtconstant.MARKET_PEER_PRICE_FIRST
+            order_price = 0
+        elif style_name == 'LATEST':
+            price_type = xtconstant.LATEST_PRICE
+            order_price = 0
+        elif style_name == 'FIX':
+            price_type = xtconstant.FIX_PRICE
+            order_price = price if price and price > 0 else 0
+            if order_price <= 0:
+                raise ValueError('FIX style requires a positive price')
+        else:
+            raise ValueError('unsupported order style: {}'.format(style))
 
         # ★ 记录下单快照, 供委托/成交推送回调在价格/数量字段为 0 时回退显示真实值
         self.last_order_info = (dir_name, order_price, shares, stock_code)
 
-        _log('  >>> 下单{}: Y{:.2f} x {}股 {}'.format(dir_name, order_price, shares, stock_code))
+        display_price = 'PEER' if style_name == 'COMPETE' else (
+            'LATEST' if style_name == 'LATEST' else 'Y{:.2f}'.format(order_price))
+        _log('  >>> 下单{}: {} x {}股 {} [{}]'.format(
+            dir_name, display_price, shares, stock_code, style_name))
 
         try:
             ret = self.trader.order_stock(
