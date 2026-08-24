@@ -64,8 +64,9 @@ def calc_dynamic_sell_mult(trend, atr_pct, atr_ratio, vol_ratio, rsi_val, up_str
     deviations['volatility'] = round(vol_d, 2)
     total_deviation += vol_d
 
-    # 因子3: 成交量
-    if vol_ratio > 2.00:         d = -0.25
+    # 因子3: 成交量。数据无效时保持中性，不用伪造的 1.0 影响乘数。
+    if vol_ratio is None:        d = 0.00
+    elif vol_ratio > 2.00:       d = -0.25
     elif vol_ratio > 1.50:       d = -0.18
     elif vol_ratio > 1.20:       d = -0.08
     elif vol_ratio > 0.80:       d = 0.00
@@ -111,7 +112,10 @@ def compute_signal(opens, highs, lows, closes, volumes, yesterday_close=None):
 
     co = opens[-1]
     cc = closes[-1]
-    cv = volumes[-1]
+    # 日线成交量必须与价格序列对齐，且至少有“当前完整日 +
+    # 之前20个完整日”。不满足时显式标记无效，不回退为 1.0。
+    volume_aligned = len(volumes) == n
+    cv = float(volumes[-1]) if volume_aligned and volumes else 0.0
 
     atr_arr = atr(highs, lows, closes, cfg.ATR_PERIOD)
     curr_atr = atr_arr[-1] or cc * 0.03
@@ -137,8 +141,11 @@ def compute_signal(opens, highs, lows, closes, volumes, yesterday_close=None):
     else:
         trend = 'sideways'
 
-    ma20_vol = sma(volumes, 20)
-    curr_vr = cv / ma20_vol[-1] if ma20_vol[-1] > 0 else 1.0
+    previous_volumes = [float(value) for value in volumes[-21:-1]] if volume_aligned and len(volumes) >= 21 else []
+    volume_baseline_count = len(previous_volumes)
+    volume_avg20 = sum(previous_volumes) / 20.0 if volume_baseline_count == 20 else 0.0
+    volume_valid = cv > 0 and volume_avg20 > 0
+    curr_vr = cv / volume_avg20 if volume_valid else None
 
     sell_mult, factor_details, base_used = calc_dynamic_sell_mult(
         trend, curr_atr_pct, atr_ratio, curr_vr, curr_rsi, up_streak_val
@@ -167,7 +174,7 @@ def compute_signal(opens, highs, lows, closes, volumes, yesterday_close=None):
     if trend == 'strong_bull':
         do_short = False
         reason = 'strong bull blocks REV-T (streak>=5 + RSI>70)'
-    elif curr_vr < cfg.VOLUME_FILTER_RATIO:
+    elif volume_valid and curr_vr < cfg.VOLUME_FILTER_RATIO:
         do_short = False
         reason = f'low volume (vol_ratio {curr_vr:.2f})'
     elif curr_rsi > cfg.RSI_OVERBOUGHT:
@@ -186,7 +193,11 @@ def compute_signal(opens, highs, lows, closes, volumes, yesterday_close=None):
         'atr': curr_atr, 
         'atr_pct': curr_atr_pct, 
         'rsi': curr_rsi,
-        'vol_ratio': curr_vr, 
+        'vol_ratio': curr_vr,
+        'volume_valid': volume_valid,
+        'volume_current': cv,
+        'volume_avg20': volume_avg20,
+        'volume_baseline_count': volume_baseline_count,
         'sell_mult': sell_mult, 
         'sell_mult_base': base_used,
         'factor_details': factor_details, 

@@ -56,6 +56,17 @@ def _pick(obj, *names, default=None):
     return default
 
 
+def exclude_incomplete_daily_bar(dataframe, today=None):
+    """Return daily bars with the current, still-forming trading day removed."""
+    if dataframe is None or len(dataframe) == 0:
+        return dataframe, False
+    today_key = today or datetime.now().strftime('%Y%m%d')
+    last_key = str(dataframe.index[-1]).replace('-', '')[:8]
+    if last_key == today_key:
+        return dataframe.iloc[:-1].copy(), True
+    return dataframe, False
+
+
 # ============================================================================
 # MiniQMTConnector
 # ============================================================================
@@ -376,8 +387,8 @@ class MiniQMTConnector:
                 self.xtdata.download_history_data(
                     code, period='1d', start_time='', end_time=''
                 )
-            except Exception:
-                pass
+            except Exception as e:
+                _log('[DailyData] download failed: {}'.format(e))
             data = self.xtdata.get_local_data(
                 field_list=['open', 'high', 'low', 'close', 'volume', 'amount'],
                 stock_list=[code],
@@ -388,8 +399,17 @@ class MiniQMTConnector:
                 data_dir='C:/QMT/datadir',
             )
             if code in data and len(data[code]) > 0:
-                self._daily_data_cache = data[code]
+                self._daily_data_cache, removed_today = exclude_incomplete_daily_bar(data[code])
+                if removed_today:
+                    _log('[DailyData] excluded incomplete current-day bar {}'.format(end))
+                volumes = self._daily_data_cache['volume'].values.tolist() \
+                    if 'volume' in self._daily_data_cache.columns else []
+                positive_recent = sum(1 for value in volumes[-21:] if value and value > 0)
+                if len(volumes) < 21 or positive_recent < 21:
+                    _log('[DailyData WARN] invalid volume history: count={} positive_recent={}/21'.format(
+                        len(volumes), positive_recent))
             else:
+                _log('[DailyData WARN] no local daily data for {}'.format(code))
                 return {}
 
         df = self._daily_data_cache
