@@ -89,7 +89,7 @@ FILL_TIMEOUT_SEC = 8.0   # 等待满额成交的超时秒数
 MOM_ENABLED           = True
 MOM_WINDOW_SEC        = 120           # 检测窗口: 2分钟内价格变化
 MOM_ATR_WINDOW_SEC    = 600           # ATR计算窗口: 最近10分钟
-MOM_ATR_MULT          = 3.0           # 触发幅度 = 2 × 最近10分钟ATR (自适应)
+MOM_ATR_MULT          = 3.5           # 触发幅度 = 2 × 最近10分钟ATR (自适应)
 MOM_TRIGGER_MIN_PCT   = 0.01          # 触发幅度下限 1% (防超低波动日过度触发)
 MOM_TRIGGER_MAX_PCT   = 0.06          # 触发幅度上限 6% (防超高波动日无法触发)
 MOM_SHORT_BUYBACK_PCT = 0.015         # 反T: 卖出后价格跌1.2% → 触发探底回升买入
@@ -103,7 +103,7 @@ MOM_EMERGENCY_BUYBACK_ENABLED = False # 默认关闭; True=开启紧急买回止
 
 
 class StrategyRunner:
-    """MiniQMT v29 — 阶梯加仓 + 严格成交判定 + 下单前仓位检查 + sell_trigger已消耗更新 (MOM短线已屏蔽)"""
+    """MiniQMT v29 — 阶梯加仓 + 严格成交判定 + 下单前仓位检查 + sell_trigger已消耗更新 (MOM短线屏蔽机制)"""
 
     def __init__(self, dry_run=False):
         logger = get_logger()
