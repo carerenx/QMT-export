@@ -1,57 +1,57 @@
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
 """
 ================================================================================
- MiniQMT ¡ª QMT day trading v31 + FIXÏŞ¼ÛÂò»Ø + ÑÏ¸ñ³É½»ÅĞ¶¨
+ MiniQMT â€” QMT day trading v31 + FIXé™ä»·ä¹°å› + ä¸¥æ ¼æˆäº¤åˆ¤å®š
 ================================================================================
 
- [v31 ¸Ä¶¯] (vs v30)
-   - MOM/REV-T Âò»Ø¸ÄÓÃÂôÒ»¼ÛFIXÏŞ¼Û£¬±ÜÃâ¶ÔÊÖ¼Û°´ÕÇÍ£¼Û¶³½á×Ê½ğ
-   - askPriceÅÌ¿ÚÈ±Ê§Ê±»ØÍËµ½´¥·¢¼Û£¬²¢ÓÃFIX±¨¼Û¼ÇÂ¼Âò»ØÊÕÒæ
+ [v31 æ”¹åŠ¨] (vs v30)
+   - MOM/REV-T ä¹°å›æ”¹ç”¨å–ä¸€ä»·FIXé™ä»·ï¼Œé¿å…å¯¹æ‰‹ä»·æŒ‰æ¶¨åœä»·å†»ç»“èµ„é‡‘
+   - askPriceç›˜å£ç¼ºå¤±æ—¶å›é€€åˆ°è§¦å‘ä»·ï¼Œå¹¶ç”¨FIXæŠ¥ä»·è®°å½•ä¹°å›æ”¶ç›Š
 
- [v29 ¸Ä¶¯] (vs v28)
-   ¡ï MOM¶ÌÏß»úÖÆÆÁ±Î ¡ª ĞÂÔö MOM_ENABLED=False ¿ª¹Ø, ÍêÈ«ÆÁ±Î¶ÌÏß¶¯Á¿·´×ª»úÖÆ:
-     ²»²É¼¯tick¼Û¸ñÀúÊ·¡¢²»ÏÂµ¥¡¢²»´òÓ¡ĞÄÌø, ½ö±£ÁôÖ÷×´Ì¬»ú(·´T/ÕıT)
+ [v29 æ”¹åŠ¨] (vs v28)
+   â˜… MOMçŸ­çº¿æœºåˆ¶å±è”½ â€” æ–°å¢ MOM_ENABLED=False å¼€å…³, å®Œå…¨å±è”½çŸ­çº¿åŠ¨é‡åè½¬æœºåˆ¶:
+     ä¸é‡‡é›†tickä»·æ ¼å†å²ã€ä¸ä¸‹å•ã€ä¸æ‰“å°å¿ƒè·³, ä»…ä¿ç•™ä¸»çŠ¶æ€æœº(åT/æ­£T)
 
- [v28 ¸Ä¶¯] (vs v27)
-   ¡ï sell_trigger ÒÑÏûºÄ¸üĞÂ ¡ª ·´T½»Ò×Íê³Éºó(Âò»Ø¡úIDLE), ½« sell_trigger ÌáÉıÖÁ
-     Êµ¼ÊÂô³ö¼Û(sell_fill_price), ±ÜÃâĞÄÌø¼ÌĞøÏÔÊ¾ÒÑ³É½»¹ıµÄ¾ÉãĞÖµ
+ [v28 æ”¹åŠ¨] (vs v27)
+   â˜… sell_trigger å·²æ¶ˆè€—æ›´æ–° â€” åTäº¤æ˜“å®Œæˆå(ä¹°å›â†’IDLE), å°† sell_trigger æå‡è‡³
+     å®é™…å–å‡ºä»·(sell_fill_price), é¿å…å¿ƒè·³ç»§ç»­æ˜¾ç¤ºå·²æˆäº¤è¿‡çš„æ—§é˜ˆå€¼
 
- [v27 ¸Ä¶¯] (vs v26)
-   ¡ï ½ô¼±Âò»Ø¿ª¹Ø ¡ª ¶ÌÏß¶¯Á¿·´TµÄ½ô¼±Âò»Ø»úÖÆ(·´ÕÇ3%Ö¹ËğÂò»Ø)Ôö¼Ó¿ª¹Ø
-     MOM_EMERGENCY_BUYBACK_ENABLED, Ä¬ÈÏ False (¹Ø±Õ)
+ [v27 æ”¹åŠ¨] (vs v26)
+   â˜… ç´§æ€¥ä¹°å›å¼€å…³ â€” çŸ­çº¿åŠ¨é‡åTçš„ç´§æ€¥ä¹°å›æœºåˆ¶(åæ¶¨3%æ­¢æŸä¹°å›)å¢åŠ å¼€å…³
+     MOM_EMERGENCY_BUYBACK_ENABLED, é»˜è®¤ False (å…³é—­)
 
- [v26 ¸Ä¶¯] (vs v25)
-   ¡ï ´¥·¢·ù¶È×ÔÊÊÓ¦ ¡ª 2·ÖÖÓÕÇµøãĞÖµÓÉ¹Ì¶¨2%¸ÄÎª 2¡Á×î½ü10·ÖÖÓATR,
-     Ëæ²¨¶¯ÂÊ×Ô¶¯Ëõ·Å (µÍ²¨¶¯ÈÕãĞÖµÊÕÕ­¡¢¸ß²¨¶¯ÈÕãĞÖµ·Å¿í), ²¢ÉèÉÏÏÂÏŞ
-     MOM_TRIGGER_MIN_PCT=1% / MOM_TRIGGER_MAX_PCT=6% ·À¼«¶Ë
+ [v26 æ”¹åŠ¨] (vs v25)
+   â˜… è§¦å‘å¹…åº¦è‡ªé€‚åº” â€” 2åˆ†é’Ÿæ¶¨è·Œé˜ˆå€¼ç”±å›ºå®š2%æ”¹ä¸º 2Ã—æœ€è¿‘10åˆ†é’ŸATR,
+     éšæ³¢åŠ¨ç‡è‡ªåŠ¨ç¼©æ”¾ (ä½æ³¢åŠ¨æ—¥é˜ˆå€¼æ”¶çª„ã€é«˜æ³¢åŠ¨æ—¥é˜ˆå€¼æ”¾å®½), å¹¶è®¾ä¸Šä¸‹é™
+     MOM_TRIGGER_MIN_PCT=1% / MOM_TRIGGER_MAX_PCT=6% é˜²æç«¯
 
- [v25 ¸Ä¶¯] (vs v24)
-   ¡ï ¶ÌÏß¶¯Á¿·´×ª»úÖÆ ¡ª ĞÂÔö¶ÀÁ¢ÓÚÈÕÏßĞÅºÅµÄÊÂ¼şÇı¶¯»úÖÆ:
-     ¡¤ 2·ÖÖÓÕÇ¡İãĞÖµ ¡ú ³å¸ß»ØÂäÂô³ö(»ØÂäºóÂô1ÊÖ) ¡ú Âô¼Ûµø1.2% ¡ú Ì½µ×»ØÉıÂòÈë(»ØÉıºóÂò»Ø)
-     ¡¤ 2·ÖÖÓµø¡İãĞÖµ ¡ú Ì½µ×»ØÉıÂòÈë(»ØÉıºóÂò1ÊÖ) ¡ú Âò¼ÛÕÇ1.5% ¡ú ³å¸ß»ØÂäÂô³ö(»ØÂäºóÂô³ö)
-     ¡¤ µ¥¶ÀÊÖÊı MOM_LOT_SIZE=1ÊÖ(200¹É), µ¥¶ÀÈÕ½»Ò×ÉÏÏŞ MOM_MAX_DAILY_TRADES
-     ¡¤ ÓëÖ÷»úÖÆ²¢ĞĞ¶ÀÁ¢ÔËĞĞ, ÏÂµ¥Ç°Í¬Ñù×ö²ÖÎ»/ÏÖ½ğÇ¯ÖÆ, Î²ÅÌÇ¿ÖÆÆ½µô¶ÌÏßÍÈ
+ [v25 æ”¹åŠ¨] (vs v24)
+   â˜… çŸ­çº¿åŠ¨é‡åè½¬æœºåˆ¶ â€” æ–°å¢ç‹¬ç«‹äºæ—¥çº¿ä¿¡å·çš„äº‹ä»¶é©±åŠ¨æœºåˆ¶:
+     Â· 2åˆ†é’Ÿæ¶¨â‰¥é˜ˆå€¼ â†’ å†²é«˜å›è½å–å‡º(å›è½åå–1æ‰‹) â†’ å–ä»·è·Œ1.2% â†’ æ¢åº•å›å‡ä¹°å…¥(å›å‡åä¹°å›)
+     Â· 2åˆ†é’Ÿè·Œâ‰¥é˜ˆå€¼ â†’ æ¢åº•å›å‡ä¹°å…¥(å›å‡åä¹°1æ‰‹) â†’ ä¹°ä»·æ¶¨1.5% â†’ å†²é«˜å›è½å–å‡º(å›è½åå–å‡º)
+     Â· å•ç‹¬æ‰‹æ•° MOM_LOT_SIZE=1æ‰‹(200è‚¡), å•ç‹¬æ—¥äº¤æ˜“ä¸Šé™ MOM_MAX_DAILY_TRADES
+     Â· ä¸ä¸»æœºåˆ¶å¹¶è¡Œç‹¬ç«‹è¿è¡Œ, ä¸‹å•å‰åŒæ ·åšä»“ä½/ç°é‡‘é’³åˆ¶, å°¾ç›˜å¼ºåˆ¶å¹³æ‰çŸ­çº¿è…¿
 
- [v24 ¸Ä¶¯] (vs v23)
-   ¡ï ĞÄÌøÈÕÖ¾ÓÅ»¯ ¡ª [HB] IDLE ĞĞµ±¼Û¸ñÒÑÔ½¹ı¼à¿Ø´¥·¢¼ÛÊ±, ÔÚ need ºó´òÓ¡
-     ! ÌáÊ¾ÒÑ´¥·¢ (REV-T ÕÇ³¬Âôµã / FWD-T µøÆÆÂòµã), ²¢ĞŞÕı need ÖµÕı¸ººÅÏÔÊ¾
+ [v24 æ”¹åŠ¨] (vs v23)
+   â˜… å¿ƒè·³æ—¥å¿—ä¼˜åŒ– â€” [HB] IDLE è¡Œå½“ä»·æ ¼å·²è¶Šè¿‡ç›‘æ§è§¦å‘ä»·æ—¶, åœ¨ need åæ‰“å°
+     ! æç¤ºå·²è§¦å‘ (REV-T æ¶¨è¶…å–ç‚¹ / FWD-T è·Œç ´ä¹°ç‚¹), å¹¶ä¿®æ­£ need å€¼æ­£è´Ÿå·æ˜¾ç¤º
 
- [v23 ¸Ä¶¯] (vs v22)
-   ¡ï ÑÏ¸ñ³É½»ÅĞ¶¨ ¡ª _wait_for_fill Ö»ÔÚ"Âú¶î³É½»"Ê±ÅĞ³É¹¦, ·µ»Ø
-     FILLED / PARTIAL / TIMEOUT ÈıÌ¬; ²¿·Ö³É½»/Î´³É½»²»ÔÙ±»ÎóÅĞÎª³É¹¦
-   ¡ï ÏÂµ¥Ç°²ÖÎ»¼ì²é ¡ª Âô³ö°´"¿ÉÂôÊıÁ¿"¡¢ÂòÈë°´"ÏÖ½ğ¿ÉÂòÊıÁ¿"Ç¯ÖÆÏÂµ¥Á¿,
-     ²ÖÎ»Ğ¡ÓÚ¼Æ»®Á¿Ê±ÒÔÊµ¼Ê²ÖÎ»ÏÂµ¥ (²»ÔÙÖ»°´ÕûÊÖÌø¹ı)
-   ¡ï ÍÈ°´"Êµ¼Ê³É½»¹ÉÊı"¼ÇÕË ¡ª short_legs / long_legs ÓÉ [¼Û] ¸ÄÎª [(¼Û,¹ÉÊı)],
-     Âò»Ø/Âô³ö°´Êµ¼Ê¹ÉÊıÆ½²Ö, Ã«Àû°´ ¦²(¼Û²î¡Á¹ÉÊı) ¼ÆËã
-   ¡ï Î´³É½»/²¿·Ö³É½»»Ö¸´ ¡ª Âô³öÎ´³É½»»Ø IDLE, Âò»ØÎ´³É½»±£³Ö SOLD ¼ÌĞø¼à¿Ø;
-     ³¬Ê±×Ô¶¯³·µ¥, ±ÜÃâ¹Òµ¥²ĞÁôµ¼ÖÂÒâÍâ³É½»
+ [v23 æ”¹åŠ¨] (vs v22)
+   â˜… ä¸¥æ ¼æˆäº¤åˆ¤å®š â€” _wait_for_fill åªåœ¨"æ»¡é¢æˆäº¤"æ—¶åˆ¤æˆåŠŸ, è¿”å›
+     FILLED / PARTIAL / TIMEOUT ä¸‰æ€; éƒ¨åˆ†æˆäº¤/æœªæˆäº¤ä¸å†è¢«è¯¯åˆ¤ä¸ºæˆåŠŸ
+   â˜… ä¸‹å•å‰ä»“ä½æ£€æŸ¥ â€” å–å‡ºæŒ‰"å¯å–æ•°é‡"ã€ä¹°å…¥æŒ‰"ç°é‡‘å¯ä¹°æ•°é‡"é’³åˆ¶ä¸‹å•é‡,
+     ä»“ä½å°äºè®¡åˆ’é‡æ—¶ä»¥å®é™…ä»“ä½ä¸‹å• (ä¸å†åªæŒ‰æ•´æ‰‹è·³è¿‡)
+   â˜… è…¿æŒ‰"å®é™…æˆäº¤è‚¡æ•°"è®°è´¦ â€” short_legs / long_legs ç”± [ä»·] æ”¹ä¸º [(ä»·,è‚¡æ•°)],
+     ä¹°å›/å–å‡ºæŒ‰å®é™…è‚¡æ•°å¹³ä»“, æ¯›åˆ©æŒ‰ Î£(ä»·å·®Ã—è‚¡æ•°) è®¡ç®—
+   â˜… æœªæˆäº¤/éƒ¨åˆ†æˆäº¤æ¢å¤ â€” å–å‡ºæœªæˆäº¤å› IDLE, ä¹°å›æœªæˆäº¤ä¿æŒ SOLD ç»§ç»­ç›‘æ§;
+     è¶…æ—¶è‡ªåŠ¨æ’¤å•, é¿å…æŒ‚å•æ®‹ç•™å¯¼è‡´æ„å¤–æˆäº¤
 
- [v22 ¸Ä¶¯] (vs v21)
-   ¡ï ·´T½×Ìİ¼ÓÂô ¡ª Âô³ö³É¹¦ºó, Èô¼Û¸ñ¼ÌĞøÕÇÖÁ"Âô¼Û¡Á(1+½×Ìİ·ù¶È)", Ôò½øÈë
-     ³å¸ß»ØÂä¼à²â, ×·¼ÓÂô³öÏÂÒ»ÊÖ(ÏòÉÏ·ÖÅúÂô³ö)
-   ¡ï ÕıT½×Ìİ¼ÓÂò ¡ª ÂòÈë³É¹¦ºó, Èô¼Û¸ñ¼ÌĞøµøÖÁ"Âò¼Û¡Á(1-½×Ìİ·ù¶È)", Ôò½øÈë
-     Ì½µ×»ØÉı¼à²â, ×·¼ÓÂòÈëÏÂÒ»ÊÖ(ÏòÏÂ·ÖÅúÂòÈë)
-   ¡ï ¶àÍÈ²ÖÎ»¹ÜÀí ¡ª ×·¼ÓµÄÃ¿ÊÖ¼ÆÈëÎ´Æ½²ÖÍÈ, Âò»Ø/Âô³öÊ±Ò»´ÎĞÔÆ½µôÈ«²¿ÍÈ
+ [v22 æ”¹åŠ¨] (vs v21)
+   â˜… åTé˜¶æ¢¯åŠ å– â€” å–å‡ºæˆåŠŸå, è‹¥ä»·æ ¼ç»§ç»­æ¶¨è‡³"å–ä»·Ã—(1+é˜¶æ¢¯å¹…åº¦)", åˆ™è¿›å…¥
+     å†²é«˜å›è½ç›‘æµ‹, è¿½åŠ å–å‡ºä¸‹ä¸€æ‰‹(å‘ä¸Šåˆ†æ‰¹å–å‡º)
+   â˜… æ­£Té˜¶æ¢¯åŠ ä¹° â€” ä¹°å…¥æˆåŠŸå, è‹¥ä»·æ ¼ç»§ç»­è·Œè‡³"ä¹°ä»·Ã—(1-é˜¶æ¢¯å¹…åº¦)", åˆ™è¿›å…¥
+     æ¢åº•å›å‡ç›‘æµ‹, è¿½åŠ ä¹°å…¥ä¸‹ä¸€æ‰‹(å‘ä¸‹åˆ†æ‰¹ä¹°å…¥)
+   â˜… å¤šè…¿ä»“ä½ç®¡ç† â€” è¿½åŠ çš„æ¯æ‰‹è®¡å…¥æœªå¹³ä»“è…¿, ä¹°å›/å–å‡ºæ—¶ä¸€æ¬¡æ€§å¹³æ‰å…¨éƒ¨è…¿
 
  [run mode]
  python "Stragety/MiniQMT_Stragety/DayTradeing_v31_stragety_miniqmt.py" --mode signal
@@ -82,35 +82,35 @@ STATE_DONE = cfg.STATE_DONE; STATE_FORCED = cfg.STATE_FORCED
 STATE_BT_DIPPING = cfg.STATE_BT_DIPPING; STATE_BT_BOUGHT = cfg.STATE_BT_BOUGHT
 STATE_BT_SPIKING = cfg.STATE_BT_SPIKING
 
-# ¡ï v22: ½×Ìİ¼Ó²Ö/¼õ²Ö²ÎÊı (³É¹¦Âô³ö/ÂòÈëºó, ÔÚ³É½»¼Û»ù´¡ÉÏ¼Ó¼õ¼Û¼à²â×·¼Ó)
-LADDER_UP_STEP_PCT   = 0.015   # ·´T: Âô³öºó¼Û¸ñÔÙÕÇ +1.5% ¡ú ×·¼Ó³å¸ß»ØÂäÂô³ö
-LADDER_DOWN_STEP_PCT = 0.015   # ÕıT: ÂòÈëºó¼Û¸ñÔÙµø -1.5% ¡ú ×·¼ÓÌ½µ×»ØÉıÂòÈë
+# â˜… v22: é˜¶æ¢¯åŠ ä»“/å‡ä»“å‚æ•° (æˆåŠŸå–å‡º/ä¹°å…¥å, åœ¨æˆäº¤ä»·åŸºç¡€ä¸ŠåŠ å‡ä»·ç›‘æµ‹è¿½åŠ )
+LADDER_UP_STEP_PCT   = 0.015   # åT: å–å‡ºåä»·æ ¼å†æ¶¨ +1.5% â†’ è¿½åŠ å†²é«˜å›è½å–å‡º
+LADDER_DOWN_STEP_PCT = 0.015   # æ­£T: ä¹°å…¥åä»·æ ¼å†è·Œ -1.5% â†’ è¿½åŠ æ¢åº•å›å‡ä¹°å…¥
 
-# ¡ï v23: ³É½»ÅĞ¶¨
-FILL_TIMEOUT_SEC = 8.0   # µÈ´ıÂú¶î³É½»µÄ³¬Ê±ÃëÊı
+# â˜… v23: æˆäº¤åˆ¤å®š
+FILL_TIMEOUT_SEC = 8.0   # ç­‰å¾…æ»¡é¢æˆäº¤çš„è¶…æ—¶ç§’æ•°
 
-# ¡ï v25/v26: ¶ÌÏß¶¯Á¿·´×ª»úÖÆ (2·ÖÖÓÊÂ¼şÇı¶¯, ¶ÀÁ¢ÓÚÈÕÏßĞÅºÅ)
+# â˜… v25/v26: çŸ­çº¿åŠ¨é‡åè½¬æœºåˆ¶ (2åˆ†é’Ÿäº‹ä»¶é©±åŠ¨, ç‹¬ç«‹äºæ—¥çº¿ä¿¡å·)
 # v31: MOM/REV-T buybacks use an explicit ask1 limit to avoid peer-price
 # orders reserving cash at the daily upper-limit price.
 
 MOM_ENABLED           = True
-MOM_WINDOW_SEC        = 120           # ¼ì²â´°¿Ú: 2·ÖÖÓÄÚ¼Û¸ñ±ä»¯
-MOM_ATR_WINDOW_SEC    = 600           # ATR¼ÆËã´°¿Ú: ×î½ü10·ÖÖÓ
-MOM_ATR_MULT          = 3.5           # ´¥·¢·ù¶È = 2 ¡Á ×î½ü10·ÖÖÓATR (×ÔÊÊÓ¦)
-MOM_TRIGGER_MIN_PCT   = 0.01          # ´¥·¢·ù¶ÈÏÂÏŞ 1% (·À³¬µÍ²¨¶¯ÈÕ¹ı¶È´¥·¢)
-MOM_TRIGGER_MAX_PCT   = 0.06          # ´¥·¢·ù¶ÈÉÏÏŞ 6% (·À³¬¸ß²¨¶¯ÈÕÎŞ·¨´¥·¢)
-MOM_SHORT_BUYBACK_PCT = 0.015         # ·´T: Âô³öºó¼Û¸ñµø1.2% ¡ú ´¥·¢Ì½µ×»ØÉıÂòÈë
-MOM_LONG_SELLBACK_PCT = 0.018         # ÕıT: ÂòÈëºó¼Û¸ñÕÇ1.5% ¡ú ´¥·¢³å¸ß»ØÂäÂô³ö
-MOM_LOT_SIZE          = cfg.TRADE_LOT_SIZE_MOM  # ¶ÌÏß»úÖÆµ¥¶ÀÊÖÊı = 1ÊÖ (100¹É)
-MOM_MAX_DAILY_TRADES  = 3             # ¶ÌÏß»úÖÆµ±ÈÕ×î´ó¿ªÍÈ´ÎÊı(·À¹ı¶È½»Ò×)
-# ¡ï v27: ½ô¼±Âò»Ø¿ª¹Ø ¡ª ·´TÂôºó¼Û¸ñ·´ÕÇ³¬Âô¼Û3%Ê±Ç¿ÖÆÂò»ØÖ¹Ëğ
-MOM_EMERGENCY_BUYBACK_ENABLED = False # Ä¬ÈÏ¹Ø±Õ; True=¿ªÆô½ô¼±Âò»ØÖ¹Ëğ
-# ¡ï v29: MOM»úÖÆ×Ü¿ª¹Ø ¡ª False=ÍêÈ«ÆÁ±Î¶ÌÏß¶¯Á¿·´×ª, ²»²É¼¯tick²»ÏÂµ¥
+MOM_WINDOW_SEC        = 120           # æ£€æµ‹çª—å£: 2åˆ†é’Ÿå†…ä»·æ ¼å˜åŒ–
+MOM_ATR_WINDOW_SEC    = 600           # ATRè®¡ç®—çª—å£: æœ€è¿‘10åˆ†é’Ÿ
+MOM_ATR_MULT          = 3.5           # è§¦å‘å¹…åº¦ = 2 Ã— æœ€è¿‘10åˆ†é’ŸATR (è‡ªé€‚åº”)
+MOM_TRIGGER_MIN_PCT   = 0.01          # è§¦å‘å¹…åº¦ä¸‹é™ 1% (é˜²è¶…ä½æ³¢åŠ¨æ—¥è¿‡åº¦è§¦å‘)
+MOM_TRIGGER_MAX_PCT   = 0.06          # è§¦å‘å¹…åº¦ä¸Šé™ 6% (é˜²è¶…é«˜æ³¢åŠ¨æ—¥æ— æ³•è§¦å‘)
+MOM_SHORT_BUYBACK_PCT = 0.015         # åT: å–å‡ºåä»·æ ¼è·Œ1.2% â†’ è§¦å‘æ¢åº•å›å‡ä¹°å…¥
+MOM_LONG_SELLBACK_PCT = 0.018         # æ­£T: ä¹°å…¥åä»·æ ¼æ¶¨1.5% â†’ è§¦å‘å†²é«˜å›è½å–å‡º
+MOM_LOT_SIZE          = cfg.TRADE_LOT_SIZE_MOM  # çŸ­çº¿æœºåˆ¶å•ç‹¬æ‰‹æ•° = 1æ‰‹ (100è‚¡)
+MOM_MAX_DAILY_TRADES  = 3             # çŸ­çº¿æœºåˆ¶å½“æ—¥æœ€å¤§å¼€è…¿æ¬¡æ•°(é˜²è¿‡åº¦äº¤æ˜“)
+# â˜… v27: ç´§æ€¥ä¹°å›å¼€å…³ â€” åTå–åä»·æ ¼åæ¶¨è¶…å–ä»·3%æ—¶å¼ºåˆ¶ä¹°å›æ­¢æŸ
+MOM_EMERGENCY_BUYBACK_ENABLED = False # é»˜è®¤å…³é—­; True=å¼€å¯ç´§æ€¥ä¹°å›æ­¢æŸ
+# â˜… v29: MOMæœºåˆ¶æ€»å¼€å…³ â€” False=å®Œå…¨å±è”½çŸ­çº¿åŠ¨é‡åè½¬, ä¸é‡‡é›†tickä¸ä¸‹å•
 
 
 
 class StrategyRunner:
-    """MiniQMT v31 ¡ª MOM/REV-T FIXÏŞ¼ÛÂò»Ø + ÑÏ¸ñ³É½»ÅĞ¶¨¡£"""
+    """MiniQMT v31 â€” MOM/REV-T FIXé™ä»·ä¹°å› + ä¸¥æ ¼æˆäº¤åˆ¤å®šã€‚"""
 
     def __init__(self, dry_run=False):
         logger = get_logger()
@@ -141,16 +141,16 @@ class StrategyRunner:
             'locked': False, 'lock_reason': '', 'lock_since': '',
             'lock_cooldown_until': 0.0, 'price_history': deque(),
             '_pre_market_done': '', '_market_open_logged': False,
-            # ¡ï v22/v23: ½×Ìİ¼Ó²Ö/¼õ²Ö×´Ì¬ ¡ª ÍÈ¼ÇÂ¼Îª (³É½»¼Û, ³É½»¹ÉÊı)
+            # â˜… v22/v23: é˜¶æ¢¯åŠ ä»“/å‡ä»“çŠ¶æ€ â€” è…¿è®°å½•ä¸º (æˆäº¤ä»·, æˆäº¤è‚¡æ•°)
             'ladder_sell_target': 0.0, 'ladder_buy_target': 0.0,
             'ladder_sold_count': 0, 'ladder_bought_count': 0,
             'short_legs': [], 'long_legs': [],
-            # ¡ï v25: ¶ÌÏß¶¯Á¿·´×ª»úÖÆ×´Ì¬ (¶ÀÁ¢ÓÚÖ÷×´Ì¬»ú)
+            # â˜… v25: çŸ­çº¿åŠ¨é‡åè½¬æœºåˆ¶çŠ¶æ€ (ç‹¬ç«‹äºä¸»çŠ¶æ€æœº)
             'mom_state': 'MOM_IDLE', 'mom_peak': 0.0, 'mom_dip': 0.0,
             'mom_sell_price': 0.0, 'mom_buy_price': 0.0,
             'mom_leg_shares': 0, 'mom_trade_count': 0,
             'mom_price_history': deque(), 'mom_last_hb': 0.0,
-            # ¡ï v26: ×ÔÊÊÓ¦ATR ¡ª 10·ÖÖÓ¼Û¸ñ´°¿Ú + µ±Ç°´¥·¢·ù¶È(2¡ÁATR)
+            # â˜… v26: è‡ªé€‚åº”ATR â€” 10åˆ†é’Ÿä»·æ ¼çª—å£ + å½“å‰è§¦å‘å¹…åº¦(2Ã—ATR)
             'mom_atr_history': deque(), 'mom_trigger_pct': 0.0,
         })
 
@@ -180,7 +180,7 @@ class StrategyRunner:
         if not is_new_day and saved_trail > 0:
             self.st['bt_max_trail'] = saved_trail; self.st['price_history'] = saved_history
 
-        # ¡ï ¿çÈÕË¢ĞÂÈÕÏß»º´æ£¬È·±£Ö¸±ê»ùÓÚ×îĞÂÊı¾İ
+        # â˜… è·¨æ—¥åˆ·æ–°æ—¥çº¿ç¼“å­˜ï¼Œç¡®ä¿æŒ‡æ ‡åŸºäºæœ€æ–°æ•°æ®
         self.conn.refresh_daily_cache()
         hist_close  = self.ctx.get_history_data(cfg.HIST_DATA_LEN, '1d', 'close')
         hist_open   = self.ctx.get_history_data(cfg.HIST_DATA_LEN, '1d', 'open')
@@ -197,9 +197,9 @@ class StrategyRunner:
         tick_now = self.ctx.get_full_tick([STOCK_QMT])
         tick_data = tick_now.get(STOCK_QMT, {})
         today_open = tick_data.get('open', 0); curr_price_now = tick_data.get('lastPrice', 0)
-        last_close = tick_data.get('lastClose', 0)   # ¡ï v22: ×òÊÕ(ÕæÊµ¼Û, Óë½ñ¿ªÍ¬Ô´)
+        last_close = tick_data.get('lastClose', 0)   # â˜… v22: æ˜¨æ”¶(çœŸå®ä»·, ä¸ä»Šå¼€åŒæº)
         opens_list = list(hist_open[STOCK_QMT])
-        # ¡ï µ÷ÊÔ: ´òÓ¡ÀúÊ·openÄ©Î² + tick½ñ¿ª, ÅÅ²éÊı¾İÔ´Òì³£
+        # â˜… è°ƒè¯•: æ‰“å°å†å²openæœ«å°¾ + tickä»Šå¼€, æ’æŸ¥æ•°æ®æºå¼‚å¸¸
         _log('[DATA-DBG] hist_open[-3:]= {} | tick_open={} | lastClose={}'.format(
             opens_list[-3:] if len(opens_list) >= 3 else opens_list, today_open, last_close))
         volume_list = list(hist_volume.get(STOCK_QMT, []))
@@ -272,7 +272,7 @@ class StrategyRunner:
                 self.st['base_cost'] = pos.m_dOpenPrice
                 break
 
-    # ¨T¨T¨T v23: ÏÂµ¥Ç°²ÖÎ»/ÏÖ½ğ¼ì²é + ÑÏ¸ñ³É½»ÅĞ¶¨ ¨T¨T¨T
+    # â•â•â• v23: ä¸‹å•å‰ä»“ä½/ç°é‡‘æ£€æŸ¥ + ä¸¥æ ¼æˆäº¤åˆ¤å®š â•â•â•
 
     def _cur_price(self):
         tick = self.ctx.get_full_tick([STOCK_QMT])
@@ -286,7 +286,7 @@ class StrategyRunner:
         return account[0].m_dAvailable if account else 0.0
 
     def _clamp_sell_shares(self, planned):
-        """Âô³öÇ°¼ì²é¿ÉÂô²ÖÎ»: Êµ¼Ê¿ÉÂô = min(¼Æ»®, base_can_use)¡£"""
+        """å–å‡ºå‰æ£€æŸ¥å¯å–ä»“ä½: å®é™…å¯å– = min(è®¡åˆ’, base_can_use)ã€‚"""
         can_use = self.st.get('base_can_use', 0)
         if can_use <= 0:
             self._refresh_position()
@@ -294,7 +294,7 @@ class StrategyRunner:
         return int(min(planned, can_use))
 
     def _clamp_buy_shares(self, planned, price):
-        """ÂòÈëÇ°¼ì²éÏÖ½ğ: Êµ¼Ê¿ÉÂò = min(¼Æ»®, ÏÖ½ğ¿ÉÂò¹ÉÊı)¡£"""
+        """ä¹°å…¥å‰æ£€æŸ¥ç°é‡‘: å®é™…å¯ä¹° = min(è®¡åˆ’, ç°é‡‘å¯ä¹°è‚¡æ•°)ã€‚"""
         if price <= 0:
             price = self._cur_price()
         avail = self._available_cash()
@@ -311,7 +311,7 @@ class StrategyRunner:
         return sum(p * s for p, s in legs) / sh if sh > 0 else 0.0
 
     def _short_gross(self, legs, buyback_price):
-        """·´TÃ«Àû = ¦²(¸÷ÍÈÂô¼Û - Âò»Ø¼Û) ¡Á ¸÷ÍÈ¹ÉÊı¡£"""
+        """åTæ¯›åˆ© = Î£(å„è…¿å–ä»· - ä¹°å›ä»·) Ã— å„è…¿è‚¡æ•°ã€‚"""
         return sum((p - buyback_price) * s for p, s in legs)
 
     def _buyback_limit_price(self, fallback_price):
@@ -335,12 +335,12 @@ class StrategyRunner:
         return self._submit_order(shares, limit_price, label, style='FIX')
 
     def _submit_order(self, shares, price, label, style='COMPETE'):
-        """ÏÂµ¥ + µÈ´ı³É½»¡£shares>0 ÂòÈë, <0 Âô³ö¡£
+        """ä¸‹å• + ç­‰å¾…æˆäº¤ã€‚shares>0 ä¹°å…¥, <0 å–å‡ºã€‚
 
-        ÏÂµ¥Ç°¼ì²é¿ÉÓÃ²ÖÎ»(Âô³ö)/ÏÖ½ğ(ÂòÈë), ÒÔÊµ¼Ê¿ÉÏÂµ¥ÊıÁ¿ÏÂµ¥¡£
-        ·µ»Ø (status, actual_delta):
-          status: 'FILLED' Âú¶î | 'PARTIAL' ²¿·Ö | 'TIMEOUT' Î´³É½» | 'SKIP' ÎŞ¿ÉÓÃ
-          actual_delta: Êµ¼Ê³É½»¹ÉÊı(´ø·ûºÅ, ÂòÕıÂô¸º)
+        ä¸‹å•å‰æ£€æŸ¥å¯ç”¨ä»“ä½(å–å‡º)/ç°é‡‘(ä¹°å…¥), ä»¥å®é™…å¯ä¸‹å•æ•°é‡ä¸‹å•ã€‚
+        è¿”å› (status, actual_delta):
+          status: 'FILLED' æ»¡é¢ | 'PARTIAL' éƒ¨åˆ† | 'TIMEOUT' æœªæˆäº¤ | 'SKIP' æ— å¯ç”¨
+          actual_delta: å®é™…æˆäº¤è‚¡æ•°(å¸¦ç¬¦å·, ä¹°æ­£å–è´Ÿ)
         """
         side = 'SELL' if shares < 0 else 'BUY'
         planned = abs(shares)
@@ -349,25 +349,25 @@ class StrategyRunner:
         else:
             actual = self._clamp_buy_shares(planned, price)
         if actual < cfg.MIN_LOT:
-            _log('[{} SKIP] {} ²»×ã: planned {} actual {}'.format(
-                label, '¿ÉÂô' if side == 'SELL' else 'ÏÖ½ğ', planned, actual))
+            _log('[{} SKIP] {} ä¸è¶³: planned {} actual {}'.format(
+                label, 'å¯å–' if side == 'SELL' else 'ç°é‡‘', planned, actual))
             return 'SKIP', 0
         signed = -actual if side == 'SELL' else actual
         snap = self._snapshot_account()
         price_str = 'MKT' if price <= 0 else 'Y{:.2f}'.format(price)
-        _log('[ORDER-{}] {} ¡Á {} sh'.format(label, price_str, actual))
+        _log('[ORDER-{}] {} Ã— {} sh'.format(label, price_str, actual))
         order_shares(STOCK_QMT, signed, style, price, self.ctx, ACCOUNT)
         return self._wait_for_fill(snap, signed, label, price, signed)
 
-    # ¨T¨T¨T ³É½»È·ÈÏ ¨T¨T¨T
+    # â•â•â• æˆäº¤ç¡®è®¤ â•â•â•
 
     def _wait_for_fill(self, snap_before, expected_shares_delta,
                        label, trade_price, trade_shares, timeout_sec=FILL_TIMEOUT_SEC):
-        """ÑÏ¸ñµÈ´ıÂú¶î³É½»¡£·µ»Ø (status, actual_delta)¡£
+        """ä¸¥æ ¼ç­‰å¾…æ»¡é¢æˆäº¤ã€‚è¿”å› (status, actual_delta)ã€‚
 
-        status: 'FILLED' Âú¶î | 'PARTIAL' ²¿·Ö | 'TIMEOUT' Î´³É½»¡£
-        ÈÎºÎ½á¹ûÏÂ base_shares/base_can_use/base_cost ¶¼»áÖØÍ¬²½µ½×îĞÂ;
-        TIMEOUT Ê±×Ô¶¯³·µô²ĞÁô¹Òµ¥, ±ÜÃâºóĞøÒâÍâ³É½»¡£
+        status: 'FILLED' æ»¡é¢ | 'PARTIAL' éƒ¨åˆ† | 'TIMEOUT' æœªæˆäº¤ã€‚
+        ä»»ä½•ç»“æœä¸‹ base_shares/base_can_use/base_cost éƒ½ä¼šé‡åŒæ­¥åˆ°æœ€æ–°;
+        TIMEOUT æ—¶è‡ªåŠ¨æ’¤æ‰æ®‹ç•™æŒ‚å•, é¿å…åç»­æ„å¤–æˆäº¤ã€‚
         """
         if self.dry_run:
             self._verify_trade(snap_before, label, trade_price, trade_shares)
@@ -380,7 +380,7 @@ class StrategyRunner:
             if actual_delta == expected_shares_delta:
                 self._verify_trade(snap_before, label, trade_price, trade_shares)
                 return 'FILLED', actual_delta
-        # ³¬Ê±: ÖØÍ¬²½³Ö²Ö, ÅĞ¶¨²¿·Ö/Î´³É½»
+        # è¶…æ—¶: é‡åŒæ­¥æŒä»“, åˆ¤å®šéƒ¨åˆ†/æœªæˆäº¤
         self._verify_trade(snap_before, f'{label}(TIMEOUT)', trade_price, trade_shares)
         actual_delta = self.st['base_shares'] - snap_before['shares']
         if actual_delta != 0 and actual_delta * expected_shares_delta > 0:
@@ -388,7 +388,7 @@ class StrategyRunner:
         self.conn.cancel_order(self.conn.last_order_id)
         return 'TIMEOUT', 0
 
-    # ¨T¨T¨T ¿ìÕÕ & Ğ£Ñé ¨T¨T¨T
+    # â•â•â• å¿«ç…§ & æ ¡éªŒ â•â•â•
 
     def _snapshot_account(self):
         positions = get_trade_detail_data(ACCOUNT, 'STOCK', 'POSITION')
@@ -405,31 +405,31 @@ class StrategyRunner:
         return {'shares': shares, 'can_use': can_use, 'cash': cash,
                 'cost': cost, 'total_asset': shares * price + cash, 'price': price}
 
-    # ¡ï v21: ³É½»ÈÕÖ¾ÓÅ»¯ ¡ª ÇåÎú´òÓ¡¼Û¸ñ¡ÁÊıÁ¿+³Ö²Ö±ä»¯
+    # â˜… v21: æˆäº¤æ—¥å¿—ä¼˜åŒ– â€” æ¸…æ™°æ‰“å°ä»·æ ¼Ã—æ•°é‡+æŒä»“å˜åŒ–
     def _verify_trade(self, snap_before, label, trade_price, trade_shares):
         _time.sleep(0.3)
         snap_after = self._snapshot_account()
         d_shares = snap_after['shares'] - snap_before['shares']
         d_cash = snap_after['cash'] - snap_before['cash']
-        # ¡ï v22: ¼æÈİ¶àÊÖ³É½»È·ÈÏ (µ¥ÊÖÊ±ÓëÔ­Âß¼­Ò»ÖÂ)
+        # â˜… v22: å…¼å®¹å¤šæ‰‹æˆäº¤ç¡®è®¤ (å•æ‰‹æ—¶ä¸åŸé€»è¾‘ä¸€è‡´)
         status = 'OK' if d_shares == trade_shares else ('PENDING' if d_shares == 0 else 'PARTIAL')
 
-        # ¡ï v21: [³É½»] ĞĞ ¡ª ¼Û¸ñ ¡Á ÊıÁ¿ + ³Ö²Ö±ä»¯
+        # â˜… v21: [æˆäº¤] è¡Œ â€” ä»·æ ¼ Ã— æ•°é‡ + æŒä»“å˜åŒ–
         price_str = 'MKT' if trade_price <= 0 else 'Y{:.2f}'.format(trade_price)
-        _log('[FILL-{}] {} ¡Á {} sh | pos {}¡ú{} | cash {:+,.0f}'.format(
+        _log('[FILL-{}] {} Ã— {} sh | pos {}â†’{} | cash {:+,.0f}'.format(
             label, price_str, abs(trade_shares),
             snap_before['shares'], snap_after['shares'], d_cash))
 
-        # ½öÔÚÒì³£Ê±Êä³öĞ£ÑéÏêÇé
+        # ä»…åœ¨å¼‚å¸¸æ—¶è¾“å‡ºæ ¡éªŒè¯¦æƒ…
         if status != 'OK':
-            _log('[VERIFY] {}: status {} | exp {:+d} act {:+d} | cash¦¤ {:+,.0f}'.format(
+            _log('[VERIFY] {}: status {} | exp {:+d} act {:+d} | cashÎ” {:+,.0f}'.format(
                 label, status, trade_shares, d_shares, d_cash))
 
         self.st['base_shares'] = snap_after['shares']
         self.st['base_can_use'] = snap_after['can_use']
         self.st['base_cost'] = snap_after['cost']
 
-    # ¨T¨T¨T v21: ĞÅºÅ+¼Æ»®ºÏ²¢Êä³ö (ÎŞ·Ö¸ôÏß, ÎŞ¿ÕĞĞ) ¨T¨T¨T
+    # â•â•â• v21: ä¿¡å·+è®¡åˆ’åˆå¹¶è¾“å‡º (æ— åˆ†éš”çº¿, æ— ç©ºè¡Œ) â•â•â•
 
     def _print_daily_brief(self, signal):
         trend = signal.get('trend', '?')
@@ -453,7 +453,7 @@ class StrategyRunner:
         pos_value = base_shares * curr_price
         trend_cn = trend_labels.get(trend, trend)
 
-        # ĞĞ1: ºËĞÄÖ¸±ê
+        # è¡Œ1: æ ¸å¿ƒæŒ‡æ ‡
         _log('[SIGNAL] {} | Open Y{:.2f} | ATR {:.1f}% | RSI {:.0f} | Vol_ratio {} | Mult {:.2f} | Trig Y{:.2f}{} {}'.format(
             trend_cn, open_p, atr_pct, rsi_v, vol_display, sell_mult, sell_trig,
             '(range-capped)' if range_capped else '',
@@ -462,20 +462,20 @@ class StrategyRunner:
             signal.get('volume_current', 0), signal.get('volume_avg20', 0),
             signal.get('volume_baseline_count', 0), 'VALID' if volume_valid else 'INVALID-neutral'))
 
-        # Òò×Ó
+        # å› å­
         fd = signal.get('factor_details', {})
         if fd:
             _log('[FACTOR] {}'.format(' '.join('{} {:+.2f} | '.format(k, v) for k, v in fd.items())))
 
-        # ĞĞ2: ³Ö²Ö + ·½Ïò
+        # è¡Œ2: æŒä»“ + æ–¹å‘
         bits = ['Position:{} sh Y{:,.0f}({:.0f}%)'.format(base_shares, pos_value, pos_pct),
                 'Cash:Y{:,.0f}'.format(avail_cash),
                 'T+0:{} lots({} sh)'.format(base_can_use // TRADE_LOT_SIZE, base_can_use)]
         _log('[ACCOUNT] {}'.format(' | '.join(bits)))
 
-        # ĞĞ3-4: ·´T / ÕıT
+        # è¡Œ3-4: åT / æ­£T
         if do_short:
-            _log('[REV-T] ENABLED {} lots trig Y{:.2f} buyback=sell¡Á(1-ATR%¡Á{:.2f}) emerg +{:.0f}% / emergTrig{}'.format(
+            _log('[REV-T] ENABLED {} lots trig Y{:.2f} buyback=sellÃ—(1-ATR%Ã—{:.2f}) emerg +{:.0f}% / emergTrig{}'.format(
                 short_lots, sell_trig, cfg.BUYBACK_TRIGGER_MULT, cfg.EMERGENCY_BUYBACK_PCT * 100,
                 'True' if cfg.EMERGENCY_BUYBACK else 'False'))
         else:
@@ -484,28 +484,28 @@ class StrategyRunner:
         if do_long:
             buy_trig = signal.get('buy_trigger', 0)
             sell_hint = signal.get('sellback_target_hint', 0)
-            _log('[FWD-T] ENABLED {} lots buy Y{:.2f} sell Y{:.2f}(+{:.1f}%) 1 lot¡ÖY{:,.0f}'.format(
+            _log('[FWD-T] ENABLED {} lots buy Y{:.2f} sell Y{:.2f}(+{:.1f}%) 1 lotâ‰ˆY{:,.0f}'.format(
                 long_lots, buy_trig, sell_hint, cfg.SELLBACK_RISE_PCT * 100, curr_price * TRADE_LOT_SIZE))
         else:
-            _log('[FWD-T] BLOCKED {}  1 lot¡ÖY{:,.0f}'.format(self.st.get('long_reason', 'unknown'), curr_price * TRADE_LOT_SIZE))
+            _log('[FWD-T] BLOCKED {}  1 lotâ‰ˆY{:,.0f}'.format(self.st.get('long_reason', 'unknown'), curr_price * TRADE_LOT_SIZE))
 
-        # ¡ï v25/v26/v27: ¶ÌÏß¶¯Á¿·´×ª»úÖÆ (¶ÀÁ¢ÓÚÈÕÏßĞÅºÅ, ´¥·¢·ù¶È×ÔÊÊÓ¦ATR)
-        # ¡ï v29: MOM_ENABLED=False Ê±ÏÔÊ¾"ÒÑÆÁ±Î"
+        # â˜… v25/v26/v27: çŸ­çº¿åŠ¨é‡åè½¬æœºåˆ¶ (ç‹¬ç«‹äºæ—¥çº¿ä¿¡å·, è§¦å‘å¹…åº¦è‡ªé€‚åº”ATR)
+        # â˜… v29: MOM_ENABLED=False æ—¶æ˜¾ç¤º"å·²å±è”½"
         if MOM_ENABLED:
-            _log('[MOM] {}min¡À2¡ÁATR10m({:.1f}%~{:.1f}%) ·´TÂò»Ø-{:.1f}% ÕıTÂô»Ø+{:.1f}% 1ÊÖ({}sh) ÉÏÏŞ{}´Î ½ô¼±Âò»Ø{}'.format(
+            _log('[MOM] {}minÂ±2Ã—ATR10m({:.1f}%~{:.1f}%) åTä¹°å›-{:.1f}% æ­£Tå–å›+{:.1f}% 1æ‰‹({}sh) ä¸Šé™{}æ¬¡ ç´§æ€¥ä¹°å›{}'.format(
                 MOM_WINDOW_SEC // 60,
                 MOM_TRIGGER_MIN_PCT * 100, MOM_TRIGGER_MAX_PCT * 100,
                 MOM_SHORT_BUYBACK_PCT * 100, MOM_LONG_SELLBACK_PCT * 100,
                 MOM_LOT_SIZE, MOM_MAX_DAILY_TRADES,
-                '¿ª' if MOM_EMERGENCY_BUYBACK_ENABLED else '¹Ø'))
+                'å¼€' if MOM_EMERGENCY_BUYBACK_ENABLED else 'å…³'))
         else:
-            _log('[MOM] ÒÑÆÁ±Î (v29 MOM_ENABLED=False)')
+            _log('[MOM] å·²å±è”½ (v29 MOM_ENABLED=False)')
 
-        # ÀÛ¼Æ
+        # ç´¯è®¡
         if self.total_t_days > 0:
             _log('[CUM] {} trades gross~Y{:,.0f}'.format(self.total_t_days, self.total_pnl))
 
-    # ¨T¨T¨T ×´Ì¬»ú ¨T¨T¨T
+    # â•â•â• çŠ¶æ€æœº â•â•â•
 
     def _handle_idle(self, price):
         st = self.st; signal = st.get('daily_signal', {})
@@ -537,32 +537,32 @@ class StrategyRunner:
         if price > st['peak_price']: st['peak_price'] = price
         peak = st['peak_price']; pullback = (peak - price) / peak if peak > 0 else 0
         if pullback >= cfg.PULLBACK_PCT:
-            _log('[REV-T sell trig] peak Y{:.2f} pullback {:.2f}% ¡ú Y{:.2f}'.format(peak, pullback * 100, price))
+            _log('[REV-T sell trig] peak Y{:.2f} pullback {:.2f}% â†’ Y{:.2f}'.format(peak, pullback * 100, price))
             atr_pct = st['daily_signal']['atr_pct']; buyback_pct = atr_pct * cfg.BUYBACK_TRIGGER_MULT
             buyback_target = round(price * (1.0 - buyback_pct), 2)
             st['buyback_target'] = buyback_target
             st['buyback_target_pct'] = buyback_pct * 100
             st['sell_elapsed_bars'] = 0; st['state_enter_time'] = cfg.now_hms()
-            # ¡ï v23: ÏÂµ¥Ç°¼ì²é¿ÉÂô²ÖÎ», ÒÔÊµ¼Ê¿ÉÂôÊıÁ¿ÏÂµ¥
+            # â˜… v23: ä¸‹å•å‰æ£€æŸ¥å¯å–ä»“ä½, ä»¥å®é™…å¯å–æ•°é‡ä¸‹å•
             status, delta = self._submit_order(-TRADE_LOT_SIZE, price, 'REV-T sell')
             if status in ('SKIP', 'TIMEOUT'):
                 if status == 'TIMEOUT':
-                    _log('[REV-T sell TIMEOUT] Î´³É½», »Ø IDLE')
+                    _log('[REV-T sell TIMEOUT] æœªæˆäº¤, å› IDLE')
                 st['trade_count_short'] = max(0, st.get('trade_count_short', 0) - 1)
                 st['fstate'] = STATE_IDLE
                 return
-            # FILLED / PARTIAL: °´Êµ¼Ê³É½»¹ÉÊıÈëÍÈ
+            # FILLED / PARTIAL: æŒ‰å®é™…æˆäº¤è‚¡æ•°å…¥è…¿
             actual_sold = -delta
             st['sell_fill_price'] = price
             st['short_legs'].append((price, actual_sold))
             st['ladder_sell_target'] = round(price * (1.0 + LADDER_UP_STEP_PCT), 2) if status == 'FILLED' else 0.0
             if status == 'PARTIAL':
-                _log('[REV-T sell PARTIAL] Êµ¼ÊÂô³ö {} sh'.format(actual_sold))
+                _log('[REV-T sell PARTIAL] å®é™…å–å‡º {} sh'.format(actual_sold))
             st['fstate'] = STATE_SOLD
 
     def _handle_sold(self, price):
         st = self.st; sp = st['sell_fill_price']; bt = st['buyback_target']
-        # ¡ï v22: ½×Ìİ¼ÓÂô ¡ª ¼Û¸ñÕÇÖÁ¸ü¸ßÒ»µµ(Âô¼Û+½×Ìİ·ù¶È) ¡ú ×·¼Ó³å¸ß»ØÂäÂô³ö
+        # â˜… v22: é˜¶æ¢¯åŠ å– â€” ä»·æ ¼æ¶¨è‡³æ›´é«˜ä¸€æ¡£(å–ä»·+é˜¶æ¢¯å¹…åº¦) â†’ è¿½åŠ å†²é«˜å›è½å–å‡º
         ladder = st.get('ladder_sell_target', 0.0)
         if ladder > 0 and price >= ladder:
             tc = st.get('trade_count_short', 0)
@@ -576,7 +576,7 @@ class StrategyRunner:
                     tc + 1, cfg.MAX_DAILY_TRADES, price, ladder, LADDER_UP_STEP_PCT * 100))
                 return
         if cfg.EMERGENCY_BUYBACK and price >= sp * (1.0 + cfg.EMERGENCY_BUYBACK_PCT):
-            _log('[EMERG buyback trig] Y{:.2f}¡úY{:.2f}(+{:.2f}%)'.format(sp, price, (price - sp) / sp * 100))
+            _log('[EMERG buyback trig] Y{:.2f}â†’Y{:.2f}(+{:.2f}%)'.format(sp, price, (price - sp) / sp * 100))
             self._do_buyback(price, 'EMERG'); return
         tightened_bt = bt
         if st['sell_elapsed_bars'] > 30 and price > sp * 0.995:
@@ -596,7 +596,7 @@ class StrategyRunner:
         if bounce >= cfg.BOUNCE_PCT:
             legs = st['short_legs'] or [(st['sell_fill_price'], TRADE_LOT_SIZE)]
             total_shares = self._leg_shares(legs)
-            _log('[REV-T buyback trig] low Y{:.2f} bounce {:.2f}% ¡ú Y{:.2f}'.format(
+            _log('[REV-T buyback trig] low Y{:.2f} bounce {:.2f}% â†’ Y{:.2f}'.format(
                 dip, bounce * 100, price))
             bought = self._do_buyback(price, 'NORMAL')
             if bought >= total_shares and total_shares > 0:
@@ -609,7 +609,7 @@ class StrategyRunner:
 
     def _do_buyback(self, price, reason=''):
         st = self.st
-        # ¡ï v23: Ò»´ÎĞÔÂò»ØÈ«²¿Î´Æ½²Ö·´TÍÈ (°´Êµ¼Ê¹ÉÊı)
+        # â˜… v23: ä¸€æ¬¡æ€§ä¹°å›å…¨éƒ¨æœªå¹³ä»“åTè…¿ (æŒ‰å®é™…è‚¡æ•°)
         legs = st['short_legs'] or [(st.get('sell_fill_price', price), TRADE_LOT_SIZE)]
         shares = self._leg_shares(legs)
         if shares <= 0:
@@ -618,7 +618,7 @@ class StrategyRunner:
             shares, price, 'REV-T buyback({})'.format(reason))
         bought = delta if delta > 0 else 0
         if bought <= 0:
-            _log('[Buyback {}-FAIL] Î´³É½», ±£³Ö SOLD ¼ÌĞø¼à¿Ø'.format(reason))
+            _log('[Buyback {}-FAIL] æœªæˆäº¤, ä¿æŒ SOLD ç»§ç»­ç›‘æ§'.format(reason))
             st['fstate'] = STATE_SOLD
             return 0
         if bought >= shares:
@@ -627,12 +627,12 @@ class StrategyRunner:
             st['fstate'] = STATE_DONE
             self._maybe_resume_trading()
             return bought
-        # ²¿·ÖÂò»Ø: ±£ÁôÎ´Âò»Ø²¿·Ö¼ÌĞø¼à¿Ø
+        # éƒ¨åˆ†ä¹°å›: ä¿ç•™æœªä¹°å›éƒ¨åˆ†ç»§ç»­ç›‘æ§
         remaining = shares - bought
         st['short_legs'] = [(st.get('sell_fill_price', price), remaining)]
         st['ladder_sell_target'] = 0.0
         st['fstate'] = STATE_SOLD
-        _log('[Buyback PARTIAL] ÒÑÂò»Ø {} sh, Ê£Óà {} sh ¼ÌĞø¼à¿Ø'.format(bought, remaining))
+        _log('[Buyback PARTIAL] å·²ä¹°å› {} sh, å‰©ä½™ {} sh ç»§ç»­ç›‘æ§'.format(bought, remaining))
         return bought
 
     def _force_buyback(self):
@@ -649,8 +649,8 @@ class StrategyRunner:
         if price < st.get('bt_dip_price', price): st['bt_dip_price'] = price
         dip = st.get('bt_dip_price', price) or price; bounce = (price - dip) / dip if dip > 0 else 0
         if bounce >= cfg.BOUNCE_PCT:
-            _log('[FWD-T buy trig] low Y{:.2f} bounce {:.2f}% ¡ú Y{:.2f}'.format(dip, bounce * 100, price))
-            # ¡ï v23: ÏÂµ¥Ç°¼ì²éÏÖ½ğ, ÒÔÊµ¼Ê¿ÉÂòÊıÁ¿ÏÂµ¥
+            _log('[FWD-T buy trig] low Y{:.2f} bounce {:.2f}% â†’ Y{:.2f}'.format(dip, bounce * 100, price))
+            # â˜… v23: ä¸‹å•å‰æ£€æŸ¥ç°é‡‘, ä»¥å®é™…å¯ä¹°æ•°é‡ä¸‹å•
             status, delta = self._submit_order(TRADE_LOT_SIZE, price, 'FWD-T buy')
             if status in ('SKIP', 'TIMEOUT'):
                 st['trade_count_long'] = max(0, st.get('trade_count_long', 0) - 1)
@@ -663,11 +663,11 @@ class StrategyRunner:
             st['bt_sellback_target'] = round(avg_bp * (1.0 + cfg.SELLBACK_RISE_PCT), 2)
             st['ladder_buy_target'] = round(price * (1.0 - LADDER_DOWN_STEP_PCT), 2) if status == 'FILLED' else 0.0
             if status == 'PARTIAL':
-                _log('[FWD-T buy PARTIAL] Êµ¼ÊÂòÈë {} sh'.format(delta))
+                _log('[FWD-T buy PARTIAL] å®é™…ä¹°å…¥ {} sh'.format(delta))
 
     def _handle_bt_bought(self, price):
         st = self.st; target = st.get('bt_sellback_target', 999999); bp = st.get('bt_buy_fill_price', 0)
-        # ¡ï v22: ½×Ìİ¼ÓÂò ¡ª ¼Û¸ñµøÖÁ¸üµÍÒ»µµ(Âò¼Û-½×Ìİ·ù¶È) ¡ú ×·¼ÓÌ½µ×»ØÉıÂòÈë
+        # â˜… v22: é˜¶æ¢¯åŠ ä¹° â€” ä»·æ ¼è·Œè‡³æ›´ä½ä¸€æ¡£(ä¹°ä»·-é˜¶æ¢¯å¹…åº¦) â†’ è¿½åŠ æ¢åº•å›å‡ä¹°å…¥
         ladder = st.get('ladder_buy_target', 0.0)
         if ladder > 0 and price <= ladder:
             tc = st.get('trade_count_long', 0)
@@ -681,29 +681,29 @@ class StrategyRunner:
                 _log('[FWD-T ladder buy #{}/{}] Y{:.2f} <= Y{:.2f}(buy-{:.2f}%)'.format(
                     tc + 1, cfg.MAX_DAILY_TRADES, price, ladder, LADDER_DOWN_STEP_PCT * 100))
                 return
-        # ¡ï v23: Ö¹Ëğ/Âô»ØÒÔ¾ù¼ÛÎª×¼
+        # â˜… v23: æ­¢æŸ/å–å›ä»¥å‡ä»·ä¸ºå‡†
         legs = st['long_legs']; avg_bp = self._leg_avg_price(legs) if legs else bp
         if avg_bp > 0 and price <= avg_bp * (1.0 - cfg.STOP_LOSS_PCT):
             _log('[FWD-T stop-loss trig] avg Y{:.2f} now Y{:.2f}({:.1f}%)'.format(avg_bp, price, (price - avg_bp) / avg_bp * 100))
             self._do_bt_force_sell(); return
         if price >= target:
             st['fstate'] = STATE_BT_SPIKING; st['bt_sell_peak_price'] = price
-            _log('[FWD-T sellback watch] +{:.2f}% ¡ú Y{:.2f}'.format((price - avg_bp) / avg_bp * 100, price))
+            _log('[FWD-T sellback watch] +{:.2f}% â†’ Y{:.2f}'.format((price - avg_bp) / avg_bp * 100, price))
 
     def _handle_bt_spiking(self, price):
         st = self.st
         if price > st.get('bt_sell_peak_price', price): st['bt_sell_peak_price'] = price
         peak = st.get('bt_sell_peak_price', price); pullback = (peak - price) / peak if peak > 0 else 0
         if pullback >= cfg.PULLBACK_PCT:
-            # ¡ï v23: ¶àÍÈÃ«Àû = ¦²(Âô¼Û - ¸÷ÍÈÂò¼Û) ¡Á ¸÷ÍÈ¹ÉÊı
+            # â˜… v23: å¤šè…¿æ¯›åˆ© = Î£(å–ä»· - å„è…¿ä¹°ä»·) Ã— å„è…¿è‚¡æ•°
             legs = st['long_legs'] or [(st.get('bt_buy_fill_price', price), TRADE_LOT_SIZE)]
             total_shares = self._leg_shares(legs)
             gross = sum((price - p) * s for p, s in legs)
-            _log('[FWD-T sell trig] peak Y{:.2f} pullback {:.2f}% ¡ú Y{:.2f} gross~Y{:,.0f}'.format(
+            _log('[FWD-T sell trig] peak Y{:.2f} pullback {:.2f}% â†’ Y{:.2f} gross~Y{:,.0f}'.format(
                 peak, pullback * 100, price, gross))
             status, delta = self._submit_order(-total_shares, price, 'FWD-T sell')
             if status in ('SKIP', 'TIMEOUT'):
-                _log('[FWD-T sell FAIL] Î´³É½», »Ø BT_BOUGHT')
+                _log('[FWD-T sell FAIL] æœªæˆäº¤, å› BT_BOUGHT')
                 st['fstate'] = STATE_BT_BOUGHT
                 return
             sold = -delta
@@ -717,7 +717,7 @@ class StrategyRunner:
                 st['long_legs'] = [(st.get('bt_buy_fill_price', price), remaining)]
                 st['ladder_buy_target'] = 0.0
                 st['fstate'] = STATE_BT_BOUGHT
-                _log('[FWD-T sell PARTIAL] ÒÑÂô {} sh, Ê£Óà {} sh'.format(sold, remaining))
+                _log('[FWD-T sell PARTIAL] å·²å– {} sh, å‰©ä½™ {} sh'.format(sold, remaining))
 
     def _do_bt_force_sell(self):
         _log('[FWD-T force sell trig]')
@@ -735,19 +735,19 @@ class StrategyRunner:
         can_s = do_short and tc_s < cfg.MAX_DAILY_TRADES
         can_l = do_long and tc_l < cfg.MAX_DAILY_TRADES
         if can_s or can_l:
-            # ¡ï v28: ·´TÍê³Éºó, ½« sell_trigger ÌáÉıÖÁÊµ¼ÊÂô³ö¼Û
-            #   ±ÜÃâĞÄÌø¼ÌĞøÏÔÊ¾ÒÑ³É½»¹ıµÄ¾ÉãĞÖµ (Èç Y380.74 ³É½»ºóÈÔ·´¸´³öÏÖ)
+            # â˜… v28: åTå®Œæˆå, å°† sell_trigger æå‡è‡³å®é™…å–å‡ºä»·
+            #   é¿å…å¿ƒè·³ç»§ç»­æ˜¾ç¤ºå·²æˆäº¤è¿‡çš„æ—§é˜ˆå€¼ (å¦‚ Y380.74 æˆäº¤åä»åå¤å‡ºç°)
             sfp = st.get('sell_fill_price', 0)
             if sfp > 0:
                 sig = st.get('daily_signal', {})
                 old_trig = sig.get('sell_trigger', 0)
                 if sfp > old_trig:
                     sig['sell_trigger'] = sfp
-                    _log('[SELL-TRIG UPD] Y{:.2f}¡úY{:.2f} (ÒÑÏûºÄ, ÌáÉıÖÁÊµ¼ÊÂô³ö¼Û)'.format(old_trig, sfp))
+                    _log('[SELL-TRIG UPD] Y{:.2f}â†’Y{:.2f} (å·²æ¶ˆè€—, æå‡è‡³å®é™…å–å‡ºä»·)'.format(old_trig, sfp))
             self._refresh_position()
             st['fstate'] = STATE_IDLE; st['peak_price'] = 0.0; st['dip_price'] = 0.0
             st['sell_fill_price'] = 0.0; st['buyback_target'] = 0.0
-            # ¡ï v22: Çå¿Õ½×Ìİ×´Ì¬
+            # â˜… v22: æ¸…ç©ºé˜¶æ¢¯çŠ¶æ€
             st['short_legs'] = []; st['long_legs'] = []
             st['ladder_sell_target'] = 0.0; st['ladder_buy_target'] = 0.0
             st['ladder_sold_count'] = 0; st['ladder_bought_count'] = 0
@@ -755,7 +755,7 @@ class StrategyRunner:
             parts = []
             if can_s: parts.append('REV-T {}/{}'.format(tc_s, cfg.MAX_DAILY_TRADES))
             if can_l: parts.append('FWD-T {}/{}'.format(tc_l, cfg.MAX_DAILY_TRADES))
-            _log('[RESUME] ¡ú IDLE ({})'.format(', '.join(parts)))
+            _log('[RESUME] â†’ IDLE ({})'.format(', '.join(parts)))
         else:
             _log('[DONE] {}/{} trades at limit'.format(tc_s + tc_l, cfg.MAX_DAILY_TRADES * 2))
 
@@ -785,16 +785,16 @@ class StrategyRunner:
         elif st.get('locked') and st['lock_cooldown_until'] == 0.0:
             st['lock_cooldown_until'] = now_ts + cfg.LOCK_COOLDOWN_SEC
 
-    # ¨T¨T¨T v25/v26: ¶ÌÏß¶¯Á¿·´×ª»úÖÆ (2·ÖÖÓ¡À2¡ÁATR10m ÊÂ¼şÇı¶¯, ¶ÀÁ¢ÓÚÈÕÏßĞÅºÅ) ¨T¨T¨T
+    # â•â•â• v25/v26: çŸ­çº¿åŠ¨é‡åè½¬æœºåˆ¶ (2åˆ†é’ŸÂ±2Ã—ATR10m äº‹ä»¶é©±åŠ¨, ç‹¬ç«‹äºæ—¥çº¿ä¿¡å·) â•â•â•
 
     def _mom_update_history(self, price, now_ts):
-        """Î¬»¤2·ÖÖÓ¼ì²â´°¿Ú + 10·ÖÖÓATR´°¿Ú¡£"""
+        """ç»´æŠ¤2åˆ†é’Ÿæ£€æµ‹çª—å£ + 10åˆ†é’ŸATRçª—å£ã€‚"""
         hist = self.st['mom_price_history']
         hist.append((now_ts, price))
         cutoff = now_ts - MOM_WINDOW_SEC
         while hist and hist[0][0] < cutoff:
             hist.popleft()
-        # ¡ï v26: 10·ÖÖÓATR´°¿Ú (¶ÀÁ¢ÓÚ2·ÖÖÓ¼ì²â´°¿Ú)
+        # â˜… v26: 10åˆ†é’ŸATRçª—å£ (ç‹¬ç«‹äº2åˆ†é’Ÿæ£€æµ‹çª—å£)
         atr_hist = self.st['mom_atr_history']
         atr_hist.append((now_ts, price))
         atr_cutoff = now_ts - MOM_ATR_WINDOW_SEC
@@ -802,16 +802,16 @@ class StrategyRunner:
             atr_hist.popleft()
 
     def _mom_compute_atr(self):
-        """¼ÆËã×î½ü10·ÖÖÓATR (½üËÆ: ¸÷1·ÖÖÓÍ°ÄÚ¸ßµÍÇø¼äÖ®ÖĞÎ»Êı)¡£
+        """è®¡ç®—æœ€è¿‘10åˆ†é’ŸATR (è¿‘ä¼¼: å„1åˆ†é’Ÿæ¡¶å†…é«˜ä½åŒºé—´ä¹‹ä¸­ä½æ•°)ã€‚
 
-        ÓÃÖĞÎ»Êı¶ø·Ç¾ùÖµ, ¿ÉÌŞ³ı¿ç·ÖÖÓ±ß½ç²úÉúµÄ"°ëÍ°"µÍÇø¼ä¸ÉÈÅ¡£
+        ç”¨ä¸­ä½æ•°è€Œéå‡å€¼, å¯å‰”é™¤è·¨åˆ†é’Ÿè¾¹ç•Œäº§ç”Ÿçš„"åŠæ¡¶"ä½åŒºé—´å¹²æ‰°ã€‚
         """
         hist = self.st['mom_atr_history']
         if len(hist) < 2:
             return 0.0
         buckets = {}
         for ts, px in hist:
-            b = int(ts // 60)          # °´1·ÖÖÓ·ÖÍ°
+            b = int(ts // 60)          # æŒ‰1åˆ†é’Ÿåˆ†æ¡¶
             rec = buckets.get(b)
             if rec is None:
                 buckets[b] = [px, px]
@@ -828,14 +828,14 @@ class StrategyRunner:
         return (ranges[mid - 1] + ranges[mid]) / 2.0
 
     def _mom_detect(self, price):
-        """¼ì²â2·ÖÖÓÄÚÕÇ/µøÊÇ·ñ³¬¹ı×ÔÊÊÓ¦ãĞÖµ¡£·µ»Ø 'UP' / 'DOWN' / None¡£"""
+        """æ£€æµ‹2åˆ†é’Ÿå†…æ¶¨/è·Œæ˜¯å¦è¶…è¿‡è‡ªé€‚åº”é˜ˆå€¼ã€‚è¿”å› 'UP' / 'DOWN' / Noneã€‚"""
         trig = self.st.get('mom_trigger_pct', 0.0)
         if trig <= 0:
             return None
         hist = self.st['mom_price_history']
         if len(hist) < 2:
             return None
-        base = hist[0][1]          # ´°¿ÚÄÚ×îÔç¼Û (Ô¼2·ÖÖÓÇ°)
+        base = hist[0][1]          # çª—å£å†…æœ€æ—©ä»· (çº¦2åˆ†é’Ÿå‰)
         if base <= 0 or price <= 0:
             return None
         chg = (price - base) / base
@@ -846,17 +846,17 @@ class StrategyRunner:
         return None
 
     def _mom_tick(self, price, now_ts):
-        """¶ÌÏß¶¯Á¿»úÖÆÖ÷Èë¿Ú (Ã¿tickµ÷ÓÃ, ÓëÖ÷»úÖÆ²¢ĞĞ)¡£"""
+        """çŸ­çº¿åŠ¨é‡æœºåˆ¶ä¸»å…¥å£ (æ¯tickè°ƒç”¨, ä¸ä¸»æœºåˆ¶å¹¶è¡Œ)ã€‚"""
         self._mom_update_history(price, now_ts)
-        # ¡ï v26: ×ÔÊÊÓ¦´¥·¢·ù¶È = 2 ¡Á ×î½ü10·ÖÖÓATR
-        #   ³ıÒÔ"2·ÖÖÓ»ù×¼¼Û"¶ø·Çµ±Ç°¼Û, Óë _mom_detect µÄÕÇµø·ùÍ¬»ù×¼, ±ÜÃâ×Ô²Î¿¼Æ«²î
+        # â˜… v26: è‡ªé€‚åº”è§¦å‘å¹…åº¦ = 2 Ã— æœ€è¿‘10åˆ†é’ŸATR
+        #   é™¤ä»¥"2åˆ†é’ŸåŸºå‡†ä»·"è€Œéå½“å‰ä»·, ä¸ _mom_detect çš„æ¶¨è·Œå¹…åŒåŸºå‡†, é¿å…è‡ªå‚è€ƒåå·®
         atr = self._mom_compute_atr()
         hist = self.st['mom_price_history']
         base = hist[0][1] if hist else 0.0
         if base > 0 and atr > 0:
             trig = MOM_ATR_MULT * atr / base
         else:
-            trig = MOM_TRIGGER_MIN_PCT    # Êı¾İ²»×ã/Æ½¾²ÊĞ ¡ú ÓÃÏÂÏŞ, ±ÜÃâÓÀ²»´¥·¢
+            trig = MOM_TRIGGER_MIN_PCT    # æ•°æ®ä¸è¶³/å¹³é™å¸‚ â†’ ç”¨ä¸‹é™, é¿å…æ°¸ä¸è§¦å‘
         trig = min(max(trig, MOM_TRIGGER_MIN_PCT), MOM_TRIGGER_MAX_PCT)
         self.st['mom_trigger_pct'] = trig
         ms = self.st.get('mom_state', 'MOM_IDLE')
@@ -874,40 +874,40 @@ class StrategyRunner:
             self._mom_handle_bt_bought(price)
         elif ms == 'MOM_BT_SPIKING':
             self._mom_handle_bt_spiking(price)
-        # Î²ÅÌÇ¿ÖÆÆ½µô¶ÌÏßÍÈ (¶ÌÏß²»¸ôÒ¹)
+        # å°¾ç›˜å¼ºåˆ¶å¹³æ‰çŸ­çº¿è…¿ (çŸ­çº¿ä¸éš”å¤œ)
         if cfg.now_hms() >= cfg.FORCE_CLOSE_TIME:
             self._mom_force_close(price)
-        # ĞÄÌø: ·Ç¿ÕÏĞÊ±Ã¿60s´òÓ¡Ò»´Î¶ÌÏß×´Ì¬
+        # å¿ƒè·³: éç©ºé—²æ—¶æ¯60sæ‰“å°ä¸€æ¬¡çŸ­çº¿çŠ¶æ€
         if ms != 'MOM_IDLE' and now_ts - self.st.get('mom_last_hb', 0) >= 60:
             self.st['mom_last_hb'] = now_ts
             self._mom_heartbeat(price)
 
     def _mom_status(self):
-        """·µ»Ø¶ÌÏß»úÖÆ×´Ì¬ÕªÒª¡£"""
+        """è¿”å›çŸ­çº¿æœºåˆ¶çŠ¶æ€æ‘˜è¦ã€‚"""
         st = self.st; ms = st.get('mom_state', 'MOM_IDLE')
         if ms == 'MOM_IDLE':
             return ''
         if ms == 'MOM_SPIKING':
-            return '³å¸ß»ØÂäÂô³ö: peak Y{:.2f}'.format(st['mom_peak'])
+            return 'å†²é«˜å›è½å–å‡º: peak Y{:.2f}'.format(st['mom_peak'])
         if ms == 'MOM_SOLD':
-            return 'ÒÑÂôY{:.2f} µÈµø{:.1f}%Âò»Ø'.format(st['mom_sell_price'], MOM_SHORT_BUYBACK_PCT * 100)
+            return 'å·²å–Y{:.2f} ç­‰è·Œ{:.1f}%ä¹°å›'.format(st['mom_sell_price'], MOM_SHORT_BUYBACK_PCT * 100)
         if ms == 'MOM_DIPPING':
-            return 'Ì½µ×»ØÉıÂò»Ø: dip Y{:.2f}'.format(st['mom_dip'])
+            return 'æ¢åº•å›å‡ä¹°å›: dip Y{:.2f}'.format(st['mom_dip'])
         if ms == 'MOM_BT_DIPPING':
-            return 'Ì½µ×»ØÉıÂòÈë: dip Y{:.2f}'.format(st['mom_dip'])
+            return 'æ¢åº•å›å‡ä¹°å…¥: dip Y{:.2f}'.format(st['mom_dip'])
         if ms == 'MOM_BT_BOUGHT':
-            return 'ÒÑÂòY{:.2f} µÈÕÇ{:.1f}%Âô»Ø'.format(st['mom_buy_price'], MOM_LONG_SELLBACK_PCT * 100)
+            return 'å·²ä¹°Y{:.2f} ç­‰æ¶¨{:.1f}%å–å›'.format(st['mom_buy_price'], MOM_LONG_SELLBACK_PCT * 100)
         if ms == 'MOM_BT_SPIKING':
-            return '³å¸ß»ØÂäÂô³ö: peak Y{:.2f}'.format(st['mom_peak'])
+            return 'å†²é«˜å›è½å–å‡º: peak Y{:.2f}'.format(st['mom_peak'])
         return ms
 
     def _mom_heartbeat(self, price):
         trig = self.st.get('mom_trigger_pct', 0.0) * 100
-        _log('[MOM-HB] {} Y{:.2f} trig¡À{:.2f}%'.format(self._mom_status(), price, trig))
+        _log('[MOM-HB] {} Y{:.2f} trigÂ±{:.2f}%'.format(self._mom_status(), price, trig))
 
     def _mom_handle_idle(self, price):
         st = self.st
-        # Î²ÅÌ²»ÔÙ¿ªĞÂÍÈ
+        # å°¾ç›˜ä¸å†å¼€æ–°è…¿
         if cfg.now_hms() >= cfg.FORCE_CLOSE_TIME:
             return
         if st.get('mom_trade_count', 0) >= MOM_MAX_DAILY_TRADES:
@@ -916,44 +916,44 @@ class StrategyRunner:
         trig = st.get('mom_trigger_pct', 0.0) * 100
         if sig == 'UP':
             st['mom_state'] = 'MOM_SPIKING'; st['mom_peak'] = price
-            _log('[MOM spike] 2min +{:.2f}% (2¡ÁATR10m {:.2f}%) Y{:.2f} ¡ú ³å¸ß»ØÂäÂô³ö¼à²â'.format(
+            _log('[MOM spike] 2min +{:.2f}% (2Ã—ATR10m {:.2f}%) Y{:.2f} â†’ å†²é«˜å›è½å–å‡ºç›‘æµ‹'.format(
                 trig, trig, price))
         elif sig == 'DOWN':
             st['mom_state'] = 'MOM_BT_DIPPING'; st['mom_dip'] = price
-            _log('[MOM dip] 2min -{:.2f}% (2¡ÁATR10m {:.2f}%) Y{:.2f} ¡ú Ì½µ×»ØÉıÂòÈë¼à²â'.format(
+            _log('[MOM dip] 2min -{:.2f}% (2Ã—ATR10m {:.2f}%) Y{:.2f} â†’ æ¢åº•å›å‡ä¹°å…¥ç›‘æµ‹'.format(
                 trig, trig, price))
 
     def _mom_handle_spiking(self, price):
-        """³å¸ß»ØÂäÂô³ö: ¸ú×Ù·åÖµ, »ØÂäPULLBACK_PCTºóÂô³ö1ÊÖ¡£"""
+        """å†²é«˜å›è½å–å‡º: è·Ÿè¸ªå³°å€¼, å›è½PULLBACK_PCTåå–å‡º1æ‰‹ã€‚"""
         st = self.st
         if price > st['mom_peak']:
             st['mom_peak'] = price
         peak = st['mom_peak']
         pullback = (peak - price) / peak if peak > 0 else 0
         if pullback >= cfg.PULLBACK_PCT:
-            _log('[MOM sell trig] peak Y{:.2f} »ØÂä{:.2f}% ¡ú Y{:.2f}'.format(peak, pullback * 100, price))
+            _log('[MOM sell trig] peak Y{:.2f} å›è½{:.2f}% â†’ Y{:.2f}'.format(peak, pullback * 100, price))
             status, delta = self._submit_order(-MOM_LOT_SIZE, price, 'MOM short')
             if status in ('SKIP', 'TIMEOUT'):
                 if status == 'TIMEOUT':
-                    _log('[MOM short TIMEOUT] Î´³É½», »Ø IDLE')
+                    _log('[MOM short TIMEOUT] æœªæˆäº¤, å› IDLE')
                 st['mom_state'] = 'MOM_IDLE'; st['mom_peak'] = 0.0
                 return
             st['mom_sell_price'] = price
             st['mom_leg_shares'] = abs(delta)
             st['mom_trade_count'] = st.get('mom_trade_count', 0) + 1
             st['mom_state'] = 'MOM_SOLD'
-            _log('[MOM sold] Y{:.2f} x {} sh | Âò»Ø´¥·¢ ¡ÜY{:.2f}'.format(
+            _log('[MOM sold] Y{:.2f} x {} sh | ä¹°å›è§¦å‘ â‰¤Y{:.2f}'.format(
                 price, st['mom_leg_shares'], round(price * (1 - MOM_SHORT_BUYBACK_PCT), 2)))
 
     def _mom_handle_sold(self, price):
-        """Âô³öºó: µø1.2%½øÈëÌ½µ×»ØÉıÂò»Ø; (¿ÉÑ¡)·´ÕÇ3%½ô¼±Ö¹ËğÂò»Ø¡£"""
+        """å–å‡ºå: è·Œ1.2%è¿›å…¥æ¢åº•å›å‡ä¹°å›; (å¯é€‰)åæ¶¨3%ç´§æ€¥æ­¢æŸä¹°å›ã€‚"""
         st = self.st
         sp = st['mom_sell_price']
         if sp <= 0:
             st['mom_state'] = 'MOM_IDLE'; return
-        # ¡ï v27: ½ô¼±Ö¹ËğÂò»Ø¿ª¹Ø ¡ª ¼Û¸ñ·´ÕÇ³¬Âô¼Û3%Ê±Ç¿ÖÆÂò»Ø (Ç¿Å£²»»ØÂäÊ±·ÀÔ½¿÷Ô½¶à)
+        # â˜… v27: ç´§æ€¥æ­¢æŸä¹°å›å¼€å…³ â€” ä»·æ ¼åæ¶¨è¶…å–ä»·3%æ—¶å¼ºåˆ¶ä¹°å› (å¼ºç‰›ä¸å›è½æ—¶é˜²è¶Šäºè¶Šå¤š)
         if MOM_EMERGENCY_BUYBACK_ENABLED and price >= sp * (1.0 + cfg.EMERGENCY_BUYBACK_PCT):
-            _log('[MOM EMERG buyback] Y{:.2f}¡úY{:.2f}(+{:.2f}%) Ö¹ËğÂò»Ø'.format(
+            _log('[MOM EMERG buyback] Y{:.2f}â†’Y{:.2f}(+{:.2f}%) æ­¢æŸä¹°å›'.format(
                 sp, price, (price - sp) / sp * 100))
             shares = st.get('mom_leg_shares', 0) or MOM_LOT_SIZE
             _, delta = self._submit_buyback_order(shares, price, 'MOM emrg buyback')
@@ -961,19 +961,19 @@ class StrategyRunner:
                 buyback_price = getattr(self, '_last_buyback_price', price)
                 gross = (sp - buyback_price) * delta
                 self.total_t_days += 1; self.total_pnl += gross
-                _log('[MOM short done(EMERG)] ÂôY{:.2f} ÂòY{:.2f} gross~Y{:,.0f}'.format(
+                _log('[MOM short done(EMERG)] å–Y{:.2f} ä¹°Y{:.2f} gross~Y{:,.0f}'.format(
                     sp, buyback_price, gross))
                 st['mom_state'] = 'MOM_IDLE'
                 st['mom_sell_price'] = 0.0; st['mom_leg_shares'] = 0
             return
-        # Õı³£Âò»Ø´¥·¢: µø1.2% ¡ú Ì½µ×»ØÉıÂò»Ø
+        # æ­£å¸¸ä¹°å›è§¦å‘: è·Œ1.2% â†’ æ¢åº•å›å‡ä¹°å›
         if price <= sp * (1.0 - MOM_SHORT_BUYBACK_PCT):
             st['mom_state'] = 'MOM_DIPPING'; st['mom_dip'] = price
-            _log('[MOM buyback trig] Y{:.2f} ¡ÜY{:.2f}(-{:.2f}%) ¡ú Ì½µ×»ØÉıÂò»Ø'.format(
+            _log('[MOM buyback trig] Y{:.2f} â‰¤Y{:.2f}(-{:.2f}%) â†’ æ¢åº•å›å‡ä¹°å›'.format(
                 price, round(sp * (1 - MOM_SHORT_BUYBACK_PCT), 2), MOM_SHORT_BUYBACK_PCT * 100))
 
     def _mom_handle_dipping(self, price):
-        """Ì½µ×»ØÉıÂò»Ø: ¸ú×Ù¹ÈÖµ, »ØÉıBOUNCE_PCTºóÂò»Ø1ÊÖ¡£"""
+        """æ¢åº•å›å‡ä¹°å›: è·Ÿè¸ªè°·å€¼, å›å‡BOUNCE_PCTåä¹°å›1æ‰‹ã€‚"""
         st = self.st
         if price < st['mom_dip']:
             st['mom_dip'] = price
@@ -981,68 +981,68 @@ class StrategyRunner:
         bounce = (price - dip) / dip if dip > 0 else 0
         if bounce >= cfg.BOUNCE_PCT:
             shares = st.get('mom_leg_shares', 0) or MOM_LOT_SIZE
-            _log('[MOM buyback buy] low Y{:.2f} »ØÉı{:.2f}% ¡ú Y{:.2f}'.format(dip, bounce * 100, price))
+            _log('[MOM buyback buy] low Y{:.2f} å›å‡{:.2f}% â†’ Y{:.2f}'.format(dip, bounce * 100, price))
             _, delta = self._submit_buyback_order(shares, price, 'MOM buyback')
             if delta <= 0:
-                _log('[MOM buyback FAIL] Î´³É½», ±£³Ö DIPPING')
+                _log('[MOM buyback FAIL] æœªæˆäº¤, ä¿æŒ DIPPING')
                 return
             buyback_price = getattr(self, '_last_buyback_price', price)
             gross = (st['mom_sell_price'] - buyback_price) * delta
             self.total_t_days += 1; self.total_pnl += gross
-            _log('[MOM short done] ÂôY{:.2f} ÂòY{:.2f} x {}sh gross~Y{:,.0f}'.format(
+            _log('[MOM short done] å–Y{:.2f} ä¹°Y{:.2f} x {}sh gross~Y{:,.0f}'.format(
                 st['mom_sell_price'], buyback_price, delta, gross))
             st['mom_state'] = 'MOM_IDLE'
             st['mom_sell_price'] = 0.0; st['mom_dip'] = 0.0; st['mom_leg_shares'] = 0
 
     def _mom_handle_bt_dipping(self, price):
-        """Ì½µ×»ØÉıÂòÈë: ¸ú×Ù¹ÈÖµ, »ØÉıBOUNCE_PCTºóÂòÈë1ÊÖ¡£"""
+        """æ¢åº•å›å‡ä¹°å…¥: è·Ÿè¸ªè°·å€¼, å›å‡BOUNCE_PCTåä¹°å…¥1æ‰‹ã€‚"""
         st = self.st
         if price < st['mom_dip']:
             st['mom_dip'] = price
         dip = st['mom_dip'] or price
         bounce = (price - dip) / dip if dip > 0 else 0
         if bounce >= cfg.BOUNCE_PCT:
-            _log('[MOM buy trig] low Y{:.2f} »ØÉı{:.2f}% ¡ú Y{:.2f}'.format(dip, bounce * 100, price))
+            _log('[MOM buy trig] low Y{:.2f} å›å‡{:.2f}% â†’ Y{:.2f}'.format(dip, bounce * 100, price))
             status, delta = self._submit_order(MOM_LOT_SIZE, price, 'MOM long')
             if status in ('SKIP', 'TIMEOUT'):
                 if status == 'TIMEOUT':
-                    _log('[MOM long TIMEOUT] Î´³É½», »Ø IDLE')
+                    _log('[MOM long TIMEOUT] æœªæˆäº¤, å› IDLE')
                 st['mom_state'] = 'MOM_IDLE'; st['mom_dip'] = 0.0
                 return
             st['mom_buy_price'] = price
             st['mom_leg_shares'] = abs(delta)
             st['mom_trade_count'] = st.get('mom_trade_count', 0) + 1
             st['mom_state'] = 'MOM_BT_BOUGHT'
-            _log('[MOM bought] Y{:.2f} x {} sh | Âô»Ø´¥·¢ ¡İY{:.2f}'.format(
+            _log('[MOM bought] Y{:.2f} x {} sh | å–å›è§¦å‘ â‰¥Y{:.2f}'.format(
                 price, st['mom_leg_shares'], round(price * (1 + MOM_LONG_SELLBACK_PCT), 2)))
 
     def _mom_handle_bt_bought(self, price):
-        """ÂòÈëºó: ÕÇ1.5%½øÈë³å¸ß»ØÂäÂô³ö; ·´µø1.5%Ö¹ËğÂô³ö¡£"""
+        """ä¹°å…¥å: æ¶¨1.5%è¿›å…¥å†²é«˜å›è½å–å‡º; åè·Œ1.5%æ­¢æŸå–å‡ºã€‚"""
         st = self.st
         bp = st['mom_buy_price']
         if bp <= 0:
             st['mom_state'] = 'MOM_IDLE'; return
-        # Ö¹ËğÂô³ö: ¼Û¸ñ·´µøÆÆÂò¼Û1.5%
+        # æ­¢æŸå–å‡º: ä»·æ ¼åè·Œç ´ä¹°ä»·1.5%
         if price <= bp * (1.0 - cfg.STOP_LOSS_PCT):
-            _log('[MOM stop-loss] Y{:.2f}¡úY{:.2f}(-{:.2f}%) Ö¹ËğÂô³ö'.format(
+            _log('[MOM stop-loss] Y{:.2f}â†’Y{:.2f}(-{:.2f}%) æ­¢æŸå–å‡º'.format(
                 bp, price, (bp - price) / bp * 100))
             shares = st.get('mom_leg_shares', 0) or MOM_LOT_SIZE
             _, delta = self._submit_order(-shares, price, 'MOM stop-loss')
             if delta < 0:
                 gross = (price - bp) * (-delta)
                 self.total_t_days += 1; self.total_pnl += gross
-                _log('[MOM long done(stop)] ÂòY{:.2f} ÂôY{:.2f} gross~Y{:,.0f}'.format(bp, price, gross))
+                _log('[MOM long done(stop)] ä¹°Y{:.2f} å–Y{:.2f} gross~Y{:,.0f}'.format(bp, price, gross))
                 st['mom_state'] = 'MOM_IDLE'
                 st['mom_buy_price'] = 0.0; st['mom_leg_shares'] = 0
             return
-        # Õı³£Âô»Ø´¥·¢: ÕÇ1.5% ¡ú ³å¸ß»ØÂäÂô³ö
+        # æ­£å¸¸å–å›è§¦å‘: æ¶¨1.5% â†’ å†²é«˜å›è½å–å‡º
         if price >= bp * (1.0 + MOM_LONG_SELLBACK_PCT):
             st['mom_state'] = 'MOM_BT_SPIKING'; st['mom_peak'] = price
-            _log('[MOM sellback trig] Y{:.2f} ¡İY{:.2f}(+{:.2f}%) ¡ú ³å¸ß»ØÂäÂô³ö'.format(
+            _log('[MOM sellback trig] Y{:.2f} â‰¥Y{:.2f}(+{:.2f}%) â†’ å†²é«˜å›è½å–å‡º'.format(
                 price, round(bp * (1 + MOM_LONG_SELLBACK_PCT), 2), MOM_LONG_SELLBACK_PCT * 100))
 
     def _mom_handle_bt_spiking(self, price):
-        """³å¸ß»ØÂäÂô³ö: ¸ú×Ù·åÖµ, »ØÂäPULLBACK_PCTºóÂô³ö1ÊÖ¡£"""
+        """å†²é«˜å›è½å–å‡º: è·Ÿè¸ªå³°å€¼, å›è½PULLBACK_PCTåå–å‡º1æ‰‹ã€‚"""
         st = self.st
         if price > st['mom_peak']:
             st['mom_peak'] = price
@@ -1050,21 +1050,21 @@ class StrategyRunner:
         pullback = (peak - price) / peak if peak > 0 else 0
         if pullback >= cfg.PULLBACK_PCT:
             shares = st.get('mom_leg_shares', 0) or MOM_LOT_SIZE
-            _log('[MOM sellback sell] peak Y{:.2f} »ØÂä{:.2f}% ¡ú Y{:.2f}'.format(peak, pullback * 100, price))
+            _log('[MOM sellback sell] peak Y{:.2f} å›è½{:.2f}% â†’ Y{:.2f}'.format(peak, pullback * 100, price))
             _, delta = self._submit_order(-shares, price, 'MOM sellback')
             sold = -delta
             if sold <= 0:
-                _log('[MOM sellback FAIL] Î´³É½», ±£³Ö SPIKING')
+                _log('[MOM sellback FAIL] æœªæˆäº¤, ä¿æŒ SPIKING')
                 return
             gross = (price - st['mom_buy_price']) * sold
             self.total_t_days += 1; self.total_pnl += gross
-            _log('[MOM long done] ÂòY{:.2f} ÂôY{:.2f} x {}sh gross~Y{:,.0f}'.format(
+            _log('[MOM long done] ä¹°Y{:.2f} å–Y{:.2f} x {}sh gross~Y{:,.0f}'.format(
                 st['mom_buy_price'], price, sold, gross))
             st['mom_state'] = 'MOM_IDLE'
             st['mom_buy_price'] = 0.0; st['mom_peak'] = 0.0; st['mom_leg_shares'] = 0
 
     def _mom_force_close(self, price):
-        """Î²ÅÌÇ¿ÖÆÆ½µô¶ÌÏßÍÈ (Âô³öµÄÂò»Ø / ÂòÈëµÄÂô³ö), ¶ÌÏß²»¸ôÒ¹¡£"""
+        """å°¾ç›˜å¼ºåˆ¶å¹³æ‰çŸ­çº¿è…¿ (å–å‡ºçš„ä¹°å› / ä¹°å…¥çš„å–å‡º), çŸ­çº¿ä¸éš”å¤œã€‚"""
         st = self.st
         ms = st.get('mom_state')
         if ms == 'MOM_SOLD':
@@ -1072,20 +1072,20 @@ class StrategyRunner:
             _log('[MOM force buyback] Y{:.2f}'.format(price))
             _, delta = self._submit_buyback_order(shares, price, 'MOM force buyback')
             if delta <= 0:
-                _log('[WARN] MOM force buyback Î´³É½», ¶ÌÏßÍÈ¿ÉÄÜ²ĞÁô!')
+                _log('[WARN] MOM force buyback æœªæˆäº¤, çŸ­çº¿è…¿å¯èƒ½æ®‹ç•™!')
             st['mom_state'] = 'MOM_IDLE'; st['mom_sell_price'] = 0.0; st['mom_leg_shares'] = 0
         elif ms in ('MOM_BT_BOUGHT', 'MOM_BT_SPIKING'):
             shares = st.get('mom_leg_shares', 0) or MOM_LOT_SIZE
             _log('[MOM force sell] Y{:.2f}'.format(price))
             _, delta = self._submit_order(-shares, price, 'MOM force sell')
             if delta >= 0:
-                _log('[WARN] MOM force sell Î´³É½», ¶ÌÏßÍÈ¿ÉÄÜ²ĞÁô!')
+                _log('[WARN] MOM force sell æœªæˆäº¤, çŸ­çº¿è…¿å¯èƒ½æ®‹ç•™!')
             st['mom_state'] = 'MOM_IDLE'; st['mom_buy_price'] = 0.0; st['mom_leg_shares'] = 0
         elif ms in ('MOM_SPIKING', 'MOM_DIPPING', 'MOM_BT_DIPPING'):
-            # ÉĞÎ´¿ªÍÈ, Ö±½Ó¸´Î»
+            # å°šæœªå¼€è…¿, ç›´æ¥å¤ä½
             st['mom_state'] = 'MOM_IDLE'; st['mom_peak'] = 0.0; st['mom_dip'] = 0.0
 
-    # ¨T¨T¨T Ö÷Ñ­»· ¨T¨T¨T
+    # â•â•â• ä¸»å¾ªç¯ â•â•â•
 
     def run(self):
         set_global_conn(self.conn, self.dry_run)
@@ -1139,7 +1139,7 @@ class StrategyRunner:
                 if fstate in (STATE_DONE, STATE_FORCED):
                     tick = self.ctx.get_full_tick([STOCK_QMT])
                     price = tick.get(STOCK_QMT, {}).get('lastPrice', 0)
-                    # ¡ï v25: ¶ÌÏß¶¯Á¿»úÖÆÔÚÖ÷»úÖÆÊÕÎ²(DONE/FORCED)Ê±ÈÔ¶ÀÁ¢ÔËĞĞ
+                    # â˜… v25: çŸ­çº¿åŠ¨é‡æœºåˆ¶åœ¨ä¸»æœºåˆ¶æ”¶å°¾(DONE/FORCED)æ—¶ä»ç‹¬ç«‹è¿è¡Œ
                     if MOM_ENABLED and price > 0:
                         self._mom_tick(price, now_ts)
                     if now_ts - self._last_heartbeat >= 30:
@@ -1159,14 +1159,14 @@ class StrategyRunner:
                 if STOCK_QMT not in tick: _time.sleep(1); continue
                 price = tick[STOCK_QMT].get('lastPrice', 0)
                 if price <= 0: _time.sleep(1); continue
-                # ¡ï v25: ¶ÌÏß¶¯Á¿»úÖÆ (¶ÀÁ¢ÓÚÈÕÏßĞÅºÅ/Ö÷×´Ì¬»ú, Ã¿tickÔËĞĞ)
+                # â˜… v25: çŸ­çº¿åŠ¨é‡æœºåˆ¶ (ç‹¬ç«‹äºæ—¥çº¿ä¿¡å·/ä¸»çŠ¶æ€æœº, æ¯tickè¿è¡Œ)
                 if MOM_ENABLED:
                     self._mom_tick(price, now_ts)
-                # ¡ï v21: ¿ªÅÌÊ×¸öÓĞĞ§tick´òÓ¡ĞĞÇéÈ·ÈÏ
+                # â˜… v21: å¼€ç›˜é¦–ä¸ªæœ‰æ•ˆtickæ‰“å°è¡Œæƒ…ç¡®è®¤
                 if not self.st.get('_market_open_logged', True):
                     self.st['_market_open_logged'] = True
                     sig_chk = self.st.get('daily_signal', {})
-                    # ¡ï v28: ÓÃ½ñÈÕ¿ªÅÌ¼ÛÖØËã sell_trigger (ÅÌÇ°¼ÆËã¿ÉÄÜÓÃÁË×òÈÕ¿ªÅÌ¼Û)
+                    # â˜… v28: ç”¨ä»Šæ—¥å¼€ç›˜ä»·é‡ç®— sell_trigger (ç›˜å‰è®¡ç®—å¯èƒ½ç”¨äº†æ˜¨æ—¥å¼€ç›˜ä»·)
                     _open_now = self.ctx.get_full_tick([STOCK_QMT]).get(STOCK_QMT, {}).get('open', 0)
                     _open_old = sig_chk.get('open_price', 0)
                     if _open_now > 0 and _open_old > 0 and abs(_open_now - _open_old) / _open_old > 0.005:
@@ -1176,7 +1176,7 @@ class StrategyRunner:
                         _old_trig = sig_chk.get('sell_trigger', 0)
                         sig_chk['sell_trigger'] = _new_trig
                         sig_chk['open_price'] = _open_now
-                        _log('[SELL-TRIG RECALC] open Y{:.2f}¡úY{:.2f} trig Y{:.2f}¡úY{:.2f} (Mult {:.2f} ATR {:.1f}%)'.format(
+                        _log('[SELL-TRIG RECALC] open Y{:.2f}â†’Y{:.2f} trig Y{:.2f}â†’Y{:.2f} (Mult {:.2f} ATR {:.1f}%)'.format(
                             _open_old, _open_now, _old_trig, _new_trig, _sm, _atr * 100))
                     st_trig = sig_chk.get('sell_trigger', 0)
                     bt_trig = sig_chk.get('buy_trigger', 0)
@@ -1218,7 +1218,7 @@ class StrategyRunner:
         finally:
             self.conn.disconnect()
             if self.st.get('fstate', '') in (STATE_SOLD, STATE_DIPPING): _log('[WARN] position not bought back!')
-            # ¡ï v25: ¶ÌÏßÍÈ²ĞÁô¾¯¸æ (v29: MOM_ENABLED=FalseÊ±Ìø¹ı)
+            # â˜… v25: çŸ­çº¿è…¿æ®‹ç•™è­¦å‘Š (v29: MOM_ENABLED=Falseæ—¶è·³è¿‡)
             if MOM_ENABLED:
                 mom_ms = self.st.get('mom_state', '')
                 if mom_ms in ('MOM_SOLD', 'MOM_DIPPING'):
@@ -1246,13 +1246,13 @@ class StrategyRunner:
             parts = []
             if self.st.get('do_short'):
                 st_trig = sig.get('sell_trigger', 0)
-                # ¡ï v24: ¼Û¸ñÒÑÕÇ³¬Âôµã(´¥·¢¼Û)Ê±, need ºó¼Ó ! ÌáÊ¾ÒÑ´¥·¢
+                # â˜… v24: ä»·æ ¼å·²æ¶¨è¶…å–ç‚¹(è§¦å‘ä»·)æ—¶, need ååŠ  ! æç¤ºå·²è§¦å‘
                 over = '!' if price >= st_trig else ''
                 parts.append('REV-T: need{} {:+.2f} to Y{:.2f}'.format(over, st_trig - price, st_trig))
             else: parts.append('REV-T: off')
             if self.st.get('do_long'):
                 bt_dyn = sig.get('buy_trigger', 0)
-                # ¡ï v24: ¼Û¸ñÒÑµøÆÆÂòµã(´¥·¢¼Û)Ê±, need ºó¼Ó ! ÌáÊ¾ÒÑ´¥·¢
+                # â˜… v24: ä»·æ ¼å·²è·Œç ´ä¹°ç‚¹(è§¦å‘ä»·)æ—¶, need ååŠ  ! æç¤ºå·²è§¦å‘
                 over = '!' if price <= bt_dyn else ''
                 parts.append('FWD-T: need{} {:+.2f} to Y{:.2f}'.format(over, bt_dyn - price, bt_dyn))
             else: parts.append('FWD-T: off')
@@ -1293,7 +1293,7 @@ def run_backtest_mode(start='20250801', end='20260806'):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='MiniQMT internal daily Trading v31 ¡ª MOM/REV-T FIXÏŞ¼ÛÂò»Ø')
+    parser = argparse.ArgumentParser(description='MiniQMT internal daily Trading v31 â€” MOM/REV-T FIXé™ä»·ä¹°å›')
     parser.add_argument('--mode', '-m', default='signal', choices=['signal', 'live', 'backtest'])
     parser.add_argument('--start', default='20250801'); parser.add_argument('--end', default='20260806')
     args = parser.parse_args()
