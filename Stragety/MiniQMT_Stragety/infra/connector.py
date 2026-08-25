@@ -7,6 +7,9 @@ infra/connector.py — MiniQMT 连接层 + QMT 接口模拟
   MockPosition/Account : 模拟 QMT 持仓/账户对象
   get_trade_detail_data / order_shares : 模拟 QMT 全局函数
 """
+import importlib
+import os
+import sys
 import time as _time
 import traceback as _traceback
 from datetime import datetime, timedelta
@@ -21,6 +24,31 @@ from .logger import _log
 
 _global_conn: Optional['MiniQMTConnector'] = None
 _global_dry_run = False
+
+
+def load_xtquant():
+    """加载 XtQuant，必要时使用 MiniQMT 客户端随附的 Python SDK。"""
+    try:
+        return importlib.import_module('xtquant')
+    except ModuleNotFoundError as first_error:
+        sdk_path = os.path.abspath(cfg.XTQUANT_SITE_PACKAGES)
+        package_path = os.path.join(sdk_path, 'xtquant')
+        if not os.path.isdir(package_path):
+            raise RuntimeError(
+                '未找到 XtQuant SDK。当前检查路径: {}。请确认 MiniQMT '
+                '安装位置，或设置 MINIQMT_PATH/XTQUANT_SITE_PACKAGES '
+                '环境变量。'.format(sdk_path)
+            ) from first_error
+        if sdk_path not in sys.path:
+            sys.path.insert(0, sdk_path)
+        importlib.invalidate_caches()
+        try:
+            return importlib.import_module('xtquant')
+        except (ImportError, OSError) as sdk_error:
+            raise RuntimeError(
+                'XtQuant SDK 存在但加载失败: {}。Python 必须是受支持的 '
+                '64 位版本，并与客户端 SDK 兼容。'.format(sdk_error)
+            ) from sdk_error
 
 
 def set_global_conn(conn: 'MiniQMTConnector', dry_run: bool = False):
@@ -72,9 +100,12 @@ class MiniQMTConnector:
         self._trade_connected = False
         self._account_obj = None
         self._daily_data_cache = None
+        self.last_position_query_ok = False
+        self.last_account_query_ok = False
 
         self.last_order_status = None
         self.last_order_id = None
+        self.last_order = None
         self.last_trade = None
         self.order_pending = False
         # ★ 下单快照 (方向, 价格, 数量, 代码) — 推送对象价格/数量字段为 0 时用于回退
@@ -85,10 +116,13 @@ class MiniQMTConnector:
 
     def connect_data(self):
         """连接行情 (xtdata)"""
-        from xtquant import xtdata as _xtdata
-        self.xtdata = _xtdata
         try:
-            _xtdata.connect()
+            load_xtquant()
+            _xtdata = importlib.import_module('xtquant.xtdata')
+            self.xtdata = _xtdata
+            # XtData 会在首次行情请求时自动连接 MiniQMT；官方 SDK 没有
+            # xtdata.connect()。用无下单副作用的快照请求作为连接探针。
+            _xtdata.get_full_tick([cfg.STOCK_QMT])
             self._data_connected = True
             _log('[连接] MiniQMT 行情服务已连接')
             return True
@@ -99,7 +133,17 @@ class MiniQMTConnector:
 
     def connect_trade(self, account_id=cfg.ACCOUNT, path=cfg.MINIQMT_PATH, session=cfg.SESSION_ID):
         """连接交易 (xttrader)"""
-        from xtquant import xttrader as _xttrader, xtconstant
+        if not os.path.isdir(path):
+            _log('[交易] MiniQMT 路径不存在: {}'.format(path))
+            _log('[提示] 请设置 MINIQMT_PATH 为客户端 userdata_mini 完整路径')
+            return False
+        try:
+            load_xtquant()
+            _xttrader = importlib.import_module('xtquant.xttrader')
+            xtconstant = importlib.import_module('xtquant.xtconstant')
+        except RuntimeError as exc:
+            _log('[交易] {}'.format(exc))
+            return False
 
         class _Callback(_xttrader.XtQuantTraderCallback):
             def __init__(self, parent):
@@ -176,6 +220,7 @@ class MiniQMTConnector:
                                     _log(f'  {attr} = {getattr(order, attr)}')
                                 except Exception:
                                     pass
+                self.parent.last_order = order
                 self.parent.last_order_status = status
                 oid = _pick(order, 'order_id', 'm_nOrderID', default=None)
                 if oid is not None:
@@ -405,6 +450,17 @@ class MiniQMTConnector:
             return {code: vals}
         return {}
 
+    def get_daily_bars(self, length=100):
+        """返回带日期索引的日线 DataFrame 副本。"""
+        if self._daily_data_cache is None:
+            self.get_history_data(length, '1d', 'close')
+        if self._daily_data_cache is None:
+            return None
+        df = self._daily_data_cache
+        if len(df) > length:
+            df = df.iloc[-length:]
+        return df.copy()
+
     def get_full_tick(self, codes):
         """对应 QMT: ContextInfo.get_full_tick([code])"""
         try:
@@ -417,20 +473,86 @@ class MiniQMTConnector:
 
     def query_positions(self):
         if not self._trade_connected:
+            self.last_position_query_ok = False
             return []
         try:
             positions = self.trader.query_stock_positions(self._account_obj)
+            self.last_position_query_ok = True
             return positions or []
-        except Exception:
+        except Exception as e:
+            self.last_position_query_ok = False
+            _log(f'[持仓查询异常] {e}')
             return []
 
     def query_account(self):
         if not self._trade_connected:
+            self.last_account_query_ok = False
             return None
         try:
-            return self.trader.query_stock_asset(self._account_obj)
-        except Exception:
+            asset = self.trader.query_stock_asset(self._account_obj)
+            self.last_account_query_ok = asset is not None
+            return asset
+        except Exception as e:
+            self.last_account_query_ok = False
+            _log(f'[资金查询异常] {e}')
             return None
+
+    def query_order(self, order_id):
+        """按订单号查询当日委托；查询异常时返回 None。"""
+        if not self._trade_connected or self._account_obj is None or order_id is None:
+            return None
+        try:
+            return self.trader.query_stock_order(self._account_obj, order_id)
+        except Exception as e:
+            _log(f'[委托查询异常] order_id={order_id}: {e}')
+            return None
+
+    def get_order_snapshot(self, order_id):
+        """返回与策略解耦的委托快照，供严格成交确认使用。"""
+        if order_id is None:
+            return None
+        order = self.query_order(order_id)
+        if order is None and self.last_order_id == order_id:
+            order = self.last_order
+        if order is None:
+            return None
+
+        from xtquant import xtconstant
+        status = _pick(order, 'order_status', 'm_nOrderStatus', default=-1)
+        status_names = {
+            xtconstant.ORDER_UNREPORTED: 'UNREPORTED',
+            xtconstant.ORDER_WAIT_REPORTING: 'WAIT_REPORTING',
+            xtconstant.ORDER_REPORTED: 'REPORTED',
+            xtconstant.ORDER_REPORTED_CANCEL: 'REPORTED_CANCEL',
+            xtconstant.ORDER_PARTSUCC_CANCEL: 'PARTSUCC_CANCEL',
+            xtconstant.ORDER_PART_CANCEL: 'PART_CANCEL',
+            xtconstant.ORDER_CANCELED: 'CANCELED',
+            xtconstant.ORDER_PART_SUCC: 'PARTIAL',
+            xtconstant.ORDER_SUCCEEDED: 'FILLED',
+            xtconstant.ORDER_JUNK: 'REJECTED',
+        }
+        terminal_values = {
+            xtconstant.ORDER_PART_CANCEL,
+            xtconstant.ORDER_CANCELED,
+            xtconstant.ORDER_SUCCEEDED,
+            xtconstant.ORDER_JUNK,
+        }
+        volume = int(_pick(order, 'order_volume', 'm_nOrderVolume',
+                           'm_nVolumeTotalOriginal', default=0) or 0)
+        traded = int(_pick(order, 'traded_volume', 'm_nTradedVolume',
+                           'm_nVolumeTraded', default=0) or 0)
+        traded_price = float(_pick(order, 'traded_price', 'm_dTradedPrice',
+                                   default=0.0) or 0.0)
+        return {
+            'order_id': order_id,
+            'status_code': status,
+            'status': status_names.get(status, f'UNKNOWN({status})'),
+            'terminal': status in terminal_values,
+            'rejected': status == xtconstant.ORDER_JUNK,
+            'order_volume': volume,
+            'traded_volume': traded,
+            'traded_price': traded_price,
+        }
 
     # ── 下单 ──
 
@@ -450,13 +572,31 @@ class MiniQMTConnector:
             shares = abs(shares)
             dir_name = '卖出'
 
+        style = str(style or 'LATEST').upper()
         order_price = price if price and price > 0 else 0
-        price_type = xtconstant.FIX_PRICE
+        peer_price = getattr(xtconstant, 'MARKET_PEER_PRICE_FIRST',
+                             xtconstant.LATEST_PRICE)
+        market_sh = getattr(xtconstant, 'MARKET_SH_CONVERT_5_CANCEL', peer_price)
+        market_sz = getattr(xtconstant, 'MARKET_SZ_CONVERT_5_CANCEL', peer_price)
+        price_types = {
+            'FIX': xtconstant.FIX_PRICE,
+            'LATEST': xtconstant.LATEST_PRICE,
+            'COMPETE': peer_price,
+            'MARKET': market_sh if stock_code.endswith('.SH') else market_sz,
+        }
+        price_type = price_types.get(style, xtconstant.FIX_PRICE)
+        if style != 'FIX':
+            order_price = 0
 
         # ★ 记录下单快照, 供委托/成交推送回调在价格/数量字段为 0 时回退显示真实值
-        self.last_order_info = (dir_name, order_price, shares, stock_code)
+        display_price = price if price and price > 0 else order_price
+        self.last_order_info = (dir_name, display_price, shares, stock_code)
+        self.last_order_id = None
+        self.last_order_status = None
+        self.last_order = None
 
-        _log('  >>> 下单{}: Y{:.2f} x {}股 {}'.format(dir_name, order_price, shares, stock_code))
+        _log('  >>> 下单{}: {} Y{:.2f} x {}股 {}'.format(
+            dir_name, style, display_price, shares, stock_code))
 
         try:
             ret = self.trader.order_stock(
@@ -464,7 +604,12 @@ class MiniQMTConnector:
                 price_type, order_price,
                 cfg.STRATEGY_NAME, '迷你反T_{}'.format(dir_name),
             )
-            self.order_pending = True
+            if isinstance(ret, int) and ret > 0:
+                self.last_order_id = ret
+                self.order_pending = True
+            else:
+                self.order_pending = False
+                _log('[下单失败] 返回订单号: {}'.format(ret))
             return ret
         except Exception as e:
             _log('[下单异常] {}'.format(e))
@@ -476,9 +621,12 @@ class MiniQMTConnector:
         if not self._trade_connected or order_id is None:
             return False
         try:
-            self.trader.cancel_order_stock(self._account_obj, order_id)
-            _log(f'[撤单] order_id={order_id}')
-            return True
+            result = self.trader.cancel_order_stock(self._account_obj, order_id)
+            if result == 0:
+                _log(f'[撤单] order_id={order_id}')
+                return True
+            _log(f'[撤单失败] order_id={order_id}, 返回码={result}')
+            return False
         except Exception as e:
             _log(f'[撤单异常] {e}')
             return False

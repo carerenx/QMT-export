@@ -4,6 +4,7 @@ core/config.py — 策略参数常量 + 时间工具函数
 =============================================
 所有可调参数集中管理。工具函数纯计算, 无副作用。
 """
+import os
 import time as _time
 
 # ============================================================================
@@ -84,7 +85,40 @@ MAX_DAILY_TRADES  = 5
 # ============================================================================
 # MiniQMT 连接
 # ============================================================================
-MINIQMT_PATH = 'C:/QMT/userdata_mini'
+
+
+def resolve_miniqmt_path():
+    """返回 MiniQMT ``userdata_mini`` 目录。
+
+    ``MINIQMT_PATH``/``MINIQMT_HOME`` 环境变量优先，随后检查本机已知安装
+    位置。保留 ``C:/QMT`` 作为不存在时的兼容默认值，让连接层能够输出
+    明确的配置错误，而不是静默选择其他客户端。
+    """
+    configured_path = os.environ.get('MINIQMT_PATH', '').strip().strip('"')
+    if configured_path:
+        return os.path.normpath(configured_path)
+
+    configured_home = os.environ.get('MINIQMT_HOME', '').strip().strip('"')
+    if configured_home:
+        return os.path.normpath(
+            os.path.join(configured_home, 'userdata_mini'))
+
+    candidates = (
+        'I:/国金证券QMT交易端/userdata_mini',
+        'C:/QMT/userdata_mini',
+        'D:/QMT/userdata_mini',
+    )
+    for candidate in candidates:
+        if os.path.isdir(candidate):
+            return os.path.normpath(candidate)
+    return os.path.normpath(candidates[1])
+
+
+MINIQMT_PATH = resolve_miniqmt_path()
+XTQUANT_SITE_PACKAGES = os.path.normpath(
+    os.environ.get('XTQUANT_SITE_PACKAGES') or
+    os.path.join(os.path.dirname(MINIQMT_PATH),
+                 'bin.x64', 'Lib', 'site-packages'))
 SESSION_ID   = 0
 
 # ============================================================================

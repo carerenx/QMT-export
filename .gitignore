@@ -5,6 +5,17 @@ __pycache__/
 *.pyc
 .DS_Store
 Log/
+logs/
+*.log
+
+# MiniQMT/XtQuant runtime download queues
+127.0.0.1/
+**/127.0.0.1/
+down_queue_*
+
+# Generated backtest artifacts
+backtest/output/
+backtest_results/
 
 
 backtest/cache
