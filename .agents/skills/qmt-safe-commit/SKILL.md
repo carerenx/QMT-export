@@ -5,30 +5,19 @@ description: Safely review, verify, stage, and commit changes in the QMT-export 
 
 # QMT Safe Commit
 
-Create small, attributable commits without sweeping unrelated user work into them.
+Create a small, attributable commit without sweeping in unrelated work.
 
-## Repository invariants
+## Rules
 
-- Read the root `AGENTS.md` before staging.
-- A modified strategy Python file must become a new versioned Python file; never overwrite an existing strategy version merely to prepare a commit.
-- Treat QMT-injected globals as valid runtime dependencies. Do not add local stubs just to silence IDE warnings.
-- Preserve GBK encoding declarations on QMT strategy files.
-- Exclude logs, `__pycache__`, compiled bytecode, backtest output, credentials, local settings, and other generated artifacts.
-- Shared infrastructure changes, especially `Stragety/MiniQMT_Stragety/infra/`, can affect multiple strategies. State that scope in the handoff.
+- Commit only when the user explicitly asks. Never push without explicit authorization.
+- Read the root `AGENTS.md`. Treat QMT-injected globals as valid; do not add stubs merely to silence IDE warnings.
+- Preserve unrelated work. Never delete or revert unknown changes. Exclude generated files, logs, outputs, secrets, and local settings.
+- Shared MiniQMT infrastructure can affect many strategies; report that scope.
 
 ## Workflow
 
-1. Inspect `git status --short`, staged and unstaged diffs, untracked files, and recent commit style.
-2. Attribute every candidate file to the requested work. Preserve unrelated edits and stage explicit paths instead of `git add -A` when the worktree contains mixed changes.
-3. Remove only disposable artifacts created during the current task. Do not delete or revert unknown user files.
-4. Verify in proportion to the change:
-   - QMT/MiniQMT SDK behavior: use `C:\QMT\bin.x64\python.exe` when the ordinary interpreter lacks `xtquant`.
-   - Connector or order-routing changes: run focused fake-trader tests that cannot place live orders.
-   - Backtest changes: use the repository `run-qmt-export` smoke-test flow, preferring cached data.
-   - Documentation-only changes: perform formatting and link/path checks as applicable.
-5. Run `git diff --cached --check` and inspect `git diff --cached --stat` before committing.
-6. Split independent themes into separate commits. Use a conventional prefix such as `fix:`, `feat:`, `test:`, `docs:`, or `chore:` and keep the subject concise.
-7. Commit only after the user has requested a commit. Do not push unless explicitly authorized.
-8. Report commit hashes, subjects, verification results, and any remaining working-tree changes.
-
-If verification cannot run because a dependency is missing, retry with the repository's intended interpreter or environment. Report the limitation rather than installing dependencies without authorization.
+1. Inspect status, staged/unstaged diffs, untracked files, and recent commit style. Attribute every file to the request.
+2. Verify in proportion to risk. For SDK behavior prefer `C:\QMT\bin.x64\python.exe`; test order routing with fakes that cannot place live orders. Report unavailable dependencies instead of installing them without permission.
+3. Stage explicit paths when the worktree is mixed. Inspect the staged diff, then run `git diff --cached --check` and `git diff --cached --stat`.
+4. Make focused conventional commits (`fix:`, `feat:`, `test:`, `docs:`, `chore:`).
+5. Report the commit hash, verification, and remaining working-tree changes.

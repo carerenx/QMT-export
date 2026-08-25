@@ -148,31 +148,14 @@ _No active workspace servers in mcp.json._
 
 - **run-qmt-export** — `d:\02Project\QMT-export\.Codex\skills\run-qmt-export` — Build, run, smoke-test, and drive the QMT-export quantitative trading backtest system. Use when asked to run a backtest, verify the engine works, validate a strategy, test data loading, or check that the backtest system 
 
-- **signal-validation** — `d:\02Project\QMT-export\.Codex\skills\signal-validation` — Validate A-stock sell/top-detection signals against historical data. Run when asked to validate trading signals, backtest sell rules, check momentum indicators, evaluate escape-top signals, or verify technical indicators
-
 #### User skills
 
 - **a-stock-data** — `C:\Users\pp313\.Codex\skills\a-stock-data` — A股全栈数据工具包 — 覆盖行情(mootdx+腾讯+百度K线)、研报(东财+同花顺+iwencai)、信号(同花顺热点+北向+龙虎榜+解禁+行业)、资金面(融资融券+大宗交易+股东户数+分红+资金流分钟级+资金流120日)、新闻(东财个股+全球资讯)、基础数据(mootdx财务/F10+东财+新浪三表)、公告(巨潮)七层数据源，内嵌全部调用代码，自包含零依赖外部文件。优先用通达信(mootdx)/腾讯(不封IP)，东财接口已内置限流防
 
-- **A15-expert** — `C:\Users\pp313\.Codex\skills\A15-expert` — >
-
-- **autosar-bsw-expert** — `C:\Users\pp313\.Codex\skills\autosar-bsw-expert` — >
-
-- **CCU-expert** — `C:\Users\pp313\.Codex\skills\CCU-expert` — >
-
-- **check-expert** — `C:\Users\pp313\.Codex\skills\check-expert` — 我将为你提供一套 **核对模块** 的功能性核对点。请你扮演系统核查专家，针对**每一个核对点**，严格按照预设的专家角色、输出规范和目录结构，生成3份相互关联的Markdown报告。
-
-- **diag-expert** — `C:\Users\pp313\.Codex\skills\diag-expert` — >
 
 - **QMT-expert** — `C:\Users\pp313\.Codex\skills\QMT-expert` — >
 
-- **rollout-check** — `C:\Users\pp313\.Codex\skills\rollout-check` — >
-
 - **serenity-skill** — `C:\Users\pp313\.Codex\skills\serenity-skill` — Turn an investment agent into a supply-chain bottleneck hunter. Use this skill for source-backed investment research, live market/theme scans, AI/semi/technology value-chain mapping, A-share/HK/US stock screening, thesis
-
-- **solution-verify** — `C:\Users\pp313\.Codex\skills\solution-verify` — >
-
-- **tricore-expert** — `C:\Users\pp313\.Codex\skills\tricore-expert` — >
 
 - **ask-matt** — `C:\Users\pp313\.agents\skills\ask-matt` — Ask which skill or flow fits your situation. A router over the skills in this repo.
 
