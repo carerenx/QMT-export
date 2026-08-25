@@ -1,6 +1,6 @@
 # Cloude Code ToolBox — MCP & Skills awareness
 
-_Generated: 2026-08-21T10:13:07.372Z_
+_Generated: 2026-08-25T03:10:45.461Z_
 
 ## How to use this report
 
@@ -45,6 +45,9 @@ _No active workspace servers in mcp.json._
 
 - **git-commit** — `d:\02Project\QMT-export\.agents\skills\git-commit`
   - Execute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions "/commit".
+
+- **qmt-safe-commit** — `d:\02Project\QMT-export\.agents\skills\qmt-safe-commit`
+  - Safely review, verify, stage, and commit changes in the QMT-export repository. Use when asked to commit QMT strategies, MiniQMT infrastructure, backtest code, tests, analysis, or documentation. Do not use for stash creat
 
 - **run-qmt-export** — `d:\02Project\QMT-export\.agents\skills\run-qmt-export`
   - Build, run, smoke-test, and drive the QMT-export quantitative trading backtest system. Use when asked to run a backtest, verify the engine works, validate a strategy, test data loading, or check that the backtest system 
