@@ -23,6 +23,17 @@ def _price_series(size=60):
 
 
 class SignalVolumeRatioTest(unittest.TestCase):
+    def test_current_open_is_used_without_mutating_complete_history(self):
+        opens, highs, lows, closes = _price_series()
+        original_opens = list(opens)
+        volumes = [100.0] * 60
+
+        signal = compute_signal(
+            opens, highs, lows, closes, volumes, today_open=393.0)
+
+        self.assertEqual(393.0, signal['open_price'])
+        self.assertEqual(original_opens, opens)
+
     def test_ratio_uses_previous_twenty_complete_days(self):
         opens, highs, lows, closes = _price_series()
         volumes = [100.0] * 59 + [200.0]

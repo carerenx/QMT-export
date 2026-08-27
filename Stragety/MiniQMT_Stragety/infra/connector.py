@@ -9,6 +9,7 @@ infra/connector.py — MiniQMT 连接层 + QMT 接口模拟
 """
 import time as _time
 import traceback as _traceback
+import math
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -67,6 +68,52 @@ def exclude_incomplete_daily_bar(dataframe, today=None):
     return dataframe, False
 
 
+def _normalize_trade_date(value):
+    """Normalize xtdata/string/pandas date values to YYYYMMDD."""
+    if value is None:
+        return ''
+    if hasattr(value, 'strftime'):
+        try:
+            return value.strftime('%Y%m%d')
+        except Exception:
+            pass
+    if isinstance(value, (int, float)):
+        stamp = float(value)
+        # xtdata/pandas may expose a YYYYMMDD index as an integer.  Treat it
+        # as a calendar key before considering Unix seconds/milliseconds.
+        if stamp.is_integer() and 19000101 <= stamp <= 29991231:
+            return str(int(stamp))
+        if stamp > 100000000000:
+            stamp /= 1000.0
+        try:
+            return datetime.fromtimestamp(stamp).strftime('%Y%m%d')
+        except Exception:
+            return ''
+    text = str(value).replace('-', '').replace('/', '')
+    return text[:8] if len(text) >= 8 else text
+
+
+def _daily_values_valid(dataframe):
+    """Return False when a complete daily bar contains unusable numbers."""
+    for field in ('open', 'high', 'low', 'close'):
+        for value in dataframe[field]:
+            try:
+                number = float(value)
+            except (TypeError, ValueError):
+                return False
+            if not math.isfinite(number) or number <= 0:
+                return False
+    for field in ('volume', 'amount'):
+        for value in dataframe[field]:
+            try:
+                number = float(value)
+            except (TypeError, ValueError):
+                return False
+            if not math.isfinite(number) or number < 0:
+                return False
+    return True
+
+
 # ============================================================================
 # MiniQMTConnector
 # ============================================================================
@@ -83,6 +130,8 @@ class MiniQMTConnector:
         self._trade_connected = False
         self._account_obj = None
         self._daily_data_cache = None
+        self._daily_raw_cache = None
+        self._daily_snapshot_meta = None
 
         self.last_order_status = None
         self.last_order_id = None
@@ -375,6 +424,126 @@ class MiniQMTConnector:
     def refresh_daily_cache(self):
         """强制刷新日线数据缓存（跨日时调用）"""
         self._daily_data_cache = None
+        self._daily_raw_cache = None
+        self._daily_snapshot_meta = None
+
+    def load_daily_snapshot(self, length, today=None, tick_last_close=0.0,
+                            retries=3, retry_delay=1.0):
+        """Load aligned, fresh complete daily bars from MiniQMT's active data source.
+
+        Returns a dict with ``adjusted`` (front-adjusted indicator data), ``raw``
+        (unadjusted validation data), and ``last_complete_date``.  Returns None
+        when freshness or price-source validation fails after all retries.
+        """
+        code = cfg.STOCK_QMT
+        today_key = today or datetime.now().strftime('%Y%m%d')
+        end = today_key
+        start = (datetime.now() - timedelta(days=365 * 6)).strftime('%Y%m%d')
+        fields = ['open', 'high', 'low', 'close', 'volume', 'amount']
+        attempts = max(1, int(retries))
+
+        for attempt in range(1, attempts + 1):
+            try:
+                self.xtdata.download_history_data(
+                    code, period='1d', start_time='', end_time='')
+            except Exception as e:
+                _log('[DailyData] download failed attempt {}/{}: {}'.format(
+                    attempt, attempts, e))
+
+            try:
+                adjusted_data = self.xtdata.get_local_data(
+                    field_list=fields, stock_list=[code], period='1d',
+                    start_time=start, end_time=end, dividend_type='front')
+                raw_data = self.xtdata.get_local_data(
+                    field_list=fields, stock_list=[code], period='1d',
+                    start_time=start, end_time=end, dividend_type='none')
+            except Exception as e:
+                _log('[DailyData] read failed attempt {}/{}: {}'.format(
+                    attempt, attempts, e))
+                adjusted_data = {}; raw_data = {}
+
+            adjusted = adjusted_data.get(code) if adjusted_data else None
+            raw = raw_data.get(code) if raw_data else None
+            reason = ''
+            if adjusted is None or raw is None or len(adjusted) == 0 or len(raw) == 0:
+                reason = 'daily data missing'
+            else:
+                adjusted = adjusted.copy()
+                raw = raw.copy()
+                adjusted.index = [_normalize_trade_date(v) for v in adjusted.index]
+                raw.index = [_normalize_trade_date(v) for v in raw.index]
+                adjusted, removed_adjusted = exclude_incomplete_daily_bar(
+                    adjusted, today=today_key)
+                raw, removed_raw = exclude_incomplete_daily_bar(raw, today=today_key)
+                if removed_adjusted or removed_raw:
+                    _log('[DailyData] excluded incomplete current-day bar {}'.format(today_key))
+
+                # Health-gate the same window the strategy will consume.  Old
+                # suspended/legacy records outside that window are irrelevant.
+                adjusted = adjusted.tail(length)
+                raw = raw.tail(length)
+
+                missing_cols = [f for f in fields if f not in adjusted.columns or f not in raw.columns]
+                if missing_cols:
+                    reason = 'missing fields {}'.format(','.join(missing_cols))
+                elif not adjusted.index.equals(raw.index):
+                    reason = 'adjusted/raw date indexes differ'
+                elif len(adjusted) == 0:
+                    reason = 'no complete daily bars'
+                elif not _daily_values_valid(adjusted) or not _daily_values_valid(raw):
+                    reason = 'non-finite or invalid daily values'
+                else:
+                    try:
+                        trade_dates = self.xtdata.get_trading_dates(
+                            code.split('.')[-1], start_time='',
+                            end_time=today_key, count=5)
+                        normalized_dates = sorted(set(
+                            _normalize_trade_date(v) for v in trade_dates
+                            if _normalize_trade_date(v)))
+                        prior_dates = [d for d in normalized_dates if d < today_key]
+                        expected_date = prior_dates[-1] if prior_dates else ''
+                    except Exception as e:
+                        expected_date = ''
+                        reason = 'trading calendar unavailable: {}'.format(e)
+
+                    actual_date = _normalize_trade_date(adjusted.index[-1])
+                    if not reason and not expected_date:
+                        reason = 'previous trading date unavailable'
+                    elif not reason and actual_date != expected_date:
+                        reason = 'last complete {} expected {}'.format(
+                            actual_date, expected_date)
+                    elif not reason and tick_last_close and tick_last_close > 0:
+                        raw_close = float(raw.iloc[-1]['close'])
+                        if abs(raw_close - float(tick_last_close)) > 0.02:
+                            reason = 'raw close {:.2f} != tick lastClose {:.2f}'.format(
+                                raw_close, float(tick_last_close))
+
+            if not reason:
+                actual_date = _normalize_trade_date(adjusted.index[-1])
+                self._daily_data_cache = adjusted
+                self._daily_raw_cache = raw
+                self._daily_snapshot_meta = {
+                    'last_complete_date': actual_date,
+                    'count': len(adjusted),
+                }
+                _log('[DATA-HEALTH] last_complete={} expected={} raw_close={:.2f} '
+                     'tick_lastClose={:.2f} count={} aligned=True status=OK'.format(
+                         actual_date, expected_date, float(raw.iloc[-1]['close']),
+                         float(tick_last_close or 0.0), len(adjusted)))
+                return {
+                    'adjusted': adjusted,
+                    'raw': raw,
+                    'last_complete_date': actual_date,
+                }
+
+            _log('[DATA-STALE] attempt {}/{}: {}'.format(attempt, attempts, reason))
+            if attempt < attempts and retry_delay > 0:
+                _time.sleep(retry_delay)
+
+        self._daily_data_cache = None
+        self._daily_raw_cache = None
+        self._daily_snapshot_meta = None
+        return None
 
     def get_history_data(self, length, period, field):
         """对应 QMT: ContextInfo.get_history_data(N, '1d', field)"""
@@ -396,7 +565,6 @@ class MiniQMTConnector:
                 start_time=start,
                 end_time=end,
                 dividend_type='front',
-                data_dir='C:/QMT/datadir',
             )
             if code in data and len(data[code]) > 0:
                 self._daily_data_cache, removed_today = exclude_incomplete_daily_bar(data[code])

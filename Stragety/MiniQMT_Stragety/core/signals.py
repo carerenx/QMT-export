@@ -94,7 +94,8 @@ def calc_dynamic_sell_mult(trend, atr_pct, atr_ratio, vol_ratio, rsi_val, up_str
     return round(final, 2), deviations, base
 
 
-def compute_signal(opens, highs, lows, closes, volumes, yesterday_close=None):
+def compute_signal(opens, highs, lows, closes, volumes, yesterday_close=None,
+                   today_open=None):
     """
     计算当日信号。
 
@@ -110,7 +111,9 @@ def compute_signal(opens, highs, lows, closes, volumes, yesterday_close=None):
     if n < 60:
         return None
 
-    co = opens[-1]
+    # Historical arrays contain complete daily bars only.  The current session
+    # open comes from the live tick and must never overwrite a historical bar.
+    co = float(today_open) if today_open is not None and float(today_open) > 0 else opens[-1]
     cc = closes[-1]
     # 日线成交量必须与价格序列对齐，且至少有“当前完整日 +
     # 之前20个完整日”。不满足时显式标记无效，不回退为 1.0。
@@ -188,6 +191,7 @@ def compute_signal(opens, highs, lows, closes, volumes, yesterday_close=None):
         'sell_trigger': sell_trigger, 
         'sell_trigger_raw': round(sell_trigger_raw, 2),
         'range_capped': range_capped, 
+        'daily_range_ma10': daily_range_ma10,
         'open_price': co, 
         'close_yday': cc,
         'atr': curr_atr, 
