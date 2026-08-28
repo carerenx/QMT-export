@@ -1,0 +1,333 @@
+============================================================
+  日志文件创建: 2026-08-28 09:41:37
+  策略版本: v40 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[09:41:39] [连接] MiniQMT 行情服务已连接
+[09:41:39] [交易] 已订阅账号 8890145315
+[09:41:39] [START] 长飞光纤 v40 LIVE 601869.SH
+[09:41:40] [DailyData] excluded incomplete current-day bar 20260828
+[09:41:40] [DATA-HEALTH] last_complete=20260827 expected=20260827 raw_close=426.82 tick_lastClose=426.82 count=80 aligned=True status=OK
+[09:41:40] [DATA-DBG] last_complete=20260827 hist_open[-3:]=[360.0, 393.0, 393.0] | tick_open=430.99 | lastClose=426.82 | signal_open=430.99
+[09:41:40] [VOLUME-DATA] complete_count=80 tail=[209032.0, 186840.0, 147575.0]
+[09:41:40] [SIGNAL] WEAK-BULL | Open Y430.99 | ATR 7.2% | RSI 71 | Vol_ratio 1.03 | Mult 0.47 | Trig Y439.78 
+[09:41:40] [VOLUME] last 147575 / prev20_avg 142606 | n=20 | VALID
+[09:41:40] [FACTOR] trend +0.12 |  volatility -0.12 |  volume +0.00 |  RSI -0.18 | 
+[09:41:40] [ACCOUNT] Position:100 sh Y43,223(36%) | Cash:Y75,493 | Sellable:1 lots(100 sh)
+[09:41:40] [REV-T] ENABLED 1 lots trig Y439.78 buyback=sell×(1-ATR%×0.15) emerg +3% / emergTrigFalse
+[09:41:40] [FWD-T] ENABLED 1 lots buy Y423.59 sell Y428.67(+1.2%) 1 lot≈Y43,223
+[09:41:40] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[09:41:40] [MOM-CAPACITY] short ON | long ON
+[09:41:40] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.35~0.60% ATR×0.50
+[09:41:40] [OPEN] [Y432.23] [REV-T needs +1.75% to Y439.78] [FWD-T needs -2.00% to Y423.59]
+[09:41:40] [HB] IDLE Y432.23 REV-T: needs +Y7.55 to Y439.78 | FWD-T: needs -Y8.64 to Y423.59
+[09:42:40] [HB] IDLE Y436.54 REV-T: needs +Y3.24 to Y439.78 | FWD-T: needs -Y8.73 to Y427.81
+[09:43:41] [HB] IDLE Y432.00 REV-T: needs +Y7.78 to Y439.78 | FWD-T: needs -Y4.19 to Y427.81
+[09:44:41] [HB] IDLE Y434.25 REV-T: needs +Y5.53 to Y439.78 | FWD-T: needs -Y6.44 to Y427.81
+[09:45:41] [HB] IDLE Y436.29 REV-T: needs +Y3.49 to Y439.78 | FWD-T: needs -Y8.48 to Y427.81
+[09:46:41] [HB] IDLE Y435.21 REV-T: needs +Y4.57 to Y439.78 | FWD-T: needs -Y7.40 to Y427.81
+[09:47:41] [HB] IDLE Y433.72 REV-T: needs +Y6.06 to Y439.78 | FWD-T: needs -Y5.91 to Y427.81
+[09:48:41] [HB] IDLE Y435.01 REV-T: needs +Y4.77 to Y439.78 | FWD-T: needs -Y7.20 to Y427.81
+[09:49:41] [HB] IDLE Y435.13 REV-T: needs +Y4.65 to Y439.78 | FWD-T: needs -Y7.32 to Y427.81
+[09:50:15] [LOCK] P+1.5% M 0.57% D 0.00%
+[09:50:26] [UNLOCK]
+[09:50:30] [LOCK] P+1.6% M 0.51% D 0.02%
+[09:50:32] [UNLOCK]
+[09:50:42] [HB] IDLE Y437.99 REV-T: needs +Y1.79 to Y439.78 | FWD-T: needs -Y8.76 to Y429.23
+[09:51:15] [LOCK] P+1.6% M 0.51% D 0.04%
+[09:51:42] [HB] IDLE Y437.79 REV-T: needs +Y1.99 to Y439.78 | FWD-T: needs -Y8.56 to Y429.23 | LOCKED
+[09:51:54] [UNLOCK]
+[09:52:03] [LOCK] P+1.6% M 0.57% D 0.17%
+[09:52:09] [UNLOCK]
+[09:52:12] [LOCK] P+1.7% M 0.61% D 0.13%
+[09:52:18] [UNLOCK]
+[09:52:20] [LOCK] P+1.5% M 0.70% D 0.27%
+[09:52:42] [HB] IDLE Y439.00 REV-T: needs +Y0.78 to Y439.78 | FWD-T: needs -Y8.78 to Y430.22 | LOCKED
+[09:53:00] [UNLOCK]
+[09:53:42] [HB] IDLE Y436.01 REV-T: needs +Y3.77 to Y439.78 | FWD-T: needs -Y5.79 to Y430.22
+[09:54:42] [HB] IDLE Y435.60 REV-T: needs +Y4.18 to Y439.78 | FWD-T: needs -Y5.38 to Y430.22
+[09:55:42] [HB] IDLE Y433.20 REV-T: needs +Y6.58 to Y439.78 | FWD-T: needs -Y2.98 to Y430.22
+[09:56:42] [HB] IDLE Y430.67 REV-T: needs +Y9.11 to Y439.78 | FWD-T: needs -Y0.45 to Y430.22
+[09:57:42] [HB] IDLE Y432.68 REV-T: needs +Y7.10 to Y439.78 | FWD-T: needs -Y2.46 to Y430.22
+[09:58:43] [HB] IDLE Y432.73 REV-T: needs +Y7.05 to Y439.78 | FWD-T: needs -Y2.51 to Y430.22
+[09:59:43] [HB] IDLE Y431.06 REV-T: needs +Y8.72 to Y439.78 | FWD-T: needs -Y0.84 to Y430.22
+[10:00:43] [HB] IDLE Y434.00 REV-T: needs +Y5.78 to Y439.78 | FWD-T: needs -Y3.78 to Y430.22
+[10:01:43] [HB] IDLE Y432.00 REV-T: needs +Y7.78 to Y439.78 | FWD-T: needs -Y1.78 to Y430.22
+[10:02:43] [HB] IDLE Y431.70 REV-T: needs +Y8.08 to Y439.78 | FWD-T: needs -Y1.48 to Y430.22
+[10:03:43] [HB] IDLE Y432.00 REV-T: needs +Y7.78 to Y439.78 | FWD-T: needs -Y1.78 to Y430.22
+[10:04:43] [HB] IDLE Y433.76 REV-T: needs +Y6.02 to Y439.78 | FWD-T: needs -Y3.54 to Y430.22
+[10:05:44] [HB] IDLE Y433.25 REV-T: needs +Y6.53 to Y439.78 | FWD-T: needs -Y3.03 to Y430.22
+[10:06:44] [HB] IDLE Y431.32 REV-T: needs +Y8.46 to Y439.78 | FWD-T: needs -Y1.10 to Y430.22
+[10:07:42] [FWD-T dip #1/5] Y430.10 <= Y430.22(-0.03%)
+[10:07:44] [HB] BT_DIPPING Y430.10 dip Y430.10 bounce 0.00%
+[10:07:48] [FWD-T buy trig] low Y430.10 bounce 0.10% → Y430.55
+[10:07:48] [ORDER-FWD-T buy] Y430.55 × 100 sh
+[10:07:48]   >>> 下单买入: PEER x 100股 601869.SH [COMPETE]
+[10:07:48] [委托] 买 Y469.50 0/100股 -> 已报
+[10:07:48] [成交] 买 601869.SH Y430.41 x 100股 = Y43,041
+[10:07:48] [委托] 买 Y469.50 100/100股 -> 全成
+[10:07:49] [FILL-FWD-T buy] Y430.55 × 100 sh | pos 100→200 | cash -43,041
+[10:08:44] [HB] BT_BOUGHT Y430.26 buy Y430.55 -0.1% sellback Y435.72 ladder Y424.09
+[10:09:44] [HB] BT_BOUGHT Y429.00 buy Y430.55 -0.4% sellback Y435.72 ladder Y424.09
+[10:10:44] [HB] BT_BOUGHT Y429.56 buy Y430.55 -0.2% sellback Y435.72 ladder Y424.09
+[10:11:45] [HB] BT_BOUGHT Y429.80 buy Y430.55 -0.2% sellback Y435.72 ladder Y424.09
+[10:12:45] [HB] BT_BOUGHT Y427.50 buy Y430.55 -0.7% sellback Y435.72 ladder Y424.09
+[10:13:45] [HB] BT_BOUGHT Y427.58 buy Y430.55 -0.7% sellback Y435.72 ladder Y424.09
+[10:14:45] [HB] BT_BOUGHT Y431.01 buy Y430.55 +0.1% sellback Y435.72 ladder Y424.09
+[10:15:45] [HB] BT_BOUGHT Y430.48 buy Y430.55 -0.0% sellback Y435.72 ladder Y424.09
+[10:16:45] [HB] BT_BOUGHT Y430.39 buy Y430.55 -0.0% sellback Y435.72 ladder Y424.09
+[10:17:45] [HB] BT_BOUGHT Y429.95 buy Y430.55 -0.1% sellback Y435.72 ladder Y424.09
+[10:18:45] [HB] BT_BOUGHT Y428.01 buy Y430.55 -0.6% sellback Y435.72 ladder Y424.09
+[10:19:46] [HB] BT_BOUGHT Y428.20 buy Y430.55 -0.5% sellback Y435.72 ladder Y424.09
+[10:20:46] [HB] BT_BOUGHT Y429.65 buy Y430.55 -0.2% sellback Y435.72 ladder Y424.09
+[10:21:46] [HB] BT_BOUGHT Y430.77 buy Y430.55 +0.1% sellback Y435.72 ladder Y424.09
+[10:22:46] [HB] BT_BOUGHT Y431.09 buy Y430.55 +0.1% sellback Y435.72 ladder Y424.09
+[10:23:46] [HB] BT_BOUGHT Y431.99 buy Y430.55 +0.3% sellback Y435.72 ladder Y424.09
+[10:24:46] [HB] BT_BOUGHT Y429.50 buy Y430.55 -0.2% sellback Y435.72 ladder Y424.09
+[10:25:46] [HB] BT_BOUGHT Y431.99 buy Y430.55 +0.3% sellback Y435.72 ladder Y424.09
+[10:26:46] [HB] BT_BOUGHT Y431.81 buy Y430.55 +0.3% sellback Y435.72 ladder Y424.09
+[10:27:46] [HB] BT_BOUGHT Y431.29 buy Y430.55 +0.2% sellback Y435.72 ladder Y424.09
+[10:28:47] [HB] BT_BOUGHT Y432.71 buy Y430.55 +0.5% sellback Y435.72 ladder Y424.09
+[10:29:47] [HB] BT_BOUGHT Y433.08 buy Y430.55 +0.6% sellback Y435.72 ladder Y424.09
+[10:30:47] [HB] BT_BOUGHT Y432.50 buy Y430.55 +0.5% sellback Y435.72 ladder Y424.09
+[10:31:47] [HB] BT_BOUGHT Y432.99 buy Y430.55 +0.6% sellback Y435.72 ladder Y424.09
+[10:32:47] [HB] BT_BOUGHT Y432.55 buy Y430.55 +0.5% sellback Y435.72 ladder Y424.09
+[10:33:47] [HB] BT_BOUGHT Y434.89 buy Y430.55 +1.0% sellback Y435.72 ladder Y424.09
+[10:34:06] [FWD-T sellback watch] +1.27% → Y436.00
+[10:34:27] [FWD-T sell trig] peak Y437.97 pullback 0.17% → Y437.23 gross~Y668
+[10:34:27] [ORDER-FWD-T sell] Y437.23 × 100 sh
+[10:34:27]   >>> 下单卖出: PEER x 100股 601869.SH [COMPETE]
+[10:34:27] [委托] 卖 Y384.14 0/100股 -> 已报
+[10:34:27] [成交] 卖 601869.SH Y436.99 x 100股 = Y43,699
+[10:34:27] [委托] 卖 Y384.14 100/100股 -> 全成
+[10:34:28] [FILL-FWD-T sell] Y437.23 × 100 sh | pos 200→100 | cash +43,699
+[10:34:28] [NEXT-T RECALC #1] FWD-T done | avg Y434.3527 | REV Y439.78→Y443.21 | FWD Y430.22→Y421.32
+[10:34:28] [RESUME] → IDLE (REV-T 0/5, FWD-T 1/5)
+[10:34:48] [HB] IDLE Y435.99 REV-T: needs +Y7.22 to Y443.21 | FWD-T: needs -Y14.67 to Y421.32
+[10:35:48] [HB] IDLE Y434.90 REV-T: needs +Y8.31 to Y443.21 | FWD-T: needs -Y13.58 to Y421.32
+[10:36:48] [HB] IDLE Y435.93 REV-T: needs +Y7.28 to Y443.21 | FWD-T: needs -Y14.61 to Y421.32
+[10:37:48] [HB] IDLE Y433.10 REV-T: needs +Y10.11 to Y443.21 | FWD-T: needs -Y11.78 to Y421.32
+[10:38:48] [HB] IDLE Y432.40 REV-T: needs +Y10.81 to Y443.21 | FWD-T: needs -Y11.08 to Y421.32
+[10:39:48] [HB] IDLE Y431.58 REV-T: needs +Y11.63 to Y443.21 | FWD-T: needs -Y10.26 to Y421.32
+[10:40:48] [HB] IDLE Y431.22 REV-T: needs +Y11.99 to Y443.21 | FWD-T: needs -Y9.90 to Y421.32
+[10:41:49] [HB] IDLE Y429.00 REV-T: needs +Y14.21 to Y443.21 | FWD-T: needs -Y7.68 to Y421.32
+[10:42:49] [HB] IDLE Y430.26 REV-T: needs +Y12.95 to Y443.21 | FWD-T: needs -Y8.94 to Y421.32
+[10:43:49] [HB] IDLE Y429.93 REV-T: needs +Y13.28 to Y443.21 | FWD-T: needs -Y8.61 to Y421.32
+[10:44:49] [HB] IDLE Y429.00 REV-T: needs +Y14.21 to Y443.21 | FWD-T: needs -Y7.68 to Y421.32
+[10:45:49] [HB] IDLE Y428.38 REV-T: needs +Y14.83 to Y443.21 | FWD-T: needs -Y7.06 to Y421.32
+[10:46:49] [HB] IDLE Y428.49 REV-T: needs +Y14.72 to Y443.21 | FWD-T: needs -Y7.17 to Y421.32
+[10:47:49] [HB] IDLE Y428.03 REV-T: needs +Y15.18 to Y443.21 | FWD-T: needs -Y6.71 to Y421.32
+[10:48:50] [HB] IDLE Y428.01 REV-T: needs +Y15.20 to Y443.21 | FWD-T: needs -Y6.69 to Y421.32
+[10:49:50] [HB] IDLE Y426.99 REV-T: needs +Y16.22 to Y443.21 | FWD-T: needs -Y5.67 to Y421.32
+[10:50:50] [HB] IDLE Y428.00 REV-T: needs +Y15.21 to Y443.21 | FWD-T: needs -Y6.68 to Y421.32
+[10:51:50] [HB] IDLE Y427.62 REV-T: needs +Y15.59 to Y443.21 | FWD-T: needs -Y6.30 to Y421.32
+[10:52:50] [HB] IDLE Y425.82 REV-T: needs +Y17.39 to Y443.21 | FWD-T: needs -Y4.50 to Y421.32
+[10:53:50] [HB] IDLE Y424.00 REV-T: needs +Y19.21 to Y443.21 | FWD-T: needs -Y2.68 to Y421.32
+[10:54:50] [HB] IDLE Y426.40 REV-T: needs +Y16.81 to Y443.21 | FWD-T: needs -Y5.08 to Y421.32
+[10:55:51] [HB] IDLE Y427.00 REV-T: needs +Y16.21 to Y443.21 | FWD-T: needs -Y5.68 to Y421.32
+[10:56:51] [HB] IDLE Y426.91 REV-T: needs +Y16.30 to Y443.21 | FWD-T: needs -Y5.59 to Y421.32
+[10:57:51] [HB] IDLE Y428.20 REV-T: needs +Y15.01 to Y443.21 | FWD-T: needs -Y6.88 to Y421.32
+[10:58:51] [HB] IDLE Y429.19 REV-T: needs +Y14.02 to Y443.21 | FWD-T: needs -Y7.87 to Y421.32
+[10:59:51] [HB] IDLE Y426.86 REV-T: needs +Y16.35 to Y443.21 | FWD-T: needs -Y5.54 to Y421.32
+[11:00:51] [HB] IDLE Y427.99 REV-T: needs +Y15.22 to Y443.21 | FWD-T: needs -Y6.67 to Y421.32
+[11:01:51] [HB] IDLE Y428.87 REV-T: needs +Y14.34 to Y443.21 | FWD-T: needs -Y7.55 to Y421.32
+[11:02:51] [HB] IDLE Y427.38 REV-T: needs +Y15.83 to Y443.21 | FWD-T: needs -Y6.06 to Y421.32
+[11:03:52] [HB] IDLE Y426.80 REV-T: needs +Y16.41 to Y443.21 | FWD-T: needs -Y5.48 to Y421.32
+[11:04:52] [HB] IDLE Y426.54 REV-T: needs +Y16.67 to Y443.21 | FWD-T: needs -Y5.22 to Y421.32
+[11:05:52] [HB] IDLE Y425.77 REV-T: needs +Y17.44 to Y443.21 | FWD-T: needs -Y4.45 to Y421.32
+[11:06:52] [HB] IDLE Y425.48 REV-T: needs +Y17.73 to Y443.21 | FWD-T: needs -Y4.16 to Y421.32
+[11:07:52] [HB] IDLE Y426.83 REV-T: needs +Y16.38 to Y443.21 | FWD-T: needs -Y5.51 to Y421.32
+[11:08:52] [HB] IDLE Y426.70 REV-T: needs +Y16.51 to Y443.21 | FWD-T: needs -Y5.38 to Y421.32
+[11:09:52] [HB] IDLE Y425.68 REV-T: needs +Y17.53 to Y443.21 | FWD-T: needs -Y4.36 to Y421.32
+[11:10:52] [HB] IDLE Y425.36 REV-T: needs +Y17.85 to Y443.21 | FWD-T: needs -Y4.04 to Y421.32
+[11:11:53] [HB] IDLE Y425.30 REV-T: needs +Y17.91 to Y443.21 | FWD-T: needs -Y3.98 to Y421.32
+[11:12:53] [HB] IDLE Y425.01 REV-T: needs +Y18.20 to Y443.21 | FWD-T: needs -Y3.69 to Y421.32
+[11:13:53] [HB] IDLE Y424.01 REV-T: needs +Y19.20 to Y443.21 | FWD-T: needs -Y2.69 to Y421.32
+[11:14:53] [HB] IDLE Y424.50 REV-T: needs +Y18.71 to Y443.21 | FWD-T: needs -Y3.18 to Y421.32
+[11:15:53] [HB] IDLE Y424.90 REV-T: needs +Y18.31 to Y443.21 | FWD-T: needs -Y3.58 to Y421.32
+[11:16:53] [HB] IDLE Y426.01 REV-T: needs +Y17.20 to Y443.21 | FWD-T: needs -Y4.69 to Y421.32
+[11:17:53] [HB] IDLE Y427.00 REV-T: needs +Y16.21 to Y443.21 | FWD-T: needs -Y5.68 to Y421.32
+[11:18:54] [HB] IDLE Y428.00 REV-T: needs +Y15.21 to Y443.21 | FWD-T: needs -Y6.68 to Y421.32
+[11:19:54] [HB] IDLE Y426.71 REV-T: needs +Y16.50 to Y443.21 | FWD-T: needs -Y5.39 to Y421.32
+[11:20:54] [HB] IDLE Y426.07 REV-T: needs +Y17.14 to Y443.21 | FWD-T: needs -Y4.75 to Y421.32
+[11:21:54] [HB] IDLE Y426.16 REV-T: needs +Y17.05 to Y443.21 | FWD-T: needs -Y4.84 to Y421.32
+[11:22:54] [HB] IDLE Y426.45 REV-T: needs +Y16.76 to Y443.21 | FWD-T: needs -Y5.13 to Y421.32
+[11:23:54] [HB] IDLE Y425.66 REV-T: needs +Y17.55 to Y443.21 | FWD-T: needs -Y4.34 to Y421.32
+[11:24:55] [HB] IDLE Y424.79 REV-T: needs +Y18.42 to Y443.21 | FWD-T: needs -Y3.47 to Y421.32
+[11:25:55] [HB] IDLE Y424.00 REV-T: needs +Y19.21 to Y443.21 | FWD-T: needs -Y2.68 to Y421.32
+[11:26:55] [HB] IDLE Y424.09 REV-T: needs +Y19.12 to Y443.21 | FWD-T: needs -Y2.77 to Y421.32
+[11:27:55] [HB] IDLE Y424.25 REV-T: needs +Y18.96 to Y443.21 | FWD-T: needs -Y2.93 to Y421.32
+[11:28:55] [HB] IDLE Y424.25 REV-T: needs +Y18.96 to Y443.21 | FWD-T: needs -Y2.93 to Y421.32
+[11:29:55] [HB] IDLE Y424.57 REV-T: needs +Y18.64 to Y443.21 | FWD-T: needs -Y3.25 to Y421.32
+[11:35:01] [LUNCH 11:35:01]
+[11:40:01] [LUNCH 11:40:01]
+[11:45:01] [LUNCH 11:45:01]
+[11:50:01] [LUNCH 11:50:01]
+[11:55:01] [LUNCH 11:55:01]
+[12:00:01] [LUNCH 12:00:01]
+[12:05:01] [LUNCH 12:05:01]
+[12:10:01] [LUNCH 12:10:01]
+[12:15:01] [LUNCH 12:15:01]
+[12:20:01] [LUNCH 12:20:01]
+[12:25:01] [LUNCH 12:25:01]
+[12:30:01] [LUNCH 12:30:01]
+[12:35:01] [LUNCH 12:35:01]
+[12:40:01] [LUNCH 12:40:01]
+[12:45:01] [LUNCH 12:45:01]
+[12:50:01] [LUNCH 12:50:01]
+[12:55:01] [LUNCH 12:55:01]
+[13:00:01] [HB] IDLE Y424.57 REV-T: needs +Y18.64 to Y443.21 | FWD-T: needs -Y3.25 to Y421.32
+[13:01:01] [HB] IDLE Y423.50 REV-T: needs +Y19.71 to Y443.21 | FWD-T: needs -Y2.18 to Y421.32
+[13:02:02] [HB] IDLE Y423.23 REV-T: needs +Y19.98 to Y443.21 | FWD-T: needs -Y1.91 to Y421.32
+[13:03:02] [HB] IDLE Y423.35 REV-T: needs +Y19.86 to Y443.21 | FWD-T: needs -Y2.03 to Y421.32
+[13:04:02] [HB] IDLE Y423.68 REV-T: needs +Y19.53 to Y443.21 | FWD-T: needs -Y2.36 to Y421.32
+[13:05:02] [HB] IDLE Y422.59 REV-T: needs +Y20.62 to Y443.21 | FWD-T: needs -Y1.27 to Y421.32
+[13:06:02] [HB] IDLE Y423.00 REV-T: needs +Y20.21 to Y443.21 | FWD-T: needs -Y1.68 to Y421.32
+[13:07:02] [HB] IDLE Y422.96 REV-T: needs +Y20.25 to Y443.21 | FWD-T: needs -Y1.64 to Y421.32
+[13:07:53] [FWD-T dip #2/5] Y421.01 <= Y421.32(-0.07%)
+[13:08:02] [HB] BT_DIPPING Y420.99 dip Y420.99 bounce 0.00%
+[13:08:57] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[13:08:57] [FWD-T dip #2/5] Y421.10 <= Y421.32(-0.05%)
+[13:09:03] [HB] BT_DIPPING Y421.27 dip Y421.10 bounce 0.04%
+[13:09:06] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[13:09:27] [FWD-T dip #2/5] Y421.30 <= Y421.32(-0.00%)
+[13:09:45] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[13:09:57] [FWD-T dip #2/5] Y421.29 <= Y421.32(-0.01%)
+[13:10:03] [HB] BT_DIPPING Y421.29 dip Y421.28 bounce 0.00%
+[13:11:03] [HB] BT_DIPPING Y420.01 dip Y420.01 bounce 0.00%
+[13:11:14] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[13:11:15] [FWD-T dip #2/5] Y420.48 <= Y421.32(-0.20%)
+[13:11:57] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[13:11:57] [FWD-T dip #2/5] Y420.69 <= Y421.32(-0.15%)
+[13:12:03] [HB] BT_DIPPING Y420.63 dip Y420.63 bounce 0.00%
+[13:12:09] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[13:12:09] [FWD-T dip #2/5] Y421.28 <= Y421.32(-0.01%)
+[13:13:03] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[13:13:03] [HB] IDLE Y421.70 REV-T: needs +Y21.51 to Y443.21 | FWD-T: needs -Y0.38 to Y421.32
+[13:14:03] [HB] IDLE Y423.46 REV-T: needs +Y19.75 to Y443.21 | FWD-T: needs -Y2.14 to Y421.32
+[13:15:04] [HB] IDLE Y422.91 REV-T: needs +Y20.30 to Y443.21 | FWD-T: needs -Y1.59 to Y421.32
+[13:16:04] [HB] IDLE Y424.00 REV-T: needs +Y19.21 to Y443.21 | FWD-T: needs -Y2.68 to Y421.32
+[13:17:04] [HB] IDLE Y424.76 REV-T: needs +Y18.45 to Y443.21 | FWD-T: needs -Y3.44 to Y421.32
+[13:18:04] [HB] IDLE Y425.25 REV-T: needs +Y17.96 to Y443.21 | FWD-T: needs -Y3.93 to Y421.32
+[13:19:04] [HB] IDLE Y425.00 REV-T: needs +Y18.21 to Y443.21 | FWD-T: needs -Y3.68 to Y421.32
+[13:20:04] [HB] IDLE Y424.79 REV-T: needs +Y18.42 to Y443.21 | FWD-T: needs -Y3.47 to Y421.32
+[13:21:05] [HB] IDLE Y422.90 REV-T: needs +Y20.31 to Y443.21 | FWD-T: needs -Y1.58 to Y421.32
+[13:22:05] [HB] IDLE Y422.50 REV-T: needs +Y20.71 to Y443.21 | FWD-T: needs -Y1.18 to Y421.32
+[13:23:05] [HB] IDLE Y423.33 REV-T: needs +Y19.88 to Y443.21 | FWD-T: needs -Y2.01 to Y421.32
+[13:24:05] [HB] IDLE Y422.50 REV-T: needs +Y20.71 to Y443.21 | FWD-T: needs -Y1.18 to Y421.32
+[13:25:05] [HB] IDLE Y422.27 REV-T: needs +Y20.94 to Y443.21 | FWD-T: needs -Y0.95 to Y421.32
+[13:26:05] [HB] IDLE Y421.71 REV-T: needs +Y21.50 to Y443.21 | FWD-T: needs -Y0.39 to Y421.32
+[13:27:06] [HB] IDLE Y422.70 REV-T: needs +Y20.51 to Y443.21 | FWD-T: needs -Y1.38 to Y421.32
+[13:28:06] [HB] IDLE Y422.77 REV-T: needs +Y20.44 to Y443.21 | FWD-T: needs -Y1.45 to Y421.32
+[13:29:06] [HB] IDLE Y423.00 REV-T: needs +Y20.21 to Y443.21 | FWD-T: needs -Y1.68 to Y421.32
+[13:30:06] [HB] IDLE Y423.95 REV-T: needs +Y19.26 to Y443.21 | FWD-T: needs -Y2.63 to Y421.32
+[13:31:06] [HB] IDLE Y423.03 REV-T: needs +Y20.18 to Y443.21 | FWD-T: needs -Y1.71 to Y421.32
+[13:32:07] [HB] IDLE Y422.74 REV-T: needs +Y20.47 to Y443.21 | FWD-T: needs -Y1.42 to Y421.32
+[13:33:07] [HB] IDLE Y423.06 REV-T: needs +Y20.15 to Y443.21 | FWD-T: needs -Y1.74 to Y421.32
+[13:34:07] [HB] IDLE Y423.38 REV-T: needs +Y19.83 to Y443.21 | FWD-T: needs -Y2.06 to Y421.32
+[13:35:07] [HB] IDLE Y422.88 REV-T: needs +Y20.33 to Y443.21 | FWD-T: needs -Y1.56 to Y421.32
+[13:36:07] [HB] IDLE Y423.16 REV-T: needs +Y20.05 to Y443.21 | FWD-T: needs -Y1.84 to Y421.32
+[13:37:07] [HB] IDLE Y423.16 REV-T: needs +Y20.05 to Y443.21 | FWD-T: needs -Y1.84 to Y421.32
+[13:38:07] [HB] IDLE Y421.50 REV-T: needs +Y21.71 to Y443.21 | FWD-T: needs -Y0.18 to Y421.32
+[13:38:14] [FWD-T dip #2/5] Y421.31 <= Y421.32(-0.00%)
+[13:38:50] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[13:39:07] [HB] IDLE Y422.00 REV-T: needs +Y21.21 to Y443.21 | FWD-T: needs -Y0.68 to Y421.32
+[13:40:08] [HB] IDLE Y422.99 REV-T: needs +Y20.22 to Y443.21 | FWD-T: needs -Y1.67 to Y421.32
+[13:41:08] [HB] IDLE Y422.51 REV-T: needs +Y20.70 to Y443.21 | FWD-T: needs -Y1.19 to Y421.32
+[13:42:08] [HB] IDLE Y422.50 REV-T: needs +Y20.71 to Y443.21 | FWD-T: needs -Y1.18 to Y421.32
+[13:43:08] [HB] IDLE Y422.00 REV-T: needs +Y21.21 to Y443.21 | FWD-T: needs -Y0.68 to Y421.32
+[13:44:08] [HB] IDLE Y421.89 REV-T: needs +Y21.32 to Y443.21 | FWD-T: needs -Y0.57 to Y421.32
+[13:45:08] [HB] IDLE Y422.32 REV-T: needs +Y20.89 to Y443.21 | FWD-T: needs -Y1.00 to Y421.32
+[13:46:08] [HB] IDLE Y423.50 REV-T: needs +Y19.71 to Y443.21 | FWD-T: needs -Y2.18 to Y421.32
+[13:47:08] [HB] IDLE Y423.00 REV-T: needs +Y20.21 to Y443.21 | FWD-T: needs -Y1.68 to Y421.32
+[13:48:09] [HB] IDLE Y423.25 REV-T: needs +Y19.96 to Y443.21 | FWD-T: needs -Y1.93 to Y421.32
+[13:49:09] [HB] IDLE Y423.40 REV-T: needs +Y19.81 to Y443.21 | FWD-T: needs -Y2.08 to Y421.32
+[13:50:09] [HB] IDLE Y424.44 REV-T: needs +Y18.77 to Y443.21 | FWD-T: needs -Y3.12 to Y421.32
+[13:51:09] [HB] IDLE Y423.71 REV-T: needs +Y19.50 to Y443.21 | FWD-T: needs -Y2.39 to Y421.32
+[13:52:09] [HB] IDLE Y424.30 REV-T: needs +Y18.91 to Y443.21 | FWD-T: needs -Y2.98 to Y421.32
+[13:53:10] [HB] IDLE Y424.19 REV-T: needs +Y19.02 to Y443.21 | FWD-T: needs -Y2.87 to Y421.32
+[13:54:10] [HB] IDLE Y424.49 REV-T: needs +Y18.72 to Y443.21 | FWD-T: needs -Y3.17 to Y421.32
+[13:55:10] [HB] IDLE Y424.14 REV-T: needs +Y19.07 to Y443.21 | FWD-T: needs -Y2.82 to Y421.32
+[13:56:10] [HB] IDLE Y423.80 REV-T: needs +Y19.41 to Y443.21 | FWD-T: needs -Y2.48 to Y421.32
+[13:57:10] [HB] IDLE Y423.10 REV-T: needs +Y20.11 to Y443.21 | FWD-T: needs -Y1.78 to Y421.32
+[13:58:11] [HB] IDLE Y422.50 REV-T: needs +Y20.71 to Y443.21 | FWD-T: needs -Y1.18 to Y421.32
+[13:59:11] [HB] IDLE Y422.61 REV-T: needs +Y20.60 to Y443.21 | FWD-T: needs -Y1.29 to Y421.32
+[14:00:11] [HB] IDLE Y422.07 REV-T: needs +Y21.14 to Y443.21 | FWD-T: needs -Y0.75 to Y421.32
+[14:01:11] [HB] IDLE Y421.50 REV-T: needs +Y21.71 to Y443.21 | FWD-T: needs -Y0.18 to Y421.32
+[14:01:56] [FWD-T dip #2/5] Y421.23 <= Y421.32(-0.02%)
+[14:02:11] [HB] BT_DIPPING Y421.10 dip Y421.10 bounce 0.00%
+[14:03:11] [HB] BT_DIPPING Y421.19 dip Y421.08 bounce 0.03%
+[14:03:27] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[14:04:12] [HB] IDLE Y421.58 REV-T: needs +Y21.63 to Y443.21 | FWD-T: needs -Y0.26 to Y421.32
+[14:05:12] [HB] IDLE Y421.99 REV-T: needs +Y21.22 to Y443.21 | FWD-T: needs -Y0.67 to Y421.32
+[14:06:12] [HB] IDLE Y422.44 REV-T: needs +Y20.77 to Y443.21 | FWD-T: needs -Y1.12 to Y421.32
+[14:07:12] [HB] IDLE Y421.89 REV-T: needs +Y21.32 to Y443.21 | FWD-T: needs -Y0.57 to Y421.32
+[14:07:42] [FWD-T dip #2/5] Y421.20 <= Y421.32(-0.03%)
+[14:07:48] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[14:07:51] [FWD-T dip #2/5] Y421.29 <= Y421.32(-0.01%)
+[14:08:12] [HB] BT_DIPPING Y421.19 dip Y421.19 bounce 0.00%
+[14:09:12] [HB] BT_DIPPING Y421.20 dip Y421.10 bounce 0.02%
+[14:09:56] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[14:10:12] [HB] IDLE Y422.26 REV-T: needs +Y20.95 to Y443.21 | FWD-T: needs -Y0.94 to Y421.32
+[14:11:13] [HB] IDLE Y422.86 REV-T: needs +Y20.35 to Y443.21 | FWD-T: needs -Y1.54 to Y421.32
+[14:12:13] [HB] IDLE Y422.99 REV-T: needs +Y20.22 to Y443.21 | FWD-T: needs -Y1.67 to Y421.32
+[14:13:13] [HB] IDLE Y423.85 REV-T: needs +Y19.36 to Y443.21 | FWD-T: needs -Y2.53 to Y421.32
+[14:14:13] [HB] IDLE Y423.31 REV-T: needs +Y19.90 to Y443.21 | FWD-T: needs -Y1.99 to Y421.32
+[14:15:13] [HB] IDLE Y423.50 REV-T: needs +Y19.71 to Y443.21 | FWD-T: needs -Y2.18 to Y421.32
+[14:16:13] [HB] IDLE Y423.19 REV-T: needs +Y20.02 to Y443.21 | FWD-T: needs -Y1.87 to Y421.32
+[14:17:13] [HB] IDLE Y421.64 REV-T: needs +Y21.57 to Y443.21 | FWD-T: needs -Y0.32 to Y421.32
+[14:18:14] [HB] IDLE Y421.66 REV-T: needs +Y21.55 to Y443.21 | FWD-T: needs -Y0.34 to Y421.32
+[14:19:14] [HB] IDLE Y422.79 REV-T: needs +Y20.42 to Y443.21 | FWD-T: needs -Y1.47 to Y421.32
+[14:20:14] [HB] IDLE Y422.55 REV-T: needs +Y20.66 to Y443.21 | FWD-T: needs -Y1.23 to Y421.32
+[14:21:14] [HB] IDLE Y423.00 REV-T: needs +Y20.21 to Y443.21 | FWD-T: needs -Y1.68 to Y421.32
+[14:22:14] [HB] IDLE Y423.40 REV-T: needs +Y19.81 to Y443.21 | FWD-T: needs -Y2.08 to Y421.32
+[14:23:14] [HB] IDLE Y422.86 REV-T: needs +Y20.35 to Y443.21 | FWD-T: needs -Y1.54 to Y421.32
+[14:24:15] [HB] IDLE Y422.26 REV-T: needs +Y20.95 to Y443.21 | FWD-T: needs -Y0.94 to Y421.32
+[14:25:15] [HB] IDLE Y421.80 REV-T: needs +Y21.41 to Y443.21 | FWD-T: needs -Y0.48 to Y421.32
+[14:26:15] [HB] IDLE Y421.80 REV-T: needs +Y21.41 to Y443.21 | FWD-T: needs -Y0.48 to Y421.32
+[14:27:15] [HB] IDLE Y422.72 REV-T: needs +Y20.49 to Y443.21 | FWD-T: needs -Y1.40 to Y421.32
+[14:28:15] [HB] IDLE Y422.80 REV-T: needs +Y20.41 to Y443.21 | FWD-T: needs -Y1.48 to Y421.32
+[14:29:16] [HB] IDLE Y422.79 REV-T: needs +Y20.42 to Y443.21 | FWD-T: needs -Y1.47 to Y421.32
+[14:30:16] [HB] IDLE Y422.88 REV-T: needs +Y20.33 to Y443.21 | FWD-T: needs -Y1.56 to Y421.32
+[14:31:16] [HB] IDLE Y422.72 REV-T: needs +Y20.49 to Y443.21 | FWD-T: needs -Y1.40 to Y421.32
+[14:32:17] [HB] IDLE Y422.61 REV-T: needs +Y20.60 to Y443.21 | FWD-T: needs -Y1.29 to Y421.32
+[14:33:17] [HB] IDLE Y422.96 REV-T: needs +Y20.25 to Y443.21 | FWD-T: needs -Y1.64 to Y421.32
+[14:34:17] [HB] IDLE Y422.83 REV-T: needs +Y20.38 to Y443.21 | FWD-T: needs -Y1.51 to Y421.32
+[14:35:17] [HB] IDLE Y422.93 REV-T: needs +Y20.28 to Y443.21 | FWD-T: needs -Y1.61 to Y421.32
+[14:36:17] [HB] IDLE Y422.80 REV-T: needs +Y20.41 to Y443.21 | FWD-T: needs -Y1.48 to Y421.32
+[14:37:17] [HB] IDLE Y422.60 REV-T: needs +Y20.61 to Y443.21 | FWD-T: needs -Y1.28 to Y421.32
+[14:38:17] [HB] IDLE Y422.66 REV-T: needs +Y20.55 to Y443.21 | FWD-T: needs -Y1.34 to Y421.32
+[14:39:17] [HB] IDLE Y423.52 REV-T: needs +Y19.69 to Y443.21 | FWD-T: needs -Y2.20 to Y421.32
+[14:40:18] [HB] IDLE Y423.01 REV-T: needs +Y20.20 to Y443.21 | FWD-T: needs -Y1.69 to Y421.32
+[14:41:18] [HB] IDLE Y422.65 REV-T: needs +Y20.56 to Y443.21 | FWD-T: needs -Y1.33 to Y421.32
+[14:42:18] [HB] IDLE Y421.50 REV-T: needs +Y21.71 to Y443.21 | FWD-T: needs -Y0.18 to Y421.32
+[14:42:27] [FWD-T dip #2/5] Y421.22 <= Y421.32(-0.02%)
+[14:43:18] [HB] BT_DIPPING Y421.23 dip Y421.04 bounce 0.05%
+[14:44:17] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[14:44:18] [HB] IDLE Y421.74 REV-T: needs +Y21.47 to Y443.21 | FWD-T: needs -Y0.42 to Y421.32
+[14:44:44] [FWD-T dip #2/5] Y421.30 <= Y421.32(-0.00%)
+[14:45:18] [HB] BT_DIPPING Y421.44 dip Y421.05 bounce 0.09%
+[14:45:23] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[14:45:26] [FWD-T dip #2/5] Y421.20 <= Y421.32(-0.03%)
+[14:45:59] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[14:46:18] [HB] IDLE Y422.52 REV-T: needs +Y20.69 to Y443.21 | FWD-T: needs -Y1.20 to Y421.32
+[14:47:19] [HB] IDLE Y422.00 REV-T: needs +Y21.21 to Y443.21 | FWD-T: needs -Y0.68 to Y421.32
+[14:47:42] [FWD-T dip #2/5] Y421.31 <= Y421.32(-0.00%)
+[14:48:19] [HB] BT_DIPPING Y421.20 dip Y421.20 bounce 0.00%
+[14:49:19] [HB] BT_DIPPING Y421.21 dip Y421.02 bounce 0.05%
+[14:50:19] [HB] BT_DIPPING Y420.90 dip Y420.70 bounce 0.05%
+[14:51:19] [HB] BT_DIPPING Y420.89 dip Y420.70 bounce 0.05%
+[14:52:19] [HB] BT_DIPPING Y420.85 dip Y420.70 bounce 0.04%
+[14:53:19] [HB] BT_DIPPING Y420.56 dip Y420.56 bounce 0.00%
+[14:54:19] [HB] BT_DIPPING Y420.01 dip Y420.01 bounce 0.00%
+[14:55:18] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[14:55:18] [FWD-T dip #2/5] Y420.41 <= Y421.32(-0.22%)
+[14:55:20] [HB] BT_DIPPING Y420.41 dip Y420.41 bounce 0.00%
+[14:55:51] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[14:55:51] [FWD-T dip #2/5] Y420.84 <= Y421.32(-0.11%)
+[14:56:20] [HB] BT_DIPPING Y421.10 dip Y420.84 bounce 0.06%
+[14:56:21] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[14:56:21] [FWD-T dip #2/5] Y421.32 <= Y421.32(-0.00%)
+[14:56:38] [FWD-T BLOCKED] T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[14:57:20] [HB] IDLE Y422.32 REV-T: needs +Y20.89 to Y443.21 | FWD-T: needs -Y1.00 to Y421.32
+[14:58:20] [HB] IDLE Y422.32 REV-T: needs +Y20.89 to Y443.21 | FWD-T: needs -Y1.00 to Y421.32

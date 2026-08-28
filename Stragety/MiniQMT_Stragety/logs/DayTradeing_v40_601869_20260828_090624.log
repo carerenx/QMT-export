@@ -1,0 +1,43 @@
+============================================================
+  日志文件创建: 2026-08-28 09:06:24
+  策略版本: v40 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[09:06:26] [连接] MiniQMT 行情服务已连接
+[09:06:27] [交易] 已订阅账号 8890145315
+[09:06:27] [START] 长飞光纤 v40 LIVE 601869.SH
+[09:06:28] [DATA-HEALTH] last_complete=20260827 expected=20260827 raw_close=426.82 tick_lastClose=426.82 count=80 aligned=True status=OK
+[09:06:28] [DATA-DBG] last_complete=20260827 hist_open[-3:]=[360.0, 393.0, 393.0] | tick_open=426.82 | lastClose=426.82 | signal_open=426.82
+[09:06:28] [VOLUME-DATA] complete_count=80 tail=[209032.0, 186840.0, 147575.0]
+[09:06:28] [SIGNAL] WEAK-BULL | Open Y426.82 | ATR 7.2% | RSI 71 | Vol_ratio 1.03 | Mult 0.47 | Trig Y435.52 
+[09:06:28] [VOLUME] last 147575 / prev20_avg 142606 | n=20 | VALID
+[09:06:28] [FACTOR] trend +0.12 |  volatility -0.12 |  volume +0.00 |  RSI -0.18 | 
+[09:06:28] [ACCOUNT] Position:100 sh Y42,682(36%) | Cash:Y75,493 | Sellable:1 lots(100 sh)
+[09:06:28] [REV-T] ENABLED 1 lots trig Y435.52 buyback=sell×(1-ATR%×0.15) emerg +3% / emergTrigFalse
+[09:06:28] [FWD-T] ENABLED 1 lots buy Y418.28 sell Y423.30(+1.2%) 1 lot≈Y42,682
+[09:06:28] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[09:06:28] [MOM-CAPACITY] short ON | long ON
+[09:06:28] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.35~0.60% ATR×0.50
+[09:06:28] [WAIT 09:06:28] to open 23分32秒
+[09:11:28] [WAIT 09:11:28] to open 18分32秒
+[09:16:28] [WAIT 09:16:28] to open 13分32秒
+[09:21:28] [WAIT 09:21:28] to open 8分32秒
+[09:26:28] [WAIT 09:26:28] to open 3分32秒
+[09:30:08] [SELL-TRIG RECALC] open Y426.82→Y430.99 trig Y435.52→Y439.78 (Mult 0.47 ATR 7.2%)
+[09:30:08] [OPEN] [Y433.14] [REV-T needs +1.53% to Y439.78] [FWD-T needs -2.00% to Y424.48]
+[09:30:08] [HB] IDLE Y433.14 REV-T: needs +Y6.64 to Y439.78 | FWD-T: needs -Y8.66 to Y424.48
+[09:30:39] [LOCK] P+1.5% M 1.03% D 0.00%
+[09:30:44] [UNLOCK]
+[09:31:08] [HB] IDLE Y434.99 REV-T: needs +Y4.79 to Y439.78 | FWD-T: needs -Y8.70 to Y426.29
+[09:31:54] [LOCK] P+1.5% M 1.03% D 0.13%
+[09:32:08] [HB] IDLE Y437.98 REV-T: needs +Y1.80 to Y439.78 | FWD-T: needs -Y8.76 to Y429.22 | LOCKED
+[09:32:27] [UNLOCK]
+[09:33:08] [HB] IDLE Y436.00 REV-T: needs +Y3.78 to Y439.78 | FWD-T: needs -Y6.78 to Y429.22
+[09:34:08] [HB] IDLE Y435.00 REV-T: needs +Y4.78 to Y439.78 | FWD-T: needs -Y5.78 to Y429.22
+[09:34:21] [LOCK] P+1.5% M 1.03% D 0.13%
+[09:34:44] Interrupted by user
+[09:34:44] [STOP] 长飞光纤 v40 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-08-28 09:34:44
+============================================================

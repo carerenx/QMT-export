@@ -1,0 +1,1793 @@
+============================================================
+  日志文件创建: 2026-08-26 09:19:20
+  策略版本: v34 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[09:19:23] [连接] MiniQMT 行情服务已连接
+[09:19:23] [交易] 已订阅账号 8890145315
+[09:19:23] [START] 长飞光纤 v34 LIVE 601869.SH
+[09:19:24] [DATA-DBG] hist_open[-3:]= [270.515, 266.705, 269.705] | tick_open=0 | lastClose=394.5
+[09:19:24] [VOLUME-DATA] count=80 tail=[89009, 141474, 157140]
+[09:19:24] [SIGNAL] BEAR | Open Y269.70 | ATR 11.2% | RSI 35 | Vol_ratio 1.01 | Mult 0.20 | Trig Y273.31 
+[09:19:24] [VOLUME] last 157140 / prev20_avg 155252 | n=20 | VALID
+[09:19:24] [FACTOR] trend -0.15 |  volatility -0.17 |  volume +0.00 |  RSI +0.10 | 
+[09:19:24] [ACCOUNT] Position:100 sh Y38,962(50%) | Cash:Y38,435 | T+0:1 lots(100 sh)
+[09:19:24] [REV-T] ENABLED 1 lots trig Y273.31 buyback=sell×(1-ATR%×0.15) emerg +3% / emergTrigFalse
+[09:19:24] [FWD-T] ENABLED 0 lots buy Y381.83 sell Y386.41(+1.2%) 1 lot≈Y38,962
+[09:19:24] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[09:19:24] [MOM-v34] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.35~0.60% ATR×0.50
+[09:19:24] [WAIT 09:19:24] to open 10分36秒
+[09:24:24] [WAIT 09:24:24] to open 5分36秒
+[09:29:24] [WAIT 09:29:24] to open 36秒
+[09:30:04] [SELL-TRIG RECALC] open Y269.70→Y393.00 trig Y273.31→Y398.26 (Mult 0.20 ATR 11.2%)
+[09:30:04] [OPEN] [Y394.52] [REV-T trig Y398.26(need +0.95%)] [FWD-T trig Y381.83(need -3.22%)]
+[09:30:24] [HB] IDLE Y398.01 REV-T: need +0.25 to Y398.26 | FWD-T: need -7.96 to Y390.05
+[09:31:14] [REV-T spike #1/5] Y398.46 >= Y398.26
+[09:31:24] [HB] SPIKING Y399.31 peak Y399.31 pullback 0.00%
+[09:31:41] [REV-T sell trig] peak Y399.90 pullback 0.23% → Y399.00
+[09:31:41] [ORDER-REV-T sell] Y399.00 × 100 sh
+[09:31:41]   >>> 下单卖出: PEER x 100股 601869.SH [COMPETE]
+[09:31:41] [委托] 卖 Y355.05 0/100股 -> 已报
+[09:31:41] [成交] 卖 601869.SH Y398.46 x 100股 = Y39,846
+[09:31:41] [委托] 卖 Y355.05 100/100股 -> 全成
+[09:31:42] [FILL-REV-T sell] Y399.00 × 100 sh | pos 100→0 | cash +39,846
+[09:32:24] [HB] SOLD Y397.80 sell Y399.00 -0.3% buyback Y392.32 ladder Y404.98
+[09:33:24] [HB] SOLD Y394.82 sell Y399.00 -1.0% buyback Y392.32 ladder Y404.98
+[09:33:56] [委托] 买 Y395.00 0/100股 -> 已报
+[09:34:24] [HB] SOLD Y398.12 sell Y399.00 -0.2% buyback Y392.32 ladder Y404.98
+[09:35:25] [HB] SOLD Y398.03 sell Y399.00 -0.2% buyback Y392.32 ladder Y404.98
+[09:36:25] [HB] SOLD Y399.45 sell Y399.00 +0.1% buyback Y392.32 ladder Y404.98
+[09:37:25] [HB] SOLD Y402.00 sell Y399.00 +0.8% buyback Y392.32 ladder Y404.98
+[09:38:25] [HB] SOLD Y402.28 sell Y399.00 +0.8% buyback Y392.32 ladder Y404.98
+[09:39:25] [HB] SOLD Y402.60 sell Y399.00 +0.9% buyback Y392.32 ladder Y404.98
+[09:40:25] [HB] SOLD Y405.37 sell Y399.00 +1.6% buyback Y392.32 ladder Y404.98
+[09:41:25] [HB] SOLD Y404.00 sell Y399.00 +1.3% buyback Y392.32 ladder Y404.98
+[09:42:25] [HB] SOLD Y406.50 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[09:43:25] [HB] SOLD Y408.43 sell Y399.00 +2.4% buyback Y392.32 ladder Y404.98
+[09:44:26] [HB] SOLD Y411.96 sell Y399.00 +3.2% buyback Y392.32 ladder Y404.98
+[09:44:27] [委托] 买 Y395.00 0/100股 -> 已撤
+[09:44:33] [委托] 买 Y412.00 0/100股 -> 已报
+[09:44:33] [成交] 买 601869.SH Y412.00 x 100股 = Y41,200
+[09:44:33] [委托] 买 Y412.00 100/100股 -> 全成
+[09:45:26] [HB] SOLD Y412.10 sell Y399.00 +3.3% buyback Y392.32 ladder Y404.98
+[09:46:26] [HB] SOLD Y412.99 sell Y399.00 +3.5% buyback Y392.32 ladder Y404.98
+[09:47:26] [HB] SOLD Y411.00 sell Y399.00 +3.0% buyback Y392.32 ladder Y404.98
+[09:48:26] [HB] SOLD Y408.00 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[09:49:26] [HB] SOLD Y408.77 sell Y399.00 +2.4% buyback Y392.32 ladder Y404.98
+[09:50:26] [HB] SOLD Y408.00 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[09:51:26] [HB] SOLD Y405.30 sell Y399.00 +1.6% buyback Y392.32 ladder Y404.98
+[09:52:27] [HB] SOLD Y406.44 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[09:53:27] [HB] SOLD Y406.47 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[09:54:27] [HB] SOLD Y405.30 sell Y399.00 +1.6% buyback Y392.32 ladder Y404.98
+[09:55:27] [HB] SOLD Y404.79 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[09:56:27] [HB] SOLD Y406.99 sell Y399.00 +2.0% buyback Y392.32 ladder Y404.98
+[09:57:27] [HB] SOLD Y406.49 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[09:58:27] [HB] SOLD Y405.00 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[09:59:27] [HB] SOLD Y404.20 sell Y399.00 +1.3% buyback Y392.32 ladder Y404.98
+[10:00:27] [HB] SOLD Y400.68 sell Y399.00 +0.4% buyback Y392.32 ladder Y404.98
+[10:01:28] [HB] SOLD Y402.22 sell Y399.00 +0.8% buyback Y392.32 ladder Y404.98
+[10:02:28] [HB] SOLD Y401.93 sell Y399.00 +0.7% buyback Y392.32 ladder Y404.98
+[10:03:28] [HB] SOLD Y402.99 sell Y399.00 +1.0% buyback Y392.32 ladder Y404.98
+[10:04:28] [HB] SOLD Y405.67 sell Y399.00 +1.7% buyback Y392.32 ladder Y404.98
+[10:05:28] [HB] SOLD Y408.40 sell Y399.00 +2.4% buyback Y392.32 ladder Y404.98
+[10:06:28] [HB] SOLD Y406.00 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[10:07:28] [HB] SOLD Y406.00 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[10:08:28] [HB] SOLD Y408.05 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[10:09:29] [HB] SOLD Y408.52 sell Y399.00 +2.4% buyback Y392.32 ladder Y404.98
+[10:10:29] [HB] SOLD Y407.10 sell Y399.00 +2.0% buyback Y392.32 ladder Y404.98
+[10:11:29] [HB] SOLD Y407.50 sell Y399.00 +2.1% buyback Y392.32 ladder Y404.98
+[10:12:29] [HB] SOLD Y408.62 sell Y399.00 +2.4% buyback Y392.32 ladder Y404.98
+[10:13:29] [HB] SOLD Y408.99 sell Y399.00 +2.5% buyback Y392.32 ladder Y404.98
+[10:14:29] [HB] SOLD Y407.89 sell Y399.00 +2.2% buyback Y392.32 ladder Y404.98
+[10:15:29] [HB] SOLD Y408.00 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[10:16:29] [HB] SOLD Y409.02 sell Y399.00 +2.5% buyback Y392.32 ladder Y404.98
+[10:17:30] [HB] SOLD Y411.48 sell Y399.00 +3.1% buyback Y392.32 ladder Y404.98
+[10:18:30] [HB] SOLD Y408.99 sell Y399.00 +2.5% buyback Y392.32 ladder Y404.98
+[10:19:30] [HB] SOLD Y409.00 sell Y399.00 +2.5% buyback Y392.32 ladder Y404.98
+[10:20:30] [HB] SOLD Y409.89 sell Y399.00 +2.7% buyback Y392.32 ladder Y404.98
+[10:21:30] [HB] SOLD Y409.08 sell Y399.00 +2.5% buyback Y392.32 ladder Y404.98
+[10:22:30] [HB] SOLD Y408.68 sell Y399.00 +2.4% buyback Y392.32 ladder Y404.98
+[10:23:30] [HB] SOLD Y407.50 sell Y399.00 +2.1% buyback Y392.32 ladder Y404.98
+[10:24:30] [HB] SOLD Y406.77 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[10:25:31] [HB] SOLD Y406.00 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[10:26:31] [HB] SOLD Y406.83 sell Y399.00 +2.0% buyback Y392.32 ladder Y404.98
+[10:27:31] [HB] SOLD Y408.57 sell Y399.00 +2.4% buyback Y392.32 ladder Y404.98
+[10:28:31] [HB] SOLD Y408.01 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[10:29:31] [HB] SOLD Y408.00 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[10:30:31] [HB] SOLD Y408.34 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[10:31:31] [HB] SOLD Y410.00 sell Y399.00 +2.8% buyback Y392.32 ladder Y404.98
+[10:32:31] [HB] SOLD Y409.10 sell Y399.00 +2.5% buyback Y392.32 ladder Y404.98
+[10:33:32] [HB] SOLD Y408.29 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[10:34:32] [HB] SOLD Y407.49 sell Y399.00 +2.1% buyback Y392.32 ladder Y404.98
+[10:35:32] [HB] SOLD Y408.34 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[10:36:32] [HB] SOLD Y407.58 sell Y399.00 +2.2% buyback Y392.32 ladder Y404.98
+[10:37:32] [HB] SOLD Y407.37 sell Y399.00 +2.1% buyback Y392.32 ladder Y404.98
+[10:38:32] [HB] SOLD Y406.16 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[10:39:32] [HB] SOLD Y405.88 sell Y399.00 +1.7% buyback Y392.32 ladder Y404.98
+[10:40:32] [HB] SOLD Y406.00 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[10:41:33] [HB] SOLD Y405.98 sell Y399.00 +1.7% buyback Y392.32 ladder Y404.98
+[10:41:35] [委托] 卖 Y74.47 0/500股 -> 已报
+[10:41:35] [成交] 卖 600584.SH Y74.57 x 500股 = Y37,285
+[10:41:35] [委托] 卖 Y74.47 500/500股 -> 全成
+[10:42:33] [HB] SOLD Y405.11 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[10:43:33] [HB] SOLD Y407.51 sell Y399.00 +2.1% buyback Y392.32 ladder Y404.98
+[10:44:23] [MOM spike] 2min +1.00% (3.6×ATR10m 1.00%) Y409.60 → 冲高回落卖出监测 | pullback 0.35% adaptive
+[10:44:23] [MOM-HB] 冲高回落卖出: peak Y409.60 Y409.60 trig±1.00%
+[10:44:33] [HB] SOLD Y409.12 sell Y399.00 +2.5% buyback Y392.32 ladder Y404.98
+[10:45:24] [MOM-HB] 冲高回落卖出: peak Y409.60 Y408.28 trig±1.00%
+[10:45:26] [MOM sell trig] peak Y409.60 回落0.51% >= 0.35% → Y407.51
+[10:45:26] [MOM short SKIP] 可卖 不足: planned 100 actual 0
+[10:45:33] [HB] SOLD Y407.00 sell Y399.00 +2.0% buyback Y392.32 ladder Y404.98
+[10:46:33] [HB] SOLD Y406.94 sell Y399.00 +2.0% buyback Y392.32 ladder Y404.98
+[10:47:33] [HB] SOLD Y407.51 sell Y399.00 +2.1% buyback Y392.32 ladder Y404.98
+[10:48:33] [HB] SOLD Y408.45 sell Y399.00 +2.4% buyback Y392.32 ladder Y404.98
+[10:49:34] [HB] SOLD Y408.04 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[10:50:34] [HB] SOLD Y408.99 sell Y399.00 +2.5% buyback Y392.32 ladder Y404.98
+[10:51:34] [HB] SOLD Y408.01 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[10:52:34] [HB] SOLD Y408.00 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[10:53:34] [HB] SOLD Y408.90 sell Y399.00 +2.5% buyback Y392.32 ladder Y404.98
+[10:54:34] [HB] SOLD Y407.00 sell Y399.00 +2.0% buyback Y392.32 ladder Y404.98
+[10:55:34] [HB] SOLD Y406.31 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[10:56:34] [HB] SOLD Y405.99 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[10:57:35] [HB] SOLD Y406.00 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[10:58:35] [HB] SOLD Y406.02 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[10:59:35] [HB] SOLD Y406.12 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[11:00:35] [HB] SOLD Y405.12 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[11:01:35] [HB] SOLD Y404.75 sell Y399.00 +1.4% buyback Y392.32 ladder Y404.98
+[11:02:35] [HB] SOLD Y405.16 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[11:03:35] [HB] SOLD Y406.39 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[11:04:35] [HB] SOLD Y406.64 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[11:05:36] [HB] SOLD Y406.95 sell Y399.00 +2.0% buyback Y392.32 ladder Y404.98
+[11:06:36] [HB] SOLD Y406.99 sell Y399.00 +2.0% buyback Y392.32 ladder Y404.98
+[11:07:36] [HB] SOLD Y406.50 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[11:08:36] [HB] SOLD Y406.51 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[11:09:36] [HB] SOLD Y406.33 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[11:10:36] [HB] SOLD Y406.29 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[11:11:36] [HB] SOLD Y407.65 sell Y399.00 +2.2% buyback Y392.32 ladder Y404.98
+[11:12:36] [HB] SOLD Y407.60 sell Y399.00 +2.2% buyback Y392.32 ladder Y404.98
+[11:13:37] [HB] SOLD Y407.99 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[11:14:37] [HB] SOLD Y407.50 sell Y399.00 +2.1% buyback Y392.32 ladder Y404.98
+[11:15:37] [HB] SOLD Y407.03 sell Y399.00 +2.0% buyback Y392.32 ladder Y404.98
+[11:16:37] [HB] SOLD Y407.03 sell Y399.00 +2.0% buyback Y392.32 ladder Y404.98
+[11:17:37] [HB] SOLD Y406.49 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[11:18:37] [HB] SOLD Y406.35 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[11:19:37] [HB] SOLD Y406.70 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[11:20:37] [HB] SOLD Y407.35 sell Y399.00 +2.1% buyback Y392.32 ladder Y404.98
+[11:21:38] [HB] SOLD Y407.99 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[11:22:38] [HB] SOLD Y408.74 sell Y399.00 +2.4% buyback Y392.32 ladder Y404.98
+[11:23:38] [HB] SOLD Y408.06 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[11:24:38] [HB] SOLD Y407.85 sell Y399.00 +2.2% buyback Y392.32 ladder Y404.98
+[11:25:38] [HB] SOLD Y408.07 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[11:26:38] [HB] SOLD Y408.40 sell Y399.00 +2.4% buyback Y392.32 ladder Y404.98
+[11:27:38] [HB] SOLD Y408.67 sell Y399.00 +2.4% buyback Y392.32 ladder Y404.98
+[11:28:38] [HB] SOLD Y407.99 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[11:29:38] [HB] SOLD Y407.54 sell Y399.00 +2.1% buyback Y392.32 ladder Y404.98
+[11:34:41] [LUNCH 11:34:41]
+[11:39:41] [LUNCH 11:39:41]
+[11:44:41] [LUNCH 11:44:41]
+[11:49:41] [LUNCH 11:49:41]
+[11:54:41] [LUNCH 11:54:41]
+[11:59:41] [LUNCH 11:59:41]
+[12:04:41] [LUNCH 12:04:41]
+[12:09:41] [LUNCH 12:09:41]
+[12:14:41] [LUNCH 12:14:41]
+[12:19:41] [LUNCH 12:19:41]
+[12:24:41] [LUNCH 12:24:41]
+[12:29:41] [LUNCH 12:29:41]
+[12:34:41] [LUNCH 12:34:41]
+[12:39:41] [LUNCH 12:39:41]
+[12:44:41] [LUNCH 12:44:41]
+[12:49:41] [LUNCH 12:49:41]
+[12:54:41] [LUNCH 12:54:41]
+[12:59:41] [LUNCH 12:59:41]
+[13:00:41] [HB] SOLD Y408.30 sell Y399.00 +2.3% buyback Y392.32 ladder Y404.98
+[13:01:41] [HB] SOLD Y407.88 sell Y399.00 +2.2% buyback Y392.32 ladder Y404.98
+[13:02:41] [HB] SOLD Y406.91 sell Y399.00 +2.0% buyback Y392.32 ladder Y404.98
+[13:03:41] [HB] SOLD Y405.98 sell Y399.00 +1.7% buyback Y392.32 ladder Y404.98
+[13:04:41] [HB] SOLD Y406.40 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[13:05:41] [HB] SOLD Y406.50 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[13:06:41] [HB] SOLD Y405.18 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[13:07:42] [HB] SOLD Y405.60 sell Y399.00 +1.7% buyback Y392.32 ladder Y404.98
+[13:08:42] [HB] SOLD Y406.10 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[13:09:42] [HB] SOLD Y406.36 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[13:10:42] [HB] SOLD Y405.28 sell Y399.00 +1.6% buyback Y392.32 ladder Y404.98
+[13:11:42] [HB] SOLD Y405.23 sell Y399.00 +1.6% buyback Y392.32 ladder Y404.98
+[13:12:42] [HB] SOLD Y404.17 sell Y399.00 +1.3% buyback Y392.32 ladder Y404.98
+[13:13:42] [HB] SOLD Y403.52 sell Y399.00 +1.1% buyback Y392.32 ladder Y404.98
+[13:14:43] [HB] SOLD Y403.88 sell Y399.00 +1.2% buyback Y392.32 ladder Y404.98
+[13:15:43] [HB] SOLD Y404.68 sell Y399.00 +1.4% buyback Y392.32 ladder Y404.98
+[13:16:43] [HB] SOLD Y403.85 sell Y399.00 +1.2% buyback Y392.32 ladder Y404.98
+[13:17:43] [HB] SOLD Y403.64 sell Y399.00 +1.2% buyback Y392.32 ladder Y404.98
+[13:18:43] [HB] SOLD Y404.40 sell Y399.00 +1.4% buyback Y392.32 ladder Y404.98
+[13:19:43] [HB] SOLD Y403.66 sell Y399.00 +1.2% buyback Y392.32 ladder Y404.98
+[13:20:43] [HB] SOLD Y403.06 sell Y399.00 +1.0% buyback Y392.32 ladder Y404.98
+[13:21:43] [HB] SOLD Y403.05 sell Y399.00 +1.0% buyback Y392.32 ladder Y404.98
+[13:22:44] [HB] SOLD Y403.20 sell Y399.00 +1.1% buyback Y392.32 ladder Y404.98
+[13:23:44] [HB] SOLD Y403.60 sell Y399.00 +1.2% buyback Y392.32 ladder Y404.98
+[13:24:44] [HB] SOLD Y404.02 sell Y399.00 +1.3% buyback Y392.32 ladder Y404.98
+[13:25:44] [HB] SOLD Y404.65 sell Y399.00 +1.4% buyback Y392.32 ladder Y404.98
+[13:26:44] [HB] SOLD Y404.66 sell Y399.00 +1.4% buyback Y392.32 ladder Y404.98
+[13:27:44] [HB] SOLD Y404.90 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[13:28:44] [HB] SOLD Y405.23 sell Y399.00 +1.6% buyback Y392.32 ladder Y404.98
+[13:29:45] [HB] SOLD Y406.52 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[13:30:45] [HB] SOLD Y405.76 sell Y399.00 +1.7% buyback Y392.32 ladder Y404.98
+[13:31:45] [HB] SOLD Y405.45 sell Y399.00 +1.6% buyback Y392.32 ladder Y404.98
+[13:32:45] [HB] SOLD Y406.58 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[13:33:45] [HB] SOLD Y406.61 sell Y399.00 +1.9% buyback Y392.32 ladder Y404.98
+[13:34:45] [HB] SOLD Y406.00 sell Y399.00 +1.8% buyback Y392.32 ladder Y404.98
+[13:35:45] [HB] SOLD Y405.16 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[13:36:45] [HB] SOLD Y404.68 sell Y399.00 +1.4% buyback Y392.32 ladder Y404.98
+[13:37:45] [HB] SOLD Y404.48 sell Y399.00 +1.4% buyback Y392.32 ladder Y404.98
+[13:38:46] [HB] SOLD Y404.02 sell Y399.00 +1.3% buyback Y392.32 ladder Y404.98
+[13:39:46] [HB] SOLD Y404.00 sell Y399.00 +1.3% buyback Y392.32 ladder Y404.98
+[13:40:46] [HB] SOLD Y405.22 sell Y399.00 +1.6% buyback Y392.32 ladder Y404.98
+[13:41:46] [HB] SOLD Y405.44 sell Y399.00 +1.6% buyback Y392.32 ladder Y404.98
+[13:42:46] [HB] SOLD Y404.87 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[13:43:46] [HB] SOLD Y404.51 sell Y399.00 +1.4% buyback Y392.32 ladder Y404.98
+[13:44:46] [HB] SOLD Y404.85 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[13:45:46] [HB] SOLD Y404.88 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[13:46:46] [HB] SOLD Y404.98 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[13:47:47] [HB] SOLD Y404.98 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[13:48:47] [HB] SOLD Y404.94 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[13:49:47] [HB] SOLD Y404.50 sell Y399.00 +1.4% buyback Y392.32 ladder Y404.98
+[13:50:47] [HB] SOLD Y403.88 sell Y399.00 +1.2% buyback Y392.32 ladder Y404.98
+[13:51:47] [HB] SOLD Y403.45 sell Y399.00 +1.1% buyback Y392.32 ladder Y404.98
+[13:52:47] [HB] SOLD Y403.26 sell Y399.00 +1.1% buyback Y392.32 ladder Y404.98
+[13:53:47] [HB] SOLD Y403.07 sell Y399.00 +1.0% buyback Y392.32 ladder Y404.98
+[13:54:48] [HB] SOLD Y404.00 sell Y399.00 +1.3% buyback Y392.32 ladder Y404.98
+[13:55:48] [HB] SOLD Y404.90 sell Y399.00 +1.5% buyback Y392.32 ladder Y404.98
+[13:56:48] [HB] SOLD Y404.50 sell Y399.00 +1.4% buyback Y392.32 ladder Y404.98
+[13:57:48] [HB] SOLD Y403.20 sell Y399.00 +1.1% buyback Y392.32 ladder Y404.98
+[13:58:48] [HB] SOLD Y402.30 sell Y399.00 +0.8% buyback Y392.32 ladder Y404.98
+[13:59:48] [HB] SOLD Y401.50 sell Y399.00 +0.6% buyback Y392.32 ladder Y404.98
+[14:00:48] [HB] SOLD Y401.29 sell Y399.00 +0.6% buyback Y392.32 ladder Y404.98
+[14:01:48] [HB] SOLD Y401.00 sell Y399.00 +0.5% buyback Y392.32 ladder Y404.98
+[14:02:48] [HB] SOLD Y398.19 sell Y399.00 -0.2% buyback Y392.32 ladder Y404.98
+[14:03:02] [MOM dip] 2min -1.00% (3.6×ATR10m 1.00%) Y397.27 → 探底回升买入监测
+[14:03:02] [MOM-HB] 探底回升买入: dip Y397.27 Y397.27 trig±1.00%
+[14:03:35] [MOM buy trig] low Y395.77 回升0.11% → Y396.20
+[14:03:35] [ORDER-MOM long] Y396.20 × 100 sh
+[14:03:35]   >>> 下单买入: PEER x 100股 601869.SH [COMPETE]
+[14:03:35] [委托] 买 Y433.95 0/100股 -> 已报
+[14:03:35] [成交] 买 601869.SH Y396.35 x 100股 = Y39,635
+[14:03:35] [委托] 买 Y433.95 100/100股 -> 全成
+[14:03:36] [FILL-MOM long] Y396.20 × 100 sh | pos 100→200 | cash -39,635
+[14:03:36] [MOM bought] Y396.20 x 100 sh | 卖回触发 ≥Y403.33
+[14:03:49] [HB] SOLD Y396.52 sell Y399.00 -0.6% buyback Y392.32 ladder Y404.98
+[14:04:03] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y397.38 trig±1.00%
+[14:04:49] [HB] SOLD Y399.00 sell Y399.00 +0.0% buyback Y392.32 ladder Y404.98
+[14:05:03] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y399.00 trig±1.00%
+[14:05:49] [HB] SOLD Y398.00 sell Y399.00 -0.3% buyback Y392.32 ladder Y404.98
+[14:06:03] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y397.52 trig±1.02%
+[14:06:49] [HB] SOLD Y396.20 sell Y399.00 -0.7% buyback Y392.32 ladder Y404.98
+[14:07:03] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y395.68 trig±1.17%
+[14:07:49] [HB] SOLD Y394.58 sell Y399.00 -1.1% buyback Y392.32 ladder Y404.98
+[14:08:03] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y394.11 trig±1.22%
+[14:08:49] [HB] SOLD Y393.04 sell Y399.00 -1.5% buyback Y392.32 ladder Y404.98
+[14:09:04] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y392.52 trig±1.23%
+[14:09:08] [Buyback trig ] Y392.19(-1.71%)
+[14:09:32] [REV-T buyback trig] low Y391.50 bounce 0.26% → Y392.50
+[14:09:32] [FIX-BUYBACK] trigger Y392.50 -> ask1/fallback limit Y392.52
+[14:09:32] [REV-T buyback(NORMAL) SKIP] 现金 不足: planned 100 actual 88
+[14:09:32] [Buyback NORMAL-FAIL] 未成交, 保持 SOLD 继续监控
+[14:09:50] [HB] SOLD Y393.04 sell Y399.00 -1.5% buyback Y392.32 ladder Y404.98
+[14:10:04] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y393.50 trig±1.49%
+[14:10:50] [HB] SOLD Y395.30 sell Y399.00 -0.9% buyback Y392.32 ladder Y404.98
+[14:11:04] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y395.95 trig±1.59%
+[14:11:50] [HB] SOLD Y398.02 sell Y399.00 -0.2% buyback Y392.32 ladder Y404.98
+[14:12:04] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y399.01 trig±1.59%
+[14:12:50] [HB] SOLD Y399.63 sell Y399.00 +0.2% buyback Y392.32 ladder Y404.98
+[14:13:04] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y398.17 trig±1.48%
+[14:13:50] [HB] SOLD Y395.97 sell Y399.00 -0.8% buyback Y392.32 ladder Y404.98
+[14:14:04] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y395.95 trig±1.57%
+[14:14:50] [HB] SOLD Y397.87 sell Y399.00 -0.3% buyback Y392.32 ladder Y404.98
+[14:15:04] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y398.00 trig±1.57%
+[14:15:50] [HB] SOLD Y397.01 sell Y399.00 -0.5% buyback Y392.32 ladder Y404.98
+[14:16:04] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y396.96 trig±1.52%
+[14:16:50] [HB] SOLD Y396.91 sell Y399.00 -0.5% buyback Y392.32 ladder Y404.98
+[14:17:04] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y396.90 trig±1.26%
+[14:17:51] [HB] SOLD Y396.60 sell Y399.00 -0.6% buyback Y392.32 ladder Y404.98
+[14:18:05] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y396.01 trig±1.16%
+[14:18:51] [HB] SOLD Y395.00 sell Y399.00 -1.0% buyback Y392.32 ladder Y404.98
+[14:19:05] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y394.00 trig±1.18%
+[14:19:51] [HB] SOLD Y393.00 sell Y399.00 -1.5% buyback Y392.32 ladder Y404.98
+[14:20:05] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y392.99 trig±1.18%
+[14:20:51] [HB] SOLD Y393.00 sell Y399.00 -1.5% buyback Y392.32 ladder Y404.98
+[14:21:05] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y393.13 trig±1.11%
+[14:21:51] [HB] SOLD Y395.80 sell Y399.00 -0.8% buyback Y392.32 ladder Y404.98
+[14:22:05] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y396.02 trig±1.00%
+[14:22:51] [HB] SOLD Y396.30 sell Y399.00 -0.7% buyback Y392.32 ladder Y404.98
+[14:23:05] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y396.16 trig±1.00%
+[14:23:51] [HB] SOLD Y394.47 sell Y399.00 -1.1% buyback Y392.32 ladder Y404.98
+[14:24:05] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y394.40 trig±1.00%
+[14:24:51] [HB] SOLD Y395.11 sell Y399.00 -1.0% buyback Y392.32 ladder Y404.98
+[14:25:05] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y395.35 trig±1.00%
+[14:25:52] [HB] SOLD Y395.40 sell Y399.00 -0.9% buyback Y392.32 ladder Y404.98
+[14:26:06] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y395.00 trig±1.00%
+[14:26:52] [HB] SOLD Y394.47 sell Y399.00 -1.1% buyback Y392.32 ladder Y404.98
+[14:27:06] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y394.30 trig±1.00%
+[14:27:52] [HB] SOLD Y394.38 sell Y399.00 -1.2% buyback Y392.32 ladder Y404.98
+[14:28:06] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y394.00 trig±1.00%
+[14:28:52] [HB] SOLD Y394.35 sell Y399.00 -1.2% buyback Y392.32 ladder Y404.98
+[14:29:06] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y394.39 trig±1.00%
+[14:29:52] [HB] SOLD Y394.88 sell Y399.00 -1.0% buyback Y392.32 ladder Y404.98
+[14:30:06] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y395.00 trig±1.00%
+[14:30:52] [HB] SOLD Y395.37 sell Y399.00 -0.9% buyback Y392.32 ladder Y404.98
+[14:31:06] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y395.49 trig±1.00%
+[14:31:52] [HB] SOLD Y395.80 sell Y399.00 -0.8% buyback Y392.32 ladder Y404.98
+[14:32:06] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y395.96 trig±1.00%
+[14:32:52] [HB] SOLD Y395.69 sell Y399.00 -0.8% buyback Y392.32 ladder Y404.98
+[14:33:06] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y395.65 trig±1.00%
+[14:33:53] [HB] SOLD Y395.10 sell Y399.00 -1.0% buyback Y392.32 ladder Y404.98
+[14:34:07] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y395.00 trig±1.00%
+[14:34:53] [HB] SOLD Y394.60 sell Y399.00 -1.1% buyback Y392.32 ladder Y404.98
+[14:35:07] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y394.58 trig±1.00%
+[14:35:53] [HB] SOLD Y394.36 sell Y399.00 -1.2% buyback Y392.32 ladder Y404.98
+[14:36:07] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y394.17 trig±1.00%
+[14:36:53] [HB] SOLD Y393.80 sell Y399.00 -1.3% buyback Y392.32 ladder Y404.98
+[14:37:07] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y393.68 trig±1.00%
+[14:37:53] [HB] SOLD Y393.32 sell Y399.00 -1.4% buyback Y392.32 ladder Y404.98
+[14:38:07] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y393.20 trig±1.00%
+[14:38:53] [HB] SOLD Y393.18 sell Y399.00 -1.5% buyback Y392.32 ladder Y404.98
+[14:39:07] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y393.16 trig±1.00%
+[14:39:53] [HB] SOLD Y393.12 sell Y399.00 -1.5% buyback Y392.32 ladder Y404.98
+[14:40:07] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y393.17 trig±1.00%
+[14:40:53] [HB] SOLD Y393.52 sell Y399.00 -1.4% buyback Y392.32 ladder Y404.98
+[14:41:07] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y393.88 trig±1.00%
+[14:41:54] [HB] SOLD Y394.52 sell Y399.00 -1.1% buyback Y392.32 ladder Y404.98
+[14:42:08] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y394.67 trig±1.00%
+[14:42:54] [HB] SOLD Y394.80 sell Y399.00 -1.1% buyback Y392.32 ladder Y404.98
+[14:43:08] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y394.68 trig±1.00%
+[14:43:54] [HB] SOLD Y394.35 sell Y399.00 -1.2% buyback Y392.32 ladder Y404.98
+[14:44:08] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y394.00 trig±1.00%
+[14:44:54] [HB] SOLD Y393.51 sell Y399.00 -1.4% buyback Y392.32 ladder Y404.98
+[14:45:08] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y393.51 trig±1.00%
+[14:45:54] [HB] SOLD Y393.44 sell Y399.00 -1.4% buyback Y392.32 ladder Y404.98
+[14:46:08] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y393.50 trig±1.00%
+[14:46:54] [HB] SOLD Y393.50 sell Y399.00 -1.4% buyback Y392.32 ladder Y404.98
+[14:47:08] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y393.46 trig±1.00%
+[14:47:54] [HB] SOLD Y393.33 sell Y399.00 -1.4% buyback Y392.32 ladder Y404.98
+[14:48:08] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y393.29 trig±1.00%
+[14:48:54] [HB] SOLD Y393.10 sell Y399.00 -1.5% buyback Y392.32 ladder Y404.98
+[14:49:08] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y393.00 trig±1.00%
+[14:49:55] [HB] SOLD Y392.53 sell Y399.00 -1.6% buyback Y392.32 ladder Y404.98
+[14:50:09] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y392.40 trig±1.00%
+[14:50:11] [Buyback trig ] Y392.20(-1.70%)
+[14:50:55] [HB] DIPPING Y391.28 sell Y399.00 -1.9% buyback Y392.32 ladder Y404.98
+[14:51:09] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y391.00 trig±1.00%
+[14:51:32] [MOM stop-loss] Y396.20→Y390.17(-1.52%) 止损卖出
+[14:51:32] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:32] [MOM stop-loss] Y396.20→Y390.17(-1.52%) 止损卖出
+[14:51:32] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:33] [MOM stop-loss] Y396.20→Y390.17(-1.52%) 止损卖出
+[14:51:33] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:33] [MOM stop-loss] Y396.20→Y390.17(-1.52%) 止损卖出
+[14:51:33] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:34] [MOM stop-loss] Y396.20→Y390.17(-1.52%) 止损卖出
+[14:51:34] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:34] [MOM stop-loss] Y396.20→Y390.17(-1.52%) 止损卖出
+[14:51:34] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:35] [MOM stop-loss] Y396.20→Y390.11(-1.54%) 止损卖出
+[14:51:35] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:35] [MOM stop-loss] Y396.20→Y390.11(-1.54%) 止损卖出
+[14:51:35] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:36] [MOM stop-loss] Y396.20→Y390.11(-1.54%) 止损卖出
+[14:51:36] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:36] [MOM stop-loss] Y396.20→Y390.11(-1.54%) 止损卖出
+[14:51:36] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:37] [MOM stop-loss] Y396.20→Y390.11(-1.54%) 止损卖出
+[14:51:37] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:37] [MOM stop-loss] Y396.20→Y390.11(-1.54%) 止损卖出
+[14:51:37] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:38] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:38] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:38] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:38] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:39] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:39] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:39] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:39] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:40] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:40] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:40] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:40] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:41] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:41] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:41] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:41] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:42] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:42] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:42] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:42] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:43] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:43] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:43] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:43] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:44] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:44] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:44] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:44] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:45] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:45] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:45] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:45] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:46] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:46] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:46] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:51:46] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:47] [MOM stop-loss] Y396.20→Y389.90(-1.59%) 止损卖出
+[14:51:47] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:47] [MOM stop-loss] Y396.20→Y389.90(-1.59%) 止损卖出
+[14:51:47] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:48] [MOM stop-loss] Y396.20→Y389.90(-1.59%) 止损卖出
+[14:51:48] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:48] [MOM stop-loss] Y396.20→Y389.90(-1.59%) 止损卖出
+[14:51:48] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:49] [MOM stop-loss] Y396.20→Y389.90(-1.59%) 止损卖出
+[14:51:49] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:49] [MOM stop-loss] Y396.20→Y389.90(-1.59%) 止损卖出
+[14:51:49] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:50] [MOM stop-loss] Y396.20→Y389.60(-1.67%) 止损卖出
+[14:51:50] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:50] [MOM stop-loss] Y396.20→Y389.60(-1.67%) 止损卖出
+[14:51:50] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:51] [MOM stop-loss] Y396.20→Y389.60(-1.67%) 止损卖出
+[14:51:51] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:51] [MOM stop-loss] Y396.20→Y389.60(-1.67%) 止损卖出
+[14:51:51] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:52] [MOM stop-loss] Y396.20→Y389.60(-1.67%) 止损卖出
+[14:51:52] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:52] [MOM stop-loss] Y396.20→Y389.60(-1.67%) 止损卖出
+[14:51:52] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:53] [MOM stop-loss] Y396.20→Y389.60(-1.67%) 止损卖出
+[14:51:53] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:53] [MOM stop-loss] Y396.20→Y389.60(-1.67%) 止损卖出
+[14:51:53] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:54] [MOM stop-loss] Y396.20→Y389.60(-1.67%) 止损卖出
+[14:51:54] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:54] [MOM stop-loss] Y396.20→Y389.60(-1.67%) 止损卖出
+[14:51:54] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:55] [MOM stop-loss] Y396.20→Y389.60(-1.67%) 止损卖出
+[14:51:55] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:55] [HB] DIPPING Y389.60 sell Y399.00 -2.4% buyback Y392.32 ladder Y404.98
+[14:51:55] [MOM stop-loss] Y396.20→Y389.60(-1.67%) 止损卖出
+[14:51:55] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:56] [MOM stop-loss] Y396.20→Y389.50(-1.69%) 止损卖出
+[14:51:56] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:56] [MOM stop-loss] Y396.20→Y389.50(-1.69%) 止损卖出
+[14:51:56] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:57] [MOM stop-loss] Y396.20→Y389.50(-1.69%) 止损卖出
+[14:51:57] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:57] [MOM stop-loss] Y396.20→Y389.50(-1.69%) 止损卖出
+[14:51:57] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:58] [MOM stop-loss] Y396.20→Y389.50(-1.69%) 止损卖出
+[14:51:58] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:58] [MOM stop-loss] Y396.20→Y389.50(-1.69%) 止损卖出
+[14:51:58] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:59] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:51:59] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:51:59] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:51:59] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:00] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:52:00] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:00] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:52:00] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:01] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:52:01] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:01] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:52:01] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:02] [MOM stop-loss] Y396.20→Y389.01(-1.81%) 止损卖出
+[14:52:02] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:02] [MOM stop-loss] Y396.20→Y389.01(-1.81%) 止损卖出
+[14:52:02] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:03] [MOM stop-loss] Y396.20→Y389.01(-1.81%) 止损卖出
+[14:52:03] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:03] [MOM stop-loss] Y396.20→Y389.01(-1.81%) 止损卖出
+[14:52:03] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:04] [MOM stop-loss] Y396.20→Y389.01(-1.81%) 止损卖出
+[14:52:04] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:04] [MOM stop-loss] Y396.20→Y389.01(-1.81%) 止损卖出
+[14:52:04] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:05] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:52:05] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:05] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:52:05] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:06] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:52:06] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:06] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:52:06] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:07] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:52:07] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:07] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:52:07] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:08] [MOM stop-loss] Y396.20→Y388.91(-1.84%) 止损卖出
+[14:52:08] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:08] [MOM stop-loss] Y396.20→Y388.91(-1.84%) 止损卖出
+[14:52:08] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:09] [MOM stop-loss] Y396.20→Y388.91(-1.84%) 止损卖出
+[14:52:09] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:09] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y388.91 trig±1.00%
+[14:52:09] [MOM stop-loss] Y396.20→Y388.91(-1.84%) 止损卖出
+[14:52:09] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:10] [MOM stop-loss] Y396.20→Y388.91(-1.84%) 止损卖出
+[14:52:10] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:10] [MOM stop-loss] Y396.20→Y388.91(-1.84%) 止损卖出
+[14:52:10] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:11] [MOM stop-loss] Y396.20→Y388.87(-1.85%) 止损卖出
+[14:52:11] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:11] [MOM stop-loss] Y396.20→Y388.87(-1.85%) 止损卖出
+[14:52:11] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:12] [MOM stop-loss] Y396.20→Y388.87(-1.85%) 止损卖出
+[14:52:12] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:12] [MOM stop-loss] Y396.20→Y388.87(-1.85%) 止损卖出
+[14:52:12] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:13] [MOM stop-loss] Y396.20→Y388.87(-1.85%) 止损卖出
+[14:52:13] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:13] [MOM stop-loss] Y396.20→Y388.87(-1.85%) 止损卖出
+[14:52:13] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:14] [MOM stop-loss] Y396.20→Y388.82(-1.86%) 止损卖出
+[14:52:14] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:14] [MOM stop-loss] Y396.20→Y388.82(-1.86%) 止损卖出
+[14:52:14] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:15] [MOM stop-loss] Y396.20→Y388.82(-1.86%) 止损卖出
+[14:52:15] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:15] [MOM stop-loss] Y396.20→Y388.82(-1.86%) 止损卖出
+[14:52:15] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:16] [MOM stop-loss] Y396.20→Y388.82(-1.86%) 止损卖出
+[14:52:16] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:16] [MOM stop-loss] Y396.20→Y388.82(-1.86%) 止损卖出
+[14:52:16] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:17] [MOM stop-loss] Y396.20→Y388.00(-2.07%) 止损卖出
+[14:52:17] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:17] [MOM stop-loss] Y396.20→Y388.00(-2.07%) 止损卖出
+[14:52:17] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:18] [MOM stop-loss] Y396.20→Y388.00(-2.07%) 止损卖出
+[14:52:18] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:18] [MOM stop-loss] Y396.20→Y388.00(-2.07%) 止损卖出
+[14:52:18] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:19] [MOM stop-loss] Y396.20→Y388.00(-2.07%) 止损卖出
+[14:52:19] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:19] [MOM stop-loss] Y396.20→Y388.00(-2.07%) 止损卖出
+[14:52:19] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:20] [MOM stop-loss] Y396.20→Y388.00(-2.07%) 止损卖出
+[14:52:20] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:20] [MOM stop-loss] Y396.20→Y388.00(-2.07%) 止损卖出
+[14:52:20] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:21] [MOM stop-loss] Y396.20→Y388.00(-2.07%) 止损卖出
+[14:52:21] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:21] [MOM stop-loss] Y396.20→Y388.00(-2.07%) 止损卖出
+[14:52:21] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:22] [MOM stop-loss] Y396.20→Y388.00(-2.07%) 止损卖出
+[14:52:22] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:22] [MOM stop-loss] Y396.20→Y388.00(-2.07%) 止损卖出
+[14:52:22] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:23] [MOM stop-loss] Y396.20→Y387.63(-2.16%) 止损卖出
+[14:52:23] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:23] [MOM stop-loss] Y396.20→Y387.63(-2.16%) 止损卖出
+[14:52:23] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:24] [MOM stop-loss] Y396.20→Y387.63(-2.16%) 止损卖出
+[14:52:24] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:24] [MOM stop-loss] Y396.20→Y387.63(-2.16%) 止损卖出
+[14:52:24] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:25] [MOM stop-loss] Y396.20→Y387.63(-2.16%) 止损卖出
+[14:52:25] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:25] [MOM stop-loss] Y396.20→Y387.63(-2.16%) 止损卖出
+[14:52:25] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:26] [MOM stop-loss] Y396.20→Y387.38(-2.23%) 止损卖出
+[14:52:26] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:26] [MOM stop-loss] Y396.20→Y387.38(-2.23%) 止损卖出
+[14:52:26] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:27] [MOM stop-loss] Y396.20→Y387.38(-2.23%) 止损卖出
+[14:52:27] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:27] [MOM stop-loss] Y396.20→Y387.38(-2.23%) 止损卖出
+[14:52:27] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:28] [MOM stop-loss] Y396.20→Y387.38(-2.23%) 止损卖出
+[14:52:28] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:28] [MOM stop-loss] Y396.20→Y387.38(-2.23%) 止损卖出
+[14:52:28] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:29] [MOM stop-loss] Y396.20→Y387.58(-2.18%) 止损卖出
+[14:52:29] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:29] [MOM stop-loss] Y396.20→Y387.58(-2.18%) 止损卖出
+[14:52:29] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:30] [MOM stop-loss] Y396.20→Y387.58(-2.18%) 止损卖出
+[14:52:30] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:30] [MOM stop-loss] Y396.20→Y387.58(-2.18%) 止损卖出
+[14:52:30] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:31] [MOM stop-loss] Y396.20→Y387.58(-2.18%) 止损卖出
+[14:52:31] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:31] [MOM stop-loss] Y396.20→Y387.58(-2.18%) 止损卖出
+[14:52:31] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:32] [MOM stop-loss] Y396.20→Y387.17(-2.28%) 止损卖出
+[14:52:32] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:32] [MOM stop-loss] Y396.20→Y387.17(-2.28%) 止损卖出
+[14:52:32] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:33] [MOM stop-loss] Y396.20→Y387.17(-2.28%) 止损卖出
+[14:52:33] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:33] [MOM stop-loss] Y396.20→Y387.17(-2.28%) 止损卖出
+[14:52:33] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:34] [MOM stop-loss] Y396.20→Y387.17(-2.28%) 止损卖出
+[14:52:34] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:34] [MOM stop-loss] Y396.20→Y387.17(-2.28%) 止损卖出
+[14:52:34] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:35] [MOM stop-loss] Y396.20→Y387.01(-2.32%) 止损卖出
+[14:52:35] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:35] [MOM stop-loss] Y396.20→Y387.01(-2.32%) 止损卖出
+[14:52:35] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:36] [MOM stop-loss] Y396.20→Y387.01(-2.32%) 止损卖出
+[14:52:36] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:36] [MOM stop-loss] Y396.20→Y387.01(-2.32%) 止损卖出
+[14:52:36] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:37] [MOM stop-loss] Y396.20→Y387.01(-2.32%) 止损卖出
+[14:52:37] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:37] [MOM stop-loss] Y396.20→Y387.01(-2.32%) 止损卖出
+[14:52:37] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:38] [MOM stop-loss] Y396.20→Y387.01(-2.32%) 止损卖出
+[14:52:38] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:38] [MOM stop-loss] Y396.20→Y387.01(-2.32%) 止损卖出
+[14:52:38] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:39] [MOM stop-loss] Y396.20→Y387.01(-2.32%) 止损卖出
+[14:52:39] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:39] [MOM stop-loss] Y396.20→Y387.01(-2.32%) 止损卖出
+[14:52:39] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:40] [MOM stop-loss] Y396.20→Y387.01(-2.32%) 止损卖出
+[14:52:40] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:40] [MOM stop-loss] Y396.20→Y387.01(-2.32%) 止损卖出
+[14:52:40] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:41] [MOM stop-loss] Y396.20→Y387.00(-2.32%) 止损卖出
+[14:52:41] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:41] [MOM stop-loss] Y396.20→Y387.00(-2.32%) 止损卖出
+[14:52:41] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:42] [MOM stop-loss] Y396.20→Y387.00(-2.32%) 止损卖出
+[14:52:42] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:42] [MOM stop-loss] Y396.20→Y387.00(-2.32%) 止损卖出
+[14:52:42] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:43] [MOM stop-loss] Y396.20→Y387.00(-2.32%) 止损卖出
+[14:52:43] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:43] [MOM stop-loss] Y396.20→Y387.00(-2.32%) 止损卖出
+[14:52:43] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:44] [MOM stop-loss] Y396.20→Y387.19(-2.27%) 止损卖出
+[14:52:44] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:44] [MOM stop-loss] Y396.20→Y387.19(-2.27%) 止损卖出
+[14:52:44] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:45] [MOM stop-loss] Y396.20→Y387.19(-2.27%) 止损卖出
+[14:52:45] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:45] [MOM stop-loss] Y396.20→Y387.19(-2.27%) 止损卖出
+[14:52:45] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:46] [MOM stop-loss] Y396.20→Y387.19(-2.27%) 止损卖出
+[14:52:46] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:46] [MOM stop-loss] Y396.20→Y387.19(-2.27%) 止损卖出
+[14:52:46] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:47] [MOM stop-loss] Y396.20→Y387.38(-2.23%) 止损卖出
+[14:52:47] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:47] [MOM stop-loss] Y396.20→Y387.38(-2.23%) 止损卖出
+[14:52:47] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:48] [MOM stop-loss] Y396.20→Y387.38(-2.23%) 止损卖出
+[14:52:48] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:48] [MOM stop-loss] Y396.20→Y387.38(-2.23%) 止损卖出
+[14:52:48] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:49] [MOM stop-loss] Y396.20→Y387.38(-2.23%) 止损卖出
+[14:52:49] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:49] [MOM stop-loss] Y396.20→Y387.38(-2.23%) 止损卖出
+[14:52:49] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:50] [MOM stop-loss] Y396.20→Y388.12(-2.04%) 止损卖出
+[14:52:50] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:50] [REV-T buyback trig] low Y387.00 bounce 0.29% → Y388.12
+[14:52:50] [FIX-BUYBACK] trigger Y388.12 -> ask1/fallback limit Y388.12
+[14:52:50] [REV-T buyback(NORMAL) SKIP] 现金 不足: planned 100 actual 89
+[14:52:50] [Buyback NORMAL-FAIL] 未成交, 保持 SOLD 继续监控
+[14:52:50] [MOM stop-loss] Y396.20→Y388.12(-2.04%) 止损卖出
+[14:52:50] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:50] [Buyback trig ] Y388.12(-2.73%)
+[14:52:51] [MOM stop-loss] Y396.20→Y388.12(-2.04%) 止损卖出
+[14:52:51] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:51] [MOM stop-loss] Y396.20→Y388.12(-2.04%) 止损卖出
+[14:52:51] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:52] [MOM stop-loss] Y396.20→Y388.12(-2.04%) 止损卖出
+[14:52:52] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:52] [MOM stop-loss] Y396.20→Y388.12(-2.04%) 止损卖出
+[14:52:52] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:53] [MOM stop-loss] Y396.20→Y388.84(-1.86%) 止损卖出
+[14:52:53] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:53] [REV-T buyback trig] low Y388.12 bounce 0.19% → Y388.84
+[14:52:53] [FIX-BUYBACK] trigger Y388.84 -> ask1/fallback limit Y388.84
+[14:52:53] [REV-T buyback(NORMAL) SKIP] 现金 不足: planned 100 actual 88
+[14:52:53] [Buyback NORMAL-FAIL] 未成交, 保持 SOLD 继续监控
+[14:52:53] [MOM stop-loss] Y396.20→Y388.84(-1.86%) 止损卖出
+[14:52:53] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:53] [Buyback trig ] Y388.84(-2.55%)
+[14:52:54] [MOM stop-loss] Y396.20→Y388.84(-1.86%) 止损卖出
+[14:52:54] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:54] [MOM stop-loss] Y396.20→Y388.84(-1.86%) 止损卖出
+[14:52:54] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:55] [MOM stop-loss] Y396.20→Y388.84(-1.86%) 止损卖出
+[14:52:55] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:55] [HB] DIPPING Y388.84 sell Y399.00 -2.5% buyback Y392.32 ladder Y404.98
+[14:52:55] [MOM stop-loss] Y396.20→Y388.84(-1.86%) 止损卖出
+[14:52:55] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:56] [MOM stop-loss] Y396.20→Y389.27(-1.75%) 止损卖出
+[14:52:56] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:56] [REV-T buyback trig] low Y388.84 bounce 0.11% → Y389.27
+[14:52:56] [FIX-BUYBACK] trigger Y389.27 -> ask1/fallback limit Y389.27
+[14:52:56] [REV-T buyback(NORMAL) SKIP] 现金 不足: planned 100 actual 88
+[14:52:56] [Buyback NORMAL-FAIL] 未成交, 保持 SOLD 继续监控
+[14:52:56] [MOM stop-loss] Y396.20→Y389.27(-1.75%) 止损卖出
+[14:52:56] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:56] [Buyback trig ] Y389.27(-2.44%)
+[14:52:57] [MOM stop-loss] Y396.20→Y389.27(-1.75%) 止损卖出
+[14:52:57] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:57] [MOM stop-loss] Y396.20→Y389.27(-1.75%) 止损卖出
+[14:52:57] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:58] [MOM stop-loss] Y396.20→Y389.27(-1.75%) 止损卖出
+[14:52:58] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:58] [MOM stop-loss] Y396.20→Y389.27(-1.75%) 止损卖出
+[14:52:58] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:59] [MOM stop-loss] Y396.20→Y389.62(-1.66%) 止损卖出
+[14:52:59] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:52:59] [MOM stop-loss] Y396.20→Y389.62(-1.66%) 止损卖出
+[14:52:59] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:00] [MOM stop-loss] Y396.20→Y389.62(-1.66%) 止损卖出
+[14:53:00] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:00] [MOM stop-loss] Y396.20→Y389.62(-1.66%) 止损卖出
+[14:53:00] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:01] [MOM stop-loss] Y396.20→Y389.62(-1.66%) 止损卖出
+[14:53:01] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:01] [MOM stop-loss] Y396.20→Y389.62(-1.66%) 止损卖出
+[14:53:01] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:02] [MOM stop-loss] Y396.20→Y390.06(-1.55%) 止损卖出
+[14:53:02] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:02] [REV-T buyback trig] low Y389.27 bounce 0.20% → Y390.06
+[14:53:02] [FIX-BUYBACK] trigger Y390.06 -> ask1/fallback limit Y390.10
+[14:53:02] [REV-T buyback(NORMAL) SKIP] 现金 不足: planned 100 actual 88
+[14:53:02] [Buyback NORMAL-FAIL] 未成交, 保持 SOLD 继续监控
+[14:53:02] [MOM stop-loss] Y396.20→Y390.06(-1.55%) 止损卖出
+[14:53:02] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:02] [Buyback trig ] Y390.06(-2.24%)
+[14:53:03] [MOM stop-loss] Y396.20→Y390.06(-1.55%) 止损卖出
+[14:53:03] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:03] [MOM stop-loss] Y396.20→Y390.06(-1.55%) 止损卖出
+[14:53:03] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:04] [MOM stop-loss] Y396.20→Y390.06(-1.55%) 止损卖出
+[14:53:04] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:04] [MOM stop-loss] Y396.20→Y390.06(-1.55%) 止损卖出
+[14:53:04] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:05] [MOM stop-loss] Y396.20→Y390.18(-1.52%) 止损卖出
+[14:53:05] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:05] [MOM stop-loss] Y396.20→Y390.18(-1.52%) 止损卖出
+[14:53:05] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:06] [MOM stop-loss] Y396.20→Y390.18(-1.52%) 止损卖出
+[14:53:06] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:06] [MOM stop-loss] Y396.20→Y390.18(-1.52%) 止损卖出
+[14:53:06] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:07] [MOM stop-loss] Y396.20→Y390.18(-1.52%) 止损卖出
+[14:53:07] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:07] [MOM stop-loss] Y396.20→Y390.18(-1.52%) 止损卖出
+[14:53:07] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:53:08] [REV-T buyback trig] low Y390.06 bounce 0.16% → Y390.67
+[14:53:08] [FIX-BUYBACK] trigger Y390.67 -> ask1/fallback limit Y391.01
+[14:53:08] [REV-T buyback(NORMAL) SKIP] 现金 不足: planned 100 actual 88
+[14:53:08] [Buyback NORMAL-FAIL] 未成交, 保持 SOLD 继续监控
+[14:53:08] [Buyback trig ] Y390.67(-2.09%)
+[14:53:09] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y390.67 trig±1.00%
+[14:53:17] [REV-T buyback trig] low Y390.67 bounce 0.11% → Y391.11
+[14:53:17] [FIX-BUYBACK] trigger Y391.11 -> ask1/fallback limit Y391.11
+[14:53:17] [REV-T buyback(NORMAL) SKIP] 现金 不足: planned 100 actual 88
+[14:53:17] [Buyback NORMAL-FAIL] 未成交, 保持 SOLD 继续监控
+[14:53:17] [Buyback trig ] Y391.11(-1.98%)
+[14:53:29] [REV-T buyback trig] low Y391.11 bounce 0.11% → Y391.55
+[14:53:29] [FIX-BUYBACK] trigger Y391.55 -> ask1/fallback limit Y391.60
+[14:53:29] [REV-T buyback(NORMAL) SKIP] 现金 不足: planned 100 actual 88
+[14:53:29] [Buyback NORMAL-FAIL] 未成交, 保持 SOLD 继续监控
+[14:53:29] [Buyback trig ] Y391.55(-1.87%)
+[14:53:50] [REV-T buyback trig] low Y391.55 bounce 0.11% → Y391.99
+[14:53:50] [FIX-BUYBACK] trigger Y391.99 -> ask1/fallback limit Y391.99
+[14:53:50] [REV-T buyback(NORMAL) SKIP] 现金 不足: planned 100 actual 88
+[14:53:50] [Buyback NORMAL-FAIL] 未成交, 保持 SOLD 继续监控
+[14:53:51] [Buyback trig ] Y391.99(-1.76%)
+[14:53:55] [HB] DIPPING Y391.98 sell Y399.00 -1.8% buyback Y392.32 ladder Y404.98
+[14:54:05] [REV-T buyback trig] low Y391.98 bounce 0.12% → Y392.45
+[14:54:05] [FIX-BUYBACK] trigger Y392.45 -> ask1/fallback limit Y392.45
+[14:54:05] [REV-T buyback(NORMAL) SKIP] 现金 不足: planned 100 actual 88
+[14:54:05] [Buyback NORMAL-FAIL] 未成交, 保持 SOLD 继续监控
+[14:54:09] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y392.50 trig±1.00%
+[14:54:55] [HB] SOLD Y392.51 sell Y399.00 -1.6% buyback Y392.32 ladder Y404.98
+[14:55:05] [Buyback trig ] Y392.01(-1.75%)
+[14:55:09] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y392.00 trig±1.00%
+[14:55:44] [MOM stop-loss] Y396.20→Y390.01(-1.56%) 止损卖出
+[14:55:44] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:44] [MOM stop-loss] Y396.20→Y390.01(-1.56%) 止损卖出
+[14:55:44] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:45] [MOM stop-loss] Y396.20→Y390.01(-1.56%) 止损卖出
+[14:55:45] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:45] [MOM stop-loss] Y396.20→Y390.01(-1.56%) 止损卖出
+[14:55:45] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:46] [MOM stop-loss] Y396.20→Y390.01(-1.56%) 止损卖出
+[14:55:46] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:46] [MOM stop-loss] Y396.20→Y390.01(-1.56%) 止损卖出
+[14:55:46] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:47] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:55:47] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:47] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:55:47] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:48] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:55:48] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:48] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:55:48] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:49] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:55:49] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:49] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:55:49] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:50] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:55:50] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:50] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:55:50] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:51] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:55:51] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:51] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:55:51] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:52] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:55:52] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:52] [MOM stop-loss] Y396.20→Y390.00(-1.56%) 止损卖出
+[14:55:52] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:53] [MOM stop-loss] Y396.20→Y389.88(-1.60%) 止损卖出
+[14:55:53] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:53] [MOM stop-loss] Y396.20→Y389.88(-1.60%) 止损卖出
+[14:55:53] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:54] [MOM stop-loss] Y396.20→Y389.88(-1.60%) 止损卖出
+[14:55:54] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:54] [MOM stop-loss] Y396.20→Y389.88(-1.60%) 止损卖出
+[14:55:54] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:55] [MOM stop-loss] Y396.20→Y389.88(-1.60%) 止损卖出
+[14:55:55] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:55] [MOM stop-loss] Y396.20→Y389.88(-1.60%) 止损卖出
+[14:55:56] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:56] [HB] DIPPING Y389.88 sell Y399.00 -2.3% buyback Y392.32 ladder Y404.98
+[14:55:57] [MOM stop-loss] Y396.20→Y389.35(-1.73%) 止损卖出
+[14:55:57] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:57] [MOM stop-loss] Y396.20→Y389.35(-1.73%) 止损卖出
+[14:55:57] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:58] [MOM stop-loss] Y396.20→Y389.35(-1.73%) 止损卖出
+[14:55:58] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:58] [MOM stop-loss] Y396.20→Y389.35(-1.73%) 止损卖出
+[14:55:58] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:59] [MOM stop-loss] Y396.20→Y389.35(-1.73%) 止损卖出
+[14:55:59] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:55:59] [MOM stop-loss] Y396.20→Y389.50(-1.69%) 止损卖出
+[14:55:59] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:00] [MOM stop-loss] Y396.20→Y389.50(-1.69%) 止损卖出
+[14:56:00] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:00] [MOM stop-loss] Y396.20→Y389.50(-1.69%) 止损卖出
+[14:56:00] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:01] [MOM stop-loss] Y396.20→Y389.50(-1.69%) 止损卖出
+[14:56:01] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:01] [MOM stop-loss] Y396.20→Y389.50(-1.69%) 止损卖出
+[14:56:01] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:02] [MOM stop-loss] Y396.20→Y389.01(-1.81%) 止损卖出
+[14:56:02] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:02] [MOM stop-loss] Y396.20→Y389.01(-1.81%) 止损卖出
+[14:56:02] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:03] [MOM stop-loss] Y396.20→Y389.01(-1.81%) 止损卖出
+[14:56:03] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:03] [MOM stop-loss] Y396.20→Y389.01(-1.81%) 止损卖出
+[14:56:03] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:04] [MOM stop-loss] Y396.20→Y389.01(-1.81%) 止损卖出
+[14:56:04] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:04] [MOM stop-loss] Y396.20→Y389.01(-1.81%) 止损卖出
+[14:56:04] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:05] [MOM stop-loss] Y396.20→Y389.20(-1.77%) 止损卖出
+[14:56:05] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:05] [MOM stop-loss] Y396.20→Y389.20(-1.77%) 止损卖出
+[14:56:05] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:06] [MOM stop-loss] Y396.20→Y389.20(-1.77%) 止损卖出
+[14:56:06] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:06] [MOM stop-loss] Y396.20→Y389.20(-1.77%) 止损卖出
+[14:56:06] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:07] [MOM stop-loss] Y396.20→Y389.20(-1.77%) 止损卖出
+[14:56:07] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:07] [MOM stop-loss] Y396.20→Y389.20(-1.77%) 止损卖出
+[14:56:07] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:08] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:56:08] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:08] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:56:08] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:09] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:56:09] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:09] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:56:09] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:10] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:56:10] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:10] [MOM-HB] 已买Y396.20 等涨1.8%卖回 Y389.00 trig±1.00%
+[14:56:10] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:56:10] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:11] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:56:11] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:11] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:56:11] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:12] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:56:12] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:12] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:56:12] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:13] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:56:13] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:13] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:56:13] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:14] [MOM stop-loss] Y396.20→Y389.00(-1.82%) 止损卖出
+[14:56:14] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:14] [MOM stop-loss] Y396.20→Y388.58(-1.92%) 止损卖出
+[14:56:14] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:15] [MOM stop-loss] Y396.20→Y388.58(-1.92%) 止损卖出
+[14:56:15] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:15] [MOM stop-loss] Y396.20→Y388.58(-1.92%) 止损卖出
+[14:56:15] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:16] [MOM stop-loss] Y396.20→Y388.58(-1.92%) 止损卖出
+[14:56:16] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:16] [MOM stop-loss] Y396.20→Y388.58(-1.92%) 止损卖出
+[14:56:16] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:17] [MOM stop-loss] Y396.20→Y388.58(-1.92%) 止损卖出
+[14:56:17] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:17] [MOM stop-loss] Y396.20→Y388.58(-1.92%) 止损卖出
+[14:56:17] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:18] [MOM stop-loss] Y396.20→Y388.58(-1.92%) 止损卖出
+[14:56:18] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:18] [MOM stop-loss] Y396.20→Y388.58(-1.92%) 止损卖出
+[14:56:18] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:19] [MOM stop-loss] Y396.20→Y388.58(-1.92%) 止损卖出
+[14:56:19] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:19] [MOM stop-loss] Y396.20→Y388.58(-1.92%) 止损卖出
+[14:56:19] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:20] [MOM stop-loss] Y396.20→Y388.28(-2.00%) 止损卖出
+[14:56:20] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:20] [MOM stop-loss] Y396.20→Y388.28(-2.00%) 止损卖出
+[14:56:20] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:21] [MOM stop-loss] Y396.20→Y388.28(-2.00%) 止损卖出
+[14:56:21] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:21] [MOM stop-loss] Y396.20→Y388.28(-2.00%) 止损卖出
+[14:56:21] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:22] [MOM stop-loss] Y396.20→Y388.28(-2.00%) 止损卖出
+[14:56:22] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:22] [MOM stop-loss] Y396.20→Y388.28(-2.00%) 止损卖出
+[14:56:22] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:23] [MOM stop-loss] Y396.20→Y388.34(-1.98%) 止损卖出
+[14:56:23] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:23] [MOM stop-loss] Y396.20→Y388.34(-1.98%) 止损卖出
+[14:56:23] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:24] [MOM stop-loss] Y396.20→Y388.34(-1.98%) 止损卖出
+[14:56:24] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:24] [MOM stop-loss] Y396.20→Y388.34(-1.98%) 止损卖出
+[14:56:24] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:25] [MOM stop-loss] Y396.20→Y388.34(-1.98%) 止损卖出
+[14:56:25] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:25] [MOM stop-loss] Y396.20→Y388.34(-1.98%) 止损卖出
+[14:56:25] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:26] [MOM stop-loss] Y396.20→Y388.11(-2.04%) 止损卖出
+[14:56:26] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:26] [MOM stop-loss] Y396.20→Y388.11(-2.04%) 止损卖出
+[14:56:26] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:27] [MOM stop-loss] Y396.20→Y388.11(-2.04%) 止损卖出
+[14:56:27] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:27] [MOM stop-loss] Y396.20→Y388.11(-2.04%) 止损卖出
+[14:56:27] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:28] [MOM stop-loss] Y396.20→Y388.11(-2.04%) 止损卖出
+[14:56:28] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:28] [MOM stop-loss] Y396.20→Y388.11(-2.04%) 止损卖出
+[14:56:28] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:29] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:29] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:29] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:29] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:30] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:30] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:30] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:30] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:31] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:31] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:31] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:31] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:32] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:32] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:32] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:32] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:33] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:33] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:33] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:33] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:34] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:34] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:34] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:34] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:35] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:35] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:35] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:35] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:36] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:36] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:36] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:36] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:37] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:37] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:37] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:37] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:38] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:38] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:38] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:38] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:39] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:39] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:39] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:39] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:40] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:40] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:40] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:40] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:41] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:41] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:41] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:41] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:42] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:42] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:42] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:42] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:43] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:43] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:43] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:43] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:44] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:44] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:44] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:44] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:45] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:45] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:45] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:45] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:46] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:46] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:46] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:46] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:47] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:47] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:47] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:47] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:48] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:48] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:48] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:48] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:49] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:49] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:49] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:49] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:50] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:50] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:50] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:50] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:51] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:51] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:51] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:51] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:52] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:52] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:52] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:52] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:53] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:53] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:53] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:53] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:54] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:54] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:54] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:54] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:55] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:55] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:55] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:55] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:56] [MOM stop-loss] Y396.20→Y388.01(-2.07%) 止损卖出
+[14:56:56] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:56] [HB] DIPPING Y388.01 sell Y399.00 -2.8% buyback Y392.32 ladder Y404.98
+[14:56:56] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:56] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:57] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:57] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:57] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:57] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:58] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:58] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:58] [MOM stop-loss] Y396.20→Y388.02(-2.06%) 止损卖出
+[14:56:58] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:59] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:59] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:56:59] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:56:59] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:57:00] [MOM stop-loss] Y396.20→Y388.10(-2.04%) 止损卖出
+[14:57:00] [MOM stop-loss SKIP] 可卖 不足: planned 100 actual 0
+[14:57:00] [MOM force sell] Y388.10
+[14:57:00] [MOM force sell SKIP] 可卖 不足: planned 100 actual 0
+[14:57:00] [WARN] MOM force sell 未成交, 短线腿可能残留!
+[14:57:56] [HB] DIPPING Y388.01 sell Y399.00 -2.8% buyback Y392.32 ladder Y404.98
+[14:58:05] [委托] 买 Y73.70 0/100股 -> 已报
+[14:58:56] [HB] DIPPING Y388.01 sell Y399.00 -2.8% buyback Y392.32 ladder Y404.98
+[14:59:56] [HB] DIPPING Y388.01 sell Y399.00 -2.8% buyback Y392.32 ladder Y404.98
+[15:00:00] [成交] 买 600584.SH Y73.62 x 100股 = Y7,362
+[15:00:00] [委托] 买 Y73.70 100/100股 -> 全成
+[15:05:01] [CLOSE 15:05:01]
+[15:10:01] [CLOSE 15:10:01]
+[15:15:01] [CLOSE 15:15:01]
+[15:20:01] [CLOSE 15:20:01]
+[15:25:01] [CLOSE 15:25:01]
+[15:30:01] [CLOSE 15:30:01]
+[15:35:01] [CLOSE 15:35:01]
+[15:40:01] [CLOSE 15:40:01]
+[15:45:01] [CLOSE 15:45:01]
+[15:50:01] [CLOSE 15:50:01]
+[15:55:01] [CLOSE 15:55:01]
+[16:00:01] [CLOSE 16:00:01]
+[16:05:01] [CLOSE 16:05:01]
+[16:10:01] [CLOSE 16:10:01]
+[16:15:01] [CLOSE 16:15:01]
+[16:20:01] [CLOSE 16:20:01]
+[16:25:01] [CLOSE 16:25:01]
+[16:30:01] [CLOSE 16:30:01]
+[16:35:01] [CLOSE 16:35:01]
+[16:40:01] [CLOSE 16:40:01]
+[16:45:01] [CLOSE 16:45:01]
+[16:50:01] [CLOSE 16:50:01]
+[16:55:01] [CLOSE 16:55:01]
+[17:00:01] [CLOSE 17:00:01]
+[17:05:01] [CLOSE 17:05:01]
+[17:10:01] [CLOSE 17:10:01]
+[17:15:01] [CLOSE 17:15:01]
+[17:20:01] [CLOSE 17:20:01]
+[17:25:01] [CLOSE 17:25:01]
+[17:30:01] [CLOSE 17:30:01]
+[17:35:01] [CLOSE 17:35:01]
+[17:40:01] [CLOSE 17:40:01]
+[17:45:01] [CLOSE 17:45:01]
+[17:50:01] [CLOSE 17:50:01]
+[17:55:01] [CLOSE 17:55:01]
+[18:00:01] [CLOSE 18:00:01]
+[18:05:01] [CLOSE 18:05:01]
+[18:10:01] [CLOSE 18:10:01]
+[18:15:01] [CLOSE 18:15:01]
+[18:20:01] [CLOSE 18:20:01]
+[18:25:01] [CLOSE 18:25:01]
+[18:30:01] [CLOSE 18:30:01]
+[18:35:01] [CLOSE 18:35:01]
+[18:40:01] [CLOSE 18:40:01]
+[18:45:01] [CLOSE 18:45:01]
+[18:50:01] [CLOSE 18:50:01]
+[18:51:25] [账号状态] 8890145315 STOCK: 等待登录
+[18:51:29] [账号状态] 8890145315 STOCK: 正常
+[18:54:58] [账号状态] 8890145315 STOCK: 等待登录
+[18:55:04] [账号状态] 8890145315 STOCK: 正常
+[18:55:06] [CLOSE 18:55:06]
+[18:58:30] [账号状态] 8890145315 STOCK: 等待登录
+[18:58:34] [账号状态] 8890145315 STOCK: 正常
+[19:00:07] [CLOSE 19:00:07]
+[19:02:00] [账号状态] 8890145315 STOCK: 等待登录
+[19:02:04] [账号状态] 8890145315 STOCK: 正常
+[19:05:29] [CLOSE 19:05:29]
+[19:05:45] [账号状态] 8890145315 STOCK: 等待登录
+[19:05:48] [账号状态] 8890145315 STOCK: 正常
+[19:09:03] [账号状态] 8890145315 STOCK: 等待登录
+[19:09:06] [账号状态] 8890145315 STOCK: 正常
+[19:10:30] [CLOSE 19:10:30]
+[19:12:34] [账号状态] 8890145315 STOCK: 等待登录
+[19:12:37] [账号状态] 8890145315 STOCK: 正常
+[19:15:59] [CLOSE 19:15:59]
+[19:16:08] [账号状态] 8890145315 STOCK: 等待登录
+[19:16:40] [账号状态] 8890145315 STOCK: 正常
+[19:19:44] [账号状态] 8890145315 STOCK: 等待登录
+[19:19:48] [账号状态] 8890145315 STOCK: 正常
+[19:21:08] [CLOSE 19:21:08]
+[19:23:04] [账号状态] 8890145315 STOCK: 等待登录
+[19:23:07] [账号状态] 8890145315 STOCK: 正常
+[19:26:33] [账号状态] 8890145315 STOCK: 等待登录
+[19:26:36] [账号状态] 8890145315 STOCK: 正常
+[19:26:37] [CLOSE 19:26:37]
+[19:30:03] [账号状态] 8890145315 STOCK: 等待登录
+[19:30:06] [账号状态] 8890145315 STOCK: 正常
+[19:31:39] [CLOSE 19:31:39]
+[19:34:28] [账号状态] 8890145315 STOCK: 等待登录
+[19:34:31] [账号状态] 8890145315 STOCK: 正常
+[19:36:48] [CLOSE 19:36:48]
+[19:38:04] [账号状态] 8890145315 STOCK: 等待登录
+[19:38:07] [账号状态] 8890145315 STOCK: 正常
+[19:41:37] [账号状态] 8890145315 STOCK: 等待登录
+[19:41:42] [账号状态] 8890145315 STOCK: 正常
+[19:41:58] [CLOSE 19:41:58]
+[19:45:05] [账号状态] 8890145315 STOCK: 等待登录
+[19:45:09] [账号状态] 8890145315 STOCK: 正常
+[19:47:07] [CLOSE 19:47:07]
+[19:48:33] [账号状态] 8890145315 STOCK: 等待登录
+[19:48:36] [账号状态] 8890145315 STOCK: 正常
+[19:52:06] [账号状态] 8890145315 STOCK: 等待登录
+[19:52:10] [账号状态] 8890145315 STOCK: 正常
+[19:52:11] [CLOSE 19:52:11]
+[19:55:38] [账号状态] 8890145315 STOCK: 等待登录
+[19:55:41] [账号状态] 8890145315 STOCK: 正常
+[19:57:20] [CLOSE 19:57:20]
+[19:59:08] [账号状态] 8890145315 STOCK: 等待登录
+[19:59:12] [账号状态] 8890145315 STOCK: 正常
+[20:02:32] [CLOSE 20:02:32]
+[20:02:36] [账号状态] 8890145315 STOCK: 等待登录
+[20:02:39] [账号状态] 8890145315 STOCK: 正常
+[20:06:08] [账号状态] 8890145315 STOCK: 等待登录
+[20:06:27] [账号状态] 8890145315 STOCK: 正常
+[20:07:33] [CLOSE 20:07:33]
+[20:07:42] [账号状态] 8890145315 STOCK: 等待登录
+[20:07:48] [账号状态] 8890145315 STOCK: 正常
+[20:09:40] [账号状态] 8890145315 STOCK: 等待登录
+[20:09:43] [账号状态] 8890145315 STOCK: 正常
+[20:13:13] [账号状态] 8890145315 STOCK: 等待登录
+[20:13:14] [CLOSE 20:13:14]
+[20:13:16] [账号状态] 8890145315 STOCK: 正常
+[20:15:10] [账号状态] 8890145315 STOCK: 等待登录
+[20:18:22] [CLOSE 20:18:22]
+[20:23:46] [CLOSE 20:23:46]
+[20:28:56] [CLOSE 20:28:56]
+[20:34:15] [CLOSE 20:34:15]
+[20:34:22] [账号状态] 8890145315 STOCK: 未知(2)
+[20:34:22] [账号状态] 8890145315 STOCK: 初始化中
+[20:34:22] [账号状态] 8890145315 STOCK: 正常
+[20:37:45] [账号状态] 8890145315 STOCK: 等待登录
+[20:37:48] [账号状态] 8890145315 STOCK: 未知(2)
+[20:37:48] [账号状态] 8890145315 STOCK: 初始化中
+[20:37:48] [账号状态] 8890145315 STOCK: 正常
+[20:39:16] [CLOSE 20:39:16]
+[20:41:15] [账号状态] 8890145315 STOCK: 等待登录
+[20:41:18] [账号状态] 8890145315 STOCK: 未知(2)
+[20:41:18] [账号状态] 8890145315 STOCK: 初始化中
+[20:41:19] [账号状态] 8890145315 STOCK: 正常
+[20:44:46] [CLOSE 20:44:46]
+[20:44:48] [账号状态] 8890145315 STOCK: 等待登录
+[20:44:54] [账号状态] 8890145315 STOCK: 正常
+[20:48:16] [账号状态] 8890145315 STOCK: 等待登录
+[20:48:19] [账号状态] 8890145315 STOCK: 正常
+[20:49:55] [CLOSE 20:49:55]
+[20:51:43] [账号状态] 8890145315 STOCK: 等待登录
+[20:51:47] [账号状态] 8890145315 STOCK: 正常
+[20:55:18] [CLOSE 20:55:18]
+[20:55:19] [账号状态] 8890145315 STOCK: 等待登录
+[20:55:23] [账号状态] 8890145315 STOCK: 正常
+[20:58:50] [账号状态] 8890145315 STOCK: 等待登录
+[20:58:53] [账号状态] 8890145315 STOCK: 正常
+[21:00:19] [CLOSE 21:00:19]
+[21:02:20] [账号状态] 8890145315 STOCK: 等待登录
+[21:02:23] [账号状态] 8890145315 STOCK: 正常
+[21:05:47] [CLOSE 21:05:47]
+[21:05:49] [账号状态] 8890145315 STOCK: 等待登录
+[21:05:53] [账号状态] 8890145315 STOCK: 正常
+[21:09:18] [账号状态] 8890145315 STOCK: 等待登录
+[21:09:22] [账号状态] 8890145315 STOCK: 正常
+[21:10:50] [CLOSE 21:10:50]
+[21:12:50] [账号状态] 8890145315 STOCK: 等待登录
+[21:12:53] [账号状态] 8890145315 STOCK: 正常
+[21:16:21] [CLOSE 21:16:21]
+[21:16:23] [账号状态] 8890145315 STOCK: 等待登录
+[21:16:26] [账号状态] 8890145315 STOCK: 正常
+[21:19:53] [账号状态] 8890145315 STOCK: 等待登录
+[21:19:56] [账号状态] 8890145315 STOCK: 正常
+[21:21:31] [CLOSE 21:21:31]
+[21:23:22] [账号状态] 8890145315 STOCK: 等待登录
+[21:23:25] [账号状态] 8890145315 STOCK: 正常
+[21:26:51] [账号状态] 8890145315 STOCK: 等待登录
+[21:26:52] [CLOSE 21:26:52]
+[21:26:54] [账号状态] 8890145315 STOCK: 正常
+[21:30:25] [账号状态] 8890145315 STOCK: 等待登录
+[21:30:28] [账号状态] 8890145315 STOCK: 正常
+[21:31:54] [CLOSE 21:31:54]
+[21:33:59] [账号状态] 8890145315 STOCK: 等待登录
+[21:34:09] [账号状态] 8890145315 STOCK: 正常
+[21:37:23] [CLOSE 21:37:23]
+[21:37:28] [账号状态] 8890145315 STOCK: 等待登录
+[21:37:31] [账号状态] 8890145315 STOCK: 正常
+[21:40:56] [账号状态] 8890145315 STOCK: 等待登录
+[21:41:00] [账号状态] 8890145315 STOCK: 正常
+[21:42:32] [CLOSE 21:42:32]
+[21:44:27] [账号状态] 8890145315 STOCK: 等待登录
+[21:44:31] [账号状态] 8890145315 STOCK: 正常
+[21:47:56] [CLOSE 21:47:56]
+[21:47:57] [账号状态] 8890145315 STOCK: 等待登录
+[21:48:00] [账号状态] 8890145315 STOCK: 正常
+[21:51:30] [账号状态] 8890145315 STOCK: 等待登录
+[21:51:33] [账号状态] 8890145315 STOCK: 正常
+[21:52:57] [CLOSE 21:52:57]
+[21:55:00] [账号状态] 8890145315 STOCK: 等待登录
+[21:55:04] [账号状态] 8890145315 STOCK: 正常
+[21:58:29] [账号状态] 8890145315 STOCK: 等待登录
+[21:58:32] [账号状态] 8890145315 STOCK: 正常
+[21:58:34] [CLOSE 21:58:34]
+[22:01:58] [账号状态] 8890145315 STOCK: 等待登录
+[22:02:01] [账号状态] 8890145315 STOCK: 正常
+[22:03:37] [CLOSE 22:03:37]
+[22:05:29] [账号状态] 8890145315 STOCK: 等待登录
+[22:05:32] [账号状态] 8890145315 STOCK: 正常
+[22:08:57] [CLOSE 22:08:57]
+[22:09:01] [账号状态] 8890145315 STOCK: 等待登录
+[22:09:04] [账号状态] 8890145315 STOCK: 正常
+[22:12:34] [账号状态] 8890145315 STOCK: 等待登录
+[22:12:39] [账号状态] 8890145315 STOCK: 正常
+[22:14:07] [CLOSE 22:14:07]
+[22:16:02] [账号状态] 8890145315 STOCK: 等待登录
+[22:16:05] [账号状态] 8890145315 STOCK: 正常
+[22:19:28] [CLOSE 22:19:28]
+[22:19:30] [账号状态] 8890145315 STOCK: 等待登录
+[22:19:33] [账号状态] 8890145315 STOCK: 正常
+[22:23:04] [账号状态] 8890145315 STOCK: 等待登录
+[22:23:07] [账号状态] 8890145315 STOCK: 正常
+[22:24:29] [CLOSE 22:24:29]
+[22:26:33] [账号状态] 8890145315 STOCK: 等待登录
+[22:26:36] [账号状态] 8890145315 STOCK: 正常
+[22:30:03] [账号状态] 8890145315 STOCK: 等待登录
+[22:30:06] [账号状态] 8890145315 STOCK: 正常
+[22:30:07] [CLOSE 22:30:07]
+[22:33:30] [账号状态] 8890145315 STOCK: 等待登录
+[22:33:34] [账号状态] 8890145315 STOCK: 正常
+[22:35:07] [CLOSE 22:35:07]
+[22:37:02] [账号状态] 8890145315 STOCK: 等待登录
+[22:37:05] [账号状态] 8890145315 STOCK: 正常
+[22:40:33] [账号状态] 8890145315 STOCK: 等待登录
+[22:40:37] [账号状态] 8890145315 STOCK: 正常
+[22:40:39] [CLOSE 22:40:39]
+[22:44:04] [账号状态] 8890145315 STOCK: 等待登录
+[22:44:07] [账号状态] 8890145315 STOCK: 正常
+[22:45:47] [CLOSE 22:45:47]
+[22:47:34] [账号状态] 8890145315 STOCK: 等待登录
+[22:47:38] [账号状态] 8890145315 STOCK: 正常
+[22:50:59] [CLOSE 22:50:59]
+[22:51:03] [账号状态] 8890145315 STOCK: 等待登录
+[22:51:06] [账号状态] 8890145315 STOCK: 正常
+[22:54:36] [账号状态] 8890145315 STOCK: 等待登录
+[22:54:46] [账号状态] 8890145315 STOCK: 正常
+[22:56:00] [CLOSE 22:56:00]
+[22:58:08] [账号状态] 8890145315 STOCK: 等待登录
+[22:58:12] [账号状态] 8890145315 STOCK: 正常
+[23:01:38] [账号状态] 8890145315 STOCK: 等待登录
+[23:01:40] [CLOSE 23:01:40]
+[23:01:41] [账号状态] 8890145315 STOCK: 正常
+[23:05:07] [账号状态] 8890145315 STOCK: 等待登录
+[23:05:10] [账号状态] 8890145315 STOCK: 正常
+[23:06:47] [CLOSE 23:06:47]
+[23:08:35] [账号状态] 8890145315 STOCK: 等待登录
+[23:08:38] [账号状态] 8890145315 STOCK: 正常
+[23:12:08] [账号状态] 8890145315 STOCK: 等待登录
+[23:12:11] [账号状态] 8890145315 STOCK: 正常
+[23:12:12] [CLOSE 23:12:12]
+[23:15:41] [账号状态] 8890145315 STOCK: 等待登录
+[23:15:48] [账号状态] 8890145315 STOCK: 正常
+[23:17:21] [CLOSE 23:17:21]
+[23:19:09] [账号状态] 8890145315 STOCK: 等待登录
+[23:19:12] [账号状态] 8890145315 STOCK: 正常
+[23:22:39] [账号状态] 8890145315 STOCK: 等待登录
+[23:22:39] [CLOSE 23:22:39]
+[23:22:42] [账号状态] 8890145315 STOCK: 正常
+[23:26:07] [账号状态] 8890145315 STOCK: 等待登录
+[23:26:10] [账号状态] 8890145315 STOCK: 正常
+[23:27:41] [CLOSE 23:27:41]
+[23:29:38] [账号状态] 8890145315 STOCK: 等待登录
+[23:29:41] [账号状态] 8890145315 STOCK: 正常
+[23:33:09] [账号状态] 8890145315 STOCK: 等待登录
+[23:33:11] [CLOSE 23:33:11]
+[23:33:13] [账号状态] 8890145315 STOCK: 正常
+[23:36:41] [账号状态] 8890145315 STOCK: 等待登录
+[23:36:44] [账号状态] 8890145315 STOCK: 正常
+[23:38:21] [CLOSE 23:38:21]
+[23:40:09] [账号状态] 8890145315 STOCK: 等待登录
+[23:40:13] [账号状态] 8890145315 STOCK: 正常
+[23:43:42] [账号状态] 8890145315 STOCK: 等待登录
+[23:43:44] [CLOSE 23:43:44]
+[23:43:45] [账号状态] 8890145315 STOCK: 正常
+[23:47:15] [账号状态] 8890145315 STOCK: 等待登录
+[23:47:18] [账号状态] 8890145315 STOCK: 正常
+[23:48:45] [CLOSE 23:48:45]
+[23:50:43] [账号状态] 8890145315 STOCK: 等待登录
+[23:50:47] [账号状态] 8890145315 STOCK: 正常
+[23:54:12] [CLOSE 23:54:12]
+[23:54:14] [账号状态] 8890145315 STOCK: 等待登录
+[23:54:17] [账号状态] 8890145315 STOCK: 正常
+[23:57:44] [账号状态] 8890145315 STOCK: 等待登录
+[23:57:48] [账号状态] 8890145315 STOCK: 正常
+[23:59:14] [CLOSE 23:59:14]
+[00:00:04] [DATA-DBG] hist_open[-3:]= [270.515, 266.705, 269.705] | tick_open=393 | lastClose=394.5
+[00:00:04] [VOLUME-DATA] count=80 tail=[89009, 141474, 157140]
+[00:00:04] [SIGNAL] BEAR | Open Y393.00 | ATR 11.2% | RSI 35 | Vol_ratio 1.01 | Mult 0.20 | Trig Y398.26 
+[00:00:04] [VOLUME] last 157140 / prev20_avg 155252 | n=20 | VALID
+[00:00:04] [FACTOR] trend -0.15 |  volatility -0.17 |  volume +0.00 |  RSI +0.10 | 
+[00:00:04] [ACCOUNT] Position:200 sh Y77,604(74%) | Cash:Y27,255 | T+0:2 lots(200 sh)
+[00:00:04] [REV-T] ENABLED 2 lots trig Y398.26 buyback=sell×(1-ATR%×0.15) emerg +3% / emergTrigFalse
+[00:00:04] [FWD-T] ENABLED 0 lots buy Y381.21 sell Y385.78(+1.2%) 1 lot≈Y38,802
+[00:00:04] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[00:00:04] [MOM-v34] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.35~0.60% ATR×0.50
+[00:01:15] [账号状态] 8890145315 STOCK: 等待登录
+[00:01:20] [账号状态] 8890145315 STOCK: 正常
+[00:04:45] [账号状态] 8890145315 STOCK: 等待登录
+[00:04:46] [WAIT 00:04:46] to open 9时25分
+[00:04:48] [账号状态] 8890145315 STOCK: 正常
+[00:08:16] [账号状态] 8890145315 STOCK: 等待登录
+[00:08:20] [账号状态] 8890145315 STOCK: 正常
+[00:09:55] [WAIT 00:09:55] to open 9时20分
+[00:11:49] [账号状态] 8890145315 STOCK: 等待登录
+[00:12:19] [账号状态] 8890145315 STOCK: 正常
+[00:15:15] [账号状态] 8890145315 STOCK: 等待登录
+[00:15:16] [WAIT 00:15:16] to open 9时14分
+[00:15:18] [账号状态] 8890145315 STOCK: 正常
+[00:18:48] [账号状态] 8890145315 STOCK: 等待登录
+[00:18:51] [账号状态] 8890145315 STOCK: 正常
+[00:20:17] [WAIT 00:20:17] to open 9时9分
+[00:22:20] [账号状态] 8890145315 STOCK: 等待登录
+[00:22:23] [账号状态] 8890145315 STOCK: 正常
+[00:25:47] [WAIT 00:25:47] to open 9时4分
+[00:25:50] [账号状态] 8890145315 STOCK: 等待登录
+[00:25:54] [账号状态] 8890145315 STOCK: 正常
+[00:29:18] [账号状态] 8890145315 STOCK: 等待登录
+[00:29:22] [账号状态] 8890145315 STOCK: 正常
+[00:30:55] [WAIT 00:30:55] to open 8时59分
+[00:32:47] [账号状态] 8890145315 STOCK: 等待登录
+[00:32:50] [账号状态] 8890145315 STOCK: 正常
+[00:36:18] [WAIT 00:36:18] to open 8时53分
+[00:36:19] [账号状态] 8890145315 STOCK: 等待登录
+[00:36:22] [账号状态] 8890145315 STOCK: 正常
+[00:39:51] [账号状态] 8890145315 STOCK: 等待登录
+[00:39:54] [账号状态] 8890145315 STOCK: 正常
+[00:41:18] [WAIT 00:41:18] to open 8时48分
+[00:43:21] [账号状态] 8890145315 STOCK: 等待登录
+[00:43:24] [账号状态] 8890145315 STOCK: 正常
+[00:46:49] [WAIT 00:46:49] to open 8时43分
+[00:46:54] [账号状态] 8890145315 STOCK: 等待登录
+[00:46:57] [账号状态] 8890145315 STOCK: 正常
+[00:50:21] [账号状态] 8890145315 STOCK: 等待登录
+[00:50:24] [账号状态] 8890145315 STOCK: 正常
+[00:51:50] [WAIT 00:51:50] to open 8时38分
+[00:53:53] [账号状态] 8890145315 STOCK: 等待登录
+[00:53:56] [账号状态] 8890145315 STOCK: 正常
+[00:57:21] [WAIT 00:57:21] to open 8时32分
+[00:57:24] [账号状态] 8890145315 STOCK: 等待登录
+[00:57:28] [账号状态] 8890145315 STOCK: 正常
+[01:00:54] [账号状态] 8890145315 STOCK: 等待登录
+[01:01:00] [账号状态] 8890145315 STOCK: 正常
+[01:02:30] [WAIT 01:02:30] to open 8时27分
+[01:04:24] [账号状态] 8890145315 STOCK: 等待登录
+[01:04:27] [账号状态] 8890145315 STOCK: 正常
+[01:07:52] [WAIT 01:07:52] to open 8时22分
+[01:07:53] [账号状态] 8890145315 STOCK: 等待登录
+[01:07:56] [账号状态] 8890145315 STOCK: 正常
+[01:11:26] [账号状态] 8890145315 STOCK: 等待登录
+[01:11:33] [账号状态] 8890145315 STOCK: 正常
+[01:12:52] [WAIT 01:12:52] to open 8时17分
+[01:15:03] [账号状态] 8890145315 STOCK: 等待登录
+[01:15:06] [账号状态] 8890145315 STOCK: 正常
+[01:18:30] [账号状态] 8890145315 STOCK: 等待登录
+[01:18:31] [WAIT 01:18:31] to open 8时11分
+[01:18:37] [账号状态] 8890145315 STOCK: 正常
+[01:22:00] [账号状态] 8890145315 STOCK: 等待登录
+[01:22:04] [账号状态] 8890145315 STOCK: 正常
+[01:23:38] [WAIT 01:23:38] to open 8时6分
+[01:25:25] [账号状态] 8890145315 STOCK: 等待登录
+[01:25:29] [账号状态] 8890145315 STOCK: 正常
+[01:28:52] [WAIT 01:28:52] to open 8时1分
+[01:28:56] [账号状态] 8890145315 STOCK: 等待登录
+[01:28:59] [账号状态] 8890145315 STOCK: 正常
+[01:32:28] [账号状态] 8890145315 STOCK: 等待登录
+[01:32:32] [账号状态] 8890145315 STOCK: 正常
+[01:34:02] [WAIT 01:34:02] to open 7时55分
+[01:36:02] [账号状态] 8890145315 STOCK: 等待登录
+[01:36:05] [账号状态] 8890145315 STOCK: 正常
+[01:39:25] [WAIT 01:39:25] to open 7时50分
+[01:39:28] [账号状态] 8890145315 STOCK: 等待登录
+[01:39:31] [账号状态] 8890145315 STOCK: 正常
+[01:43:00] [账号状态] 8890145315 STOCK: 等待登录
+[01:43:03] [账号状态] 8890145315 STOCK: 正常
+[01:44:25] [WAIT 01:44:25] to open 7时45分
+[01:46:32] [账号状态] 8890145315 STOCK: 等待登录
+[01:46:35] [账号状态] 8890145315 STOCK: 正常
+[01:50:04] [账号状态] 8890145315 STOCK: 等待登录
+[01:50:06] [WAIT 01:50:06] to open 7时39分
+[01:50:08] [账号状态] 8890145315 STOCK: 正常
+[01:53:35] [账号状态] 8890145315 STOCK: 等待登录
+[01:53:38] [账号状态] 8890145315 STOCK: 正常
+[01:55:09] [WAIT 01:55:09] to open 7时34分
+[01:57:06] [账号状态] 8890145315 STOCK: 等待登录
+[01:57:09] [账号状态] 8890145315 STOCK: 正常
+[02:00:40] [账号状态] 8890145315 STOCK: 等待登录
+[02:00:41] [WAIT 02:00:41] to open 7时29分
+[02:00:44] [账号状态] 8890145315 STOCK: 正常
+[02:04:08] [账号状态] 8890145315 STOCK: 等待登录
+[02:04:11] [账号状态] 8890145315 STOCK: 正常
+[02:05:51] [WAIT 02:05:51] to open 7时24分
+[02:07:37] [账号状态] 8890145315 STOCK: 等待登录
+[02:07:40] [账号状态] 8890145315 STOCK: 正常
+[02:11:01] [WAIT 02:11:01] to open 7时18分
+[02:11:07] [账号状态] 8890145315 STOCK: 等待登录
+[02:11:10] [账号状态] 8890145315 STOCK: 正常
+[02:14:39] [账号状态] 8890145315 STOCK: 等待登录
+[02:14:42] [账号状态] 8890145315 STOCK: 正常
+[02:16:03] [WAIT 02:16:03] to open 7时13分
+[02:18:10] [账号状态] 8890145315 STOCK: 等待登录
+[02:18:13] [账号状态] 8890145315 STOCK: 正常
+[02:21:43] [WAIT 02:21:43] to open 7时8分
+[02:21:43] [账号状态] 8890145315 STOCK: 等待登录
+[02:21:47] [账号状态] 8890145315 STOCK: 正常
+[02:25:12] [账号状态] 8890145315 STOCK: 等待登录
+[02:25:15] [账号状态] 8890145315 STOCK: 正常
+[02:26:53] [WAIT 02:26:53] to open 7时3分
+[02:28:42] [账号状态] 8890145315 STOCK: 等待登录
+[02:28:49] [账号状态] 8890145315 STOCK: 正常
+[02:32:10] [账号状态] 8890145315 STOCK: 等待登录
+[02:32:14] [账号状态] 8890145315 STOCK: 正常
+[02:32:14] [WAIT 02:32:14] to open 6时57分
+[02:35:43] [账号状态] 8890145315 STOCK: 等待登录
+[02:35:47] [账号状态] 8890145315 STOCK: 正常
+[02:37:15] [WAIT 02:37:15] to open 6时52分
+[02:39:13] [账号状态] 8890145315 STOCK: 等待登录
+[02:39:16] [账号状态] 8890145315 STOCK: 正常
+[02:42:44] [WAIT 02:42:44] to open 6时47分
+[02:42:44] [账号状态] 8890145315 STOCK: 等待登录
+[02:42:47] [账号状态] 8890145315 STOCK: 正常
+[02:46:13] [账号状态] 8890145315 STOCK: 等待登录
+[02:46:17] [账号状态] 8890145315 STOCK: 正常
+[02:47:47] [WAIT 02:47:47] to open 6时42分
+[02:49:46] [账号状态] 8890145315 STOCK: 等待登录
+[02:49:49] [账号状态] 8890145315 STOCK: 正常
+[02:53:17] [WAIT 02:53:17] to open 6时36分
+[02:53:17] [账号状态] 8890145315 STOCK: 等待登录
+[02:53:21] [账号状态] 8890145315 STOCK: 正常
+[02:56:47] [账号状态] 8890145315 STOCK: 等待登录
+[02:56:51] [账号状态] 8890145315 STOCK: 正常
+[02:58:27] [WAIT 02:58:27] to open 6时31分
+[03:00:16] [账号状态] 8890145315 STOCK: 等待登录
+[03:00:20] [账号状态] 8890145315 STOCK: 正常
+[03:03:46] [账号状态] 8890145315 STOCK: 等待登录
+[03:03:48] [WAIT 03:03:48] to open 6时26分
+[03:03:49] [账号状态] 8890145315 STOCK: 正常
+[03:07:17] [账号状态] 8890145315 STOCK: 等待登录
+[03:07:25] [账号状态] 8890145315 STOCK: 正常
+[03:08:49] [WAIT 03:08:49] to open 6时21分
+[03:10:53] [账号状态] 8890145315 STOCK: 等待登录
+[03:10:56] [账号状态] 8890145315 STOCK: 正常
+[03:14:19] [WAIT 03:14:19] to open 6时15分
+[03:14:21] [账号状态] 8890145315 STOCK: 等待登录
+[03:14:25] [账号状态] 8890145315 STOCK: 正常
+[03:17:52] [账号状态] 8890145315 STOCK: 等待登录
+[03:17:55] [账号状态] 8890145315 STOCK: 正常
+[03:19:29] [WAIT 03:19:29] to open 6时10分
+[03:21:23] [账号状态] 8890145315 STOCK: 等待登录
+[03:21:26] [账号状态] 8890145315 STOCK: 正常
+[03:24:49] [账号状态] 8890145315 STOCK: 等待登录
+[03:24:49] [WAIT 03:24:49] to open 6时5分
+[03:24:52] [账号状态] 8890145315 STOCK: 正常
+[03:28:22] [账号状态] 8890145315 STOCK: 等待登录
+[03:28:25] [账号状态] 8890145315 STOCK: 正常
+[03:29:50] [WAIT 03:29:50] to open 6时0分
+[03:31:52] [账号状态] 8890145315 STOCK: 等待登录
+[03:31:55] [账号状态] 8890145315 STOCK: 正常
+[03:35:19] [WAIT 03:35:19] to open 5时54分
+[03:35:23] [账号状态] 8890145315 STOCK: 等待登录
+[03:35:26] [账号状态] 8890145315 STOCK: 正常
+[03:38:51] [账号状态] 8890145315 STOCK: 等待登录
+[03:38:54] [账号状态] 8890145315 STOCK: 正常
+[03:40:21] [WAIT 03:40:21] to open 5时49分
+[03:42:23] [账号状态] 8890145315 STOCK: 等待登录
+[03:42:26] [账号状态] 8890145315 STOCK: 正常
+[03:45:51] [WAIT 03:45:51] to open 5时44分
+[03:45:54] [账号状态] 8890145315 STOCK: 等待登录
+[03:45:57] [账号状态] 8890145315 STOCK: 正常
+[03:49:26] [账号状态] 8890145315 STOCK: 等待登录
+[03:49:29] [账号状态] 8890145315 STOCK: 正常
+[03:50:59] [WAIT 03:50:59] to open 5时39分
+[03:52:56] [账号状态] 8890145315 STOCK: 等待登录
+[03:53:07] [账号状态] 8890145315 STOCK: 正常
+[03:56:23] [WAIT 03:56:23] to open 5时33分
+[03:56:25] [账号状态] 8890145315 STOCK: 等待登录
+[03:56:29] [账号状态] 8890145315 STOCK: 正常
+[03:59:55] [账号状态] 8890145315 STOCK: 等待登录
+[03:59:59] [账号状态] 8890145315 STOCK: 正常
+[04:01:33] [WAIT 04:01:33] to open 5时28分
+[04:03:29] [账号状态] 8890145315 STOCK: 等待登录
+[04:03:32] [账号状态] 8890145315 STOCK: 正常
+[04:06:54] [WAIT 04:06:54] to open 5时23分
+[04:06:56] [账号状态] 8890145315 STOCK: 等待登录
+[04:06:59] [账号状态] 8890145315 STOCK: 正常
+[04:10:30] [账号状态] 8890145315 STOCK: 等待登录
+[04:10:33] [账号状态] 8890145315 STOCK: 正常
+[04:11:54] [WAIT 04:11:54] to open 5时18分
+[04:13:59] [账号状态] 8890145315 STOCK: 等待登录
+[04:14:02] [账号状态] 8890145315 STOCK: 正常
+[04:17:30] [账号状态] 8890145315 STOCK: 等待登录
+[04:17:34] [账号状态] 8890145315 STOCK: 正常
+[04:17:35] [WAIT 04:17:35] to open 5时12分
+[04:21:00] [账号状态] 8890145315 STOCK: 等待登录
+[04:21:03] [账号状态] 8890145315 STOCK: 正常
+[04:22:37] [WAIT 04:22:37] to open 5时7分
+[04:24:33] [账号状态] 8890145315 STOCK: 等待登录
+[04:24:36] [账号状态] 8890145315 STOCK: 正常
+[04:28:00] [WAIT 04:28:00] to open 5时2分
+[04:28:05] [账号状态] 8890145315 STOCK: 等待登录
+[04:28:08] [账号状态] 8890145315 STOCK: 正常
+[04:31:35] [账号状态] 8890145315 STOCK: 等待登录
+[04:31:38] [账号状态] 8890145315 STOCK: 正常
+[04:33:09] [WAIT 04:33:09] to open 4时56分
+[04:35:09] [账号状态] 8890145315 STOCK: 等待登录
+[04:35:12] [账号状态] 8890145315 STOCK: 正常
+[04:38:29] [WAIT 04:38:29] to open 4时51分
+[04:38:31] [账号状态] 8890145315 STOCK: 等待登录
+[04:38:35] [账号状态] 8890145315 STOCK: 正常
+[04:42:05] [账号状态] 8890145315 STOCK: 等待登录
+[04:42:09] [账号状态] 8890145315 STOCK: 正常
+[04:43:30] [WAIT 04:43:30] to open 4时46分
+[04:45:36] [账号状态] 8890145315 STOCK: 等待登录
+[04:45:39] [账号状态] 8890145315 STOCK: 正常
+[04:49:05] [账号状态] 8890145315 STOCK: 等待登录
+[04:49:08] [WAIT 04:49:08] to open 4时40分
+[04:49:09] [账号状态] 8890145315 STOCK: 正常
+[04:52:41] [账号状态] 8890145315 STOCK: 等待登录
+[04:52:45] [账号状态] 8890145315 STOCK: 正常
+[04:54:17] [WAIT 04:54:17] to open 4时35分
+[04:56:03] [账号状态] 8890145315 STOCK: 等待登录
+[04:56:07] [账号状态] 8890145315 STOCK: 正常
+[04:59:37] [账号状态] 8890145315 STOCK: 等待登录
+[04:59:40] [账号状态] 8890145315 STOCK: 正常
+[04:59:41] [WAIT 04:59:41] to open 4时30分
+[05:03:08] [账号状态] 8890145315 STOCK: 等待登录
+[05:03:14] [账号状态] 8890145315 STOCK: 正常
+[05:04:42] [WAIT 05:04:42] to open 4时25分
+[05:06:38] [账号状态] 8890145315 STOCK: 等待登录
+[05:06:41] [账号状态] 8890145315 STOCK: 正常
+[05:10:09] [WAIT 05:10:09] to open 4时19分
+[05:10:11] [账号状态] 8890145315 STOCK: 等待登录
+[05:10:14] [账号状态] 8890145315 STOCK: 正常
+[05:13:39] [账号状态] 8890145315 STOCK: 等待登录
+[05:14:09] [账号状态] 8890145315 STOCK: 正常
+[05:15:11] [WAIT 05:15:11] to open 4时14分
+[05:17:09] [账号状态] 8890145315 STOCK: 等待登录
+[05:17:13] [账号状态] 8890145315 STOCK: 正常
+[05:20:41] [账号状态] 8890145315 STOCK: 等待登录
+[05:20:43] [WAIT 05:20:43] to open 4时9分
+[05:20:44] [账号状态] 8890145315 STOCK: 正常
+[05:24:11] [账号状态] 8890145315 STOCK: 等待登录
+[05:24:14] [账号状态] 8890145315 STOCK: 正常
+[05:25:52] [WAIT 05:25:52] to open 4时4分
+[05:27:43] [账号状态] 8890145315 STOCK: 等待登录
+[05:27:46] [账号状态] 8890145315 STOCK: 正常
+[05:31:09] [账号状态] 8890145315 STOCK: 等待登录
+[05:31:12] [账号状态] 8890145315 STOCK: 正常
+[05:31:13] [WAIT 05:31:13] to open 3时58分
+[05:34:41] [账号状态] 8890145315 STOCK: 等待登录
+[05:34:45] [账号状态] 8890145315 STOCK: 正常
+[05:36:14] [WAIT 05:36:14] to open 3时53分
+[05:38:13] [账号状态] 8890145315 STOCK: 等待登录
+[05:38:16] [账号状态] 8890145315 STOCK: 正常
+[05:41:43] [账号状态] 8890145315 STOCK: 等待登录
+[05:41:44] [WAIT 05:41:44] to open 3时48分
+[05:41:46] [账号状态] 8890145315 STOCK: 正常
+[05:45:15] [账号状态] 8890145315 STOCK: 等待登录
+[05:45:19] [账号状态] 8890145315 STOCK: 正常
+[05:46:52] [WAIT 05:46:52] to open 3时43分
+[05:48:41] [账号状态] 8890145315 STOCK: 等待登录
+[05:48:44] [账号状态] 8890145315 STOCK: 正常
+[05:52:15] [WAIT 05:52:15] to open 3时37分
+[05:52:27] [账号状态] 8890145315 STOCK: 等待登录
+[05:52:51] [账号状态] 8890145315 STOCK: 正常
+[05:55:46] [账号状态] 8890145315 STOCK: 等待登录
+[05:55:49] [账号状态] 8890145315 STOCK: 正常
+[05:57:16] [WAIT 05:57:16] to open 3时32分
+[05:59:16] [账号状态] 8890145315 STOCK: 等待登录
+[05:59:19] [账号状态] 8890145315 STOCK: 正常
+[06:02:43] [WAIT 06:02:43] to open 3时27分
+[06:03:06] [账号状态] 8890145315 STOCK: 等待登录
+[06:03:11] [账号状态] 8890145315 STOCK: 正常
+[06:06:14] [账号状态] 8890145315 STOCK: 等待登录
+[06:06:17] [账号状态] 8890145315 STOCK: 正常
+[06:07:46] [WAIT 06:07:46] to open 3时22分
+[06:09:49] [账号状态] 8890145315 STOCK: 等待登录
+[06:09:52] [账号状态] 8890145315 STOCK: 正常
+[06:13:18] [WAIT 06:13:18] to open 3时16分
+[06:13:19] [账号状态] 8890145315 STOCK: 等待登录
+[06:13:22] [账号状态] 8890145315 STOCK: 正常
+[06:16:50] [账号状态] 8890145315 STOCK: 等待登录
+[06:16:53] [账号状态] 8890145315 STOCK: 正常
+[06:18:26] [WAIT 06:18:26] to open 3时11分
+[06:20:19] [账号状态] 8890145315 STOCK: 等待登录
+[06:20:22] [账号状态] 8890145315 STOCK: 正常
+[06:23:50] [账号状态] 8890145315 STOCK: 等待登录
+[06:23:50] [WAIT 06:23:50] to open 3时6分
+[06:23:53] [账号状态] 8890145315 STOCK: 正常
+[06:27:21] [账号状态] 8890145315 STOCK: 等待登录
+[06:27:25] [账号状态] 8890145315 STOCK: 正常
+[06:29:00] [WAIT 06:29:00] to open 3时1分
+[06:31:01] [账号状态] 8890145315 STOCK: 等待登录
+[06:31:05] [账号状态] 8890145315 STOCK: 正常
+[06:34:18] [WAIT 06:34:18] to open 2时55分
+[06:34:21] [账号状态] 8890145315 STOCK: 等待登录
+[06:34:25] [账号状态] 8890145315 STOCK: 正常
+[06:37:50] [账号状态] 8890145315 STOCK: 等待登录
+[06:37:53] [账号状态] 8890145315 STOCK: 正常
+[06:39:19] [WAIT 06:39:19] to open 2时50分
+[06:41:21] [账号状态] 8890145315 STOCK: 等待登录
+[06:41:25] [账号状态] 8890145315 STOCK: 正常
+[06:44:52] [WAIT 06:44:52] to open 2时45分
+[06:44:54] [账号状态] 8890145315 STOCK: 等待登录
+[06:44:58] [账号状态] 8890145315 STOCK: 正常
+[06:48:26] [账号状态] 8890145315 STOCK: 等待登录
+[06:48:30] [账号状态] 8890145315 STOCK: 正常
+[06:50:00] [WAIT 06:50:00] to open 2时40分
+[06:51:54] [账号状态] 8890145315 STOCK: 等待登录
+[06:51:57] [账号状态] 8890145315 STOCK: 正常
+[06:55:25] [WAIT 06:55:25] to open 2时34分
+[06:55:29] [账号状态] 8890145315 STOCK: 等待登录
+[06:55:59] [账号状态] 8890145315 STOCK: 正常
+[06:59:00] [账号状态] 8890145315 STOCK: 等待登录
+[06:59:06] [账号状态] 8890145315 STOCK: 正常
+[07:00:27] [WAIT 07:00:27] to open 2时29分
+[07:02:34] [账号状态] 8890145315 STOCK: 等待登录
+[07:02:39] [账号状态] 8890145315 STOCK: 正常
+[07:05:57] [WAIT 07:05:57] to open 2时24分
+[07:06:02] [账号状态] 8890145315 STOCK: 等待登录
+[07:06:06] [账号状态] 8890145315 STOCK: 正常
+[07:09:30] [账号状态] 8890145315 STOCK: 等待登录
+[07:09:33] [账号状态] 8890145315 STOCK: 正常
+[07:11:05] [WAIT 07:11:05] to open 2时18分
+[07:12:58] [账号状态] 8890145315 STOCK: 等待登录
+[07:13:02] [账号状态] 8890145315 STOCK: 正常
+[07:16:28] [WAIT 07:16:28] to open 2时13分
+[07:16:30] [账号状态] 8890145315 STOCK: 等待登录
+[07:16:34] [账号状态] 8890145315 STOCK: 正常
+[07:20:07] [账号状态] 8890145315 STOCK: 等待登录
+[07:20:11] [账号状态] 8890145315 STOCK: 正常
+[07:21:29] [WAIT 07:21:29] to open 2时8分
+[07:23:34] [账号状态] 8890145315 STOCK: 等待登录
+[07:23:37] [账号状态] 8890145315 STOCK: 正常
+[07:27:02] [账号状态] 8890145315 STOCK: 等待登录
+[07:27:06] [账号状态] 8890145315 STOCK: 正常
+[07:27:07] [WAIT 07:27:07] to open 2时2分
+[07:30:33] [账号状态] 8890145315 STOCK: 等待登录
+[07:30:37] [账号状态] 8890145315 STOCK: 正常
+[07:32:09] [WAIT 07:32:09] to open 1时57分
+[07:34:28] [账号状态] 8890145315 STOCK: 等待登录
+[07:34:32] [账号状态] 8890145315 STOCK: 正常
+[07:37:34] [账号状态] 8890145315 STOCK: 等待登录
+[07:37:38] [账号状态] 8890145315 STOCK: 正常
+[07:37:39] [WAIT 07:37:39] to open 1时52分
+[07:41:05] [账号状态] 8890145315 STOCK: 等待登录
+[07:41:08] [账号状态] 8890145315 STOCK: 正常
+[07:42:47] [WAIT 07:42:47] to open 1时47分
+[07:44:32] [账号状态] 8890145315 STOCK: 等待登录
+[07:44:35] [账号状态] 8890145315 STOCK: 正常
+[07:48:01] [WAIT 07:48:01] to open 1时41分
+[07:48:05] [账号状态] 8890145315 STOCK: 等待登录
+[07:48:09] [账号状态] 8890145315 STOCK: 正常
+[07:51:37] [账号状态] 8890145315 STOCK: 等待登录
+[07:51:41] [账号状态] 8890145315 STOCK: 正常
+[07:53:03] [WAIT 07:53:03] to open 1时36分
+[07:55:09] [账号状态] 8890145315 STOCK: 等待登录
+[07:55:12] [账号状态] 8890145315 STOCK: 正常
+[07:58:39] [账号状态] 8890145315 STOCK: 等待登录
+[07:58:40] [WAIT 07:58:40] to open 1时31分
+[07:58:42] [账号状态] 8890145315 STOCK: 正常
+[08:00:14] [账号状态] 8890145315 STOCK: 等待登录
+[08:03:43] [WAIT 08:03:43] to open 1时26分
+[08:09:15] [WAIT 08:09:15] to open 1时20分
+[08:14:24] [WAIT 08:14:24] to open 1时15分
+[08:19:35] [WAIT 08:19:35] to open 1时10分
+[08:24:37] [WAIT 08:24:37] to open 1时5分
+[08:28:05] [账号状态] 8890145315 STOCK: 未知(2)
+[08:28:05] [账号状态] 8890145315 STOCK: 初始化中
+[08:28:05] [账号状态] 8890145315 STOCK: 正常
+[08:30:15] [WAIT 08:30:15] to open 59分45秒
+[08:30:17] [账号状态] 8890145315 STOCK: 等待登录
+[08:30:47] [账号状态] 8890145315 STOCK: 未知(2)
+[08:30:47] [账号状态] 8890145315 STOCK: 初始化中
+[08:30:47] [账号状态] 8890145315 STOCK: 正常
+[08:33:44] [账号状态] 8890145315 STOCK: 等待登录
+[08:33:47] [账号状态] 8890145315 STOCK: 正常
+[08:35:24] [WAIT 08:35:24] to open 54分36秒
+[08:37:13] [账号状态] 8890145315 STOCK: 等待登录
+[08:40:48] [WAIT 08:40:48] to open 49分12秒
+[08:40:52] [账号状态] 8890145315 STOCK: 正常
+[08:44:16] [账号状态] 8890145315 STOCK: 等待登录
+[08:44:19] [账号状态] 8890145315 STOCK: 正常
+[08:45:58] [WAIT 08:45:58] to open 44分2秒
+[08:47:48] [账号状态] 8890145315 STOCK: 等待登录
+[08:47:51] [账号状态] 8890145315 STOCK: 正常
+[08:51:08] [WAIT 08:51:08] to open 38分52秒
+[08:56:08] [WAIT 08:56:08] to open 33分52秒
+[09:01:08] [WAIT 09:01:08] to open 28分52秒
+[09:06:08] [WAIT 09:06:08] to open 23分52秒
+[09:11:08] [WAIT 09:11:08] to open 18分52秒
+[09:16:08] [WAIT 09:16:08] to open 13分52秒

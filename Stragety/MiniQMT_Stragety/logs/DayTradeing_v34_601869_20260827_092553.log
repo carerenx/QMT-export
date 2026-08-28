@@ -1,0 +1,117 @@
+============================================================
+  日志文件创建: 2026-08-27 09:25:53
+  策略版本: v34 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[09:25:56] [连接] MiniQMT 行情服务已连接
+[09:25:57] [交易] 已订阅账号 8890145315
+[09:25:57] [START] 长飞光纤 v37 LIVE 601869.SH
+[09:25:57] [DATA-DBG] hist_open[-3:]= [270.515, 266.705, 269.705] | tick_open=393 | lastClose=388.02
+[09:25:57] [VOLUME-DATA] count=80 tail=[89009, 141474, 157140]
+[09:25:57] [SIGNAL] BEAR | Open Y393.00 | ATR 11.2% | RSI 35 | Vol_ratio 1.01 | Mult 0.20 | Trig Y398.26 
+[09:25:57] [VOLUME] last 157140 / prev20_avg 155252 | n=20 | VALID
+[09:25:57] [FACTOR] trend -0.15 |  volatility -0.17 |  volume +0.00 |  RSI +0.10 | 
+[09:25:57] [ACCOUNT] Position:200 sh Y78,600(74%) | Cash:Y27,255 | T+0:2 lots(200 sh)
+[09:25:57] [REV-T] ENABLED 2 lots trig Y398.26 buyback=sell×(1-ATR%×0.15) emerg +3% / emergTrigFalse
+[09:25:57] [FWD-T] ENABLED 0 lots buy Y385.14 sell Y389.76(+1.2%) 1 lot≈Y39,300
+[09:25:57] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[09:25:57] [MOM-v34] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.35~0.60% ATR×0.50
+[09:25:57] [WAIT 09:25:57] to open 4分3秒
+[09:30:07] [OPEN] [Y394.00] [REV-T trig Y398.26(need +1.08%)] [FWD-T trig Y385.14(need -2.25%)]
+[09:30:07] [HB] IDLE Y394.00 REV-T: need +4.26 to Y398.26 | FWD-T: need -7.88 to Y386.12
+[09:30:52] [REV-T spike #1/5] Y398.60 >= Y398.26
+[09:30:59] [REV-T sell trig] peak Y399.00 pullback 0.10% → Y398.60
+[09:30:59] [ORDER-REV-T sell] Y398.60 × 100 sh
+[09:30:59]   >>> 下单卖出: PEER x 100股 601869.SH [COMPETE]
+[09:30:59] [委托] 卖 Y349.22 0/100股 -> 已报
+[09:30:59] [成交] 卖 601869.SH Y398.40 x 100股 = Y39,840
+[09:30:59] [委托] 卖 Y349.22 100/100股 -> 全成
+[09:31:00] [FILL-REV-T sell] Y398.60 × 100 sh | pos 200→100 | cash +39,840
+[09:31:07] [HB] SOLD Y397.98 sell Y398.60 -0.2% buyback Y391.93 ladder Y404.58
+[09:31:17] [REV-T 99% armed] Y394.00 <= Y394.61; buyback target Y391.93 not reached
+[09:31:35] [REV-T 99% rebound] Y395.00 >= Y394.61 -> ask1 FIX buyback
+[09:31:35] [FIX-BUYBACK] trigger Y395.00 -> ask1/fallback limit Y395.60
+[09:31:35] [ORDER-REV-T buyback(REBOUND99)] Y395.60 × 100 sh
+[09:31:35]   >>> 下单买入: Y395.60 x 100股 601869.SH [FIX]
+[09:31:35] [委托] 买 Y395.60 0/100股 -> 已报
+[09:31:37] [成交] 买 601869.SH Y395.60 x 100股 = Y39,560
+[09:31:37] [委托] 买 Y395.60 100/100股 -> 全成
+[09:31:37] [FILL-REV-T buyback(REBOUND99)] Y395.60 × 100 sh | pos 100→200 | cash -39,560
+[09:31:37] [SELL-TRIG UPD] Y398.26→Y398.60 (已消耗, 提升至实际卖出价)
+[09:31:37] [RESUME] → IDLE (REV-T 1/5, FWD-T 0/5)
+[09:32:08] [HB] IDLE Y397.00 REV-T: need +1.60 to Y398.60 | FWD-T: need -7.94 to Y389.06
+[09:33:08] [HB] IDLE Y397.15 REV-T: need +1.45 to Y398.60 | FWD-T: need -7.94 to Y389.21
+[09:33:23] [REV-T spike #2/5] Y398.61 >= Y398.60
+[09:34:08] [HB] SPIKING Y403.55 peak Y403.55 pullback 0.00%
+[09:34:32] [REV-T sell trig] peak Y405.66 pullback 0.14% → Y405.10
+[09:34:32] [ORDER-REV-T sell] Y405.10 × 100 sh
+[09:34:32]   >>> 下单卖出: PEER x 100股 601869.SH [COMPETE]
+[09:34:32] [委托] 卖 Y349.22 0/100股 -> 已报
+[09:34:32] [成交] 卖 601869.SH Y405.44 x 100股 = Y40,544
+[09:34:32] [委托] 卖 Y349.22 100/100股 -> 全成
+[09:34:32] [FILL-REV-T sell] Y405.10 × 100 sh | pos 200→100 | cash +40,544
+[09:35:08] [HB] SOLD Y409.18 sell Y405.10 +1.0% buyback Y398.32 ladder Y411.18
+[09:36:09] [HB] SOLD Y410.00 sell Y405.10 +1.2% buyback Y398.32 ladder Y411.18
+[09:37:09] [HB] SOLD Y408.01 sell Y405.10 +0.7% buyback Y398.32 ladder Y411.18
+[09:38:09] [HB] SOLD Y409.20 sell Y405.10 +1.0% buyback Y398.32 ladder Y411.18
+[09:39:09] [HB] SOLD Y407.96 sell Y405.10 +0.7% buyback Y398.32 ladder Y411.18
+[09:40:09] [HB] SOLD Y411.02 sell Y405.10 +1.5% buyback Y398.32 ladder Y411.18
+[09:41:09] [HB] SOLD Y412.40 sell Y405.10 +1.8% buyback Y398.32 ladder Y411.18
+[09:42:09] [HB] SOLD Y413.01 sell Y405.10 +2.0% buyback Y398.32 ladder Y411.18
+[09:43:09] [HB] SOLD Y410.20 sell Y405.10 +1.3% buyback Y398.32 ladder Y411.18
+[09:44:09] [HB] SOLD Y414.99 sell Y405.10 +2.4% buyback Y398.32 ladder Y411.18
+[09:45:10] [HB] SOLD Y418.18 sell Y405.10 +3.2% buyback Y398.32 ladder Y411.18
+[09:46:10] [HB] SOLD Y423.23 sell Y405.10 +4.5% buyback Y398.32 ladder Y411.18
+[09:47:10] [HB] SOLD Y423.33 sell Y405.10 +4.5% buyback Y398.32 ladder Y411.18
+[09:48:10] [HB] SOLD Y425.00 sell Y405.10 +4.9% buyback Y398.32 ladder Y411.18
+[09:49:10] [HB] SOLD Y424.80 sell Y405.10 +4.9% buyback Y398.32 ladder Y411.18
+[09:50:10] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[09:51:10] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[09:52:10] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[09:53:11] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[09:54:11] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[09:55:11] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[09:56:11] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[09:57:11] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[09:57:44] [委托] 卖 Y75.18 0/100股 -> 已报
+[09:57:44] [成交] 卖 600584.SH Y75.18 x 100股 = Y7,518
+[09:57:44] [委托] 卖 Y75.18 100/100股 -> 全成
+[09:58:11] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[09:59:11] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:00:11] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:01:11] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:02:12] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:03:12] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:04:12] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:05:12] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:06:12] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:07:12] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:08:12] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:09:12] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:10:12] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:11:13] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:12:13] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:13:13] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:14:13] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:15:13] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:16:13] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:17:13] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:18:13] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:19:13] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:20:14] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:21:14] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:22:14] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:23:14] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:24:14] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:25:14] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:26:14] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:27:14] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:28:14] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:29:15] [HB] SOLD Y426.82 sell Y405.10 +5.4% buyback Y398.32 ladder Y411.18
+[10:29:27] Interrupted by user
+[10:29:27] [WARN] position not bought back!
+[10:29:27] [STOP] 长飞光纤 v37 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-08-27 10:29:27
+============================================================

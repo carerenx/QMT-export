@@ -1,0 +1,34 @@
+============================================================
+  日志文件创建: 2026-08-27 13:56:56
+  策略版本: v39 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[13:56:58] [连接] MiniQMT 行情服务已连接
+[13:56:59] [交易] 已订阅账号 8890145315
+[13:56:59] [START] 长飞光纤 v39 LIVE 601869.SH
+[13:56:59] [LIMIT-UP GUARD] Y426.82 / lastClose Y388.02 (+10.00%) -> freeze all new legs
+[13:56:59] [DailyData] excluded incomplete current-day bar 20260827
+[13:56:59] [DATA-HEALTH] last_complete=20260826 expected=20260826 raw_close=388.02 tick_lastClose=388.02 count=80 aligned=True status=OK
+[13:56:59] [DATA-DBG] last_complete=20260826 hist_open[-3:]=[370.92, 360.0, 393.0] | tick_open=393.0 | lastClose=388.02 | signal_open=393.0
+[13:56:59] [VOLUME-DATA] complete_count=80 tail=[160108.0, 209032.0, 186840.0]
+[13:56:59] [SIGNAL] WEAK-BULL | Open Y393.00 | ATR 7.8% | RSI 67 | Vol_ratio 1.32 | Mult 0.42 | Trig Y400.72 [REV-T blocked:]
+[13:56:59] [VOLUME] last 186840 / prev20_avg 141223 | n=20 | VALID
+[13:56:59] [FACTOR] trend +0.05 |  volatility -0.12 |  volume -0.08 |  RSI -0.08 | 
+[13:56:59] [ACCOUNT] Position:100 sh Y42,682(36%) | Cash:Y75,491 | Sellable:0 lots(0 sh)
+[13:56:59] [REV-T] FROZEN near upper limit; capacity 0 lots
+[13:56:59] [FWD-T] FROZEN near upper limit; capacity 0 lots
+[13:56:59] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[13:56:59] [MOM-v39] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.35~0.60% ATR×0.50
+[13:56:59] [OPEN] [Y426.82] [REV-T exceeded by Y26.10] [FWD-T needs -2.00% to Y418.28] [LIMIT-UP-GUARD]
+[13:56:59] [STANDBY] Y426.82 no trade direction
+[14:01:59] [STANDBY] Y426.82 no trade direction
+[14:06:59] [STANDBY] Y426.82 no trade direction
+[14:11:59] [STANDBY] Y426.82 no trade direction
+[14:16:59] [STANDBY] Y426.82 no trade direction
+[14:21:59] [STANDBY] Y426.82 no trade direction
+[14:22:25] Interrupted by user
+[14:22:25] [STOP] 长飞光纤 v39 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-08-27 14:22:25
+============================================================
