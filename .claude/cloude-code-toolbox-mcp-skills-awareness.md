@@ -1,6 +1,6 @@
 # Cloude Code ToolBox — MCP & Skills awareness
 
-_Generated: 2026-08-25T03:10:45.461Z_
+_Generated: 2026-09-04T07:29:55.105Z_
 
 ## How to use this report
 
@@ -25,8 +25,8 @@ _No active workspace servers in mcp.json._
 
 | Server id | Kind | Detail |
 |-----------|------|--------|
-| ppt-mcp | stdio | uvx ppt-mcp |
 | pptmasterdeck-mcp | http | https://pptmasterdeck.clauxel.com/mcp |
+| ppt-mcp | stdio | uvx ppt-mcp |
 | pptogo-mcp | http | https://pptogo.com/api/mcp |
 | drawio | stdio | cmd /c npx -y drawio-mcp-server --editor |
 
@@ -48,9 +48,6 @@ _No active workspace servers in mcp.json._
 
 - **qmt-safe-commit** — `d:\02Project\QMT-export\.agents\skills\qmt-safe-commit`
   - Safely review, verify, stage, and commit changes in the QMT-export repository. Use when asked to commit QMT strategies, MiniQMT infrastructure, backtest code, tests, analysis, or documentation. Do not use for stash creat
-
-- **run-qmt-export** — `d:\02Project\QMT-export\.agents\skills\run-qmt-export`
-  - Build, run, smoke-test, and drive the QMT-export quantitative trading backtest system. Use when asked to run a backtest, verify the engine works, validate a strategy, test data loading, or check that the backtest system 
 
 - **signal-validation** — `d:\02Project\QMT-export\.agents\skills\signal-validation`
   - Validate A-stock sell/top-detection signals against historical data. Run when asked to validate trading signals, backtest sell rules, check momentum indicators, evaluate escape-top signals, or verify technical indicators

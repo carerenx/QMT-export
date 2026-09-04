@@ -8,3 +8,4 @@ Log/
 
 
 backtest/cache
+.venv-bigqmt/

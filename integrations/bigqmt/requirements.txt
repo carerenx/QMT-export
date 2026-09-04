@@ -1,0 +1,7 @@
+# External strategy Python environment; do not pip-install the xtquant shim.
+pyzmq>=25.0.0
+redis>=5.0.0
+numpy
+pandas
+matplotlib
+# Optional MySQL transport: pip install pymysql DBUtils

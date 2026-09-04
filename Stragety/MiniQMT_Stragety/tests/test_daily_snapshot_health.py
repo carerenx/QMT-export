@@ -102,6 +102,22 @@ class DailySnapshotHealthTest(unittest.TestCase):
 
         self.assertIsNone(snapshot)
 
+    def test_one_day_stale_tick_last_close_uses_fresh_raw_daily_close(self):
+        frame = _frame([
+            ['20260901', 412.38, 412.66, 395.56, 400.03, 100, 1],
+            ['20260902', 392.59, 413.68, 389.00, 407.80, 200, 1],
+        ])
+        connector = self._connector(
+            frame, frame, ['20260901', '20260902', '20260903'])
+
+        snapshot = connector.load_daily_snapshot(
+            80, today='20260903', tick_last_close=400.03,
+            retries=1, retry_delay=0)
+
+        self.assertIsNotNone(snapshot)
+        self.assertEqual(407.80, snapshot['verified_last_close'])
+        self.assertTrue(snapshot['tick_last_close_one_day_stale'])
+
     def test_non_finite_daily_values_are_rejected(self):
         invalid = _frame([
             ['20260826', 393.00, float('inf'), 386.50,

@@ -1,0 +1,52 @@
+============================================================
+  日志文件创建: 2026-09-04 09:31:29
+  策略版本: v41 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[09:31:31] [连接] MiniQMT 行情服务已连接
+[09:31:31] [交易] 已订阅账号 8890145315
+[09:31:31] [START] 长飞光纤 v40 LIVE 601869.SH
+[09:31:32] [DailyData] excluded incomplete current-day bar 20260904
+[09:31:32] [DATA-HEALTH] last_complete=20260903 expected=20260903 raw_close=393.46 tick_lastClose=393.46 count=80 aligned=True status=OK
+[09:31:32] [DailyData] excluded incomplete current-day bar 20260904
+[09:31:32] [DATA-HEALTH] last_complete=20260903 expected=20260903 raw_close=393.46 tick_lastClose=393.46 count=80 aligned=True status=OK
+[09:31:32] [DATA-DBG] last_complete=20260903 hist_open[-3:]=[412.38, 392.59, 412.0] | tick_open=399.66 | lastClose=393.46 | signal_open=399.66
+[09:31:32] [VOLUME-DATA] complete_count=80 tail=[108797.0, 125787.0, 118768.0]
+[09:31:32] [DailyData] excluded incomplete current-day bar 20260904
+[09:31:32] [DATA-HEALTH] last_complete=20260903 expected=20260903 raw_close=393.46 tick_lastClose=393.46 count=80 aligned=True status=OK
+[09:31:32] [SIGNAL] WEAK-BULL | Open Y399.66 | ATR 7.3% | RSI 59 | Vol_ratio 0.82 | Mult 0.55 | Trig Y409.27 
+[09:31:32] [VOLUME] last 118768 / prev20_avg 145341 | n=20 | VALID
+[09:31:32] [FACTOR] trend +0.05 |  volatility -0.12 |  volume +0.00 |  RSI -0.03 | 
+[09:31:32] [ACCOUNT] Position:200 sh Y80,000(99%) | Cash:Y455 | Sellable:2 lots(200 sh)
+[09:31:32] [REV-T] ENABLED 2 lots trig Y409.27 buyback=sell×(1-ATR%×0.15) emerg +3% / emergTrigFalse
+[09:31:32] [FWD-T] BLOCKED insufficient cash for 1 lot  1 lot≈Y40,000
+[09:31:32] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[09:31:32] [MOM-CAPACITY] short ON | long OFF insufficient cash for 1 lot
+[09:31:32] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.35~0.60% ATR×0.50
+[09:31:32] [MA-POS] price Y400.00 | MA5 Y403.97: BELOW -0.98% | MA20 Y378.63: ABOVE +5.64%
+[09:31:32] [OPEN] [Y400.00] [REV-T needs +2.32% to Y409.27] [FWD-T needs -2.00% to Y392.00]
+[09:31:32] [HB] IDLE Y400.00 REV-T: needs +Y9.27 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:32:32] [HB] IDLE Y397.03 REV-T: needs +Y12.24 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:33:32] [HB] IDLE Y397.10 REV-T: needs +Y12.17 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:34:32] [HB] IDLE Y396.96 REV-T: needs +Y12.31 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:35:32] [HB] IDLE Y397.00 REV-T: needs +Y12.27 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:36:32] [HB] IDLE Y397.94 REV-T: needs +Y11.33 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:37:32] [HB] IDLE Y396.00 REV-T: needs +Y13.27 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:38:33] [HB] IDLE Y392.56 REV-T: needs +Y16.71 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:39:33] [HB] IDLE Y394.06 REV-T: needs +Y15.21 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:40:33] [HB] IDLE Y391.50 REV-T: needs +Y17.77 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:41:32] [MA-POS] price Y391.81 | MA5 Y402.33: BELOW -2.62% | MA20 Y378.22: ABOVE +3.59%
+[09:41:33] [HB] IDLE Y391.49 REV-T: needs +Y17.78 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:42:33] [HB] IDLE Y392.05 REV-T: needs +Y17.22 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:43:33] [HB] IDLE Y390.60 REV-T: needs +Y18.67 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:44:34] [HB] IDLE Y390.98 REV-T: needs +Y18.29 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:45:34] [HB] IDLE Y389.82 REV-T: needs +Y19.45 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:46:34] [HB] IDLE Y388.15 REV-T: needs +Y21.12 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:47:34] [HB] IDLE Y388.88 REV-T: needs +Y20.39 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:48:34] [HB] IDLE Y389.00 REV-T: needs +Y20.27 to Y409.27 | FWD-T: off (insufficient cash for 1 lot)
+[09:48:55] Interrupted by user
+[09:48:55] [STOP] 长飞光纤 v40 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-04 09:48:55
+============================================================

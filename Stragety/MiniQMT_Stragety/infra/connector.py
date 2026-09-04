@@ -465,6 +465,7 @@ class MiniQMTConnector:
             adjusted = adjusted_data.get(code) if adjusted_data else None
             raw = raw_data.get(code) if raw_data else None
             reason = ''
+            tick_last_close_one_day_stale = False
             if adjusted is None or raw is None or len(adjusted) == 0 or len(raw) == 0:
                 reason = 'daily data missing'
             else:
@@ -515,8 +516,18 @@ class MiniQMTConnector:
                     elif not reason and tick_last_close and tick_last_close > 0:
                         raw_close = float(raw.iloc[-1]['close'])
                         if abs(raw_close - float(tick_last_close)) > 0.02:
-                            reason = 'raw close {:.2f} != tick lastClose {:.2f}'.format(
-                                raw_close, float(tick_last_close))
+                            previous_raw_close = (
+                                float(raw.iloc[-2]['close'])
+                                if len(raw) > 1 else 0.0)
+                            if abs(previous_raw_close - float(tick_last_close)) <= 0.02:
+                                tick_last_close_one_day_stale = True
+                                _log(
+                                    '[DailyData WARN] tick lastClose {:.2f} is one '
+                                    'trading day stale; using verified raw close {:.2f}'.format(
+                                        float(tick_last_close), raw_close))
+                            else:
+                                reason = 'raw close {:.2f} != tick lastClose {:.2f}'.format(
+                                    raw_close, float(tick_last_close))
 
             if not reason:
                 actual_date = _normalize_trade_date(adjusted.index[-1])
@@ -534,6 +545,8 @@ class MiniQMTConnector:
                     'adjusted': adjusted,
                     'raw': raw,
                     'last_complete_date': actual_date,
+                    'verified_last_close': float(raw.iloc[-1]['close']),
+                    'tick_last_close_one_day_stale': tick_last_close_one_day_stale,
                 }
 
             _log('[DATA-STALE] attempt {}/{}: {}'.format(attempt, attempts, reason))

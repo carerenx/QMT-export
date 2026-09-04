@@ -50,7 +50,40 @@ class StrategyRunner(v40.StrategyRunner):
         self.st['last_ma_report_time'] = 0.0
 
     def _daily_init(self):
-        super()._daily_init()
+        today = v40.datetime.now().strftime('%Y%m%d')
+        original_get_full_tick = None
+        if not (self.st.get('trade_date', '') == today and
+                self.st.get('initialized', False)):
+            code = v40.STOCK_QMT
+            tick_data = self.ctx.get_full_tick([code]).get(code, {})
+            tick_last_close = float(tick_data.get('lastClose', 0) or 0)
+            snapshot = self.conn.load_daily_snapshot(
+                v40.cfg.HIST_DATA_LEN, today=today,
+                tick_last_close=tick_last_close, retries=1, retry_delay=0)
+            if (snapshot or {}).get('tick_last_close_one_day_stale') is True:
+                verified_last_close = float(snapshot['verified_last_close'])
+                original_get_full_tick = self.ctx.get_full_tick
+
+                def get_full_tick_with_verified_close(codes):
+                    ticks = original_get_full_tick(codes)
+                    if code not in ticks:
+                        return ticks
+                    corrected = dict(ticks)
+                    corrected_tick = dict(corrected[code])
+                    corrected_tick['lastClose'] = verified_last_close
+                    corrected[code] = corrected_tick
+                    return corrected
+
+                self.ctx.get_full_tick = get_full_tick_with_verified_close
+                v40._log(
+                    '[DATA-FALLBACK] confirmed one-day stale tick lastClose '
+                    '{:.2f} -> verified raw close {:.2f}'.format(
+                        tick_last_close, verified_last_close))
+        try:
+            super()._daily_init()
+        finally:
+            if original_get_full_tick is not None:
+                self.ctx.get_full_tick = original_get_full_tick
         trade_date = self.st.get('trade_date', '')
         if (not self.st.get('initialized', False) or
                 self.st.get('ma_history_date', '') == trade_date):
@@ -66,6 +99,10 @@ class StrategyRunner(v40.StrategyRunner):
         closes = snapshot['adjusted']['close'].astype(float).tolist()
         self.st['ma_completed_closes'] = closes[-19:]
         self.st['ma_history_date'] = trade_date
+
+    def _lock_all_trading(self, reason):
+        super()._lock_all_trading(reason)
+        self.st['daily_signal'] = {}
 
     def _update_intraday_average(self, tick_data):
         super()._update_intraday_average(tick_data)
