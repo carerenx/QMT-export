@@ -165,6 +165,10 @@ class BacktestEngine:
     def _execute_sell(self, order, context):
         """执行卖出订单"""
         code = order['code']
+        if not self.data.get_value(code, 'tradable', self._current_bar):
+            logger.info("%s suspended/missing on %s; sell not filled", code,
+                        self._current_bar_date)
+            return
         shares = order['shares']
         price = order['price']
 
@@ -210,6 +214,10 @@ class BacktestEngine:
     def _execute_buy(self, order, context):
         """执行买入订单"""
         code = order['code']
+        if not self.data.get_value(code, 'tradable', self._current_bar):
+            logger.info("%s suspended/missing on %s; buy not filled", code,
+                        self._current_bar_date)
+            return
         shares = order['shares']
         price = order['price']
 

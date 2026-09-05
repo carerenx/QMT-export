@@ -4,6 +4,7 @@
 
 import os
 import sys
+import types
 import unittest
 
 
@@ -12,6 +13,19 @@ if STRATEGY_DIR not in sys.path:
     sys.path.insert(0, STRATEGY_DIR)
 
 from infra.connector import MiniQMTConnector
+
+# Pricing-style mapping is pure adapter behavior.  Use a tiny SDK-shaped
+# constant module when MiniQMT is not installed so this test remains offline.
+if 'xtquant' not in sys.modules:
+    xtquant = types.ModuleType('xtquant')
+    xtquant.xtconstant = types.SimpleNamespace(
+        STOCK_BUY=23,
+        STOCK_SELL=24,
+        MARKET_PEER_PRICE_FIRST=11,
+        LATEST_PRICE=12,
+        FIX_PRICE=13,
+    )
+    sys.modules['xtquant'] = xtquant
 from xtquant import xtconstant
 
 

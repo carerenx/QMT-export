@@ -3,7 +3,7 @@ QMT 策略独立回测系统 — 主入口
 
 用法:
     python -m backtest.run
-    python -m backtest.run --strategy "MyPy-Q/低回撤多因子趋势跟踪策略.py"
+    python -m backtest.run --strategy "Stragety/MyPy-Q/低回撤多因子趋势跟踪策略.py"
     python -m backtest.run --start 2020-01-01 --end 2024-12-31
     python -m backtest.run --param RISK_PER_TRADE 0.01 --param MAX_POSITIONS 3
 """
@@ -94,7 +94,7 @@ def main():
         """)
 
     parser.add_argument('--strategy', default=None,
-                        help='策略文件路径 (默认: MyPy-Q/低回撤多因子趋势跟踪策略.py)')
+                        help='策略文件路径 (默认见 backtest.config.DEFAULT_STRATEGY)')
     parser.add_argument('--start', default=None,
                         help='回测开始日期 (默认: 2020-01-01)')
     parser.add_argument('--end', default=None,

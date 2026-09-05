@@ -158,7 +158,7 @@ OUTPUT_DIR = os.path.join(
 # 默认策略文件路径
 DEFAULT_STRATEGY = os.path.join(
     os.path.dirname(BASE_DIR),
-    'MyPy-Q', 'Alpha144_流动性冲击择时策略.py'
+    'Stragety', 'MyPy-Q', 'Alpha144_流动性冲击择时策略.py'
 )
 
 # ============================================================

@@ -5,7 +5,7 @@ Runs QMT-format strategies on the OSkhQuant-adapted enhanced engine.
 
 用法:
     python -m backtest.run_okh
-    python -m backtest.run_okh --strategy "MyPy-Q/Alpha144_流动性冲击择时策略.py"
+    python -m backtest.run_okh --strategy "Stragety/MyPy-Q/Alpha144_流动性冲击择时策略.py"
     python -m backtest.run_okh --start 2020-01-01 --end 2025-12-31
     python -m backtest.run_okh --config config.json --no-plot
 """
@@ -33,7 +33,7 @@ def main():
         epilog="""
 示例:
   python -m backtest.run_okh
-  python -m backtest.run_okh --strategy "MyPy-Q/Alpha144_流动性冲击择时策略.py"
+  python -m backtest.run_okh --strategy "Stragety/MyPy-Q/Alpha144_流动性冲击择时策略.py"
   python -m backtest.run_okh --start 2020-01-01 --end 2025-12-31
   python -m backtest.run_okh --config my_config.json --no-plot
         """)

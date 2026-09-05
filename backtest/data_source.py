@@ -247,10 +247,20 @@ class DataProvider:
         for code, df in all_dfs.items():
             fields = ['open', 'high', 'low', 'close', 'volume', 'amount']
             self.ohlcv[code] = {}
+            # Preserve the common calendar for indicator alignment, but do
+            # not invent liquidity on suspended/missing sessions.  Prices may
+            # carry forward for mark-to-market; volume/amount must be zero and
+            # the explicit flag is consumed by the matching engine.
+            present_dates = pd.Series(True, index=df['date']).reindex(
+                all_dates, fill_value=False)
+            self.ohlcv[code]['tradable'] = present_dates.values.tolist()
             for f in fields:
                 if f in df.columns:
-                    # 重采样对齐到 date_index (前向填充停牌日)
-                    s = df.set_index('date')[f].reindex(all_dates, method='ffill')
+                    if f in ('volume', 'amount'):
+                        s = df.set_index('date')[f].reindex(all_dates, fill_value=0.0)
+                    else:
+                        # 重采样对齐到 date_index，仅用于估值/指标连续性。
+                        s = df.set_index('date')[f].reindex(all_dates, method='ffill')
                     self.ohlcv[code][f] = s.values.tolist()
                 else:
                     self.ohlcv[code][f] = [0.0] * len(all_dates)

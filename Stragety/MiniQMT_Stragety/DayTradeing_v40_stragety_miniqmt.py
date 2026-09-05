@@ -1189,18 +1189,29 @@ class StrategyRunner:
         cond2 = (pn - p5) / p5 > cfg.LOCK_MOMENTUM_PCT if p5 > 0 else False
         dh = max(prices); cond3 = (dh - pn) / dh < cfg.LOCK_DRAWDOWN_PCT if dh > 0 else False
         should_lock = cond1 and cond2 and cond3
-        cool_ok = now_ts >= st.get('lock_cooldown_until', 0)
-        if should_lock and not st.get('locked'):
-            st['locked'] = True; st['lock_since'] = cfg.now_hms()
-            st['lock_reason'] = 'P+{:.1f}% M {:.2f}% D {:.2f}%'.format(
-                (pn / open_price - 1) * 100, (pn - p5) / p5 * 100, (dh - pn) / dh * 100 if dh > 0 else 0)
-            _log('[LOCK] {}'.format(st['lock_reason']))
-        elif not should_lock and st.get('locked') and cool_ok:
-            st['locked'] = False; st['lock_reason'] = ''; st['lock_since'] = ''; _log('[UNLOCK]')
-        if not should_lock and not st.get('locked'): st['lock_cooldown_until'] = 0.0
-        if should_lock: st['lock_cooldown_until'] = 0.0
-        elif st.get('locked') and st['lock_cooldown_until'] == 0.0:
-            st['lock_cooldown_until'] = now_ts + cfg.LOCK_COOLDOWN_SEC
+        if should_lock:
+            # A renewed strength signal cancels any pending unlock.  This
+            # prevents threshold jitter from turning protection on and off.
+            st['lock_cooldown_until'] = 0.0
+            if not st.get('locked'):
+                st['locked'] = True; st['lock_since'] = cfg.now_hms()
+                st['lock_reason'] = 'P+{:.1f}% M {:.2f}% D {:.2f}%'.format(
+                    (pn / open_price - 1) * 100, (pn - p5) / p5 * 100,
+                    (dh - pn) / dh * 100 if dh > 0 else 0)
+                _log('[LOCK] {}'.format(st['lock_reason']))
+        elif st.get('locked'):
+            # Start the timer on the first non-strength tick and only release
+            # after the condition has remained absent continuously.
+            cooldown_until = st.get('lock_cooldown_until', 0.0)
+            if cooldown_until <= 0.0:
+                st['lock_cooldown_until'] = now_ts + cfg.LOCK_COOLDOWN_SEC
+                _log('[UNLOCK PENDING] {}s'.format(cfg.LOCK_COOLDOWN_SEC))
+            elif now_ts >= cooldown_until:
+                st['locked'] = False; st['lock_reason'] = ''; st['lock_since'] = ''
+                st['lock_cooldown_until'] = 0.0
+                _log('[UNLOCK]')
+        else:
+            st['lock_cooldown_until'] = 0.0
 
     # ═══ v25/v26/v33: 短线动量反转机制 (2分钟自适应ATR + REV让权 + 独立回撤) ═══
 

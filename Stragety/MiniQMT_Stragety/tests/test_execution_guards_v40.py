@@ -28,6 +28,33 @@ class TickContext:
 
 
 class ExecutionGuardsV40Test(unittest.TestCase):
+    def test_strength_unlock_requires_continuous_cooldown(self):
+        runner = V40.StrategyRunner.__new__(V40.StrategyRunner)
+        runner.st = {
+            'daily_signal': {'open_price': 100.0},
+            'price_history': [],
+            'locked': False,
+            'lock_cooldown_until': 0.0,
+            'lock_since': '',
+            'lock_reason': '',
+        }
+
+        # Build enough rising ticks to enter the strength lock.
+        for now_ts, price in enumerate(
+                [100.0, 100.2, 100.4, 100.6, 100.8, 101.0, 101.2,
+                 101.4, 101.6, 102.0], start=1):
+            runner._assess_strength(price, float(now_ts))
+        self.assertTrue(runner.st['locked'])
+
+        # The first weak tick starts, rather than bypasses, the 60s timer.
+        runner._assess_strength(100.0, 11.0)
+        self.assertTrue(runner.st['locked'])
+        self.assertEqual(71.0, runner.st['lock_cooldown_until'])
+        runner._assess_strength(100.0, 70.0)
+        self.assertTrue(runner.st['locked'])
+        runner._assess_strength(100.0, 71.0)
+        self.assertFalse(runner.st['locked'])
+
     def test_zero_sellable_shares_disable_both_daily_directions(self):
         capacity = V40.calculate_execution_capacity(
             base_can_use=0, available_cash=75491.0,

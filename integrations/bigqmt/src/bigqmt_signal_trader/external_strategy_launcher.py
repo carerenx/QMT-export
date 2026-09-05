@@ -8,8 +8,8 @@ import runpy
 import sys
 
 
-DEFAULT_DAYTRADING_V40 = (Path(__file__).resolve().parents[4] / "Stragety" / "MiniQMT_Stragety"
-    / "DayTradeing_v40_stragety_miniqmt.py")
+DEFAULT_DAYTRADING_V41 = (Path(__file__).resolve().parents[4] / "Stragety" / "MiniQMT_Stragety"
+    / "DayTradeing_v41_stragety_miniqmt.py")
 
 
 class ExternalStrategyLaunchError(RuntimeError):
@@ -90,7 +90,7 @@ def main(argv=None):
     )
     parser.add_argument(
         "--strategy",
-        default=os.environ.get("BIGQMT_EXTERNAL_STRATEGY", str(DEFAULT_DAYTRADING_V40)),
+        default=os.environ.get("BIGQMT_EXTERNAL_STRATEGY", str(DEFAULT_DAYTRADING_V41)),
         help="path to the MiniQMT strategy; remaining arguments are forwarded",
     )
     args, forwarded = parser.parse_known_args(argv)
