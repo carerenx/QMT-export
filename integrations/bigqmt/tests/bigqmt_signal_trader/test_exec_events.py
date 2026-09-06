@@ -837,7 +837,7 @@ class ExecEventsClientDispatchTest(unittest.TestCase):
         self.assertEqual(len(cb.account_statuses), 2)
         status = cb.account_statuses[0]
         self.assertEqual(status.account_id, "acct")
-        self.assertEqual(status.account_type, "STOCK")
+        self.assertEqual(status.account_type, 2)  # SECURITY_ACCOUNT
         self.assertEqual(status.status, 0)
 
 

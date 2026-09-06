@@ -8,6 +8,7 @@ from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT))
 
 from bigqmt_signal_trader.external_strategy_launcher import (
     ExternalStrategyLaunchError,
@@ -31,6 +32,19 @@ class ExternalStrategyLauncherTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             strategy = self._strategy_tree(tmp, "8899")
             self.assertEqual(_load_strategy_account(strategy), "8899")
+
+    def test_loads_account_when_strategy_is_in_a_category_directory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            strategy_root = Path(tmp) / "MiniQMT_Stragety"
+            (strategy_root / "core").mkdir(parents=True)
+            (strategy_root / "core" / "config.py").write_text(
+                "ACCOUNT = 'nested-account'\n", encoding="utf-8"
+            )
+            strategy = strategy_root / "DayT" / "strategy.py"
+            strategy.parent.mkdir()
+            strategy.write_text("RESULT = 'ran'\n", encoding="utf-8")
+
+            self.assertEqual(_load_strategy_account(strategy), "nested-account")
 
     def test_missing_strategy_fails_before_bridge_configuration(self):
         missing = Path(tempfile.gettempdir()) / "missing-qmt-strategy.py"

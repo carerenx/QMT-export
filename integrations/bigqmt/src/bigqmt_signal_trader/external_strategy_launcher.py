@@ -9,15 +9,26 @@ import sys
 
 
 DEFAULT_DAYTRADING_V41 = (Path(__file__).resolve().parents[4] / "Stragety" / "MiniQMT_Stragety"
-    / "DayTradeing_v41_stragety_miniqmt.py")
+    / "DayT" / "DayTradeing_v41_stragety_miniqmt.py")
 
 
 class ExternalStrategyLaunchError(RuntimeError):
     pass
 
 
+def _strategy_project_root(strategy_file):
+    """Find the closest ancestor that owns the strategy's shared core package."""
+    strategy_file = Path(strategy_file).expanduser().resolve()
+    for candidate in (strategy_file.parent,) + tuple(strategy_file.parent.parents):
+        if (candidate / "core" / "config.py").is_file():
+            return candidate
+    raise ExternalStrategyLaunchError(
+        "strategy dependency is missing: core/config.py above %s" % strategy_file
+    )
+
+
 def _load_strategy_account(strategy_file):
-    config_file = strategy_file.parent / "core" / "config.py"
+    config_file = _strategy_project_root(strategy_file) / "core" / "config.py"
     if not config_file.is_file():
         raise ExternalStrategyLaunchError(
             "strategy dependency is missing: %s" % config_file
@@ -53,9 +64,13 @@ def launch_strategy(strategy, strategy_args=None):
         raise ExternalStrategyLaunchError("strategy file does not exist: %s" % strategy_file)
 
     strategy_root = str(strategy_file.parent)
+    project_root = str(_strategy_project_root(strategy_file))
     account_id = _load_strategy_account(strategy_file)
-    if strategy_root not in sys.path:
-        sys.path.insert(0, strategy_root)
+    # A category directory (for example DayT) can own its infra package while
+    # the MiniQMT strategy root owns core. Keep the category directory first.
+    for import_root in (project_root, strategy_root):
+        if import_root not in sys.path:
+            sys.path.insert(0, import_root)
 
     # Reconfigure after reading the strategy account. This intentionally wins
     # over a stale account id in the client config while retaining its transport

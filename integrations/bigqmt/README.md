@@ -2,7 +2,7 @@
 
 接入链路：`run_bigqmt.py → 本目录 src/xtquant 兼容层 → ZeroMQ RPC → 大 QMT 内置 Python → 行情 / 账户 / 委托 / 成交回报`。
 
-默认运行 `Stragety/MiniQMT_Stragety/DayTradeing_v41_stragety_miniqmt.py`。原策略文件和 `infra/connector.py` 不需要修改；直接运行原策略仍使用原来的 miniQMT 环境。只有通过新入口启动的进程才优先加载桥接兼容层。不要将本目录 `src` 加入全局 PYTHONPATH，也不要把这里的 `xtquant` 安装到日常 miniQMT 环境。
+默认运行 `Stragety/MiniQMT_Stragety/DayT/DayTradeing_v41_stragety_miniqmt.py`。原策略文件和 `DayT/infra/connector.py` 不需要修改；直接运行原策略仍使用原来的 miniQMT 环境。只有通过新入口启动的进程才优先加载桥接兼容层。不要将本目录 `src` 加入全局 PYTHONPATH，也不要把这里的 `xtquant` 安装到日常 miniQMT 环境。
 
 ## 1. 外部 Python 环境
 
@@ -66,7 +66,7 @@ python -m venv .venv-bigqmt
 .\.venv-bigqmt\Scripts\python.exe run_bigqmt.py --mode signal
 
 # 指定其他策略，参数原样透传
-.\.venv-bigqmt\Scripts\python.exe run_bigqmt.py --strategy Stragety\MiniQMT_Stragety\DayTradeing_v40_stragety_miniqmt.py --mode signal
+.\.venv-bigqmt\Scripts\python.exe run_bigqmt.py --strategy Stragety\MiniQMT_Stragety\DayT\DayTradeing_v40_stragety_miniqmt.py --mode signal
 ```
 
 通用入口目前适配从同目录 `core/config.py` 读取 `ACCOUNT` 的策略。其他策略需要先核对账号来源及用到的 API，不能据此认定所有 xtquant API 都与原 SDK 完全等价。[兼容层说明](docs/XTQUANT_COMPAT_REPLACEMENT.md)

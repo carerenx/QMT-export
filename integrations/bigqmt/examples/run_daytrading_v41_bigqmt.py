@@ -18,7 +18,7 @@ from bigqmt_signal_trader.external_strategy_launcher import main as _main
 
 
 V41_STRATEGY = (Path(__file__).resolve().parents[3] / "Stragety" / "MiniQMT_Stragety"
-    / "DayTradeing_v41_stragety_miniqmt.py")
+    / "DayT" / "DayTradeing_v41_stragety_miniqmt.py")
 
 
 def main(argv=None):

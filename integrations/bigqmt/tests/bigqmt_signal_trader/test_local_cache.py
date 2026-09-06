@@ -343,6 +343,23 @@ class LocalCacheClientTest(unittest.TestCase):
         xt.get_local_data(stock_list=["600000.SH"], period="1d")
         self.assertEqual(len(xt.client.calls), n)
 
+    def test_get_local_fallback_refreshes_incomplete_requested_history(self):
+        import pandas as pd
+
+        xt = self._xt(fallback_rpc=True)
+        # A previous no-count read populated only the latest bar.  This used
+        # to suppress fallback and let callers treat one row as a full window.
+        xt._local_cache().write(
+            "600000.SH", "1d",
+            pd.DataFrame({"stime": ["20260629"], "close": [8.73]}),
+        )
+
+        data = xt.get_local_data(
+            stock_list=["600000.SH"], period="1d", count=2)
+
+        self.assertEqual([8.76, 8.73], list(data["600000.SH"]["close"]))
+        self.assertIn("get_market_data_ex", xt.client.calls)
+
 
 class CompatReadMatrixTest(unittest.TestCase):
     """compat 层读路径矩阵：download -> cache -> get_local_data 全链路，

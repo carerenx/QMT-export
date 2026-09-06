@@ -112,6 +112,7 @@ def test_template_pair_matches_and_disables_orders():
 
 def test_existing_connector_reads_account_and_positions_through_bridge(monkeypatch):
     monkeypatch.syspath_prepend(str(entry.DEFAULT_STRATEGY.parent))
+    monkeypatch.syspath_prepend(str(entry.DEFAULT_STRATEGY.parent.parent))
     from infra import connector
     account = connector.cfg.ACCOUNT
     responses = {

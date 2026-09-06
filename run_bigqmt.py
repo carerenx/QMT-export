@@ -8,7 +8,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parent
 BRIDGE_SRC = ROOT / "integrations" / "bigqmt" / "src"
-DEFAULT_STRATEGY = ROOT / "Stragety" / "MiniQMT_Stragety" / "DayTradeing_v41_stragety_miniqmt.py"
+DEFAULT_STRATEGY = ROOT / "Stragety" / "MiniQMT_Stragety" / "DayT" / "DayTradeing_v41_stragety_miniqmt.py"
 
 
 def main(argv=None):

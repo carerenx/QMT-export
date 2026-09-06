@@ -1,11 +1,13 @@
 # AGENTS.md
 
 This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
-关于策略的py文件如果有改动，则新建py文件
+-关于策略的py文件如果有新建机制，则新建py文件。如果只是修改参数、优化机制，不涉及新增机制则在原有策略上运行。
+-新建策略的话不要在import原来同级别的策略文件。要完全新建。但是可以import 复用的config/core/util的公用的文件。
 ## Repository Purpose
 
-A股量化交易策略开发与实盘运行环境。核心标的是**长飞光纤(601869)**，围绕日内做T、选股策略、回测系统三大方向展开。
-
+A股量化交易策略开发与实盘运行环境。
+核心标的是**长飞光纤(601869)**，围绕日内做T、选股策略、回测系统三大方向展开。
+后续目标是新建/增肌选股策略。
 ## Key Rules via `/QMT-export` Skill
 
 When answering QMT API questions, the Skill at `C:\Users\pp313\.Codex\skills\QMT-export\SKILL.md` mandates:
@@ -52,7 +54,7 @@ The QMT live strategies evolved through progressive refinement:
 | v3 | `QMT_迷你反T_v3_高价股_实盘策略.py` | Adapted for 464元 share price (smaller PULLBACK%/BOUNCE%) |
 | v4 | `QMT_迷你反T_v4_优化版_实盘策略.py` | `is_last_bar()` historical noise filter, adaptive ATR multiplier |
 | **v5 (latest)** | `QMT_迷你反T_v5_动态买回_实盘策略.py` | Buyback trigger based on **actual sell price** (not fixed daily calc) |
-
+-命名规则:{策略名}_{版本}_{变更点/优化点}
 ### Strategy State Machine (v5)
 
 ```
@@ -92,7 +94,6 @@ File encoding must be `# -*- coding: gbk -*-` for Chinese QMT client.
 ## Working Conventions
 
 - All new QMT strategies go in `MyPy-Q/`, named `QMT_*.py`
-- When the user asks for strategy adjustments → **create a new file**, increment version number
 - Use `_log()` wrapper (defined in each strategy) instead of raw `print()` — it prepends `[HH:MM:SS]`
 - All QMT-injected functions (`get_trade_detail_data`, `order_shares`, `passorder`, callbacks) are NOT defined in `.py` files; IDE warnings about them are expected and should be ignored
 - Strategy parameters are hardcoded as module-level constants (not JSON/YAML configs)

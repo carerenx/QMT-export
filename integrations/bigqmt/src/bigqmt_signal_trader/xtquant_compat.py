@@ -1020,18 +1020,32 @@ class BigQmtXtData:
                 data_dir=data_dir,
             )
         fields = list(field_list or [])
+        fallback_rpc = _bool_value(
+            self.client.local_cache_config.get("fallback_rpc"), False)
         result = {}
         missing = []
         for code in codes:
             df = cache.read(code, period, start_time, end_time, count, dividend_type=dividend_type)
             if df is not None and getattr(df, "shape", (0,))[0] > 0:
-                result[code] = self._select_fields(
-                    _normalize_market_data_frame(df, field_list=fields),
-                    fields,
-                )
+                # A non-empty cache is not necessarily a usable cache.  In
+                # particular, a prior no-count download may have cached only
+                # the latest bar.  When a caller explicitly asks for N bars,
+                # treat fewer than N as a cache miss so fallback RPC can heal
+                # it instead of returning a partial history as complete.
+                try:
+                    requested_count = int(count)
+                except (TypeError, ValueError):
+                    requested_count = -1
+                if fallback_rpc and requested_count > 0 and df.shape[0] < requested_count:
+                    missing.append(code)
+                else:
+                    result[code] = self._select_fields(
+                        _normalize_market_data_frame(df, field_list=fields),
+                        fields,
+                    )
             else:
                 missing.append(code)
-        if missing and _bool_value(self.client.local_cache_config.get("fallback_rpc"), False):
+        if missing and fallback_rpc:
             fetched = self._pull_and_cache(missing, period, start_time, end_time, count, dividend_type)
             for code in missing:
                 df = fetched.get(code)
@@ -1835,7 +1849,11 @@ class BigQmtXtTrader:
             callback.on_account_status(
                 CompatObject(
                     account_id=str(self.client.account_id or ""),
-                    account_type="STOCK",
+                    # XtAccountStatus follows QMT's numeric account-type
+                    # contract.  Emitting the display string "STOCK" here
+                    # bypasses consumers' ACCOUNT_TYPE_DICT lookup and makes
+                    # a healthy account appear as "未知(STOCK)" in logs.
+                    account_type=SECURITY_ACCOUNT,
                     status=0,  # ACCOUNT_STATUS_OK (MiniQMT XtAccountStatus)
                 )
             )
