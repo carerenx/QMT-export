@@ -1,0 +1,2 @@
+python run_bigqmt.py --strategy Stragety\MiniQMT_Stragety\DayT\DayTradeing_v41_stragety_miniqmt.py --mode 
+live
