@@ -1,0 +1,16 @@
+============================================================
+  日志文件创建: 2026-09-10 09:09:02
+  策略版本: v49 (for MiniQMT Evn)
+  标的: portfolio
+============================================================
+[09:09:04] [连接] MiniQMT 行情服务已连接
+[09:09:05] [账号状态] 8890145315 STOCK: 正常
+[09:09:06] [交易] 已订阅账号 8890145315
+[09:09:06] [RUNTIME] watchdog=15.0s read-RPC-timeout=5.0s instrumented-clients=2; native/router calls may have separate timeouts
+[09:09:06] [PORTFOLIO-START] all account holdings; mode=LIVE
+[09:09:06] [600584.SH] [STATE-RESTORED] same-day state=IDLE REV-count=0 FWD-count=0 MOM-count=0
+[09:09:06] [STATE-BLOCKED] STATE-BLOCKED: incomplete runner initialization; automatic trading stopped; checkpoint retained
+
+============================================================
+  日志结束: 2026-09-10 09:09:07
+============================================================

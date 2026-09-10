@@ -57,13 +57,18 @@ def _pick(obj, *names, default=None):
     return default
 
 
-def exclude_incomplete_daily_bar(dataframe, today=None):
-    """Return daily bars with the current, still-forming trading day removed."""
+# Keep the current daily bar only after the exchange-close data has had a
+# 10-minute settlement buffer.  Before this, it is still an intraday bar.
+DAILY_BAR_FINALIZE_TIME = '15:10:00'
+
+
+def exclude_incomplete_daily_bar(dataframe, today=None, keep_current_day=False):
+    """Remove today's forming daily bar unless the post-close window has passed."""
     if dataframe is None or len(dataframe) == 0:
         return dataframe, False
     today_key = today or datetime.now().strftime('%Y%m%d')
     last_key = str(dataframe.index[-1]).replace('-', '')[:8]
-    if last_key == today_key:
+    if last_key == today_key and not keep_current_day:
         return dataframe.iloc[:-1].copy(), True
     return dataframe, False
 
@@ -428,15 +433,18 @@ class MiniQMTConnector:
         self._daily_snapshot_meta = None
 
     def load_daily_snapshot(self, length, today=None, tick_last_close=0.0,
-                            tick_time=None, retries=3, retry_delay=1.0):
+                            tick_time=None, retries=3, retry_delay=1.0,
+                            now_hms=None, stock_code=None):
         """Load aligned, fresh complete daily bars from MiniQMT's active data source.
 
         Returns a dict with ``adjusted`` (front-adjusted indicator data), ``raw``
         (unadjusted validation data), and ``last_complete_date``.  Returns None
         when freshness or price-source validation fails after all retries.
         """
-        code = cfg.STOCK_QMT
+        code = stock_code or cfg.STOCK_QMT
         today_key = today or datetime.now().strftime('%Y%m%d')
+        current_hms = now_hms or datetime.now().strftime('%H:%M:%S')
+        keep_current_day = current_hms >= DAILY_BAR_FINALIZE_TIME
         end = today_key
         start = (datetime.now() - timedelta(days=365 * 6)).strftime('%Y%m%d')
         fields = ['open', 'high', 'low', 'close', 'volume', 'amount']
@@ -481,10 +489,15 @@ class MiniQMTConnector:
                 adjusted.index = [_normalize_trade_date(v) for v in adjusted.index]
                 raw.index = [_normalize_trade_date(v) for v in raw.index]
                 adjusted, removed_adjusted = exclude_incomplete_daily_bar(
-                    adjusted, today=today_key)
-                raw, removed_raw = exclude_incomplete_daily_bar(raw, today=today_key)
+                    adjusted, today=today_key, keep_current_day=keep_current_day)
+                raw, removed_raw = exclude_incomplete_daily_bar(
+                    raw, today=today_key, keep_current_day=keep_current_day)
                 if removed_adjusted or removed_raw:
                     _log('[DailyData] excluded incomplete current-day bar {}'.format(today_key))
+                elif (keep_current_day and len(adjusted) > 0 and
+                      _normalize_trade_date(adjusted.index[-1]) == today_key):
+                    _log('[DailyData] retained post-close current-day bar {} '
+                         '(after {})'.format(today_key, DAILY_BAR_FINALIZE_TIME))
 
                 # Health-gate the same window the strategy will consume.  Old
                 # suspended/legacy records outside that window are irrelevant.
@@ -508,8 +521,11 @@ class MiniQMTConnector:
                         normalized_dates = sorted(set(
                             _normalize_trade_date(v) for v in trade_dates
                             if _normalize_trade_date(v)))
-                        prior_dates = [d for d in normalized_dates if d < today_key]
-                        expected_date = prior_dates[-1] if prior_dates else ''
+                        if keep_current_day and today_key in normalized_dates:
+                            expected_date = today_key
+                        else:
+                            prior_dates = [d for d in normalized_dates if d < today_key]
+                            expected_date = prior_dates[-1] if prior_dates else ''
                     except Exception as e:
                         expected_date = ''
                         reason = 'trading calendar unavailable: {}'.format(e)

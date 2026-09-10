@@ -1,0 +1,28 @@
+============================================================
+  日志文件创建: 2026-09-07 11:38:55
+  策略版本: v42 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[11:38:55] [连接] MiniQMT 行情服务已连接
+[11:38:55] [START] 长飞光纤 v42 SIGNAL 601869.SH
+[11:38:57] [DailyData] excluded incomplete current-day bar 20260907
+[11:38:59] [DATA-HEALTH] last_complete=20260904 expected=20260904 raw_close=378.80 tick_lastClose=378.80 count=79 aligned=True status=OK
+[11:38:59] [DATA-DBG] last_complete=20260904 hist_open[-3:]=[392.59, 412.0, 399.66] | tick_open=390.0 | lastClose=378.8 | signal_open=390.0 (TICK_OPEN)
+[11:38:59] [VOLUME-DATA] complete_count=79 tail=[125787.0, 118768.0, 100158.0]
+[11:38:59] [SIGNAL] ADAPTIVE-BULL | SignalBase Y390.00 (source: today open tick) | ATR 7.5% | RSI 51 | Vol_ratio 0.71 | Mult 0.42 | Trig Y401.50 [REV-T blocked:adaptive linear bull style]
+[11:38:59] [ADAPTIVE-LINEAR] score +0.2917 | bear<=-0.1176 | bull>=+0.1176 | samples 24 | span 5d | horizon 1d | mean 0.647 | attainable 0.416 | trigger ATR-units 0.416
+[11:38:59] [VOLUME] last 100158 | prev10_avg 150399 (last/10d 0.67x) | prev20_avg 141785 (last/20d 0.71x) | n10=10 n20=20 | VALID
+[11:38:59] [FACTOR] trend -0.20 |  momentum -0.02 |  drawdown +0.11 |  volatility +0.15 |  volume +0.05 | 
+[11:38:59] [ACCOUNT] Position:0 sh Y0(0%) | Cash:Y0 | Sellable:0 lots(0 sh)
+[11:38:59] [REV-T] BLOCKED adaptive linear bull style | plan sell Y401.50 = open Y390.00*(1+ATR 7.52%*linear_units 0.416) | buyback Y396.97 = Y401.50*(1-7.52%*0.15)
+[11:38:59] [FWD-T] BLOCKED insufficient cash for 1 lot; T+1: sellable base shares 0 sh < 100 sh | plan buy Y384.77 = max(floor Y378.30, trail Y384.77) | plan sell Y389.39 = Y384.77*(1+1.2%) | plan 1 lot~Y38,477
+[11:38:59] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[11:38:59] [MOM-CAPACITY] short OFF sellable 0 sh < 100 sh | long OFF insufficient cash for 1 lot; T+1: sellable base shares 0 sh < 100 sh
+[11:38:59] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[11:38:59] [LUNCH 11:38:59]
+[11:39:18] Interrupted by user
+[11:39:18] [STOP] 长飞光纤 v42 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-07 11:39:18
+============================================================

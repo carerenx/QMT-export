@@ -1,0 +1,71 @@
+# v49 实施说明：退出调度与同日恢复
+
+## 本次修正
+
+独立策略：`Stragety/MiniQMT_Stragety/DayT/DayT_v49_StateRecovery.py`。
+基于 v48 完整复制，不导入旧版策略；v48 文件未修改。
+
+1. **修复退出被开仓资格阻断。** 原来 `do_short/do_long` 同时为 False 就跳过整个主状态机。现在仅 IDLE 状态受这个门控限制，已有反T的 SOLD/DIPPING、正T的 BT_BOUGHT/BT_SPIKING 继续处理。具体委托仍检查资金、可卖量及成交，不保证资金不足时也能完成退出。
+2. **同日状态恢复。** 保存主正反T/MOM的交易腿、次数、阈值、已核算委托ID、FIFO账本、毛收益及历史数据。重启恢复也包含已卖至零持仓、但仍需买回的股票，不仅遍历账户当前持仓。
+3. **中断委托保护。** 委托发送前强制写入 inflight 标记；成交处理及调用方状态更新结束、任务返回调度器后，才保存完整状态并清除标记。磁盘保存失败则不发送委托。进程在中间中断，重启不会自动猜测或重发。
+4. **重启核对。** 对比保存时与当前账户全部持仓数量、可卖数量及委托列表（ID、股票、状态、成交量、均价）。账户有未结束委托、查询失败、文件无效、账户不符、同日记录不一致，均停止自动交易。跨日仍有未平T腿同样停止，避免清空旧腿后重新开仓。
+5. **日志修正。** 非交易时段统一提示 NON-TRADING PREVIEW，合格计划不再写 ENABLED；MOM明确“最小单位”和“新开仓动态计算”的区别。
+6. **盘后降频。** 连接探测、资格刷新、持仓刷新及普通状态保存，非交易时段降低到300秒；独立看门狗保留。盘中恢复原有检查频率。委托前后强制保存不受间隔限制。
+
+本次没有降低交易阈值、扩大仓位比例、增加成本保护或改变收益模型。
+
+## 状态文件与参数
+
+策略开头的参数：
+
+| 参数 | 默认 | 含义 |
+| --- | --- | --- |
+| CHECKPOINT_INTERVAL_SEC | 30 | 盘中普通检查点间隔，秒 |
+| OFF_HOURS_REFRESH_SEC | 300 | 非交易时段查询和普通保存间隔，秒 |
+| STATE_FILE | 策略目录/state/v49_账户.json | LIVE状态文件；不同账户分开 |
+
+文件用JSON序列化，并通过临时文件、刷新磁盘、原子替换保存。SIGNAL模式不读写LIVE状态文件。
+常见日志：
+
+```text
+[STATE-NEW] no same-day v49 checkpoint; older-version T legs/counts are NOT reconstructed
+[STATE-SAVED] symbols=2 inflight=False path=...
+[STATE-RESTORED] same-day state=SOLD REV-count=3 FWD-count=0 MOM-count=0
+[STATE-BLOCKED] ... automatic trading stopped; checkpoint retained
+```
+
+普通检查点之间发生崩溃，可能丢失最近不足30秒的峰值跟踪/尚未提交的触发状态；委托发送前后有强制保存，不使用这个时间窗口猜测成交。重启核对偏保守：即便是手工委托状态变化，也可能阻止恢复。
+
+## 启动
+
+先停止旧版本，确认没有旧版本遗留的未完成T腿和未确认委托；不要同时运行两个LIVE策略进程。
+
+```powershell
+python run_bigqmt.py --strategy Stragety/MiniQMT_Stragety/DayT/DayT_v49_StateRecovery.py --mode signal
+```
+
+检查输出后，由用户自行选择启动实盘：
+
+```powershell
+python run_bigqmt.py --strategy Stragety/MiniQMT_Stragety/DayT/DayT_v49_StateRecovery.py --mode live
+```
+
+**首次从v48切换无法还原旧版本的次数与未完成腿。** v49保证的是它启用并保存之后的同日恢复，不是从持仓反推历史成交归属。旧版本当天已有交易时，v49首次计数仍是新会话起点。
+
+出现 STATE-BLOCKED 时，不要直接删除文件绕过。保留日志和状态文件，先在交易终端核对委托、成交和未完成腿，再决定如何处理。当前没有提供自动修复未知成交、隔夜腿自动接续、并发LIVE进程互斥锁或旧版日志迁移工具。
+
+## 验证结果
+
+使用离线mock，不连接实盘、不发送真实委托：
+
+```powershell
+.venv-bigqmt/Scripts/python.exe -m unittest discover -s tests -p 'test_dayt_v4*.py' -q
+```
+
+结果：51项测试通过。退出调度测试内部包含8个子场景；同一测试针对v48运行时8个场景均失败（退出函数调用0次），针对v49均通过。
+
+覆盖：四种已有腿退出状态、开仓次数已达上限、零可卖数量、账户查询失败、零持仓恢复买回腿、次数保留、DataFrame/deque状态恢复、FIFO账本恢复、未完成委托、持仓变化、错误账户、跨日未平腿、保存失败禁止委托、SIGNAL/LIVE隔离，以及v48原有成交/部分成交/超时/毛收益测试在v49上的回归。
+
+另覆盖真实账户调度器在两只股票场景下，先完成全部初始化再保存状态的流程。
+
+`--help`启动检查通过。尚未进行盘中实盘验证；51项测试不代表覆盖所有券商故障、断电场景或证明收益改善。收益仍为未扣费用的毛收益。

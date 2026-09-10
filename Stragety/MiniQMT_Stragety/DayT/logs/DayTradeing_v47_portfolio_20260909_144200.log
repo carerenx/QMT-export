@@ -1,0 +1,115 @@
+============================================================
+  日志文件创建: 2026-09-09 14:42:00
+  策略版本: v47 (for MiniQMT Evn)
+  标的: portfolio
+============================================================
+[14:42:02] [连接] MiniQMT 行情服务已连接
+[14:42:03] [账号状态] 8890145315 STOCK: 正常
+[14:42:03] [交易] 已订阅账号 8890145315
+[14:42:03] [PORTFOLIO-START] all account holdings; mode=LIVE
+[14:42:03] [PORTFOLIO-ADD] 600584.SH shares=900 lot=100
+[14:42:03] [PORTFOLIO-ADD] 601869.SH shares=100 lot=100
+[14:42:03] [600584.SH] [START] v47 LIVE
+[14:42:05] [DailyData] excluded incomplete current-day bar 20260909
+[14:42:07] [DATA-HEALTH] last_complete=20260908 expected=20260908 raw_close=68.60 tick_lastClose=68.60 count=79 aligned=True status=OK
+[14:42:07] [600584.SH] [DATA-DBG] last_complete=20260908 hist_open[-3:]=[71.39, 68.59, 69.57] | tick_open=69.10000000000001 | lastClose=68.6 | signal_open=69.10000000000001 (TICK_OPEN)
+[14:42:07] [600584.SH] [VOLUME-DATA] complete_count=79 tail=[1162919.0, 821696.0, 738361.0]
+[14:42:08] [600584.SH] [T-SIZE PLAN] at base Y69.10: REV 200 sh / FWD 100 sh; rechecked at order submission
+[14:42:08] [600584.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y69.10 (source: today open tick) | ATR 6.4% | RSI 31 | Vol_ratio 0.70 | Mult 0.20 | Trig Y69.80 
+[14:42:08] [600584.SH] [QUANTILE-TREND] score -0.803 | rank 0.243 | trigger-Q 0.307 | samples 70 | span 8d | ATR-units 0.196
+[14:42:08] [600584.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.243*(1-2*tail)) = Q0.307 -> 0.196
+[14:42:08] [600584.SH] [VOLUME] last 738361 | prev10_avg 775339 (last/10d 0.95x) | prev20_avg 1054194 (last/20d 0.70x) | n10=10 n20=20 | VALID
+[14:42:08] [600584.SH] [FACTOR] trend_score -0.80 |  trend_rank +0.24 |  trigger_q +0.31 | 
+[14:42:08] [600584.SH] [ACCOUNT] Position:900 sh Y61,794(82%) | Cash:Y13,302 | Sellable:4 lots(400 sh)
+[14:42:08] [600584.SH] [REV-T] ENABLED 4 lots | plan sell Y69.80 = open Y69.10*(1+ATR 6.37%*quantile_units 0.196) | buyback Y69.13 = Y69.80*(1-6.37%*0.15)
+[14:42:08] [600584.SH] [FWD-T] ENABLED 1 lots | plan buy Y67.28 = max(floor Y67.03, trail Y67.28) | plan sell Y68.09 = Y67.28*(1+1.2%) | plan 1 lot~Y6,728
+[14:42:08] [600584.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% self.trade_lot(100sh) 上限3次 紧急买回关
+[14:42:08] [600584.SH] [MOM-CAPACITY] short ON | long ON
+[14:42:08] [600584.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[14:42:08] [600584.SH] [CONNECTION] market/trade probes OK
+[14:42:08] [600584.SH] [MA-POS] price Y68.66 | MA5 Y68.98: BELOW -0.46% | MA20 Y75.09: BELOW -8.56%
+[14:42:08] [600584.SH] [MA20 RISK] price Y68.66 is below 97% of MA20 (risk line Y72.84)
+[14:42:08] [600584.SH] [OPEN] [Y68.66] [REV-T needs +1.66% to Y69.80] [FWD-T needs -2.01% to Y67.28]
+[14:42:08] [600584.SH] [HB] IDLE Y68.66 REV-T: needs +Y1.14 to Y69.80 | FWD-T: needs -Y1.37 to Y67.29
+[14:42:08] [601869.SH] [START] v47 LIVE
+[14:42:09] [DailyData] excluded incomplete current-day bar 20260909
+[14:42:11] [DATA-HEALTH] last_complete=20260908 expected=20260908 raw_close=416.85 tick_lastClose=416.85 count=79 aligned=True status=OK
+[14:42:11] [601869.SH] [DATA-DBG] last_complete=20260908 hist_open[-3:]=[399.66, 390.0, 400.88] | tick_open=430.0 | lastClose=416.85 | signal_open=430.0 (TICK_OPEN)
+[14:42:11] [601869.SH] [VOLUME-DATA] complete_count=79 tail=[100158.0, 124725.0, 156181.0]
+[14:42:12] [601869.SH] [T-SIZE PLAN] at base Y430.00: REV 0 sh / FWD 0 sh; rechecked at order submission
+[14:42:12] [601869.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y430.00 (source: today open tick) | ATR 6.8% | RSI 68 | Vol_ratio 1.13 | Mult 0.51 | Trig Y444.33 [REV-T blocked:sellable 0 sh < 100 sh]
+[14:42:12] [601869.SH] [QUANTILE-TREND] score +0.445 | rank 0.586 | trigger-Q 0.564 | samples 70 | span 8d | ATR-units 0.513
+[14:42:12] [601869.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.586*(1-2*tail)) = Q0.564 -> 0.513
+[14:42:12] [601869.SH] [VOLUME] last 156181 | prev10_avg 147033 (last/10d 1.06x) | prev20_avg 138013 (last/20d 1.13x) | n10=10 n20=20 | VALID
+[14:42:12] [601869.SH] [FACTOR] trend_score +0.45 |  trend_rank +0.59 |  trigger_q +0.56 | 
+[14:42:12] [601869.SH] [ACCOUNT] Position:100 sh Y44,207(77%) | Cash:Y13,302 | Sellable:0 lots(0 sh)
+[14:42:12] [601869.SH] [REV-T] BLOCKED sellable 0 sh < 100 sh | plan sell Y444.33 = open Y430.00*(1+ATR 6.75%*quantile_units 0.513) | buyback Y439.83 = Y444.33*(1-6.75%*0.15)
+[14:42:12] [601869.SH] [FWD-T] BLOCKED insufficient cash for 1 lot; T+1: sellable base shares 0 sh < 100 sh | plan buy Y433.45 = max(floor Y417.10, trail Y433.45) | plan sell Y438.65 = Y433.45*(1+1.2%) | plan 1 lot~Y43,345
+[14:42:12] [601869.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% self.trade_lot(100sh) 上限3次 紧急买回关
+[14:42:12] [601869.SH] [MOM-CAPACITY] short OFF sellable 0 sh < 100 sh | long OFF insufficient cash for 1 lot; T+1: sellable base shares 0 sh < 100 sh
+[14:42:12] [601869.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[14:42:12] [601869.SH] [CONNECTION] market/trade probes OK
+[14:42:12] [601869.SH] [MA-POS] price Y442.30 | MA5 Y406.38: ABOVE +8.84% | MA20 Y389.36: ABOVE +13.60%
+[14:42:12] [601869.SH] [OPEN] [Y442.30] [REV-T needs +0.46% to Y444.33] [FWD-T needs -2.00% to Y433.45]
+[14:42:12] [601869.SH] [STANDBY] Y442.30 no trade direction
+[14:43:09] [600584.SH] [HB] IDLE Y68.65 REV-T: needs +Y1.15 to Y69.80 | FWD-T: needs -Y1.36 to Y67.29
+[14:44:09] [600584.SH] [HB] IDLE Y68.67 REV-T: needs +Y1.13 to Y69.80 | FWD-T: needs -Y1.37 to Y67.30
+[14:45:09] [600584.SH] [HB] IDLE Y68.67 REV-T: needs +Y1.13 to Y69.80 | FWD-T: needs -Y1.37 to Y67.30
+[14:46:10] [600584.SH] [HB] IDLE Y68.64 REV-T: needs +Y1.16 to Y69.80 | FWD-T: needs -Y1.34 to Y67.30
+[14:47:10] [600584.SH] [HB] IDLE Y68.63 REV-T: needs +Y1.17 to Y69.80 | FWD-T: needs -Y1.33 to Y67.30
+[14:47:15] [601869.SH] [STANDBY] Y443.15 no trade direction
+[14:48:10] [600584.SH] [HB] IDLE Y68.62 REV-T: needs +Y1.18 to Y69.80 | FWD-T: needs -Y1.32 to Y67.30
+[14:49:11] [600584.SH] [HB] IDLE Y68.63 REV-T: needs +Y1.17 to Y69.80 | FWD-T: needs -Y1.33 to Y67.30
+[14:50:11] [600584.SH] [HB] IDLE Y68.62 REV-T: needs +Y1.18 to Y69.80 | FWD-T: needs -Y1.32 to Y67.30
+[14:51:11] [600584.SH] [HB] IDLE Y68.63 REV-T: needs +Y1.17 to Y69.80 | FWD-T: needs -Y1.33 to Y67.30
+[14:52:08] [600584.SH] [MA-POS] price Y68.64 | MA5 Y68.97: BELOW -0.48% | MA20 Y75.09: BELOW -8.59%
+[14:52:08] [600584.SH] [MA20 RISK] price Y68.64 is below 97% of MA20 (risk line Y72.83)
+[14:52:11] [600584.SH] [HB] IDLE Y68.65 REV-T: needs +Y1.15 to Y69.80 | FWD-T: needs -Y1.35 to Y67.30
+[14:52:13] [601869.SH] [MA-POS] price Y443.14 | MA5 Y406.55: ABOVE +9.00% | MA20 Y389.40: ABOVE +13.80%
+[14:52:18] [601869.SH] [STANDBY] Y443.13 no trade direction
+[14:53:12] [600584.SH] [HB] IDLE Y68.63 REV-T: needs +Y1.17 to Y69.80 | FWD-T: needs -Y1.33 to Y67.30
+[14:54:12] [600584.SH] [HB] IDLE Y68.62 REV-T: needs +Y1.18 to Y69.80 | FWD-T: needs -Y1.32 to Y67.30
+[14:55:13] [600584.SH] [HB] IDLE Y68.61 REV-T: needs +Y1.19 to Y69.80 | FWD-T: needs -Y1.31 to Y67.30
+[14:56:13] [600584.SH] [HB] IDLE Y68.64 REV-T: needs +Y1.16 to Y69.80 | FWD-T: needs -Y1.34 to Y67.30
+[14:57:14] [600584.SH] [HB] IDLE Y68.64 REV-T: needs +Y1.16 to Y69.80 | FWD-T: needs -Y1.34 to Y67.30
+[14:57:20] [601869.SH] [STANDBY] Y442.09 no trade direction
+[14:58:13] [600584.SH] [HB] IDLE Y68.64 REV-T: needs +Y1.16 to Y69.80 | FWD-T: needs -Y1.34 to Y67.30
+[14:59:13] [600584.SH] [HB] IDLE Y68.64 REV-T: needs +Y1.16 to Y69.80 | FWD-T: needs -Y1.34 to Y67.30
+[15:02:26] [601869.SH] [CLOSE 15:02:26]
+[15:04:15] [600584.SH] [CLOSE 15:04:15]
+[15:07:32] [601869.SH] [CLOSE 15:07:32]
+[15:09:19] [600584.SH] [CLOSE 15:09:19]
+[15:12:36] [601869.SH] [CLOSE 15:12:36]
+[15:14:23] [600584.SH] [CLOSE 15:14:23]
+[15:17:40] [601869.SH] [CLOSE 15:17:40]
+[15:19:27] [600584.SH] [CLOSE 15:19:27]
+[15:22:45] [601869.SH] [CLOSE 15:22:45]
+[15:24:32] [600584.SH] [CLOSE 15:24:32]
+[15:27:50] [601869.SH] [CLOSE 15:27:50]
+[15:29:37] [600584.SH] [CLOSE 15:29:37]
+[15:32:54] [601869.SH] [CLOSE 15:32:54]
+[15:34:41] [600584.SH] [CLOSE 15:34:41]
+[15:37:58] [601869.SH] [CLOSE 15:37:58]
+[15:39:46] [600584.SH] [CLOSE 15:39:46]
+[15:43:02] [601869.SH] [CLOSE 15:43:02]
+[15:44:50] [600584.SH] [CLOSE 15:44:50]
+[15:48:07] [601869.SH] [CLOSE 15:48:07]
+[15:49:54] [600584.SH] [CLOSE 15:49:54]
+[15:53:10] [601869.SH] [CLOSE 15:53:10]
+[15:54:58] [600584.SH] [CLOSE 15:54:58]
+[15:58:13] [601869.SH] [CLOSE 15:58:13]
+[16:00:03] [600584.SH] [CLOSE 16:00:03]
+[16:03:18] [601869.SH] [CLOSE 16:03:18]
+[16:05:07] [600584.SH] [CLOSE 16:05:07]
+[16:08:22] [601869.SH] [CLOSE 16:08:22]
+[16:10:12] [600584.SH] [CLOSE 16:10:12]
+[16:13:26] [601869.SH] [CLOSE 16:13:26]
+[16:15:17] [600584.SH] [CLOSE 16:15:17]
+[16:18:31] [601869.SH] [CLOSE 16:18:31]
+[16:20:16] [PORTFOLIO-STOP] interrupted
+[16:20:16] [600584.SH] [STOP] 长电科技 v47 cum 0 days gross~Y0
+[16:20:16] [601869.SH] [STOP] 长飞光纤 v47 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-09 16:20:17
+============================================================

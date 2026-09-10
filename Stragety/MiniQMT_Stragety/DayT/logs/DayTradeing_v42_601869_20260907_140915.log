@@ -1,0 +1,127 @@
+============================================================
+  日志文件创建: 2026-09-07 14:09:15
+  策略版本: v42 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[14:09:17] [连接] MiniQMT 行情服务已连接
+[14:09:18] [账号状态] 8890145315 STOCK: 正常
+[14:09:19] [交易] 已订阅账号 8890145315
+[14:09:19] [START] 长飞光纤 v42 LIVE 601869.SH
+[14:09:19] [DailyData] excluded incomplete current-day bar 20260907
+[14:09:20] [DATA-HEALTH] last_complete=20260904 expected=20260904 raw_close=378.80 tick_lastClose=378.80 count=79 aligned=True status=OK
+[14:09:20] [DATA-DBG] last_complete=20260904 hist_open[-3:]=[392.59, 412.0, 399.66] | tick_open=390.0 | lastClose=378.8 | signal_open=390.0 (TICK_OPEN)
+[14:09:20] [VOLUME-DATA] complete_count=79 tail=[125787.0, 118768.0, 100158.0]
+[14:09:20] [SIGNAL] ADAPTIVE-BULL | SignalBase Y390.00 (source: today open tick) | ATR 7.5% | RSI 51 | Vol_ratio 0.71 | Mult 0.38 | Trig Y400.60 [REV-T blocked:adaptive linear bull style]
+[14:09:20] [ADAPTIVE-LINEAR] score +0.2309 | bear<=-0.1191 | bull>=+0.1191 | samples 69 | span 8d | horizon 2d | mean 0.392 | attainable 0.048 | trigger ATR-units 0.376
+[14:09:20] [ADAPTIVE-UNIT-FORMULA] bull-blend units=low-tail 0.125 + 0.938*(mean 0.392 - low-tail 0.125) = 0.376; mean=base 0.541 + tre+0.004 mom+0.023 dra-0.048 vol-0.041 vol-0.087
+[14:09:20] [VOLUME] last 100158 | prev10_avg 150399 (last/10d 0.67x) | prev20_avg 141785 (last/20d 0.71x) | n10=10 n20=20 | VALID
+[14:09:20] [FACTOR] trend -0.54 |  momentum -0.13 |  drawdown +0.69 |  volatility +0.06 |  volume -0.14 | 
+[14:09:20] [ACCOUNT] Position:200 sh Y78,524(99%) | Cash:Y455 | Sellable:2 lots(200 sh)
+[14:09:20] [REV-T] BLOCKED adaptive linear bull style | plan sell Y400.60 = open Y390.00*(1+ATR 7.52%*linear_units 0.376) | buyback Y396.08 = Y400.60*(1-7.52%*0.15)
+[14:09:20] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y384.77 = max(floor Y378.30, trail Y384.77) | plan sell Y389.39 = Y384.77*(1+1.2%) | plan 1 lot~Y38,477
+[14:09:20] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[14:09:20] [MOM-CAPACITY] short ON | long OFF insufficient cash for 1 lot
+[14:09:20] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[14:09:20] [MA-POS] price Y392.62 | MA5 Y394.54: BELOW -0.49% | MA20 Y380.06: ABOVE +3.30%
+[14:09:20] [OPEN] [Y392.62] [REV-T needs +2.03% to Y400.60] [FWD-T needs -2.00% to Y384.77]
+[14:09:20] [STANDBY] Y392.62 no trade direction
+[14:12:05] [MOM spike] 2min +1.00% (3.6×ATR10m 1.00%) Y397.75 → 冲高回落卖出监测 | pullback 0.20% adaptive
+[14:12:10] [MOM-HB] 冲高回落卖出: peak Y398.57 Y398.57 trig±1.00%
+[14:13:11] [MOM-HB] 冲高回落卖出: peak Y399.77 Y399.77 trig±1.00%
+[14:14:02] [MOM sell trig] peak Y399.92 回落0.22% >= 0.20% → Y399.03
+[14:14:02] [ORDER-MOM short] Y399.03 × 100 sh
+[14:14:02]   >>> 下单卖出: PEER x 100股 601869.SH [COMPETE]
+[14:14:03] [委托] 卖 Y340.92 0/100股 -> 已报
+[14:14:03] [委托] 卖 Y340.92 0/100股 -> 已报
+[14:14:03] [成交] 卖 601869.SH Y398.92 x 100股 = Y39,892
+[14:14:03] [委托] 卖 Y340.92 100/100股 -> 全成
+[14:14:04] [FILL-MOM short] Y399.03 × 100 sh | pos 200→100 | cash +39,892
+[14:14:04] [MOM sold] Y399.03 x 100 sh | 买回触发 ≤Y393.04
+[14:14:14] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y398.60 trig±1.00%
+[14:14:24] [STANDBY] Y398.41 no trade direction
+[14:15:15] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y398.11 trig±1.00%
+[14:16:17] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y399.00 trig±1.00%
+[14:17:19] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y399.00 trig±1.00%
+[14:18:20] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y397.88 trig±1.00%
+[14:19:21] [MA-POS] price Y398.20 | MA5 Y395.66: ABOVE +0.64% | MA20 Y380.34: ABOVE +4.70%
+[14:19:21] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y398.20 trig±1.00%
+[14:19:26] [STANDBY] Y398.26 no trade direction
+[14:20:22] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y398.74 trig±1.00%
+[14:21:24] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y398.87 trig±1.00%
+[14:22:25] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y399.22 trig±1.00%
+[14:23:26] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y399.55 trig±1.00%
+[14:24:27] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y399.80 trig±1.00%
+[14:24:27] [STANDBY] Y399.80 no trade direction
+[14:25:28] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y399.88 trig±1.00%
+[14:26:30] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y399.89 trig±1.00%
+[14:27:31] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y399.31 trig±1.00%
+[14:28:32] [MOM-HB] 已卖Y399.03 等跌1.5%买回 Y400.00 trig±1.00%
+[15:31:33] [CLOSE 15:31:33]
+[15:36:33] [CLOSE 15:36:33]
+[15:41:33] [CLOSE 15:41:33]
+[15:46:33] [CLOSE 15:46:33]
+[15:51:33] [CLOSE 15:51:33]
+[15:56:33] [CLOSE 15:56:33]
+[16:01:33] [CLOSE 16:01:33]
+[16:06:33] [CLOSE 16:06:33]
+[16:11:33] [CLOSE 16:11:33]
+[16:16:33] [CLOSE 16:16:33]
+[16:21:33] [CLOSE 16:21:33]
+[16:26:33] [CLOSE 16:26:33]
+[16:31:33] [CLOSE 16:31:33]
+[16:36:33] [CLOSE 16:36:33]
+[16:41:33] [CLOSE 16:41:33]
+[16:46:33] [CLOSE 16:46:33]
+[17:06:05] [CLOSE 17:06:05]
+[17:11:05] [CLOSE 17:11:05]
+[17:16:05] [CLOSE 17:16:05]
+[17:21:05] [CLOSE 17:21:05]
+[17:26:05] [CLOSE 17:26:05]
+[17:31:05] [CLOSE 17:31:05]
+[17:36:05] [CLOSE 17:36:05]
+[17:41:05] [CLOSE 17:41:05]
+[17:46:05] [CLOSE 17:46:05]
+[17:51:05] [CLOSE 17:51:05]
+[17:56:05] [CLOSE 17:56:05]
+[18:01:05] [CLOSE 18:01:05]
+[18:06:06] [CLOSE 18:06:06]
+[18:11:06] [CLOSE 18:11:06]
+[18:16:06] [CLOSE 18:16:06]
+[18:21:06] [CLOSE 18:21:06]
+[18:26:06] [CLOSE 18:26:06]
+[18:31:06] [CLOSE 18:31:06]
+[18:38:11] [CLOSE 18:38:11]
+[18:43:20] [CLOSE 18:43:20]
+[18:48:20] [CLOSE 18:48:20]
+[18:53:20] [CLOSE 18:53:20]
+[18:58:20] [CLOSE 18:58:20]
+[19:03:20] [CLOSE 19:03:20]
+[19:08:20] [CLOSE 19:08:20]
+[19:13:20] [CLOSE 19:13:20]
+[19:18:20] [CLOSE 19:18:20]
+[09:04:15] [DailyData] download failed attempt 1/3: Timeout reading from socket
+[09:05:14] [DATA-STALE] attempt 1/3: trading calendar unavailable: Timeout reading from socket
+[09:07:14] [DailyData] download failed attempt 2/3: Timeout reading from socket
+[09:08:14] [DATA-STALE] attempt 2/3: trading calendar unavailable: Timeout reading from socket
+[09:10:19] [DailyData] download failed attempt 3/3: Timeout reading from socket
+[09:11:18] [DATA-STALE] attempt 3/3: trading calendar unavailable: Timeout reading from socket
+[09:13:16] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[09:13:16] [WAIT 09:01:53] to open 28分7秒
+[09:13:26] [WAIT 09:13:26] to open 16分34秒
+[09:18:26] [WAIT 09:18:26] to open 11分34秒
+[09:23:26] [WAIT 09:23:26] to open 6分34秒
+[09:28:26] [WAIT 09:28:26] to open 1分34秒
+[09:32:57] [SELL-TRIG RECALC] open Y0.00→Y390.00 trig Y0.00→Y390.00 (units 0.240 ATR 3.0%)
+[09:32:57] [OPEN] [Y400.51] [REV-T exceeded by Y10.51] [FWD-T needs -2.00% to Y392.50] [LOCKED]
+[09:33:28] [STANDBY] Y404.05 no trade direction
+[09:34:04] [MOM BLOCKED] daily data unavailable or stale
+[09:38:32] [STANDBY] Y410.97 no trade direction
+[09:43:33] [STANDBY] Y412.66 no trade direction
+[09:48:37] [STANDBY] Y409.50 no trade direction
+[09:53:41] [STANDBY] Y410.14 no trade direction
+[09:58:42] Interrupted by user
+[09:58:43] [STOP] 长飞光纤 v42 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-08 09:58:43
+============================================================
