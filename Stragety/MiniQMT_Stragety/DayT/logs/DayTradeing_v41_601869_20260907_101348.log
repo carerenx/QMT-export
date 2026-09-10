@@ -1,0 +1,89 @@
+============================================================
+  日志文件创建: 2026-09-07 10:13:48
+  策略版本: v41 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[10:13:50] [连接] MiniQMT 行情服务已连接
+[10:13:50] [账号状态] 8890145315 STOCK: 正常
+[10:13:50] [交易] 已订阅账号 8890145315
+[10:13:50] [START] 长飞光纤 v41 LIVE 601869.SH
+[10:13:52] [DailyData] excluded incomplete current-day bar 20260907
+[10:13:54] [DATA-HEALTH] last_complete=20260904 expected=20260904 raw_close=378.80 tick_lastClose=378.80 count=79 aligned=True status=OK
+[10:13:54] [DATA-DBG] last_complete=20260904 hist_open[-3:]=[392.59, 412.0, 399.66] | tick_open=390.0 | lastClose=378.8 | signal_open=390.0 (TICK_OPEN)
+[10:13:54] [VOLUME-DATA] complete_count=79 tail=[125787.0, 118768.0, 100158.0]
+[10:13:55] [SIGNAL] WEAK-BULL | SignalBase Y390.00 (source: today open tick) | ATR 7.5% | RSI 51 | Vol_ratio 0.71 | Mult 0.70 | Trig Y402.31 
+[10:13:55] [VOLUME] last 100158 | prev10_avg 150399 (last/10d 0.67x) | prev20_avg 141785 (last/20d 0.71x) | n10=10 n20=20 | VALID
+[10:13:55] [FACTOR] trend +0.05 |  volatility -0.12 |  volume +0.12 |  RSI +0.00 | 
+[10:13:55] [ACCOUNT] Position:200 sh Y78,380(99%) | Cash:Y455 | Sellable:2 lots(200 sh)
+[10:13:55] [REV-T] ENABLED 2 lots | plan sell Y402.31 = open Y390.00*(1+ATR 7.52%*mult 0.70*scale 0.60) | buyback Y397.77 = Y402.31*(1-7.52%*0.15)
+[10:13:55] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y384.03 = max(floor Y378.30, trail Y384.03) | plan sell Y388.64 = Y384.03*(1+1.2%) | plan 1 lot~Y38,403
+[10:13:55] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[10:13:55] [MOM-CAPACITY] short ON | long OFF insufficient cash for 1 lot
+[10:13:55] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[10:13:55] [MA-POS] price Y391.90 | MA5 Y394.40: BELOW -0.63% | MA20 Y380.02: ABOVE +3.13%
+[10:13:55] [OPEN] [Y391.90] [REV-T needs +2.66% to Y402.31] [FWD-T needs -2.01% to Y384.03]
+[10:13:55] [HB] IDLE Y391.90 REV-T: needs +Y10.41 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:14:55] [HB] IDLE Y390.79 REV-T: needs +Y11.52 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:15:55] [HB] IDLE Y391.90 REV-T: needs +Y10.41 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:16:55] [HB] IDLE Y391.68 REV-T: needs +Y10.63 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:17:56] [HB] IDLE Y391.67 REV-T: needs +Y10.64 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:18:56] [HB] IDLE Y391.01 REV-T: needs +Y11.30 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:19:56] [HB] IDLE Y391.26 REV-T: needs +Y11.05 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:20:57] [HB] IDLE Y390.40 REV-T: needs +Y11.91 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:21:58] [HB] IDLE Y389.48 REV-T: needs +Y12.83 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:22:58] [HB] IDLE Y389.90 REV-T: needs +Y12.41 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:23:55] [MA-POS] price Y389.34 | MA5 Y393.89: BELOW -1.15% | MA20 Y379.90: ABOVE +2.49%
+[10:23:59] [HB] IDLE Y389.34 REV-T: needs +Y12.97 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:24:59] [HB] IDLE Y388.90 REV-T: needs +Y13.41 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:26:00] [HB] IDLE Y388.86 REV-T: needs +Y13.45 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:27:00] [HB] IDLE Y389.82 REV-T: needs +Y12.49 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:28:01] [HB] IDLE Y389.01 REV-T: needs +Y13.30 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:29:01] [HB] IDLE Y387.21 REV-T: needs +Y15.10 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:30:01] [HB] IDLE Y388.20 REV-T: needs +Y14.11 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:31:01] [HB] IDLE Y389.76 REV-T: needs +Y12.55 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:32:02] [HB] IDLE Y390.40 REV-T: needs +Y11.91 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:33:02] [HB] IDLE Y390.17 REV-T: needs +Y12.14 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:33:55] [MA-POS] price Y390.73 | MA5 Y394.16: BELOW -0.87% | MA20 Y379.96: ABOVE +2.83%
+[10:34:03] [HB] IDLE Y390.57 REV-T: needs +Y11.74 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:35:03] [HB] IDLE Y391.68 REV-T: needs +Y10.63 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:36:03] [HB] IDLE Y392.10 REV-T: needs +Y10.21 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:37:04] [HB] IDLE Y392.64 REV-T: needs +Y9.67 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:38:04] [HB] IDLE Y392.67 REV-T: needs +Y9.64 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:39:04] [HB] IDLE Y393.60 REV-T: needs +Y8.71 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:40:04] [HB] IDLE Y395.60 REV-T: needs +Y6.71 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:40:06] [LOCK] P+1.5% M 1.08% D 0.00%
+[10:40:16] [UNLOCK PENDING] 60s
+[10:41:05] [HB] IDLE Y394.08 REV-T: needs +Y8.23 to Y402.31 | FWD-T: off (insufficient cash for 1 lot) | LOCKED
+[10:41:16] [UNLOCK]
+[10:42:05] [HB] IDLE Y394.01 REV-T: needs +Y8.30 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:43:05] [HB] IDLE Y392.70 REV-T: needs +Y9.61 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:43:56] [MA-POS] price Y393.76 | MA5 Y394.77: BELOW -0.26% | MA20 Y380.12: ABOVE +3.59%
+[10:44:06] [HB] IDLE Y394.00 REV-T: needs +Y8.31 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:45:06] [HB] IDLE Y393.11 REV-T: needs +Y9.20 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:46:06] [HB] IDLE Y393.00 REV-T: needs +Y9.31 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:47:07] [HB] IDLE Y393.97 REV-T: needs +Y8.34 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:48:07] [HB] IDLE Y393.25 REV-T: needs +Y9.06 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:49:07] [HB] IDLE Y392.91 REV-T: needs +Y9.40 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:50:07] [HB] IDLE Y393.02 REV-T: needs +Y9.29 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:51:07] [HB] IDLE Y392.50 REV-T: needs +Y9.81 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:52:07] [HB] IDLE Y393.10 REV-T: needs +Y9.21 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:53:08] [HB] IDLE Y393.41 REV-T: needs +Y8.90 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:53:56] [MA-POS] price Y393.10 | MA5 Y394.64: BELOW -0.39% | MA20 Y380.08: ABOVE +3.42%
+[10:54:08] [HB] IDLE Y392.66 REV-T: needs +Y9.65 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:55:09] [HB] IDLE Y391.87 REV-T: needs +Y10.44 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:56:10] [HB] IDLE Y391.66 REV-T: needs +Y10.65 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:57:10] [HB] IDLE Y392.25 REV-T: needs +Y10.06 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:58:10] [HB] IDLE Y392.02 REV-T: needs +Y10.29 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[10:59:10] [HB] IDLE Y391.00 REV-T: needs +Y11.31 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[11:00:11] [HB] IDLE Y390.97 REV-T: needs +Y11.34 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[11:01:11] [HB] IDLE Y390.20 REV-T: needs +Y12.11 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[11:02:12] [HB] IDLE Y390.00 REV-T: needs +Y12.31 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[11:03:12] [HB] IDLE Y390.75 REV-T: needs +Y11.56 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[11:03:57] [MA-POS] price Y391.40 | MA5 Y394.30: BELOW -0.73% | MA20 Y380.00: ABOVE +3.00%
+[11:04:13] [HB] IDLE Y391.40 REV-T: needs +Y10.91 to Y402.31 | FWD-T: off (insufficient cash for 1 lot)
+[11:05:11] Interrupted by user
+[11:05:11] [STOP] 长飞光纤 v41 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-07 11:05:11
+============================================================

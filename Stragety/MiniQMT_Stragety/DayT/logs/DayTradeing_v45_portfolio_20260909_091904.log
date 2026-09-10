@@ -1,0 +1,564 @@
+============================================================
+  日志文件创建: 2026-09-09 09:19:04
+  策略版本: v45 (for MiniQMT Evn)
+  标的: portfolio
+============================================================
+[09:19:07] [连接] MiniQMT 行情服务已连接
+[09:19:07] [账号状态] 8890145315 STOCK: 正常
+[09:19:07] [交易] 已订阅账号 8890145315
+[09:19:07] [PORTFOLIO-START] all account holdings; mode=LIVE
+[09:19:08] [PORTFOLIO-ADD] 600584.SH shares=500 lot=100
+[09:19:08] [PORTFOLIO-ADD] 601869.SH shares=100 lot=100
+[09:19:08] [600584.SH] [START] v45 LIVE
+[09:19:08] [DailyData] excluded incomplete current-day bar 20260909
+[09:19:09] [DATA-HEALTH] last_complete=20260908 expected=20260908 raw_close=68.60 tick_lastClose=68.60 count=79 aligned=True status=OK
+[09:19:09] [600584.SH] [DATA-DBG] last_complete=20260908 hist_open[-3:]=[71.39, 68.59, 69.57] | tick_open=0.0 | lastClose=68.6 | signal_open=68.6 (AFTER-HOURS latest_complete_close)
+[09:19:09] [600584.SH] [AFTER-HOURS] signal open uses latest complete close Y68.60
+[09:19:09] [600584.SH] [VOLUME-DATA] complete_count=79 tail=[1162919.0, 821696.0, 738361.0]
+[09:19:09] [600584.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y68.60 (source: latest complete close; after-hours) | ATR 6.4% | RSI 31 | Vol_ratio 0.70 | Mult 0.20 | Trig Y69.29 
+[09:19:09] [600584.SH] [QUANTILE-TREND] score -0.803 | rank 0.243 | trigger-Q 0.307 | samples 70 | span 8d | ATR-units 0.196
+[09:19:09] [600584.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.243*(1-2*tail)) = Q0.307 -> 0.196
+[09:19:09] [600584.SH] [VOLUME] last 738361 | prev10_avg 775339 (last/10d 0.95x) | prev20_avg 1054194 (last/20d 0.70x) | n10=10 n20=20 | VALID
+[09:19:09] [600584.SH] [FACTOR] trend_score -0.80 |  trend_rank +0.24 |  trigger_q +0.31 | 
+[09:19:09] [600584.SH] [ACCOUNT] Position:500 sh Y34,305(46%) | Cash:Y40,310 | Sellable:5 lots(500 sh)
+[09:19:09] [600584.SH] [REV-T] ENABLED 5 lots | plan sell Y69.29 = open Y68.60*(1+ATR 6.37%*quantile_units 0.196) | buyback Y68.63 = Y69.29*(1-6.37%*0.15)
+[09:19:09] [600584.SH] [FWD-T] ENABLED 5 lots | plan buy Y67.24 = max(floor Y66.54, trail Y67.24) | plan sell Y68.05 = Y67.24*(1+1.2%) | plan 1 lot~Y6,724
+[09:19:09] [600584.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% self.trade_lot(100sh) 上限3次 紧急买回关
+[09:19:09] [600584.SH] [MOM-CAPACITY] short ON | long ON
+[09:19:09] [600584.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[09:19:09] [600584.SH] [CONNECTION] market/trade probes OK
+[09:19:09] [600584.SH] [WAIT 09:19:09] to open 10分51秒
+[09:19:09] [601869.SH] [START] v45 LIVE
+[09:19:10] [DailyData] excluded incomplete current-day bar 20260909
+[09:19:10] [DATA-HEALTH] last_complete=20260908 expected=20260908 raw_close=416.85 tick_lastClose=416.85 count=79 aligned=True status=OK
+[09:19:10] [601869.SH] [DATA-DBG] last_complete=20260908 hist_open[-3:]=[399.66, 390.0, 400.88] | tick_open=0.0 | lastClose=416.85 | signal_open=416.85 (AFTER-HOURS latest_complete_close)
+[09:19:10] [601869.SH] [AFTER-HOURS] signal open uses latest complete close Y416.85
+[09:19:10] [601869.SH] [VOLUME-DATA] complete_count=79 tail=[100158.0, 124725.0, 156181.0]
+[09:19:11] [601869.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y416.85 (source: latest complete close; after-hours) | ATR 6.8% | RSI 68 | Vol_ratio 1.13 | Mult 0.51 | Trig Y430.74 
+[09:19:11] [601869.SH] [QUANTILE-TREND] score +0.445 | rank 0.586 | trigger-Q 0.564 | samples 70 | span 8d | ATR-units 0.513
+[09:19:11] [601869.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.586*(1-2*tail)) = Q0.564 -> 0.513
+[09:19:11] [601869.SH] [VOLUME] last 156181 | prev10_avg 147033 (last/10d 1.06x) | prev20_avg 138013 (last/20d 1.13x) | n10=10 n20=20 | VALID
+[09:19:11] [601869.SH] [FACTOR] trend_score +0.45 |  trend_rank +0.59 |  trigger_q +0.56 | 
+[09:19:11] [601869.SH] [ACCOUNT] Position:100 sh Y42,335(51%) | Cash:Y40,310 | Sellable:1 lots(100 sh)
+[09:19:11] [601869.SH] [REV-T] ENABLED 1 lots | plan sell Y430.74 = open Y416.85*(1+ATR 6.75%*quantile_units 0.513) | buyback Y426.38 = Y430.74*(1-6.75%*0.15)
+[09:19:11] [601869.SH] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y414.88 = max(floor Y404.34, trail Y414.88) | plan sell Y419.86 = Y414.88*(1+1.2%) | plan 1 lot~Y41,488
+[09:19:11] [601869.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% self.trade_lot(100sh) 上限3次 紧急买回关
+[09:19:11] [601869.SH] [MOM-CAPACITY] short ON | long OFF insufficient cash for 1 lot
+[09:19:11] [601869.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[09:19:11] [601869.SH] [CONNECTION] market/trade probes OK
+[09:19:11] [601869.SH] [WAIT 09:19:11] to open 10分49秒
+[09:24:13] [600584.SH] [WAIT 09:24:13] to open 5分47秒
+[09:24:15] [601869.SH] [WAIT 09:24:15] to open 5分45秒
+[09:29:15] [600584.SH] [WAIT 09:29:15] to open 45秒
+[09:29:17] [601869.SH] [WAIT 09:29:17] to open 43秒
+[09:30:06] [600584.SH] [MA-POS] price Y69.30 | MA5 Y69.11: ABOVE +0.28% | MA20 Y75.12: BELOW -7.75%
+[09:30:06] [600584.SH] [MA20 RISK] price Y69.30 is below 97% of MA20 (risk line Y72.87)
+[09:30:06] [600584.SH] [SELL-TRIG RECALC] open Y68.60→Y69.10 trig Y69.29→Y69.96 (units 0.196 ATR 6.4%)
+[09:30:06] [600584.SH] [OPEN] [Y69.30] [REV-T needs +0.95% to Y69.96] [FWD-T needs -2.01% to Y67.91]
+[09:30:09] [601869.SH] [MA-POS] price Y429.95 | MA5 Y403.91: ABOVE +6.45% | MA20 Y388.74: ABOVE +10.60%
+[09:30:09] [601869.SH] [SELL-TRIG RECALC] open Y416.85→Y430.00 trig Y430.74→Y444.89 (units 0.513 ATR 6.8%)
+[09:30:09] [601869.SH] [OPEN] [Y429.95] [REV-T needs +3.47% to Y444.89] [FWD-T needs -2.00% to Y421.35]
+[09:30:16] [600584.SH] [HB] IDLE Y69.35 REV-T: needs +Y0.61 to Y69.96 | FWD-T: needs -Y1.39 to Y67.96
+[09:30:17] [601869.SH] [HB] IDLE Y430.00 REV-T: needs +Y14.89 to Y444.89 | FWD-T: off (insufficient cash for 1 lot)
+[09:31:07] [601869.SH] [LOCK] P+1.6% M 1.62% D 0.00%
+[09:31:16] [600584.SH] [HB] IDLE Y69.51 REV-T: needs +Y0.45 to Y69.96 | FWD-T: needs -Y1.39 to Y68.12
+[09:31:17] [601869.SH] [HB] IDLE Y438.78 REV-T: needs +Y6.11 to Y444.89 | FWD-T: off (insufficient cash for 1 lot) | LOCKED
+[09:32:06] [601869.SH] [UNLOCK PENDING] 60s
+[09:32:17] [600584.SH] [HB] IDLE Y69.45 REV-T: needs +Y0.51 to Y69.96 | FWD-T: needs -Y1.33 to Y68.12
+[09:32:18] [601869.SH] [HB] IDLE Y438.00 REV-T: needs +Y6.89 to Y444.89 | FWD-T: off (insufficient cash for 1 lot) | LOCKED
+[09:33:01] [601869.SH] [UNLOCK PENDING] 60s
+[09:33:17] [600584.SH] [HB] IDLE Y69.58 REV-T: needs +Y0.38 to Y69.96 | FWD-T: needs -Y1.39 to Y68.19
+[09:33:18] [601869.SH] [HB] IDLE Y440.60 REV-T: needs +Y4.29 to Y444.89 | FWD-T: off (insufficient cash for 1 lot) | LOCKED
+[09:34:17] [600584.SH] [HB] IDLE Y69.88 REV-T: needs +Y0.08 to Y69.96 | FWD-T: needs -Y1.40 to Y68.48
+[09:34:18] [601869.SH] [HB] IDLE Y445.95 REV-T: exceeded Y444.89 by Y1.06 | FWD-T: off (insufficient cash for 1 lot) | LOCKED
+[09:34:32] [600584.SH] [REV-T spike #1/5] Y69.97 >= Y69.96
+[09:34:56] [600584.SH] [REV-T sell trig] peak Y70.09 pullback 0.11% → Y70.01
+[09:34:57] [600584.SH] [ORDER-REV-T sell] Y70.01 × 100 sh
+[09:34:57]   >>> 下单卖出: PEER x 100股 600584.SH [COMPETE]
+[09:34:58] [委托] 卖 Y61.74 0/100股 -> 已报
+[09:34:58] [委托] 卖 Y61.74 0/100股 -> 已报
+[09:34:58] [成交] 卖 600584.SH Y69.98 x 100股 = Y6,998
+[09:34:58] [委托] 卖 Y61.74 100/100股 -> 全成
+[09:34:59] [600584.SH] [FILL-REV-T sell] Y70.01 × 100 sh | pos 500→400 | cash +6,998
+[09:35:18] [600584.SH] [HB] SOLD Y69.80 sell Y70.01 -0.3% buyback Y69.34 ladder Y71.06
+[09:35:20] [601869.SH] [HB] IDLE Y446.99 REV-T: exceeded Y444.89 by Y2.10 | FWD-T: off (insufficient cash for 1 lot) | LOCKED
+[09:36:18] [600584.SH] [HB] SOLD Y70.00 sell Y70.01 -0.0% buyback Y69.34 ladder Y71.06
+[09:36:18] [601869.SH] [LIMIT-UP GUARD] Y456.55 / lastClose Y416.85 (+9.52%) -> freeze all new legs
+[09:36:20] [601869.SH] [HB] IDLE Y456.55 REV-T: exceeded Y444.89 by Y11.66 | FWD-T: off (insufficient cash for 1 lot) | LOCKED | LIMIT-UP-GUARD
+[09:37:06] [601869.SH] [UNLOCK PENDING] 60s
+[09:37:10] [601869.SH] [LIMIT-UP GUARD] opening-board retreat +8.49%; hold 120s before release
+[09:37:18] [600584.SH] [HB] SOLD Y69.73 sell Y70.01 -0.4% buyback Y69.34 ladder Y71.06
+[09:37:21] [601869.SH] [HB] IDLE Y450.06 REV-T: exceeded Y444.89 by Y5.17 | FWD-T: off (insufficient cash for 1 lot) | LOCKED | LIMIT-UP-GUARD
+[09:38:12] [601869.SH] [UNLOCK PENDING] 60s
+[09:38:18] [600584.SH] [HB] SOLD Y69.80 sell Y70.01 -0.3% buyback Y69.34 ladder Y71.06
+[09:38:21] [601869.SH] [HB] IDLE Y453.00 REV-T: exceeded Y444.89 by Y8.11 | FWD-T: off (insufficient cash for 1 lot) | LOCKED | LIMIT-UP-GUARD
+[09:39:19] [600584.SH] [HB] SOLD Y69.90 sell Y70.01 -0.2% buyback Y69.34 ladder Y71.06
+[09:39:21] [601869.SH] [HB] IDLE Y457.00 REV-T: exceeded Y444.89 by Y12.11 | FWD-T: off (insufficient cash for 1 lot) | LOCKED | LIMIT-UP-GUARD
+[09:40:07] [600584.SH] [MA-POS] price Y70.22 | MA5 Y69.29: ABOVE +1.34% | MA20 Y75.17: BELOW -6.58%
+[09:40:07] [600584.SH] [MA20 RISK] price Y70.22 is below 97% of MA20 (risk line Y72.91)
+[09:40:09] [601869.SH] [MA-POS] price Y458.54 | MA5 Y409.63: ABOVE +11.94% | MA20 Y390.17: ABOVE +17.52%
+[09:40:19] [600584.SH] [HB] SOLD Y70.20 sell Y70.01 +0.3% buyback Y69.34 ladder Y71.06
+[09:40:21] [601869.SH] [HB] IDLE Y458.54 REV-T: exceeded Y444.89 by Y13.65 | FWD-T: off (insufficient cash for 1 lot) | LOCKED | LIMIT-UP-GUARD
+[09:41:12] [601869.SH] [UNLOCK PENDING] 60s
+[09:41:20] [600584.SH] [HB] SOLD Y70.19 sell Y70.01 +0.3% buyback Y69.34 ladder Y71.06
+[09:41:21] [601869.SH] [HB] IDLE Y458.54 REV-T: exceeded Y444.89 by Y13.65 | FWD-T: off (insufficient cash for 1 lot) | LOCKED | LIMIT-UP-GUARD
+[09:42:20] [600584.SH] [HB] SOLD Y70.11 sell Y70.01 +0.1% buyback Y69.34 ladder Y71.06
+[09:42:22] [601869.SH] [HB] IDLE Y458.54 REV-T: exceeded Y444.89 by Y13.65 | FWD-T: off (insufficient cash for 1 lot) | LOCKED | LIMIT-UP-GUARD
+[09:42:42] [601869.SH] [UNLOCK PENDING] 60s
+[09:43:20] [600584.SH] [HB] SOLD Y70.00 sell Y70.01 -0.0% buyback Y69.34 ladder Y71.06
+[09:43:22] [601869.SH] [HB] IDLE Y458.54 REV-T: exceeded Y444.89 by Y13.65 | FWD-T: off (insufficient cash for 1 lot) | LOCKED | LIMIT-UP-GUARD
+[09:43:24] [601869.SH] [UNLOCK PENDING] 60s
+[09:44:08] [601869.SH] [UNLOCK PENDING] 60s
+[09:44:20] [600584.SH] [HB] SOLD Y70.01 sell Y70.01 +0.0% buyback Y69.34 ladder Y71.06
+[09:44:22] [601869.SH] [HB] IDLE Y458.54 REV-T: exceeded Y444.89 by Y13.65 | FWD-T: off (insufficient cash for 1 lot) | LOCKED | LIMIT-UP-GUARD
+[09:45:09] [601869.SH] [UNLOCK]
+[09:45:21] [600584.SH] [HB] SOLD Y70.03 sell Y70.01 +0.0% buyback Y69.34 ladder Y71.06
+[09:45:23] [601869.SH] [HB] IDLE Y458.54 REV-T: exceeded Y444.89 by Y13.65 | FWD-T: off (insufficient cash for 1 lot) | LIMIT-UP-GUARD
+[09:46:21] [600584.SH] [HB] SOLD Y70.04 sell Y70.01 +0.0% buyback Y69.34 ladder Y71.06
+[09:46:23] [601869.SH] [HB] IDLE Y458.54 REV-T: exceeded Y444.89 by Y13.65 | FWD-T: off (insufficient cash for 1 lot) | LIMIT-UP-GUARD
+[09:47:22] [600584.SH] [HB] SOLD Y69.89 sell Y70.01 -0.2% buyback Y69.34 ladder Y71.06
+[09:47:24] [601869.SH] [HB] IDLE Y458.54 REV-T: exceeded Y444.89 by Y13.65 | FWD-T: off (insufficient cash for 1 lot) | LIMIT-UP-GUARD
+[09:48:22] [600584.SH] [HB] SOLD Y69.83 sell Y70.01 -0.3% buyback Y69.34 ladder Y71.06
+[09:48:24] [601869.SH] [HB] IDLE Y458.54 REV-T: exceeded Y444.89 by Y13.65 | FWD-T: off (insufficient cash for 1 lot) | LIMIT-UP-GUARD
+[09:49:22] [600584.SH] [HB] SOLD Y69.72 sell Y70.01 -0.4% buyback Y69.34 ladder Y71.06
+[09:49:24] [601869.SH] [HB] IDLE Y458.54 REV-T: exceeded Y444.89 by Y13.65 | FWD-T: off (insufficient cash for 1 lot) | LIMIT-UP-GUARD
+[09:49:32] [601869.SH] [MOM BLOCKED] near upper limit guard active
+[09:50:08] [600584.SH] [MA-POS] price Y69.60 | MA5 Y69.17: ABOVE +0.63% | MA20 Y75.14: BELOW -7.37%
+[09:50:08] [600584.SH] [MA20 RISK] price Y69.60 is below 97% of MA20 (risk line Y72.88)
+[09:50:09] [601869.SH] [MA-POS] price Y453.25 | MA5 Y408.57: ABOVE +10.93% | MA20 Y389.90: ABOVE +16.25%
+[09:50:23] [600584.SH] [HB] SOLD Y69.75 sell Y70.01 -0.4% buyback Y69.34 ladder Y71.06
+[09:50:24] [601869.SH] [HB] IDLE Y453.26 REV-T: exceeded Y444.89 by Y8.37 | FWD-T: off (insufficient cash for 1 lot) | LIMIT-UP-GUARD
+[09:51:23] [600584.SH] [HB] SOLD Y69.64 sell Y70.01 -0.5% buyback Y69.34 ladder Y71.06
+[09:51:25] [601869.SH] [HB] IDLE Y452.66 REV-T: exceeded Y444.89 by Y7.77 | FWD-T: off (insufficient cash for 1 lot) | LIMIT-UP-GUARD
+[09:51:27] [601869.SH] [LIMIT-UP GUARD] opening-board retreat +8.49%; hold 120s before release
+[09:51:33] [601869.SH] [LIMIT-UP GUARD] opening-board retreat +8.49%; hold 120s before release
+[09:51:54] [601869.SH] [LIMIT-UP GUARD] opening-board retreat +8.49%; hold 120s before release
+[09:52:23] [600584.SH] [HB] SOLD Y69.48 sell Y70.01 -0.8% buyback Y69.34 ladder Y71.06
+[09:52:25] [601869.SH] [HB] IDLE Y455.00 REV-T: exceeded Y444.89 by Y10.11 | FWD-T: off (insufficient cash for 1 lot) | LIMIT-UP-GUARD
+[09:53:23] [600584.SH] [HB] SOLD Y69.61 sell Y70.01 -0.6% buyback Y69.34 ladder Y71.06
+[09:53:25] [601869.SH] [HB] IDLE Y453.88 REV-T: exceeded Y444.89 by Y8.99 | FWD-T: off (insufficient cash for 1 lot) | LIMIT-UP-GUARD
+[09:54:24] [600584.SH] [HB] SOLD Y69.64 sell Y70.01 -0.5% buyback Y69.34 ladder Y71.06
+[09:54:25] [601869.SH] [HB] IDLE Y452.80 REV-T: exceeded Y444.89 by Y7.91 | FWD-T: off (insufficient cash for 1 lot) | LIMIT-UP-GUARD
+[09:54:33] [601869.SH] [LIMIT-UP GUARD] opening-board retreat +8.48%; hold 120s before release
+[09:55:24] [600584.SH] [HB] SOLD Y69.39 sell Y70.01 -0.9% buyback Y69.34 ladder Y71.06
+[09:55:25] [601869.SH] [HB] IDLE Y450.20 REV-T: exceeded Y444.89 by Y5.31 | FWD-T: off (insufficient cash for 1 lot) | LIMIT-UP-GUARD
+[09:56:23] [600584.SH] [Buyback trig ] Y69.33(-0.97%)
+[09:56:24] [600584.SH] [HB] DIPPING Y69.33 sell Y70.01 -1.0% buyback Y69.34 ladder Y71.06
+[09:56:27] [601869.SH] [HB] IDLE Y449.99 REV-T: exceeded Y444.89 by Y5.10 | FWD-T: off (insufficient cash for 1 lot) | LIMIT-UP-GUARD
+[09:56:34] [601869.SH] [LIMIT-UP GUARD RELEASE] retreat stable for 120s; new legs enabled by capacity
+[09:56:34] [601869.SH] [REV-T spike #1/5] Y449.75 >= Y444.89
+[09:56:42] [601869.SH] [REV-T sell trig] peak Y449.75 pullback 0.14% → Y449.10
+[09:56:43] [601869.SH] [ORDER-REV-T sell] Y449.10 × 100 sh
+[09:56:43]   >>> 下单卖出: PEER x 100股 601869.SH [COMPETE]
+[09:56:43] [委托] 卖 Y375.17 0/100股 -> 已报
+[09:56:43] [委托] 卖 Y375.17 0/100股 -> 已报
+[09:56:43] [成交] 卖 601869.SH Y449.00 x 100股 = Y44,900
+[09:56:43] [委托] 卖 Y375.17 100/100股 -> 全成
+[09:56:44] [601869.SH] [FILL-REV-T sell] Y449.10 × 100 sh | pos 100→0 | cash +44,900
+[09:56:58] [600584.SH] [REV-T buyback trig] low Y69.29 bounce 0.10% → Y69.36
+[09:56:58] [600584.SH] [FIX-BUYBACK] trigger Y69.36 -> ask1/fallback limit Y69.37
+[09:56:59] [600584.SH] [ORDER-REV-T buyback(NORMAL)] Y69.37 × 100 sh
+[09:56:59]   >>> 下单买入: Y69.37 x 100股 600584.SH [FIX]
+[09:56:59] [委托] 买 Y69.37 0/100股 -> 已报
+[09:56:59] [委托] 买 Y69.37 0/100股 -> 已报
+[09:57:05] [成交] 买 600584.SH Y69.37 x 100股 = Y6,937
+[09:57:05] [委托] 买 Y69.37 100/100股 -> 全成
+[09:57:07] [600584.SH] [FILL-REV-T buyback(NORMAL)] Y69.37 × 100 sh | pos 400→500 | cash -6,937
+[09:57:07] [600584.SH] [NEXT-T RECALC #1] REV-T done | avg Y69.7880 | REV Y69.96→Y70.66 | FWD Y68.48→Y67.69
+[09:57:07] [600584.SH] [RESUME] → IDLE (REV-T 1/5, FWD-T 0/5)
+[09:57:07] [600584.SH] [REV-T done] buyback Y69.37 x 100sh gross~Y64
+[09:57:25] [600584.SH] [HB] IDLE Y69.26 REV-T: needs +Y1.40 to Y70.66 | FWD-T: needs -Y1.57 to Y67.69
+[09:57:27] [601869.SH] [HB] SOLD Y447.03 sell Y449.10 -0.5% buyback Y444.55 ladder Y455.84
+[09:58:25] [600584.SH] [HB] IDLE Y69.12 REV-T: needs +Y1.54 to Y70.66 | FWD-T: needs -Y1.43 to Y67.69
+[09:58:27] [601869.SH] [HB] SOLD Y447.90 sell Y449.10 -0.3% buyback Y444.55 ladder Y455.84
+[09:59:25] [600584.SH] [HB] IDLE Y69.13 REV-T: needs +Y1.53 to Y70.66 | FWD-T: needs -Y1.44 to Y67.69
+[09:59:27] [601869.SH] [HB] SOLD Y450.20 sell Y449.10 +0.2% buyback Y444.55 ladder Y455.84
+[10:00:08] [600584.SH] [MA-POS] price Y69.43 | MA5 Y69.13: ABOVE +0.43% | MA20 Y75.13: BELOW -7.58%
+[10:00:08] [600584.SH] [MA20 RISK] price Y69.43 is below 97% of MA20 (risk line Y72.87)
+[10:00:09] [601869.SH] [MA-POS] price Y451.15 | MA5 Y408.15: ABOVE +10.53% | MA20 Y389.80: ABOVE +15.74%
+[10:00:26] [600584.SH] [HB] IDLE Y69.43 REV-T: needs +Y1.23 to Y70.66 | FWD-T: needs -Y1.74 to Y67.69
+[10:00:27] [601869.SH] [HB] SOLD Y450.88 sell Y449.10 +0.4% buyback Y444.55 ladder Y455.84
+[10:01:26] [600584.SH] [HB] IDLE Y69.57 REV-T: needs +Y1.09 to Y70.66 | FWD-T: needs -Y1.88 to Y67.69
+[10:01:28] [601869.SH] [HB] SOLD Y452.00 sell Y449.10 +0.6% buyback Y444.55 ladder Y455.84
+[10:02:27] [600584.SH] [HB] IDLE Y69.64 REV-T: needs +Y1.02 to Y70.66 | FWD-T: needs -Y1.95 to Y67.69
+[10:02:28] [601869.SH] [HB] SOLD Y452.13 sell Y449.10 +0.7% buyback Y444.55 ladder Y455.84
+[10:03:27] [600584.SH] [HB] IDLE Y69.68 REV-T: needs +Y0.98 to Y70.66 | FWD-T: needs -Y1.99 to Y67.69
+[10:03:29] [601869.SH] [HB] SOLD Y451.18 sell Y449.10 +0.5% buyback Y444.55 ladder Y455.84
+[10:04:28] [600584.SH] [HB] IDLE Y69.70 REV-T: needs +Y0.96 to Y70.66 | FWD-T: needs -Y2.01 to Y67.69
+[10:04:30] [601869.SH] [HB] SOLD Y451.08 sell Y449.10 +0.4% buyback Y444.55 ladder Y455.84
+[10:05:28] [600584.SH] [HB] IDLE Y69.53 REV-T: needs +Y1.13 to Y70.66 | FWD-T: needs -Y1.84 to Y67.69
+[10:05:30] [601869.SH] [HB] SOLD Y449.65 sell Y449.10 +0.1% buyback Y444.55 ladder Y455.84
+[10:06:28] [600584.SH] [HB] IDLE Y69.49 REV-T: needs +Y1.17 to Y70.66 | FWD-T: needs -Y1.80 to Y67.69
+[10:06:31] [601869.SH] [HB] SOLD Y448.66 sell Y449.10 -0.1% buyback Y444.55 ladder Y455.84
+[10:07:29] [600584.SH] [HB] IDLE Y69.53 REV-T: needs +Y1.13 to Y70.66 | FWD-T: needs -Y1.84 to Y67.69
+[10:07:31] [601869.SH] [HB] SOLD Y452.56 sell Y449.10 +0.8% buyback Y444.55 ladder Y455.84
+[10:07:52] [601869.SH] [MOM BLOCKED] MOM short: sellable 0 sh < 100 sh
+[10:08:30] [600584.SH] [HB] IDLE Y69.40 REV-T: needs +Y1.26 to Y70.66 | FWD-T: needs -Y1.71 to Y67.69
+[10:08:31] [601869.SH] [HB] SOLD Y451.91 sell Y449.10 +0.6% buyback Y444.55 ladder Y455.84
+[10:09:30] [600584.SH] [HB] IDLE Y69.34 REV-T: needs +Y1.32 to Y70.66 | FWD-T: needs -Y1.65 to Y67.69
+[10:09:32] [601869.SH] [HB] SOLD Y451.50 sell Y449.10 +0.5% buyback Y444.55 ladder Y455.84
+[10:10:09] [600584.SH] [MA-POS] price Y69.37 | MA5 Y69.12: ABOVE +0.36% | MA20 Y75.12: BELOW -7.66%
+[10:10:09] [600584.SH] [MA20 RISK] price Y69.37 is below 97% of MA20 (risk line Y72.87)
+[10:10:10] [601869.SH] [MA-POS] price Y450.19 | MA5 Y407.96: ABOVE +10.35% | MA20 Y389.75: ABOVE +15.51%
+[10:10:31] [600584.SH] [HB] IDLE Y69.37 REV-T: needs +Y1.29 to Y70.66 | FWD-T: needs -Y1.68 to Y67.69
+[10:10:33] [601869.SH] [HB] SOLD Y449.90 sell Y449.10 +0.2% buyback Y444.55 ladder Y455.84
+[10:11:31] [600584.SH] [HB] IDLE Y69.53 REV-T: needs +Y1.13 to Y70.66 | FWD-T: needs -Y1.84 to Y67.69
+[10:11:33] [601869.SH] [HB] SOLD Y451.80 sell Y449.10 +0.6% buyback Y444.55 ladder Y455.84
+[10:12:32] [600584.SH] [HB] IDLE Y69.59 REV-T: needs +Y1.07 to Y70.66 | FWD-T: needs -Y1.90 to Y67.69
+[10:12:34] [601869.SH] [HB] SOLD Y452.44 sell Y449.10 +0.7% buyback Y444.55 ladder Y455.84
+[10:13:32] [600584.SH] [HB] IDLE Y69.59 REV-T: needs +Y1.07 to Y70.66 | FWD-T: needs -Y1.90 to Y67.69
+[10:13:34] [601869.SH] [HB] SOLD Y451.57 sell Y449.10 +0.5% buyback Y444.55 ladder Y455.84
+[10:14:32] [600584.SH] [HB] IDLE Y69.61 REV-T: needs +Y1.05 to Y70.66 | FWD-T: needs -Y1.92 to Y67.69
+[10:14:34] [601869.SH] [HB] SOLD Y451.50 sell Y449.10 +0.5% buyback Y444.55 ladder Y455.84
+[10:15:32] [600584.SH] [HB] IDLE Y69.51 REV-T: needs +Y1.15 to Y70.66 | FWD-T: needs -Y1.82 to Y67.69
+[10:15:35] [601869.SH] [HB] SOLD Y449.60 sell Y449.10 +0.1% buyback Y444.55 ladder Y455.84
+[10:16:33] [600584.SH] [HB] IDLE Y69.42 REV-T: needs +Y1.24 to Y70.66 | FWD-T: needs -Y1.73 to Y67.69
+[10:16:37] [601869.SH] [HB] SOLD Y448.79 sell Y449.10 -0.1% buyback Y444.55 ladder Y455.84
+[10:17:33] [600584.SH] [HB] IDLE Y69.30 REV-T: needs +Y1.36 to Y70.66 | FWD-T: needs -Y1.61 to Y67.69
+[10:17:37] [601869.SH] [HB] SOLD Y446.68 sell Y449.10 -0.5% buyback Y444.55 ladder Y455.84
+[10:18:34] [600584.SH] [HB] IDLE Y69.48 REV-T: needs +Y1.18 to Y70.66 | FWD-T: needs -Y1.79 to Y67.69
+[10:18:38] [601869.SH] [HB] SOLD Y448.90 sell Y449.10 -0.0% buyback Y444.55 ladder Y455.84
+[10:19:34] [600584.SH] [HB] IDLE Y69.61 REV-T: needs +Y1.05 to Y70.66 | FWD-T: needs -Y1.92 to Y67.69
+[10:19:38] [601869.SH] [HB] SOLD Y451.10 sell Y449.10 +0.4% buyback Y444.55 ladder Y455.84
+[10:20:09] [600584.SH] [MA-POS] price Y69.48 | MA5 Y69.14: ABOVE +0.49% | MA20 Y75.13: BELOW -7.52%
+[10:20:09] [600584.SH] [MA20 RISK] price Y69.48 is below 97% of MA20 (risk line Y72.88)
+[10:20:11] [601869.SH] [MA-POS] price Y450.25 | MA5 Y407.97: ABOVE +10.36% | MA20 Y389.75: ABOVE +15.52%
+[10:20:35] [600584.SH] [HB] IDLE Y69.59 REV-T: needs +Y1.07 to Y70.66 | FWD-T: needs -Y1.90 to Y67.69
+[10:20:39] [601869.SH] [HB] SOLD Y451.53 sell Y449.10 +0.5% buyback Y444.55 ladder Y455.84
+[10:21:35] [600584.SH] [HB] IDLE Y69.63 REV-T: needs +Y1.03 to Y70.66 | FWD-T: needs -Y1.94 to Y67.69
+[10:21:40] [601869.SH] [HB] SOLD Y451.30 sell Y449.10 +0.5% buyback Y444.55 ladder Y455.84
+[10:22:35] [600584.SH] [HB] IDLE Y69.56 REV-T: needs +Y1.10 to Y70.66 | FWD-T: needs -Y1.87 to Y67.69
+[10:22:40] [601869.SH] [HB] SOLD Y450.25 sell Y449.10 +0.3% buyback Y444.55 ladder Y455.84
+[10:23:36] [600584.SH] [HB] IDLE Y69.53 REV-T: needs +Y1.13 to Y70.66 | FWD-T: needs -Y1.84 to Y67.69
+[10:23:40] [601869.SH] [HB] SOLD Y451.00 sell Y449.10 +0.4% buyback Y444.55 ladder Y455.84
+[10:24:36] [600584.SH] [HB] IDLE Y69.52 REV-T: needs +Y1.14 to Y70.66 | FWD-T: needs -Y1.83 to Y67.69
+[10:24:40] [601869.SH] [HB] SOLD Y451.28 sell Y449.10 +0.5% buyback Y444.55 ladder Y455.84
+[10:25:37] [600584.SH] [HB] IDLE Y69.45 REV-T: needs +Y1.21 to Y70.66 | FWD-T: needs -Y1.76 to Y67.69
+[10:25:41] [601869.SH] [HB] SOLD Y451.02 sell Y449.10 +0.4% buyback Y444.55 ladder Y455.84
+[10:26:37] [600584.SH] [HB] IDLE Y69.49 REV-T: needs +Y1.17 to Y70.66 | FWD-T: needs -Y1.80 to Y67.69
+[10:26:41] [601869.SH] [HB] SOLD Y450.96 sell Y449.10 +0.4% buyback Y444.55 ladder Y455.84
+[10:27:37] [600584.SH] [HB] IDLE Y69.40 REV-T: needs +Y1.26 to Y70.66 | FWD-T: needs -Y1.71 to Y67.69
+[10:27:42] [601869.SH] [HB] SOLD Y450.91 sell Y449.10 +0.4% buyback Y444.55 ladder Y455.84
+[10:28:38] [600584.SH] [HB] IDLE Y69.26 REV-T: needs +Y1.40 to Y70.66 | FWD-T: needs -Y1.57 to Y67.69
+[10:28:42] [601869.SH] [HB] SOLD Y449.32 sell Y449.10 +0.0% buyback Y444.55 ladder Y455.84
+[10:29:03] [委托] 买 Y69.22 0/400股 -> 已报
+[10:29:03] [成交] 买 600584.SH Y69.21 x 400股 = Y27,684
+[10:29:03] [委托] 买 Y69.22 400/400股 -> 全成
+[10:29:38] [600584.SH] [HB] IDLE Y69.30 REV-T: needs +Y1.36 to Y70.66 | FWD-T: needs -Y1.61 to Y67.69
+[10:29:42] [601869.SH] [HB] SOLD Y448.69 sell Y449.10 -0.1% buyback Y444.55 ladder Y455.84
+[10:30:10] [600584.SH] [MA-POS] price Y69.23 | MA5 Y69.09: ABOVE +0.20% | MA20 Y75.12: BELOW -7.84%
+[10:30:10] [600584.SH] [MA20 RISK] price Y69.23 is below 97% of MA20 (risk line Y72.86)
+[10:30:11] [601869.SH] [MA-POS] price Y448.85 | MA5 Y407.69: ABOVE +10.09% | MA20 Y389.68: ABOVE +15.18%
+[10:30:39] [600584.SH] [HB] IDLE Y69.25 REV-T: needs +Y1.41 to Y70.66 | FWD-T: needs -Y1.56 to Y67.69
+[10:30:43] [601869.SH] [HB] SOLD Y448.78 sell Y449.10 -0.1% buyback Y444.55 ladder Y455.84
+[10:31:39] [600584.SH] [HB] IDLE Y69.16 REV-T: needs +Y1.50 to Y70.66 | FWD-T: needs -Y1.47 to Y67.69
+[10:31:43] [601869.SH] [HB] SOLD Y446.88 sell Y449.10 -0.5% buyback Y444.55 ladder Y455.84
+[10:32:40] [600584.SH] [HB] IDLE Y69.14 REV-T: needs +Y1.52 to Y70.66 | FWD-T: needs -Y1.45 to Y67.69
+[10:32:43] [601869.SH] [HB] SOLD Y446.80 sell Y449.10 -0.5% buyback Y444.55 ladder Y455.84
+[10:33:41] [600584.SH] [HB] IDLE Y69.27 REV-T: needs +Y1.39 to Y70.66 | FWD-T: needs -Y1.58 to Y67.69
+[10:33:43] [601869.SH] [HB] SOLD Y449.01 sell Y449.10 -0.0% buyback Y444.55 ladder Y455.84
+[10:34:41] [600584.SH] [HB] IDLE Y69.21 REV-T: needs +Y1.45 to Y70.66 | FWD-T: needs -Y1.52 to Y67.69
+[10:34:44] [601869.SH] [HB] SOLD Y448.17 sell Y449.10 -0.2% buyback Y444.55 ladder Y455.84
+[10:35:48] [600584.SH] [HB] IDLE Y69.36 REV-T: needs +Y1.30 to Y70.66 | FWD-T: needs -Y1.67 to Y67.69
+[10:35:49] [601869.SH] [HB] SOLD Y448.97 sell Y449.10 -0.0% buyback Y444.55 ladder Y455.84
+[10:36:47] [600584.SH] [HB] IDLE Y69.19 REV-T: needs +Y1.47 to Y70.66 | FWD-T: needs -Y1.50 to Y67.69
+[10:36:49] [601869.SH] [HB] SOLD Y448.90 sell Y449.10 -0.0% buyback Y444.55 ladder Y455.84
+[10:37:48] [600584.SH] [HB] IDLE Y69.30 REV-T: needs +Y1.36 to Y70.66 | FWD-T: needs -Y1.61 to Y67.69
+[10:37:49] [601869.SH] [HB] SOLD Y450.00 sell Y449.10 +0.2% buyback Y444.55 ladder Y455.84
+[10:38:48] [600584.SH] [HB] IDLE Y69.30 REV-T: needs +Y1.36 to Y70.66 | FWD-T: needs -Y1.61 to Y67.69
+[10:38:50] [601869.SH] [HB] SOLD Y448.98 sell Y449.10 -0.0% buyback Y444.55 ladder Y455.84
+[10:39:48] [600584.SH] [HB] IDLE Y69.16 REV-T: needs +Y1.50 to Y70.66 | FWD-T: needs -Y1.47 to Y67.69
+[10:39:51] [601869.SH] [HB] SOLD Y448.56 sell Y449.10 -0.1% buyback Y444.55 ladder Y455.84
+[10:40:10] [600584.SH] [MA-POS] price Y69.17 | MA5 Y69.08: ABOVE +0.13% | MA20 Y75.11: BELOW -7.91%
+[10:40:10] [600584.SH] [MA20 RISK] price Y69.17 is below 97% of MA20 (risk line Y72.86)
+[10:40:11] [601869.SH] [MA-POS] price Y448.56 | MA5 Y407.64: ABOVE +10.04% | MA20 Y389.67: ABOVE +15.11%
+[10:40:49] [600584.SH] [HB] IDLE Y69.26 REV-T: needs +Y1.40 to Y70.66 | FWD-T: needs -Y1.57 to Y67.69
+[10:40:51] [601869.SH] [HB] SOLD Y449.45 sell Y449.10 +0.1% buyback Y444.55 ladder Y455.84
+[10:41:49] [600584.SH] [HB] IDLE Y69.22 REV-T: needs +Y1.44 to Y70.66 | FWD-T: needs -Y1.53 to Y67.69
+[10:41:51] [601869.SH] [HB] SOLD Y449.02 sell Y449.10 -0.0% buyback Y444.55 ladder Y455.84
+[10:42:49] [600584.SH] [HB] IDLE Y69.14 REV-T: needs +Y1.52 to Y70.66 | FWD-T: needs -Y1.45 to Y67.69
+[10:42:52] [601869.SH] [HB] SOLD Y448.71 sell Y449.10 -0.1% buyback Y444.55 ladder Y455.84
+[10:43:50] [600584.SH] [HB] IDLE Y69.14 REV-T: needs +Y1.52 to Y70.66 | FWD-T: needs -Y1.45 to Y67.69
+[10:43:54] [601869.SH] [HB] SOLD Y448.50 sell Y449.10 -0.1% buyback Y444.55 ladder Y455.84
+[10:44:50] [600584.SH] [HB] IDLE Y69.08 REV-T: needs +Y1.58 to Y70.66 | FWD-T: needs -Y1.39 to Y67.69
+[10:44:54] [601869.SH] [HB] SOLD Y447.90 sell Y449.10 -0.3% buyback Y444.55 ladder Y455.84
+[10:45:50] [600584.SH] [HB] IDLE Y69.12 REV-T: needs +Y1.54 to Y70.66 | FWD-T: needs -Y1.43 to Y67.69
+[10:45:55] [601869.SH] [HB] SOLD Y447.90 sell Y449.10 -0.3% buyback Y444.55 ladder Y455.84
+[10:46:52] [600584.SH] [HB] IDLE Y69.12 REV-T: needs +Y1.54 to Y70.66 | FWD-T: needs -Y1.43 to Y67.69
+[10:46:56] [601869.SH] [HB] SOLD Y448.42 sell Y449.10 -0.2% buyback Y444.55 ladder Y455.84
+[10:47:52] [600584.SH] [HB] IDLE Y69.07 REV-T: needs +Y1.59 to Y70.66 | FWD-T: needs -Y1.38 to Y67.69
+[10:47:56] [601869.SH] [HB] SOLD Y448.55 sell Y449.10 -0.1% buyback Y444.55 ladder Y455.84
+[10:48:53] [600584.SH] [HB] IDLE Y68.92 REV-T: needs +Y1.74 to Y70.66 | FWD-T: needs -Y1.23 to Y67.69
+[10:48:57] [601869.SH] [HB] SOLD Y448.34 sell Y449.10 -0.2% buyback Y444.55 ladder Y455.84
+[10:49:53] [600584.SH] [HB] IDLE Y69.00 REV-T: needs +Y1.66 to Y70.66 | FWD-T: needs -Y1.31 to Y67.69
+[10:49:58] [601869.SH] [HB] SOLD Y447.50 sell Y449.10 -0.4% buyback Y444.55 ladder Y455.84
+[10:50:11] [600584.SH] [MA-POS] price Y69.05 | MA5 Y69.06: BELOW -0.01% | MA20 Y75.11: BELOW -8.07%
+[10:50:11] [600584.SH] [MA20 RISK] price Y69.05 is below 97% of MA20 (risk line Y72.85)
+[10:50:12] [601869.SH] [MA-POS] price Y447.62 | MA5 Y407.45: ABOVE +9.86% | MA20 Y389.62: ABOVE +14.89%
+[10:50:54] [600584.SH] [HB] IDLE Y69.05 REV-T: needs +Y1.61 to Y70.66 | FWD-T: needs -Y1.36 to Y67.69
+[10:50:58] [601869.SH] [HB] SOLD Y447.00 sell Y449.10 -0.5% buyback Y444.55 ladder Y455.84
+[10:51:55] [600584.SH] [HB] IDLE Y69.01 REV-T: needs +Y1.65 to Y70.66 | FWD-T: needs -Y1.32 to Y67.69
+[10:51:58] [601869.SH] [HB] SOLD Y446.86 sell Y449.10 -0.5% buyback Y444.55 ladder Y455.84
+[10:52:55] [600584.SH] [HB] IDLE Y68.95 REV-T: needs +Y1.71 to Y70.66 | FWD-T: needs -Y1.26 to Y67.69
+[10:52:59] [601869.SH] [HB] SOLD Y446.60 sell Y449.10 -0.6% buyback Y444.55 ladder Y455.84
+[10:53:56] [600584.SH] [HB] IDLE Y68.86 REV-T: needs +Y1.80 to Y70.66 | FWD-T: needs -Y1.17 to Y67.69
+[10:53:59] [601869.SH] [HB] SOLD Y446.05 sell Y449.10 -0.7% buyback Y444.55 ladder Y455.84
+[10:54:56] [600584.SH] [HB] IDLE Y68.85 REV-T: needs +Y1.81 to Y70.66 | FWD-T: needs -Y1.16 to Y67.69
+[10:54:59] [601869.SH] [HB] SOLD Y448.00 sell Y449.10 -0.2% buyback Y444.55 ladder Y455.84
+[10:55:56] [600584.SH] [HB] IDLE Y68.84 REV-T: needs +Y1.82 to Y70.66 | FWD-T: needs -Y1.15 to Y67.69
+[10:56:00] [601869.SH] [HB] SOLD Y447.01 sell Y449.10 -0.5% buyback Y444.55 ladder Y455.84
+[10:56:56] [600584.SH] [HB] IDLE Y68.80 REV-T: needs +Y1.86 to Y70.66 | FWD-T: needs -Y1.11 to Y67.69
+[10:57:00] [601869.SH] [HB] SOLD Y446.84 sell Y449.10 -0.5% buyback Y444.55 ladder Y455.84
+[10:57:57] [600584.SH] [HB] IDLE Y68.75 REV-T: needs +Y1.91 to Y70.66 | FWD-T: needs -Y1.06 to Y67.69
+[10:58:00] [601869.SH] [HB] SOLD Y446.20 sell Y449.10 -0.6% buyback Y444.55 ladder Y455.84
+[10:58:57] [600584.SH] [HB] IDLE Y68.65 REV-T: needs +Y2.01 to Y70.66 | FWD-T: needs -Y0.96 to Y67.69
+[10:59:00] [601869.SH] [HB] SOLD Y445.09 sell Y449.10 -0.9% buyback Y444.55 ladder Y455.84
+[10:59:58] [600584.SH] [HB] IDLE Y68.78 REV-T: needs +Y1.88 to Y70.66 | FWD-T: needs -Y1.09 to Y67.69
+[11:00:01] [601869.SH] [HB] SOLD Y445.50 sell Y449.10 -0.8% buyback Y444.55 ladder Y455.84
+[11:00:11] [600584.SH] [MA-POS] price Y68.82 | MA5 Y69.01: BELOW -0.28% | MA20 Y75.10: BELOW -8.36%
+[11:00:11] [600584.SH] [MA20 RISK] price Y68.82 is below 97% of MA20 (risk line Y72.84)
+[11:00:12] [601869.SH] [MA-POS] price Y446.00 | MA5 Y407.12: ABOVE +9.55% | MA20 Y389.54: ABOVE +14.49%
+[11:11:55] [601869.SH] [CONNECTION-ALERT] market quote is unavailable; trade account query returned empty
+[11:13:52] [600584.SH] [MA-POS] price Y68.78 | MA5 Y69.00: BELOW -0.32% | MA20 Y75.09: BELOW -8.41%
+[11:13:52] [600584.SH] [MA20 RISK] price Y68.78 is below 97% of MA20 (risk line Y72.84)
+[11:13:52] [600584.SH] [HB] IDLE Y68.78 REV-T: needs +Y1.88 to Y70.66 | FWD-T: needs -Y1.09 to Y67.69
+[11:13:52] [601869.SH] [CONNECTION-RECOVERED] market/trade probes OK
+[11:13:52] [601869.SH] [MA-POS] price Y442.51 | MA5 Y406.43: ABOVE +8.88% | MA20 Y389.37: ABOVE +13.65%
+[11:13:52] [601869.SH] [Buyback trig ] Y442.51(-1.47%)
+[11:13:52] [601869.SH] [HB] DIPPING Y442.51 sell Y449.10 -1.5% buyback Y444.55 ladder Y455.84
+[11:14:52] [600584.SH] [HB] IDLE Y68.73 REV-T: needs +Y1.93 to Y70.66 | FWD-T: needs -Y1.04 to Y67.69
+[11:14:53] [601869.SH] [HB] DIPPING Y442.00 sell Y449.10 -1.6% buyback Y444.55 ladder Y455.84
+[11:15:42] [601869.SH] [REV-T buyback trig] low Y440.92 bounce 0.22% → Y441.88
+[11:15:42] [601869.SH] [FIX-BUYBACK] trigger Y441.88 -> ask1/fallback limit Y441.91
+[11:15:43] [601869.SH] [ORDER-REV-T buyback(NORMAL)] Y441.91 × 100 sh
+[11:15:43]   >>> 下单买入: Y441.91 x 100股 601869.SH [FIX]
+[11:15:43] [委托] 买 Y441.91 0/100股 -> 已报
+[11:15:43] [委托] 买 Y441.91 0/100股 -> 已报
+[11:15:43] [成交] 买 601869.SH Y441.91 x 100股 = Y44,191
+[11:15:43] [委托] 买 Y441.91 100/100股 -> 全成
+[11:15:44] [601869.SH] [FILL-REV-T buyback(NORMAL)] Y441.91 × 100 sh | pos 0→100 | cash -44,191
+[11:15:44] [601869.SH] [NEXT-T RECALC #1] REV-T done | avg Y449.3109 | REV Y444.89→Y464.87 | FWD Y421.35→Y435.83
+[11:15:45] [601869.SH] [RESUME] → IDLE (REV-T 1/5)
+[11:15:45] [601869.SH] [REV-T done] buyback Y441.91 x 100sh gross~Y719
+[11:15:53] [600584.SH] [HB] IDLE Y68.72 REV-T: needs +Y1.94 to Y70.66 | FWD-T: needs -Y1.03 to Y67.69
+[11:15:53] [601869.SH] [HB] IDLE Y441.81 REV-T: needs +Y23.06 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:16:53] [600584.SH] [HB] IDLE Y68.76 REV-T: needs +Y1.90 to Y70.66 | FWD-T: needs -Y1.07 to Y67.69
+[11:16:53] [601869.SH] [HB] IDLE Y442.04 REV-T: needs +Y22.83 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:17:54] [600584.SH] [HB] IDLE Y68.78 REV-T: needs +Y1.88 to Y70.66 | FWD-T: needs -Y1.09 to Y67.69
+[11:17:54] [601869.SH] [HB] IDLE Y442.02 REV-T: needs +Y22.85 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:18:54] [600584.SH] [HB] IDLE Y68.84 REV-T: needs +Y1.82 to Y70.66 | FWD-T: needs -Y1.15 to Y67.69
+[11:18:54] [601869.SH] [HB] IDLE Y442.83 REV-T: needs +Y22.04 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:19:54] [600584.SH] [HB] IDLE Y68.83 REV-T: needs +Y1.83 to Y70.66 | FWD-T: needs -Y1.14 to Y67.69
+[11:19:55] [601869.SH] [HB] IDLE Y442.70 REV-T: needs +Y22.17 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:20:54] [600584.SH] [HB] IDLE Y68.79 REV-T: needs +Y1.87 to Y70.66 | FWD-T: needs -Y1.10 to Y67.69
+[11:20:55] [601869.SH] [HB] IDLE Y441.66 REV-T: needs +Y23.21 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:21:55] [600584.SH] [HB] IDLE Y68.74 REV-T: needs +Y1.92 to Y70.66 | FWD-T: needs -Y1.05 to Y67.69
+[11:21:56] [601869.SH] [HB] IDLE Y441.02 REV-T: needs +Y23.85 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:22:55] [600584.SH] [HB] IDLE Y68.74 REV-T: needs +Y1.92 to Y70.66 | FWD-T: needs -Y1.05 to Y67.69
+[11:22:56] [601869.SH] [HB] IDLE Y441.49 REV-T: needs +Y23.38 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:23:52] [600584.SH] [MA-POS] price Y68.68 | MA5 Y68.98: BELOW -0.44% | MA20 Y75.09: BELOW -8.54%
+[11:23:52] [600584.SH] [MA20 RISK] price Y68.68 is below 97% of MA20 (risk line Y72.84)
+[11:23:53] [601869.SH] [MA-POS] price Y441.00 | MA5 Y406.12: ABOVE +8.59% | MA20 Y389.29: ABOVE +13.28%
+[11:23:55] [600584.SH] [HB] IDLE Y68.69 REV-T: needs +Y1.97 to Y70.66 | FWD-T: needs -Y1.00 to Y67.69
+[11:23:57] [601869.SH] [HB] IDLE Y440.99 REV-T: needs +Y23.88 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:24:56] [600584.SH] [HB] IDLE Y68.70 REV-T: needs +Y1.96 to Y70.66 | FWD-T: needs -Y1.01 to Y67.69
+[11:24:57] [601869.SH] [HB] IDLE Y440.68 REV-T: needs +Y24.19 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:25:56] [600584.SH] [HB] IDLE Y68.69 REV-T: needs +Y1.97 to Y70.66 | FWD-T: needs -Y1.00 to Y67.69
+[11:26:03] [601869.SH] [HB] IDLE Y441.36 REV-T: needs +Y23.51 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:26:56] [600584.SH] [HB] IDLE Y68.69 REV-T: needs +Y1.97 to Y70.66 | FWD-T: needs -Y1.00 to Y67.69
+[11:26:58] [601869.SH] [HB] IDLE Y441.67 REV-T: needs +Y23.20 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:27:57] [600584.SH] [HB] IDLE Y68.71 REV-T: needs +Y1.95 to Y70.66 | FWD-T: needs -Y1.02 to Y67.69
+[11:27:58] [601869.SH] [HB] IDLE Y443.28 REV-T: needs +Y21.59 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:28:57] [600584.SH] [HB] IDLE Y68.69 REV-T: needs +Y1.97 to Y70.66 | FWD-T: needs -Y1.00 to Y67.69
+[11:28:59] [601869.SH] [HB] IDLE Y443.89 REV-T: needs +Y20.98 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:29:58] [600584.SH] [HB] IDLE Y68.67 REV-T: needs +Y1.99 to Y70.66 | FWD-T: needs -Y0.98 to Y67.69
+[11:29:59] [601869.SH] [HB] IDLE Y443.00 REV-T: needs +Y21.87 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[11:35:06] [600584.SH] [LUNCH 11:35:06]
+[11:35:06] [601869.SH] [LUNCH 11:35:06]
+[11:40:12] [600584.SH] [LUNCH 11:40:12]
+[11:40:13] [601869.SH] [LUNCH 11:40:13]
+[11:45:16] [600584.SH] [LUNCH 11:45:16]
+[11:45:17] [601869.SH] [LUNCH 11:45:17]
+[11:50:22] [600584.SH] [LUNCH 11:50:22]
+[11:50:23] [601869.SH] [LUNCH 11:50:23]
+[11:58:03] [600584.SH] [LUNCH 11:58:03]
+[11:58:03] [601869.SH] [LUNCH 11:58:03]
+[12:03:08] [600584.SH] [LUNCH 12:03:08]
+[12:03:08] [601869.SH] [LUNCH 12:03:08]
+[12:08:14] [600584.SH] [LUNCH 12:08:14]
+[12:08:14] [601869.SH] [LUNCH 12:08:14]
+[12:13:20] [600584.SH] [LUNCH 12:13:20]
+[12:13:21] [601869.SH] [LUNCH 12:13:21]
+[13:31:54] [600584.SH] [MA-POS] price Y68.25 | MA5 Y68.90: BELOW -0.94% | MA20 Y75.07: BELOW -9.08%
+[13:31:54] [600584.SH] [MA20 RISK] price Y68.25 is below 97% of MA20 (risk line Y72.82)
+[13:31:54] [600584.SH] [HB] IDLE Y68.25 REV-T: needs +Y2.41 to Y70.66 | FWD-T: needs -Y0.56 to Y67.69
+[13:31:54] [601869.SH] [MA-POS] price Y442.80 | MA5 Y406.48: ABOVE +8.93% | MA20 Y389.38: ABOVE +13.72%
+[13:31:54] [601869.SH] [HB] IDLE Y442.80 REV-T: needs +Y22.07 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:32:49] [600584.SH] [HB] IDLE Y68.30 REV-T: needs +Y2.36 to Y70.66 | FWD-T: needs -Y0.61 to Y67.69
+[13:32:54] [601869.SH] [HB] IDLE Y442.80 REV-T: needs +Y22.07 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:33:50] [600584.SH] [HB] IDLE Y68.29 REV-T: needs +Y2.37 to Y70.66 | FWD-T: needs -Y0.60 to Y67.69
+[13:33:55] [601869.SH] [HB] IDLE Y443.54 REV-T: needs +Y21.33 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:34:50] [600584.SH] [HB] IDLE Y68.30 REV-T: needs +Y2.36 to Y70.66 | FWD-T: needs -Y0.61 to Y67.69
+[13:34:55] [601869.SH] [HB] IDLE Y443.99 REV-T: needs +Y20.88 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:35:50] [600584.SH] [HB] IDLE Y68.31 REV-T: needs +Y2.35 to Y70.66 | FWD-T: needs -Y0.62 to Y67.69
+[13:35:56] [601869.SH] [HB] IDLE Y443.55 REV-T: needs +Y21.32 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:36:50] [600584.SH] [HB] IDLE Y68.34 REV-T: needs +Y2.32 to Y70.66 | FWD-T: needs -Y0.65 to Y67.69
+[13:36:56] [601869.SH] [HB] IDLE Y443.40 REV-T: needs +Y21.47 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:37:50] [600584.SH] [HB] IDLE Y68.35 REV-T: needs +Y2.31 to Y70.66 | FWD-T: needs -Y0.66 to Y67.69
+[13:37:57] [601869.SH] [HB] IDLE Y443.83 REV-T: needs +Y21.04 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:38:51] [600584.SH] [HB] IDLE Y68.31 REV-T: needs +Y2.35 to Y70.66 | FWD-T: needs -Y0.62 to Y67.69
+[13:38:57] [601869.SH] [HB] IDLE Y444.24 REV-T: needs +Y20.63 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:39:51] [600584.SH] [HB] IDLE Y68.30 REV-T: needs +Y2.36 to Y70.66 | FWD-T: needs -Y0.61 to Y67.69
+[13:39:58] [601869.SH] [HB] IDLE Y444.45 REV-T: needs +Y20.42 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:40:51] [600584.SH] [HB] IDLE Y68.40 REV-T: needs +Y2.26 to Y70.66 | FWD-T: needs -Y0.71 to Y67.69
+[13:40:58] [601869.SH] [HB] IDLE Y444.48 REV-T: needs +Y20.39 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:41:52] [600584.SH] [HB] IDLE Y68.37 REV-T: needs +Y2.29 to Y70.66 | FWD-T: needs -Y0.68 to Y67.69
+[13:41:55] [600584.SH] [MA-POS] price Y68.37 | MA5 Y68.92: BELOW -0.80% | MA20 Y75.07: BELOW -8.93%
+[13:41:55] [600584.SH] [MA20 RISK] price Y68.37 is below 97% of MA20 (risk line Y72.82)
+[13:41:55] [601869.SH] [MA-POS] price Y443.50 | MA5 Y406.62: ABOVE +9.07% | MA20 Y389.42: ABOVE +13.89%
+[13:41:58] [601869.SH] [HB] IDLE Y443.50 REV-T: needs +Y21.37 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:42:52] [600584.SH] [HB] IDLE Y68.38 REV-T: needs +Y2.28 to Y70.66 | FWD-T: needs -Y0.69 to Y67.69
+[13:42:59] [601869.SH] [HB] IDLE Y443.50 REV-T: needs +Y21.37 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:43:52] [600584.SH] [HB] IDLE Y68.35 REV-T: needs +Y2.31 to Y70.66 | FWD-T: needs -Y0.66 to Y67.69
+[13:43:59] [601869.SH] [HB] IDLE Y443.30 REV-T: needs +Y21.57 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:44:53] [600584.SH] [HB] IDLE Y68.29 REV-T: needs +Y2.37 to Y70.66 | FWD-T: needs -Y0.60 to Y67.69
+[13:45:00] [601869.SH] [HB] IDLE Y440.16 REV-T: needs +Y24.71 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:45:31] [601869.SH] [MOM BLOCKED] MOM long: T+1 sellable base shares pairing capacity 0 sh (sellable 0 - reserved 0) < 100 sh
+[13:45:53] [600584.SH] [HB] IDLE Y68.21 REV-T: needs +Y2.45 to Y70.66 | FWD-T: needs -Y0.52 to Y67.69
+[13:46:01] [601869.SH] [HB] IDLE Y438.20 REV-T: needs +Y26.67 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:46:53] [600584.SH] [HB] IDLE Y68.23 REV-T: needs +Y2.43 to Y70.66 | FWD-T: needs -Y0.54 to Y67.69
+[13:47:01] [601869.SH] [HB] IDLE Y440.00 REV-T: needs +Y24.87 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:47:53] [600584.SH] [HB] IDLE Y68.24 REV-T: needs +Y2.42 to Y70.66 | FWD-T: needs -Y0.55 to Y67.69
+[13:48:01] [601869.SH] [HB] IDLE Y440.36 REV-T: needs +Y24.51 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:48:54] [600584.SH] [HB] IDLE Y68.31 REV-T: needs +Y2.35 to Y70.66 | FWD-T: needs -Y0.62 to Y67.69
+[13:49:02] [601869.SH] [HB] IDLE Y439.68 REV-T: needs +Y25.19 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:49:54] [600584.SH] [HB] IDLE Y68.34 REV-T: needs +Y2.32 to Y70.66 | FWD-T: needs -Y0.65 to Y67.69
+[13:50:02] [601869.SH] [HB] IDLE Y439.76 REV-T: needs +Y25.11 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:50:54] [600584.SH] [HB] IDLE Y68.37 REV-T: needs +Y2.29 to Y70.66 | FWD-T: needs -Y0.68 to Y67.69
+[13:51:03] [601869.SH] [HB] IDLE Y439.85 REV-T: needs +Y25.02 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:51:54] [600584.SH] [HB] IDLE Y68.37 REV-T: needs +Y2.29 to Y70.66 | FWD-T: needs -Y0.68 to Y67.69
+[13:51:55] [601869.SH] [MA-POS] price Y439.85 | MA5 Y405.89: ABOVE +8.37% | MA20 Y389.23: ABOVE +13.00%
+[13:51:55] [600584.SH] [MA-POS] price Y68.37 | MA5 Y68.92: BELOW -0.80% | MA20 Y75.07: BELOW -8.93%
+[13:51:55] [600584.SH] [MA20 RISK] price Y68.37 is below 97% of MA20 (risk line Y72.82)
+[13:52:03] [601869.SH] [HB] IDLE Y439.85 REV-T: needs +Y25.02 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:52:55] [600584.SH] [HB] IDLE Y68.32 REV-T: needs +Y2.34 to Y70.66 | FWD-T: needs -Y0.63 to Y67.69
+[13:53:03] [601869.SH] [HB] IDLE Y439.80 REV-T: needs +Y25.07 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:53:55] [600584.SH] [HB] IDLE Y68.30 REV-T: needs +Y2.36 to Y70.66 | FWD-T: needs -Y0.61 to Y67.69
+[13:54:04] [601869.SH] [HB] IDLE Y440.00 REV-T: needs +Y24.87 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:54:56] [600584.SH] [HB] IDLE Y68.46 REV-T: needs +Y2.20 to Y70.66 | FWD-T: needs -Y0.77 to Y67.69
+[13:55:04] [601869.SH] [HB] IDLE Y440.20 REV-T: needs +Y24.67 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:55:56] [600584.SH] [HB] IDLE Y68.57 REV-T: needs +Y2.09 to Y70.66 | FWD-T: needs -Y0.88 to Y67.69
+[13:56:05] [601869.SH] [HB] IDLE Y440.70 REV-T: needs +Y24.17 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:56:57] [600584.SH] [HB] IDLE Y68.53 REV-T: needs +Y2.13 to Y70.66 | FWD-T: needs -Y0.84 to Y67.69
+[13:57:05] [601869.SH] [HB] IDLE Y441.80 REV-T: needs +Y23.07 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:57:57] [600584.SH] [HB] IDLE Y68.71 REV-T: needs +Y1.95 to Y70.66 | FWD-T: needs -Y1.02 to Y67.69
+[13:58:05] [601869.SH] [HB] IDLE Y443.69 REV-T: needs +Y21.18 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[13:58:57] [600584.SH] [HB] IDLE Y68.84 REV-T: needs +Y1.82 to Y70.66 | FWD-T: needs -Y1.15 to Y67.69
+[13:59:04] [601869.SH] [LOCK] P+3.3% M 1.00% D 0.00%
+[13:59:06] [601869.SH] [HB] IDLE Y444.40 REV-T: needs +Y20.47 to Y464.87 | FWD-T: off (insufficient cash for 1 lot) | LOCKED
+[13:59:58] [600584.SH] [HB] IDLE Y68.84 REV-T: needs +Y1.82 to Y70.66 | FWD-T: needs -Y1.15 to Y67.69
+[14:00:07] [601869.SH] [HB] IDLE Y444.99 REV-T: needs +Y19.88 to Y464.87 | FWD-T: off (insufficient cash for 1 lot) | LOCKED
+[14:00:34] [601869.SH] [UNLOCK PENDING] 60s
+[14:00:58] [600584.SH] [HB] IDLE Y68.74 REV-T: needs +Y1.92 to Y70.66 | FWD-T: needs -Y1.05 to Y67.69
+[14:01:07] [601869.SH] [HB] IDLE Y442.88 REV-T: needs +Y21.99 to Y464.87 | FWD-T: off (insufficient cash for 1 lot) | LOCKED
+[14:01:34] [601869.SH] [UNLOCK]
+[14:01:55] [601869.SH] [MA-POS] price Y441.86 | MA5 Y406.30: ABOVE +8.75% | MA20 Y389.33: ABOVE +13.49%
+[14:01:56] [600584.SH] [MA-POS] price Y68.67 | MA5 Y68.98: BELOW -0.45% | MA20 Y75.09: BELOW -8.55%
+[14:01:56] [600584.SH] [MA20 RISK] price Y68.67 is below 97% of MA20 (risk line Y72.84)
+[14:01:58] [600584.SH] [HB] IDLE Y68.67 REV-T: needs +Y1.99 to Y70.66 | FWD-T: needs -Y0.98 to Y67.69
+[14:02:07] [601869.SH] [HB] IDLE Y441.81 REV-T: needs +Y23.06 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:02:58] [600584.SH] [HB] IDLE Y68.66 REV-T: needs +Y2.00 to Y70.66 | FWD-T: needs -Y0.97 to Y67.69
+[14:03:07] [601869.SH] [HB] IDLE Y440.70 REV-T: needs +Y24.17 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:03:59] [600584.SH] [HB] IDLE Y68.61 REV-T: needs +Y2.05 to Y70.66 | FWD-T: needs -Y0.92 to Y67.69
+[14:04:08] [601869.SH] [HB] IDLE Y441.39 REV-T: needs +Y23.48 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:04:59] [600584.SH] [HB] IDLE Y68.79 REV-T: needs +Y1.87 to Y70.66 | FWD-T: needs -Y1.10 to Y67.69
+[14:05:16] [601869.SH] [HB] IDLE Y442.90 REV-T: needs +Y21.97 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:06:07] [600584.SH] [HB] IDLE Y68.69 REV-T: needs +Y1.97 to Y70.66 | FWD-T: needs -Y1.00 to Y67.69
+[14:06:22] [601869.SH] [HB] IDLE Y441.93 REV-T: needs +Y22.94 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:07:07] [600584.SH] [HB] IDLE Y68.67 REV-T: needs +Y1.99 to Y70.66 | FWD-T: needs -Y0.98 to Y67.69
+[14:07:22] [601869.SH] [HB] IDLE Y440.71 REV-T: needs +Y24.16 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:08:08] [600584.SH] [HB] IDLE Y68.61 REV-T: needs +Y2.05 to Y70.66 | FWD-T: needs -Y0.92 to Y67.69
+[14:08:22] [601869.SH] [HB] IDLE Y441.86 REV-T: needs +Y23.01 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:09:10] [600584.SH] [HB] IDLE Y68.58 REV-T: needs +Y2.08 to Y70.66 | FWD-T: needs -Y0.89 to Y67.69
+[14:09:23] [601869.SH] [HB] IDLE Y441.27 REV-T: needs +Y23.60 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:10:17] [600584.SH] [HB] IDLE Y68.45 REV-T: needs +Y2.21 to Y70.66 | FWD-T: needs -Y0.76 to Y67.69
+[14:10:24] [601869.SH] [HB] IDLE Y441.06 REV-T: needs +Y23.81 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:11:17] [600584.SH] [HB] IDLE Y68.43 REV-T: needs +Y2.23 to Y70.66 | FWD-T: needs -Y0.74 to Y67.69
+[14:11:24] [601869.SH] [HB] IDLE Y441.00 REV-T: needs +Y23.87 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:11:56] [601869.SH] [MA-POS] price Y440.87 | MA5 Y406.10: ABOVE +8.56% | MA20 Y389.28: ABOVE +13.25%
+[14:11:56] [600584.SH] [MA-POS] price Y68.45 | MA5 Y68.94: BELOW -0.71% | MA20 Y75.08: BELOW -8.83%
+[14:11:56] [600584.SH] [MA20 RISK] price Y68.45 is below 97% of MA20 (risk line Y72.83)
+[14:12:18] [600584.SH] [HB] IDLE Y68.47 REV-T: needs +Y2.19 to Y70.66 | FWD-T: needs -Y0.78 to Y67.69
+[14:12:24] [601869.SH] [HB] IDLE Y441.04 REV-T: needs +Y23.83 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:13:18] [600584.SH] [HB] IDLE Y68.48 REV-T: needs +Y2.18 to Y70.66 | FWD-T: needs -Y0.79 to Y67.69
+[14:13:24] [601869.SH] [HB] IDLE Y441.06 REV-T: needs +Y23.81 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:14:19] [600584.SH] [HB] IDLE Y68.45 REV-T: needs +Y2.21 to Y70.66 | FWD-T: needs -Y0.76 to Y67.69
+[14:14:24] [601869.SH] [HB] IDLE Y441.50 REV-T: needs +Y23.37 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:15:19] [600584.SH] [HB] IDLE Y68.60 REV-T: needs +Y2.06 to Y70.66 | FWD-T: needs -Y0.91 to Y67.69
+[14:15:24] [601869.SH] [HB] IDLE Y441.80 REV-T: needs +Y23.07 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:16:19] [600584.SH] [HB] IDLE Y68.55 REV-T: needs +Y2.11 to Y70.66 | FWD-T: needs -Y0.86 to Y67.69
+[14:16:25] [601869.SH] [HB] IDLE Y442.00 REV-T: needs +Y22.87 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:17:20] [600584.SH] [HB] IDLE Y68.65 REV-T: needs +Y2.01 to Y70.66 | FWD-T: needs -Y0.96 to Y67.69
+[14:17:25] [601869.SH] [HB] IDLE Y442.91 REV-T: needs +Y21.96 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:18:21] [600584.SH] [HB] IDLE Y68.72 REV-T: needs +Y1.94 to Y70.66 | FWD-T: needs -Y1.03 to Y67.69
+[14:18:26] [601869.SH] [HB] IDLE Y444.78 REV-T: needs +Y20.09 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:19:21] [600584.SH] [HB] IDLE Y68.76 REV-T: needs +Y1.90 to Y70.66 | FWD-T: needs -Y1.07 to Y67.69
+[14:19:26] [601869.SH] [HB] IDLE Y444.46 REV-T: needs +Y20.41 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:20:22] [600584.SH] [HB] IDLE Y68.65 REV-T: needs +Y2.01 to Y70.66 | FWD-T: needs -Y0.96 to Y67.69
+[14:20:27] [601869.SH] [HB] IDLE Y444.08 REV-T: needs +Y20.79 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:21:22] [600584.SH] [HB] IDLE Y68.69 REV-T: needs +Y1.97 to Y70.66 | FWD-T: needs -Y1.00 to Y67.69
+[14:21:27] [601869.SH] [HB] IDLE Y443.13 REV-T: needs +Y21.74 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:21:56] [601869.SH] [MA-POS] price Y443.12 | MA5 Y406.55: ABOVE +9.00% | MA20 Y389.40: ABOVE +13.80%
+[14:21:57] [600584.SH] [MA-POS] price Y68.69 | MA5 Y68.98: BELOW -0.43% | MA20 Y75.09: BELOW -8.52%
+[14:21:57] [600584.SH] [MA20 RISK] price Y68.69 is below 97% of MA20 (risk line Y72.84)
+[14:22:22] [600584.SH] [HB] IDLE Y68.63 REV-T: needs +Y2.03 to Y70.66 | FWD-T: needs -Y0.94 to Y67.69
+[14:22:28] [601869.SH] [HB] IDLE Y442.00 REV-T: needs +Y22.87 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:23:22] [600584.SH] [HB] IDLE Y68.77 REV-T: needs +Y1.89 to Y70.66 | FWD-T: needs -Y1.08 to Y67.69
+[14:23:28] [601869.SH] [HB] IDLE Y444.50 REV-T: needs +Y20.37 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:24:23] [600584.SH] [HB] IDLE Y68.82 REV-T: needs +Y1.84 to Y70.66 | FWD-T: needs -Y1.13 to Y67.69
+[14:24:28] [601869.SH] [HB] IDLE Y445.10 REV-T: needs +Y19.77 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:25:23] [600584.SH] [HB] IDLE Y68.85 REV-T: needs +Y1.81 to Y70.66 | FWD-T: needs -Y1.16 to Y67.69
+[14:25:29] [601869.SH] [HB] IDLE Y445.10 REV-T: needs +Y19.77 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:26:23] [600584.SH] [HB] IDLE Y68.76 REV-T: needs +Y1.90 to Y70.66 | FWD-T: needs -Y1.07 to Y67.69
+[14:26:29] [601869.SH] [HB] IDLE Y444.06 REV-T: needs +Y20.81 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:27:24] [600584.SH] [HB] IDLE Y68.66 REV-T: needs +Y2.00 to Y70.66 | FWD-T: needs -Y0.97 to Y67.69
+[14:27:30] [601869.SH] [HB] IDLE Y443.54 REV-T: needs +Y21.33 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:28:24] [600584.SH] [HB] IDLE Y68.68 REV-T: needs +Y1.98 to Y70.66 | FWD-T: needs -Y0.99 to Y67.69
+[14:28:30] [601869.SH] [HB] IDLE Y444.61 REV-T: needs +Y20.26 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:29:25] [600584.SH] [HB] IDLE Y68.69 REV-T: needs +Y1.97 to Y70.66 | FWD-T: needs -Y1.00 to Y67.69
+[14:29:30] [601869.SH] [HB] IDLE Y444.24 REV-T: needs +Y20.63 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:30:25] [600584.SH] [HB] IDLE Y68.73 REV-T: needs +Y1.93 to Y70.66 | FWD-T: needs -Y1.04 to Y67.69
+[14:30:30] [601869.SH] [HB] IDLE Y444.80 REV-T: needs +Y20.07 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:31:26] [600584.SH] [HB] IDLE Y68.71 REV-T: needs +Y1.95 to Y70.66 | FWD-T: needs -Y1.02 to Y67.69
+[14:31:31] [601869.SH] [HB] IDLE Y445.00 REV-T: needs +Y19.87 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:31:57] [601869.SH] [MA-POS] price Y445.44 | MA5 Y407.01: ABOVE +9.44% | MA20 Y389.51: ABOVE +14.36%
+[14:31:57] [600584.SH] [MA-POS] price Y68.68 | MA5 Y68.98: BELOW -0.44% | MA20 Y75.09: BELOW -8.54%
+[14:31:57] [600584.SH] [MA20 RISK] price Y68.68 is below 97% of MA20 (risk line Y72.84)
+[14:32:26] [600584.SH] [HB] IDLE Y68.70 REV-T: needs +Y1.96 to Y70.66 | FWD-T: needs -Y1.01 to Y67.69
+[14:32:32] [601869.SH] [HB] IDLE Y444.97 REV-T: needs +Y19.90 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:33:26] [600584.SH] [HB] IDLE Y68.74 REV-T: needs +Y1.92 to Y70.66 | FWD-T: needs -Y1.05 to Y67.69
+[14:33:32] [601869.SH] [HB] IDLE Y445.20 REV-T: needs +Y19.67 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:34:27] [600584.SH] [HB] IDLE Y68.70 REV-T: needs +Y1.96 to Y70.66 | FWD-T: needs -Y1.01 to Y67.69
+[14:34:33] [601869.SH] [HB] IDLE Y445.20 REV-T: needs +Y19.67 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:35:27] [600584.SH] [HB] IDLE Y68.77 REV-T: needs +Y1.89 to Y70.66 | FWD-T: needs -Y1.08 to Y67.69
+[14:35:33] [601869.SH] [HB] IDLE Y445.01 REV-T: needs +Y19.86 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:36:27] [600584.SH] [HB] IDLE Y68.82 REV-T: needs +Y1.84 to Y70.66 | FWD-T: needs -Y1.13 to Y67.69
+[14:36:34] [601869.SH] [HB] IDLE Y445.19 REV-T: needs +Y19.68 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:37:28] [600584.SH] [HB] IDLE Y68.72 REV-T: needs +Y1.94 to Y70.66 | FWD-T: needs -Y1.03 to Y67.69
+[14:37:34] [601869.SH] [HB] IDLE Y445.25 REV-T: needs +Y19.62 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:38:28] [600584.SH] [HB] IDLE Y68.76 REV-T: needs +Y1.90 to Y70.66 | FWD-T: needs -Y1.07 to Y67.69
+[14:38:35] [601869.SH] [HB] IDLE Y444.82 REV-T: needs +Y20.05 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:39:28] [600584.SH] [HB] IDLE Y68.76 REV-T: needs +Y1.90 to Y70.66 | FWD-T: needs -Y1.07 to Y67.69
+[14:39:35] [601869.SH] [HB] IDLE Y444.70 REV-T: needs +Y20.17 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:39:48] [600584.SH] Interrupted by user
+[14:39:48] [600584.SH] [STOP] 长电科技 v45 cum 1 days gross~Y64
+[14:39:48] [PORTFOLIO-ALERT] 600584.SH worker stopped; inspect its error log
+[14:40:36] [601869.SH] [HB] IDLE Y444.39 REV-T: needs +Y20.48 to Y464.87 | FWD-T: off (insufficient cash for 1 lot)
+[14:41:02] [601869.SH] Interrupted by user
+[14:41:02] [601869.SH] [STOP] 长飞光纤 v45 cum 1 days gross~Y719
+[14:41:02] [PORTFOLIO-ALERT] 601869.SH worker stopped; inspect its error log
+[14:41:03] [PORTFOLIO-STOP] interrupted
+
+============================================================
+  日志结束: 2026-09-09 14:41:04
+============================================================

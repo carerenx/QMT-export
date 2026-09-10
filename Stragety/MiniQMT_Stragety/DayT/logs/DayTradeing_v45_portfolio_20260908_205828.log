@@ -1,0 +1,96 @@
+============================================================
+  日志文件创建: 2026-09-08 20:58:28
+  策略版本: v45 (for MiniQMT Evn)
+  标的: portfolio
+============================================================
+[20:58:31] [连接] MiniQMT 行情服务已连接
+[20:58:32] [账号状态] 8890145315 STOCK: 正常
+[20:58:32] [交易] 已订阅账号 8890145315
+[20:58:32] [PORTFOLIO-START] all account holdings; mode=LIVE
+[20:58:32] [PORTFOLIO-ADD] 600584.SH shares=500 lot=100
+[20:58:32] [PORTFOLIO-ADD] 601869.SH shares=100 lot=100
+[20:58:32] [600584.SH] [START] v45 LIVE
+[20:58:33] [DailyData] retained post-close current-day bar 20260908 (after 15:10:00)
+[20:58:34] [DATA-HEALTH] last_complete=20260908 expected=20260908 raw_close=68.60 tick_lastClose=69.00 count=80 aligned=True status=OK
+[20:58:34] [600584.SH] [DATA-DBG] last_complete=20260908 hist_open[-3:]=[71.39, 68.59, 69.57] | tick_open=69.57000000000001 | lastClose=69.0 | signal_open=68.6 (AFTER-HOURS latest_complete_close)
+[20:58:34] [600584.SH] [AFTER-HOURS] signal open uses latest complete close Y68.60
+[20:58:34] [600584.SH] [VOLUME-DATA] complete_count=80 tail=[1162919.0, 821696.0, 738361.0]
+[20:58:35] [600584.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y68.60 (source: latest complete close; after-hours) | ATR 6.4% | RSI 31 | Vol_ratio 0.70 | Mult 0.20 | Trig Y69.30 
+[20:58:35] [600584.SH] [QUANTILE-TREND] score -0.803 | rank 0.239 | trigger-Q 0.305 | samples 71 | span 8d | ATR-units 0.198
+[20:58:35] [600584.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.239*(1-2*tail)) = Q0.305 -> 0.198
+[20:58:35] [600584.SH] [VOLUME] last 738361 | prev10_avg 775339 (last/10d 0.95x) | prev20_avg 1054194 (last/20d 0.70x) | n10=10 n20=20 | VALID
+[20:58:35] [600584.SH] [FACTOR] trend_score -0.80 |  trend_rank +0.24 |  trigger_q +0.30 | 
+[20:58:35] [600584.SH] [ACCOUNT] Position:500 sh Y34,300(46%) | Cash:Y40,310 | Sellable:5 lots(500 sh)
+[20:58:35] [600584.SH] [REV-T] ENABLED 5 lots | plan sell Y69.30 = open Y68.60*(1+ATR 6.37%*quantile_units 0.198) | buyback Y68.64 = Y69.30*(1-6.37%*0.15)
+[20:58:35] [600584.SH] [FWD-T] ENABLED 5 lots | plan buy Y67.23 = max(floor Y66.54, trail Y67.23) | plan sell Y68.04 = Y67.23*(1+1.2%) | plan 1 lot~Y6,723
+[20:58:35] [600584.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% self.trade_lot(100sh) 上限3次 紧急买回关
+[20:58:35] [600584.SH] [MOM-CAPACITY] short ON | long ON
+[20:58:35] [600584.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[20:58:35] [600584.SH] [CONNECTION] market/trade probes OK
+[20:58:35] [600584.SH] [CLOSE 20:58:35]
+[20:58:35] [601869.SH] [START] v45 LIVE
+[20:58:35] [DailyData] retained post-close current-day bar 20260908 (after 15:10:00)
+[20:58:36] [DATA-HEALTH] last_complete=20260908 expected=20260908 raw_close=416.85 tick_lastClose=400.51 count=80 aligned=True status=OK
+[20:58:36] [601869.SH] [DATA-DBG] last_complete=20260908 hist_open[-3:]=[399.66, 390.0, 400.88] | tick_open=400.88 | lastClose=400.51 | signal_open=416.85 (AFTER-HOURS latest_complete_close)
+[20:58:36] [601869.SH] [AFTER-HOURS] signal open uses latest complete close Y416.85
+[20:58:36] [601869.SH] [VOLUME-DATA] complete_count=80 tail=[100158.0, 124725.0, 156181.0]
+[20:58:36] [601869.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y416.85 (source: latest complete close; after-hours) | ATR 6.8% | RSI 68 | Vol_ratio 1.13 | Mult 0.50 | Trig Y430.32 
+[20:58:36] [601869.SH] [QUANTILE-TREND] score +0.445 | rank 0.578 | trigger-Q 0.558 | samples 71 | span 8d | ATR-units 0.497
+[20:58:36] [601869.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.578*(1-2*tail)) = Q0.558 -> 0.497
+[20:58:36] [601869.SH] [VOLUME] last 156181 | prev10_avg 147033 (last/10d 1.06x) | prev20_avg 138013 (last/20d 1.13x) | n10=10 n20=20 | VALID
+[20:58:36] [601869.SH] [FACTOR] trend_score +0.45 |  trend_rank +0.58 |  trigger_q +0.56 | 
+[20:58:36] [601869.SH] [ACCOUNT] Position:100 sh Y41,685(51%) | Cash:Y40,310 | Sellable:1 lots(100 sh)
+[20:58:36] [601869.SH] [REV-T] ENABLED 1 lots | plan sell Y430.32 = open Y416.85*(1+ATR 6.75%*quantile_units 0.497) | buyback Y425.96 = Y430.32*(1-6.75%*0.15)
+[20:58:36] [601869.SH] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y408.51 = max(floor Y404.34, trail Y408.51) | plan sell Y413.41 = Y408.51*(1+1.2%) | plan 1 lot~Y40,851
+[20:58:36] [601869.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% self.trade_lot(100sh) 上限3次 紧急买回关
+[20:58:36] [601869.SH] [MOM-CAPACITY] short ON | long OFF insufficient cash for 1 lot
+[20:58:36] [601869.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[20:58:36] [601869.SH] [CONNECTION] market/trade probes OK
+[20:58:36] [601869.SH] [CLOSE 20:58:36]
+[21:03:38] [600584.SH] [CLOSE 21:03:38]
+[21:03:40] [601869.SH] [CLOSE 21:03:39]
+[21:08:41] [600584.SH] [CLOSE 21:08:41]
+[21:08:43] [601869.SH] [CLOSE 21:08:43]
+[21:13:44] [600584.SH] [CLOSE 21:13:43]
+[21:13:47] [601869.SH] [CLOSE 21:13:46]
+[09:18:13] [DailyData] excluded incomplete current-day bar 20260909
+[09:18:16] [DATA-HEALTH] last_complete=20260908 expected=20260908 raw_close=68.60 tick_lastClose=68.60 count=79 aligned=True status=OK
+[09:18:16] [600584.SH] [DATA-DBG] last_complete=20260908 hist_open[-3:]=[71.39, 68.59, 69.57] | tick_open=0.0 | lastClose=68.6 | signal_open=68.6 (AFTER-HOURS latest_complete_close)
+[09:18:16] [600584.SH] [AFTER-HOURS] signal open uses latest complete close Y68.60
+[09:18:16] [600584.SH] [VOLUME-DATA] complete_count=79 tail=[1162919.0, 821696.0, 738361.0]
+[09:18:16] [600584.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y68.60 (source: latest complete close; after-hours) | ATR 6.4% | RSI 31 | Vol_ratio 0.70 | Mult 0.20 | Trig Y69.29 
+[09:18:16] [600584.SH] [QUANTILE-TREND] score -0.803 | rank 0.243 | trigger-Q 0.307 | samples 70 | span 8d | ATR-units 0.196
+[09:18:16] [600584.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.243*(1-2*tail)) = Q0.307 -> 0.196
+[09:18:16] [600584.SH] [VOLUME] last 738361 | prev10_avg 775339 (last/10d 0.95x) | prev20_avg 1054194 (last/20d 0.70x) | n10=10 n20=20 | VALID
+[09:18:16] [600584.SH] [FACTOR] trend_score -0.80 |  trend_rank +0.24 |  trigger_q +0.31 | 
+[09:18:16] [600584.SH] [ACCOUNT] Position:500 sh Y34,305(46%) | Cash:Y40,310 | Sellable:5 lots(500 sh)
+[09:18:16] [600584.SH] [REV-T] ENABLED 5 lots | plan sell Y69.29 = open Y68.60*(1+ATR 6.37%*quantile_units 0.196) | buyback Y68.63 = Y69.29*(1-6.37%*0.15)
+[09:18:16] [600584.SH] [FWD-T] ENABLED 5 lots | plan buy Y67.24 = max(floor Y66.54, trail Y67.24) | plan sell Y68.05 = Y67.24*(1+1.2%) | plan 1 lot~Y6,724
+[09:18:16] [600584.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% self.trade_lot(100sh) 上限3次 紧急买回关
+[09:18:16] [600584.SH] [MOM-CAPACITY] short ON | long ON
+[09:18:16] [600584.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[09:18:16] [600584.SH] [WAIT 09:18:11] to open 11分49秒
+[09:18:17] [DailyData] excluded incomplete current-day bar 20260909
+[09:18:19] [DATA-HEALTH] last_complete=20260908 expected=20260908 raw_close=416.85 tick_lastClose=416.85 count=79 aligned=True status=OK
+[09:18:19] [601869.SH] [DATA-DBG] last_complete=20260908 hist_open[-3:]=[399.66, 390.0, 400.88] | tick_open=0.0 | lastClose=416.85 | signal_open=416.85 (AFTER-HOURS latest_complete_close)
+[09:18:19] [601869.SH] [AFTER-HOURS] signal open uses latest complete close Y416.85
+[09:18:19] [601869.SH] [VOLUME-DATA] complete_count=79 tail=[100158.0, 124725.0, 156181.0]
+[09:18:19] [601869.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y416.85 (source: latest complete close; after-hours) | ATR 6.8% | RSI 68 | Vol_ratio 1.13 | Mult 0.51 | Trig Y430.74 
+[09:18:19] [601869.SH] [QUANTILE-TREND] score +0.445 | rank 0.586 | trigger-Q 0.564 | samples 70 | span 8d | ATR-units 0.513
+[09:18:19] [601869.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.586*(1-2*tail)) = Q0.564 -> 0.513
+[09:18:19] [601869.SH] [VOLUME] last 156181 | prev10_avg 147033 (last/10d 1.06x) | prev20_avg 138013 (last/20d 1.13x) | n10=10 n20=20 | VALID
+[09:18:19] [601869.SH] [FACTOR] trend_score +0.45 |  trend_rank +0.59 |  trigger_q +0.56 | 
+[09:18:19] [601869.SH] [ACCOUNT] Position:100 sh Y42,337(51%) | Cash:Y40,310 | Sellable:1 lots(100 sh)
+[09:18:19] [601869.SH] [REV-T] ENABLED 1 lots | plan sell Y430.74 = open Y416.85*(1+ATR 6.75%*quantile_units 0.513) | buyback Y426.38 = Y430.74*(1-6.75%*0.15)
+[09:18:19] [601869.SH] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y414.90 = max(floor Y404.34, trail Y414.90) | plan sell Y419.88 = Y414.90*(1+1.2%) | plan 1 lot~Y41,490
+[09:18:19] [601869.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% self.trade_lot(100sh) 上限3次 紧急买回关
+[09:18:19] [601869.SH] [MOM-CAPACITY] short ON | long OFF insufficient cash for 1 lot
+[09:18:19] [601869.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[09:18:19] [601869.SH] [WAIT 09:18:16] to open 11分44秒
+[09:18:59] [PORTFOLIO-STOP] interrupted
+[09:18:59] [600584.SH] [STOP] 长电科技 v45 cum 0 days gross~Y0
+[09:18:59] [601869.SH] [STOP] 长飞光纤 v45 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-09 09:19:00
+============================================================

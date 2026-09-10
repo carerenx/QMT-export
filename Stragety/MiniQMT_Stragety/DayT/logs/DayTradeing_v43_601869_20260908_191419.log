@@ -1,0 +1,50 @@
+============================================================
+  日志文件创建: 2026-09-08 19:14:19
+  策略版本: v43 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[19:14:25] [连接] MiniQMT 行情服务已连接
+[19:14:25] [账号状态] 8890145315 STOCK: 正常
+[19:14:25] [交易] 已订阅账号 8890145315
+[19:14:25] [START] 长飞光纤 v43 LIVE 601869.SH
+[19:14:27] [DailyData] retained post-close current-day bar 20260908 (after 15:10:00)
+[19:14:28] [DATA-HEALTH] last_complete=20260908 expected=20260908 raw_close=416.85 tick_lastClose=400.51 count=80 aligned=True status=OK
+[19:14:28] [DATA-DBG] last_complete=20260908 hist_open[-3:]=[399.66, 390.0, 400.88] | tick_open=400.88 | lastClose=400.51 | signal_open=416.85 (AFTER-HOURS latest_complete_close)
+[19:14:28] [AFTER-HOURS] signal open uses latest complete close Y416.85
+[19:14:28] [VOLUME-DATA] complete_count=80 tail=[100158.0, 124725.0, 156181.0]
+[19:14:28] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y416.85 (source: latest complete close; after-hours) | ATR 6.8% | RSI 68 | Vol_ratio 1.13 | Mult 0.50 | Trig Y430.32 
+[19:14:28] [QUANTILE-TREND] score +0.445 | rank 0.578 | trigger-Q 0.558 | samples 71 | span 8d | ATR-units 0.497
+[19:14:28] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.578*(1-2*tail)) = Q0.558 -> 0.497
+[19:14:28] [VOLUME] last 156181 | prev10_avg 147033 (last/10d 1.06x) | prev20_avg 138013 (last/20d 1.13x) | n10=10 n20=20 | VALID
+[19:14:28] [FACTOR] trend_score +0.45 |  trend_rank +0.58 |  trigger_q +0.56 | 
+[19:14:28] [ACCOUNT] Position:100 sh Y41,685(51%) | Cash:Y40,310 | Sellable:1 lots(100 sh)
+[19:14:28] [REV-T] ENABLED 1 lots | plan sell Y430.32 = open Y416.85*(1+ATR 6.75%*quantile_units 0.497) | buyback Y425.96 = Y430.32*(1-6.75%*0.15)
+[19:14:28] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y408.51 = max(floor Y404.34, trail Y408.51) | plan sell Y413.41 = Y408.51*(1+1.2%) | plan 1 lot~Y40,851
+[19:14:28] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[19:14:28] [MOM-CAPACITY] short ON | long OFF insufficient cash for 1 lot
+[19:14:28] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[19:14:28] [CLOSE 19:14:28]
+[19:19:28] [CLOSE 19:19:28]
+[19:24:28] [CLOSE 19:24:28]
+[19:29:28] [CLOSE 19:29:28]
+[19:34:28] [CLOSE 19:34:28]
+[19:39:28] [CLOSE 19:39:28]
+[19:44:28] [CLOSE 19:44:28]
+[19:49:28] [CLOSE 19:49:28]
+[19:54:28] [CLOSE 19:54:28]
+[19:59:28] [CLOSE 19:59:28]
+[20:04:28] [CLOSE 20:04:28]
+[20:09:28] [CLOSE 20:09:28]
+[20:14:28] [CLOSE 20:14:28]
+[20:19:28] [CLOSE 20:19:28]
+[20:24:28] [CLOSE 20:24:28]
+[20:29:28] [CLOSE 20:29:28]
+[20:34:28] [CLOSE 20:34:28]
+[20:39:28] [CLOSE 20:39:28]
+[20:44:28] [CLOSE 20:44:28]
+[20:44:48] Interrupted by user
+[20:44:48] [STOP] 长飞光纤 v43 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-08 20:44:48
+============================================================

@@ -1,0 +1,41 @@
+============================================================
+  日志文件创建: 2026-09-07 11:47:59
+  策略版本: v42 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[11:47:59] [连接] MiniQMT 行情服务已连接
+[11:47:59] [START] 长飞光纤 v42 SIGNAL 601869.SH
+[11:48:00] [DailyData] excluded incomplete current-day bar 20260907
+[11:48:02] [DATA-HEALTH] last_complete=20260904 expected=20260904 raw_close=378.80 tick_lastClose=378.80 count=79 aligned=True status=OK
+[11:48:02] [DATA-DBG] last_complete=20260904 hist_open[-3:]=[392.59, 412.0, 399.66] | tick_open=390.0 | lastClose=378.8 | signal_open=390.0 (TICK_OPEN)
+[11:48:02] [VOLUME-DATA] complete_count=79 tail=[125787.0, 118768.0, 100158.0]
+[11:48:02] [SIGNAL] ADAPTIVE-BULL | SignalBase Y390.00 (source: today open tick) | ATR 7.5% | RSI 51 | Vol_ratio 0.71 | Mult 0.12 | Trig Y393.52 [REV-T blocked:adaptive linear bull style]
+[11:48:02] [ADAPTIVE-LINEAR] score +0.2309 | bear<=-0.1191 | bull>=+0.1191 | samples 69 | span 8d | horizon 2d | mean 0.392 | attainable 0.048 | trigger ATR-units 0.125
+[11:48:02] [ADAPTIVE-UNIT-FORMULA] units=clip(mean 0.392 (base 0.541 + tre+0.004 mom+0.023 dra-0.048 vol-0.041 vol-0.087) + lower-residual 1.00*-0.344, [0.125, 1.032]) = 0.125 (tail 0.125)
+[11:48:02] [VOLUME] last 100158 | prev10_avg 150399 (last/10d 0.67x) | prev20_avg 141785 (last/20d 0.71x) | n10=10 n20=20 | VALID
+[11:48:02] [FACTOR] trend -0.54 |  momentum -0.13 |  drawdown +0.69 |  volatility +0.06 |  volume -0.14 | 
+[11:48:02] [ACCOUNT] Position:0 sh Y0(0%) | Cash:Y0 | Sellable:0 lots(0 sh)
+[11:48:02] [REV-T] BLOCKED adaptive linear bull style | plan sell Y393.52 = open Y390.00*(1+ATR 7.52%*linear_units 0.125) | buyback Y389.08 = Y393.52*(1-7.52%*0.15)
+[11:48:02] [FWD-T] BLOCKED insufficient cash for 1 lot; T+1: sellable base shares 0 sh < 100 sh | plan buy Y384.77 = max(floor Y378.30, trail Y384.77) | plan sell Y389.39 = Y384.77*(1+1.2%) | plan 1 lot~Y38,477
+[11:48:02] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[11:48:02] [MOM-CAPACITY] short OFF sellable 0 sh < 100 sh | long OFF insufficient cash for 1 lot; T+1: sellable base shares 0 sh < 100 sh
+[11:48:02] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[11:48:02] [LUNCH 11:48:02]
+[11:53:02] [LUNCH 11:53:02]
+[11:58:02] [LUNCH 11:58:02]
+[12:03:02] [LUNCH 12:03:02]
+[12:08:02] [LUNCH 12:08:02]
+[12:13:02] [LUNCH 12:13:02]
+[12:18:02] [LUNCH 12:18:02]
+[12:23:02] [LUNCH 12:23:02]
+[12:28:02] [LUNCH 12:28:02]
+[12:33:03] [LUNCH 12:33:03]
+[12:38:03] [LUNCH 12:38:03]
+[12:43:03] [LUNCH 12:43:03]
+[12:48:03] [LUNCH 12:48:03]
+[13:40:35] Interrupted by user
+[13:40:35] [STOP] 长飞光纤 v42 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-07 13:40:35
+============================================================

@@ -1,0 +1,75 @@
+============================================================
+  日志文件创建: 2026-09-09 16:20:32
+  策略版本: v48 (for MiniQMT Evn)
+  标的: portfolio
+============================================================
+[16:20:40] [连接] MiniQMT 行情服务已连接
+[16:20:41] [账号状态] 8890145315 STOCK: 正常
+[16:20:42] [交易] 已订阅账号 8890145315
+[16:20:42] [RUNTIME] watchdog=15.0s read-RPC-timeout=5.0s instrumented-clients=2; native/router calls may have separate timeouts
+[16:20:42] [PORTFOLIO-START] all account holdings; mode=LIVE
+[16:20:42] [PORTFOLIO-ADD] 600584.SH shares=900 lot=100
+[16:20:42] [PORTFOLIO-ADD] 601869.SH shares=100 lot=100
+[16:20:42] [600584.SH] [START] v48 LIVE
+[16:20:44] [DailyData] retained post-close current-day bar 20260909 (after 15:10:00)
+[16:20:46] [DATA-HEALTH] last_complete=20260909 expected=20260909 raw_close=68.64 tick_lastClose=68.60 count=80 aligned=True status=OK
+[16:20:46] [600584.SH] [DATA-DBG] last_complete=20260909 hist_open[-3:]=[68.59, 69.57, 69.1] | tick_open=69.10000000000001 | lastClose=68.6 | signal_open=68.64 (AFTER-HOURS latest_complete_close)
+[16:20:46] [600584.SH] [AFTER-HOURS] signal open uses latest complete close Y68.64
+[16:20:46] [600584.SH] [VOLUME-DATA] complete_count=80 tail=[821696.0, 738361.0, 613675.0]
+[16:20:46] [600584.SH] [T-SIZE PLAN] at base Y68.64: REV 200 sh / FWD 100 sh; rechecked at order submission
+[16:20:47] [600584.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y68.64 (source: latest complete close; after-hours) | ATR 4.9% | RSI 26 | Vol_ratio 0.60 | Mult 0.26 | Trig Y69.51 
+[16:20:47] [600584.SH] [QUANTILE-TREND] score -0.600 | rank 0.310 | trigger-Q 0.357 | samples 71 | span 8d | ATR-units 0.259
+[16:20:47] [600584.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.310*(1-2*tail)) = Q0.357 -> 0.259
+[16:20:47] [600584.SH] [VOLUME] last 613675 | prev10_avg 762994 (last/10d 0.80x) | prev20_avg 1025718 (last/20d 0.60x) | n10=10 n20=20 | VALID
+[16:20:47] [600584.SH] [FACTOR] trend_score -0.60 |  trend_rank +0.31 |  trigger_q +0.36 | 
+[16:20:47] [600584.SH] [ACCOUNT] Position:900 sh Y61,776(52%) | Cash:Y13,302 | Sellable:4 lots(400 sh)
+[16:20:48] [600584.SH] [REV-T] ENABLED plan 200 sh / remaining 5 entries | plan sell Y69.51 = open Y68.64*(1+ATR 4.89%*quantile_units 0.259) | buyback Y69.00 = Y69.51*(1-4.89%*0.15)
+[16:20:48] [600584.SH] [FWD-T] ENABLED plan 100 sh / remaining 5 entries | plan buy Y67.27 = max(floor Y66.58, trail Y67.27) | plan sell Y68.08 = Y67.27*(1+1.2%) | planned value~Y6,727
+[16:20:48] [600584.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% self.trade_lot(100sh) 上限3次 紧急买回关
+[16:20:48] [600584.SH] [MOM-CAPACITY] short ON | long ON
+[16:20:48] [600584.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[16:20:48] [600584.SH] [CONNECTION] market/trade probes OK
+[16:20:48] [600584.SH] [CLOSE 16:20:48]
+[16:20:48] [601869.SH] [START] v48 LIVE
+[16:20:49] [DailyData] retained post-close current-day bar 20260909 (after 15:10:00)
+[16:20:51] [DATA-HEALTH] last_complete=20260909 expected=20260909 raw_close=442.03 tick_lastClose=416.85 count=80 aligned=True status=OK
+[16:20:51] [601869.SH] [DATA-DBG] last_complete=20260909 hist_open[-3:]=[390.0, 400.88, 430.0] | tick_open=430.0 | lastClose=416.85 | signal_open=442.03000000000003 (AFTER-HOURS latest_complete_close)
+[16:20:51] [601869.SH] [AFTER-HOURS] signal open uses latest complete close Y442.03
+[16:20:51] [601869.SH] [VOLUME-DATA] complete_count=80 tail=[124725.0, 156181.0, 198414.0]
+[16:20:51] [601869.SH] [T-SIZE PLAN] at base Y442.03: REV 0 sh / FWD 0 sh; rechecked at order submission
+[16:20:51] [601869.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y442.03 (source: latest complete close; after-hours) | ATR 6.5% | RSI 70 | Vol_ratio 1.41 | Mult 0.70 | Trig Y462.25 [REV-T blocked:sellable 0 sh < 100 sh]
+[16:20:51] [601869.SH] [QUANTILE-TREND] score +1.203 | rank 0.789 | trigger-Q 0.717 | samples 71 | span 8d | ATR-units 0.700
+[16:20:51] [601869.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.789*(1-2*tail)) = Q0.717 -> 0.700
+[16:20:51] [601869.SH] [VOLUME] last 198414 | prev10_avg 141748 (last/10d 1.40x) | prev20_avg 140775 (last/20d 1.41x) | n10=10 n20=20 | VALID
+[16:20:51] [601869.SH] [FACTOR] trend_score +1.20 |  trend_rank +0.79 |  trigger_q +0.72 | 
+[16:20:51] [601869.SH] [ACCOUNT] Position:100 sh Y44,203(37%) | Cash:Y13,302 | Sellable:0 lots(0 sh)
+[16:20:52] [601869.SH] [REV-T] BLOCKED sellable 0 sh < 100 sh | plan sell Y462.25 = open Y442.03*(1+ATR 6.54%*quantile_units 0.700) | buyback Y457.72 = Y462.25*(1-6.54%*0.15)
+[16:20:52] [601869.SH] [FWD-T] BLOCKED insufficient cash for 1 lot; T+1: sellable base shares 0 sh < 100 sh | plan buy Y433.19 = max(floor Y428.77, trail Y433.19) | plan sell Y438.39 = Y433.19*(1+1.2%) | planned value~Y0
+[16:20:52] [601869.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% self.trade_lot(100sh) 上限3次 紧急买回关
+[16:20:52] [601869.SH] [MOM-CAPACITY] short OFF sellable 0 sh < 100 sh | long OFF insufficient cash for 1 lot; T+1: sellable base shares 0 sh < 100 sh
+[16:20:52] [601869.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[16:20:52] [601869.SH] [CONNECTION] market/trade probes OK
+[16:20:52] [601869.SH] [CLOSE 16:20:52]
+[16:25:55] [600584.SH] [CLOSE 16:25:55]
+[16:26:00] [601869.SH] [CLOSE 16:25:59]
+[16:31:03] [600584.SH] [CLOSE 16:31:02]
+[16:31:09] [601869.SH] [CLOSE 16:31:08]
+[16:36:11] [601869.SH] [CLOSE 16:36:11]
+[16:36:13] [600584.SH] [CLOSE 16:36:12]
+[16:41:14] [601869.SH] [CLOSE 16:41:14]
+[16:41:14] [600584.SH] [CLOSE 16:41:14]
+[16:46:19] [601869.SH] [CLOSE 16:46:17]
+[16:46:19] [600584.SH] [CLOSE 16:46:19]
+[16:51:20] [601869.SH] [CLOSE 16:51:20]
+[16:51:24] [600584.SH] [CLOSE 16:51:24]
+[16:56:25] [601869.SH] [CLOSE 16:56:25]
+[16:56:25] [600584.SH] [CLOSE 16:56:25]
+[17:01:29] [601869.SH] [CLOSE 17:01:27]
+[17:01:32] [600584.SH] [CLOSE 17:01:32]
+[17:05:20] [PORTFOLIO-STOP] interrupted
+[17:05:20] [600584.SH] [STOP] 长电科技 v48 cum 0 days gross~Y0
+[17:05:20] [601869.SH] [STOP] 长飞光纤 v48 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-09 17:05:21
+============================================================
