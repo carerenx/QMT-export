@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 """
 ================================================================================
- MiniQMT — QMT day trading v49：退出独立调度、同日状态恢复与重启核对
+ MiniQMT — QMT day trading v50：弱势反弹参考价与转强撤回
 ================================================================================
 
- [v49 改动] (基于 v48 独立策略代码，不导入旧版策略)
+ [v50 改动] (基于 v49 独立策略代码，不导入旧版策略)
+   - 原始阈值不变，持续弱势时增加ATR反弹/均价参考，转强恢复原阈值。
+   - 触价后仍等待回撤确认；已有交易腿退出目标不变。
+   - 沿用v49状态文件；升级不重置当日次数和成交账本。
    - 新开仓资格不再阻断已有反T/正T交易腿退出。
    - 委托前写入中断标记；完整处理后保存交易腿、次数与执行账本。
    - 同日重启核对账户持仓和委托，未知成交/跨日未平腿停止自动交易。
@@ -15,10 +18,10 @@
    - 强趋势抬高反T启动价以保留趋势收益，弱趋势降低启动价以提高频率。
 
  [run mode]
- python "Stragety/MiniQMT_Stragety/DayT/DayT_v49_StateRecovery.py" --mode signal
- python "Stragety/MiniQMT_Stragety/DayT/DayT_v49_StateRecovery.py" --mode live
+ python "Stragety/MiniQMT_Stragety/DayT/DayT_v50_IntradayRebound.py" --mode signal
+ python "Stragety/MiniQMT_Stragety/DayT/DayT_v50_IntradayRebound.py" --mode live
 
- python run_bigqmt.py --strategy Stragety/MiniQMT_Stragety/DayT/DayT_v49_StateRecovery.py --mode live
+ python run_bigqmt.py --strategy Stragety/MiniQMT_Stragety/DayT/DayT_v50_IntradayRebound.py --mode live
 ================================================================================
 """
 import os, sys, time as _time, argparse, math, traceback as _traceback
@@ -27,7 +30,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 import numpy as np, pandas as pd
 
-# Permit the documented ``python Stragety/.../DayT_v49...py`` command.
+# Permit the documented ``python Stragety/.../DayT_v50...py`` command.
 _STRATEGY_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _REPOSITORY_ROOT = os.path.dirname(os.path.dirname(_STRATEGY_ROOT))
 for _module_root in (_REPOSITORY_ROOT, _STRATEGY_ROOT):
@@ -40,6 +43,7 @@ from core.quantile_trend_regime import compute_quantile_trend_regime
 from core.atr_reentry import calculate_atr_reentry
 from core.t_position_size import calculate_t_shares
 from core.execution_book import ExecutionBook
+from core.intraday_rebound import rebound_reference
 from core.dayt_checkpoint import read_checkpoint, write_checkpoint
 from core.runtime_watchdog import RuntimeWatchdog, instrument_rpc
 from core.connection_monitor import probe_connections
@@ -49,9 +53,23 @@ from Stragety.MiniQMT_Stragety.DayT.infra.connector import (
     get_trade_detail_data, order_shares, set_global_conn,
 )
 
-# 状态文件独立于旧版本；只记录 v49 启用后的交易，不反推旧版成交。
+# 状态文件独立于旧版本；只记录 v50 启用后的交易，不反推旧版成交。
 # 普通运行每 30 秒保存；每笔委托前、处理完成后强制保存。
+# v50沿用v49账户检查点，保留已确认的次数、交易腿与账本。不得同时运行。
+# 仅调整未开仓反T启动价；原开盘价阈值和已有买回目标保持不变。
+REBOUND_ENABLED = True
+REBOUND_WINDOW_SEC = 600       # 近期低点窗口，10分钟
+REBOUND_CONFIRM_SEC = 180      # 连续弱势确认，3分钟
+REBOUND_ATR_UNITS = 0.25       # 从近期低点至少反弹多少倍日ATR
+REBOUND_MIN_PCT = 0.008        # 最小反弹0.8%，过滤微小波动
+REBOUND_MAX_PCT = 0.02         # 反弹距离最高2%，不等于收益或止损上限
+REBOUND_AVERAGE_UNITS = 0.05   # 卖出参考价至少在日内均价上方0.05倍ATR
+REBOUND_WEAK_UNITS = 0.08      # 低于开盘价、均价至少此ATR幅度才累计弱势时间
+REBOUND_STRONG_UNITS = 0.15    # 收复均价并超过此ATR幅度，撤回降阈值
+REENTRY_WEAK_DISCOUNT = 0.35   # 第二轮及以后：弱势最强时，上行ATR系数最多折减35%
+REENTRY_WEAK_FULL_UNITS = 0.25 # 低于开盘价/均价较低者0.25倍ATR时，弱势程度达到1
 CHECKPOINT_INTERVAL_SEC = 30
+STATE_SAVE_LOG_INTERVAL_SEC = 300  # 保存成功日志最多每5分钟打印一次；不影响实际保存频率
 # 非交易时段的连接、仓位与普通状态保存间隔；独立看门狗仍持续工作。
 OFF_HOURS_REFRESH_SEC = 300
 STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'state', 'v49_{}.json'.format(cfg.ACCOUNT))
@@ -124,7 +142,7 @@ PORTFOLIO_REFRESH_SEC = 60.0
 WATCHDOG_WARN_SEC = 15.0  # 独立线程每15秒检查持续调用
 READ_RPC_TIMEOUT_SEC = 5.0  # BigQMT实时只读RPC等待上限（底层路由仍可能另有超时）
 CAPACITY_REFRESH_SEC = 30.0
-T_TARGET_VALUE = 20000.0
+T_TARGET_VALUE = 35000.0
 # 最多使用未被其他正T占用的可卖底仓的此比例；不足一手但有整手时按一手。
 T_POSITION_FRACTION = 0.50
 # 单笔股数覆盖，键为完整代码，例如 {'600000.SH': 100}。
@@ -291,7 +309,7 @@ def format_signal_base_source(source):
 
 
 class StrategyRunner:
-    """MiniQMT v49 — 趋势分位数反T与周期性连接监控。"""
+    """MiniQMT v50 — 趋势分位数反T与周期性连接监控。"""
 
     def __init__(self, portfolio, stock_qmt, stock_name=''):
         self.portfolio = portfolio
@@ -300,7 +318,7 @@ class StrategyRunner:
         self.stock_name = stock_name or stock_qmt
         self.trade_lot = SYMBOL_LOT_OVERRIDES.get(
             stock_qmt, 200 if self.stock_code.startswith(('688', '689')) else 100)
-        self.version = 'v49'
+        self.version = 'v50'
         self.conn = SymbolConnector(portfolio.conn, stock_qmt)
         self.ctx = MockContextInfo(self.conn)
         self.st = self.ctx.st
@@ -344,6 +362,7 @@ class StrategyRunner:
             self._last_executed_order = record['last_executed_order']
         if self.st.get('reentry_pending'):
             self.st['reentry_pending']['retry_at'] = 0
+        self.st.update(rebound_memory={}, rebound_effective=None, rebound_identity=None)
         self._restored = True
         self._log('[STATE-RESTORED] same-day state={} REV-count={} FWD-count={} MOM-count={}'.format(
             self.st.get('fstate'), self.st.get('trade_count_short', 0),
@@ -385,6 +404,8 @@ class StrategyRunner:
             'limit_up_guard': False, 'limit_up_release_since': 0.0,
             'intraday_avg_price': 0.0, 'intraday_avg_valid': False,
             'next_t_cycle': 0,
+            'rebound_memory': {}, 'rebound_effective': None, 'rebound_identity': None,
+            'rebound_armed': False,
             'reentry_pending': None, 'reentry_history': None,
             '_pre_market_done': '', '_market_open_logged': False,
             # ★ v22/v23: 阶梯加仓/减仓状态 — 腿记录为 (成交价, 成交股数)
@@ -1128,18 +1149,75 @@ class StrategyRunner:
 
     # ═══ 状态机 ═══
 
+
+    def _rev_sell_trigger(self):
+        original = (self.st.get('daily_signal') or {}).get('sell_trigger', 999999)
+        return (self.st.get('rebound_effective') or original) if REBOUND_ENABLED else original
+
+    def _update_rebound_reference(self, price, now_ts, tick_data):
+        st = self.st
+        signal = st.get('daily_signal') or {}
+        original = signal.get('sell_trigger', 0)
+        if not original:
+            return
+        identity = [st.get('trade_date'), signal.get('trigger_base'),
+                    signal.get('trigger_base_price'), original, st.get('next_t_cycle', 0)]
+        if st.get('rebound_identity') != identity:
+            st.update(rebound_identity=identity, rebound_memory={}, rebound_effective=original)
+        if not REBOUND_ENABLED:
+            st['rebound_effective'] = original
+            return
+        # Do not change existing legs or ladder entries.
+        if self.has_open_legs() or st.get('fstate') not in (STATE_IDLE, STATE_SPIKING):
+            st['rebound_effective'] = original
+            return
+        opening = float(tick_data.get('open', 0) or 0)
+        average = st.get('intraday_avg_price', 0) if st.get('intraday_avg_valid') else 0
+        previous = st.get('rebound_effective', original)
+        reentry = signal.get('reentry', {}) if signal.get('trigger_base') == 'CLOSE_FILL_ATR' else {}
+        effective, mode = rebound_reference(
+            st.setdefault('rebound_memory', {}), now_ts, price, opening, average,
+            signal.get('atr_pct', 0), original, REBOUND_WINDOW_SEC,
+            REBOUND_CONFIRM_SEC, REBOUND_ATR_UNITS, REBOUND_MIN_PCT,
+            REBOUND_MAX_PCT, REBOUND_AVERAGE_UNITS, REBOUND_WEAK_UNITS,
+            REBOUND_STRONG_UNITS, reentry.get('base', 0), reentry.get('up_units', 0),
+            REENTRY_WEAK_DISCOUNT, REENTRY_WEAK_FULL_UNITS)
+        st['rebound_effective'] = effective
+        if st.get('rebound_armed') and st.get('fstate') == STATE_SPIKING and mode in ('STRONG', 'INVALID', 'WARMUP'):
+            st['fstate'] = STATE_IDLE
+            st['trade_count_short'] = max(0, st.get('trade_count_short', 0) - 1)
+            st['peak_price'] = 0
+            st['rebound_armed'] = False
+            self._log('[REB-ARM CANCELED] {}; return to original entry reference'.format(mode))
+        if abs(effective - previous) >= .005:
+            memory = st['rebound_memory']
+            if mode == 'REBOUND' and 'effective_units' in memory:
+                self._log('[REB-REENTRY] original=Y{:.2f} effective=Y{:.2f} | '
+                          'units={:.4f}*(1-{:.2f}*weakness {:.3f})={:.4f}; '
+                          'min(original, ceil-cent(max(base Y{:.2f}*(1+ATR {:.2f}%*units), '
+                          'avg Y{:.2f}*(1+ATR*{:.2f})))); reference held during rebound'.format(
+                              original, effective, memory['reentry_units'], memory['reentry_discount'],
+                              memory['weakness'], memory['effective_units'], memory['reentry_base'],
+                              signal.get('atr_pct', 0)*100, memory.get('average', average), REBOUND_AVERAGE_UNITS))
+                return
+            self._log('[REB-REF] {} original=Y{:.2f} effective=Y{:.2f} | '
+                      'min(original, max(low Y{:.2f}*(1+{:.2f}%), avg Y{:.2f}*(1+ATR*{:.2f})))'.format(
+                          mode, original, effective, memory.get('low', 0),
+                          memory.get('rebound', 0)*100, average, REBOUND_AVERAGE_UNITS))
+
     def _handle_idle(self, price):
         st = self.st; signal = st.get('daily_signal', {})
         if self._new_leg_block_reason():
             return
         if st.get('do_short', False):
-            trigger = signal.get('sell_trigger', 999999)
+            trigger = self._rev_sell_trigger()
             if price >= trigger:
                 can_use = st.get('base_can_use', st['base_shares'])
                 if can_use < self.trade_lot: return
                 tc = st.get('trade_count_short', 0)
                 if tc >= cfg.MAX_DAILY_TRADES or st.get('locked', False): return
                 st['trade_count_short'] = tc + 1
+                st['rebound_armed'] = trigger < signal.get('sell_trigger', trigger)
                 st['fstate'] = STATE_SPIKING; st['peak_price'] = price
                 st['state_enter_time'] = cfg.now_hms()
                 self._log('[REV-T spike #{}/{}] Y{:.2f} >= Y{:.2f}'.format(tc + 1, cfg.MAX_DAILY_TRADES, price, trigger))
@@ -1586,7 +1664,7 @@ class StrategyRunner:
         if not MOM_REV_PRIORITY_ENABLED or not self.st.get('do_short', False):
             return False
         signal = self.st.get('daily_signal') or {}
-        rev_trigger = float(signal.get('sell_trigger', 0.0) or 0.0)
+        rev_trigger = float(self._rev_sell_trigger())
         if rev_trigger <= 0 or price <= 0:
             return False
         # ★ v34: 达到REV-T实际卖出阈值后不再让权，MOM可继续独立监测。
@@ -2239,6 +2317,8 @@ class StrategyRunner:
                     if self.st.get('locked'): bits.append('LOCKED')
                     if self.st.get('limit_up_guard'): bits.append('LIMIT-UP-GUARD')
                     self._log('[{}]'.format('] ['.join(bits)))
+                self._update_rebound_reference(price, now_ts, tick_data)
+                fstate = self.st.get('fstate', STATE_IDLE)
                 signal = self.st.get('daily_signal')
                 do_short = self.st.get('do_short', False); do_long = self.st.get('do_long', False)
                 if fstate == STATE_IDLE and (not signal or (not do_short and not do_long)):
@@ -2278,7 +2358,7 @@ class StrategyRunner:
                     self._log('[WARN] MOM short leg not bought back!')
                 elif mom_ms in ('MOM_BT_BOUGHT', 'MOM_BT_SPIKING', MOM_STATE_SELLBACK_COOLING):
                     self._log('[WARN] MOM long leg not sold!')
-            self._log('[STOP] {} v49 cum {} days gross~Y{:,.0f}'.format(self.stock_name, self.total_t_days, self.total_pnl))
+            self._log('[STOP] {} v50 cum {} days gross~Y{:,.0f}'.format(self.stock_name, self.total_t_days, self.total_pnl))
 
     def _heartbeat(self, price):
         fs = self.st['fstate']; sig = self.st.get('daily_signal', {})
@@ -2298,7 +2378,7 @@ class StrategyRunner:
                 sig['buy_trigger_trail'] = bt_trail
             parts = []
             if self.st.get('do_short'):
-                st_trig = sig.get('sell_trigger', 0)
+                st_trig = self._rev_sell_trigger()
                 if price >= st_trig:
                     parts.append('REV-T: exceeded Y{:.2f} by Y{:.2f}'.format(
                         st_trig, price - st_trig))
@@ -2382,6 +2462,7 @@ class PortfolioRunner:
         self.checkpoint_active = False
         self.inflight = None
         self._last_checkpoint = 0.0
+        self._last_checkpoint_log = None
 
 
     def _broker_snapshot(self):
@@ -2406,7 +2487,7 @@ class PortfolioRunner:
         if saved and (saved['inflight'] or saved['order_uncertain']):
             raise RuntimeError('STATE-BLOCKED: interrupted/uncertain order; inspect broker and checkpoint')
         today = datetime.now().strftime('%Y%m%d')
-        # Validate every record before restoring any symbol. A previous v49
+        # Validate every record before restoring any symbol. A previous v50
         # checkpoint may contain today's envelope but yesterday's flat runner.
         stale_codes = set()
         if saved:
@@ -2447,7 +2528,7 @@ class PortfolioRunner:
                 self.runners[code] = runner
                 self.tasks[code] = (runner.run(), 0.0)
         else:
-            _log('[STATE-NEW] no same-day v49 checkpoint; older-version T legs/counts are NOT reconstructed')
+            _log('[STATE-NEW] no same-day compatible v49/v50 checkpoint; unrecorded T legs/counts are NOT reconstructed')
         self.checkpoint_active = True
 
     def save_checkpoint(self, force=False, settled=False):
@@ -2473,8 +2554,11 @@ class PortfolioRunner:
         write_checkpoint(STATE_FILE, data, log=_log)
         self.inflight = pending
         self._last_checkpoint = now
-        _log('[STATE-SAVED] symbols={} inflight={} path={}'.format(
-            len(self.runners), bool(pending), STATE_FILE))
+        if (self._last_checkpoint_log is None or
+                now - self._last_checkpoint_log >= STATE_SAVE_LOG_INTERVAL_SEC):
+            _log('[STATE-SAVED] symbols={} inflight={} path={}'.format(
+                len(self.runners), bool(pending), STATE_FILE))
+            self._last_checkpoint_log = now
 
     def before_submit(self, code, label, shares, price):
         if not self.checkpoint_active:
@@ -2632,10 +2716,10 @@ class PortfolioRunner:
 
 
 def main():
-    parser = argparse.ArgumentParser(description='v49: independent exits, same-day checkpoints and restart reconciliation')
+    parser = argparse.ArgumentParser(description='v50: intraday rebound entry reference with strength reset and same-day recovery')
     parser.add_argument('--mode', default='signal', choices=['signal', 'live'])
     args = parser.parse_args()
-    logger = FileLogger('portfolio', version='v49')
+    logger = FileLogger('portfolio', version='v50')
     set_logger(logger)
     try:
         if args.mode == 'live':

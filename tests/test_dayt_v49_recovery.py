@@ -117,6 +117,73 @@ class RecoveryTests(unittest.TestCase):
         self.assertTrue(completed)
         self.assertIn('601869.SH', restored.tasks)
 
+    def test_mixed_date_flat_record_is_reinitialized_without_resetting_today(self):
+        self.p.save_checkpoint(force=True)
+        saved = s.read_checkpoint(self.path, s.ACCOUNT)
+        import copy
+        old = copy.deepcopy(saved['runners']['601869.SH'])
+        old['state'].update(trade_date='20200101', fstate=s.STATE_IDLE, short_legs=[])
+        old['legs'] = {}
+        saved['runners']['600584.SH'] = old
+        s.write_checkpoint(self.path, saved)
+        p = self.restored_portfolio()
+        self.assertFalse(p.runners['600584.SH'].st['initialized'])
+        self.assertEqual(p.runners['601869.SH'].st['trade_count_short'], 3)
+
+    def test_mixed_date_open_record_blocks_with_symbol_and_dates(self):
+        self.p.save_checkpoint(force=True)
+        saved = s.read_checkpoint(self.path, s.ACCOUNT)
+        saved['runners']['601869.SH']['state']['trade_date'] = '20200101'
+        s.write_checkpoint(self.path, saved)
+        with self.assertRaisesRegex(RuntimeError, '601869.SH.*20200101.*overnight'):
+            self.restored_portfolio()
+
+    def test_save_rejects_mixed_dates_without_overwriting(self):
+        self.p.save_checkpoint(force=True)
+        before = self.path.read_bytes()
+        self.r.st['trade_date'] = '20200101'
+        with self.assertRaisesRegex(RuntimeError, '601869.SH.*20200101'):
+            self.p.save_checkpoint(force=True)
+        self.assertEqual(self.path.read_bytes(), before)
+
+    def test_running_portfolio_rolls_all_symbols_before_save(self):
+        self.r.st.update(short_legs=[], fstate=s.STATE_IDLE, trade_date='20200101')
+        self.r.execution_book = s.ExecutionBook()
+        second = s.StrategyRunner(self.p, '600584.SH')
+        second._init_state()
+        second.st.update(initialized=True, trade_date='20200101')
+        self.p.runners[second.stock_qmt] = second
+        visited = []
+        def initialize(runner):
+            visited.append(runner.stock_qmt)
+            runner.st.update(initialized=True, trade_date=s.datetime.now().strftime('%Y%m%d'))
+        with patch.object(s.StrategyRunner, '_daily_init', initialize):
+            self.p._prepare_trading_day()
+        self.p.save_checkpoint(force=True)
+        saved = s.read_checkpoint(self.path, s.ACCOUNT)
+        self.assertEqual(set(visited), {'601869.SH', '600584.SH'})
+        self.assertTrue(all(r['state']['trade_date'] == saved['date']
+                            for r in saved['runners'].values()))
+
+    def test_rollover_failure_preserves_checkpoint(self):
+        self.p.save_checkpoint(force=True)
+        before = self.path.read_bytes()
+        self.r.st.update(short_legs=[], fstate=s.STATE_IDLE, trade_date='20200101')
+        self.r.execution_book = s.ExecutionBook()
+        with patch.object(self.r, '_daily_init', side_effect=RuntimeError('data unavailable')):
+            with self.assertRaisesRegex(RuntimeError, 'data unavailable'):
+                self.p._prepare_trading_day()
+        with self.assertRaisesRegex(RuntimeError, 'cannot checkpoint'):
+            self.p.save_checkpoint(force=True)
+        self.assertEqual(self.path.read_bytes(), before)
+
+    def test_rollover_checks_open_legs_before_resetting_any_symbol(self):
+        self.r.st['trade_date'] = '20200101'
+        with patch.object(self.r, '_init_state') as reset:
+            with self.assertRaisesRegex(RuntimeError, '601869.SH.*overnight'):
+                self.p._prepare_trading_day()
+            reset.assert_not_called()
+
     def test_inflight_blocks_restart_and_preserves_file(self):
         self.p.before_submit('601869.SH', 'REV-T buyback', 100, 440.)
         before = self.path.read_bytes()

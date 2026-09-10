@@ -1,19 +1,28 @@
 # -*- coding: utf-8 -*-
 """
 ================================================================================
- MiniQMT — QMT day trading v42：自适应线性市场风格与反T阈值
+ MiniQMT — QMT day trading v51：统一分钟强度参考价，默认影子观察
 ================================================================================
 
- [v42 改动] (基于 v41)
-   - 以 v41 完整策略代码为基线独立构建；不导入或继承任何历史策略文件。
-   - 用已完成日线拟合线性市场风格，并用昨日信息预测当日反T可达涨幅。
-   - 风格边界、系数和反T触发单位均由历史样本计算，不使用固定 0.70×0.60。
+ [v51 改动] (基于 v50 独立策略代码，不导入旧版策略)
+   - 首轮与后续轮统一使用历史35%分位、分钟强度线性插值。
+   - shadow默认只记录候选，实际执行旧v50规则；active须人工验收后启用。
+   - 触价后仍等待回撤确认；已有交易腿退出目标不变。
+   - 沿用v49状态文件；升级不重置当日次数和成交账本。
+   - 新开仓资格不再阻断已有反T/正T交易腿退出。
+   - 委托前写入中断标记；完整处理后保存交易腿、次数与执行账本。
+   - 同日重启核对账户持仓和委托，未知成交/跨日未平腿停止自动交易。
+   - 每轮平仓完成后，按成交均价与历史ATR分位重算下一轮阈值。
+   - 自动发现账户持仓；每只股票使用独立信号、状态机及日线缓存。
+   - 共用账户连接，串行订单确认，为其他股票的反T买回预留现金。
+   - 用当前趋势在历史中的分位数，直接选择历史可达涨幅分位数。
+   - 强趋势抬高反T启动价以保留趋势收益，弱趋势降低启动价以提高频率。
 
  [run mode]
- python "Stragety/MiniQMT_Stragety/DayT/DayTradeing_v42_自适应线性风格_miniqmt.py" --mode signal
- python "Stragety/MiniQMT_Stragety/DayT/DayTradeing_v42_自适应线性风格_miniqmt.py" --mode live
- python "Stragety/MiniQMT_Stragety/DayT/DayTradeing_v42_自适应线性风格_miniqmt.py" --mode backtest
+ python "Stragety/MiniQMT_Stragety/DayT/DayT_v51_IntradayStrength.py" --mode signal
+ python "Stragety/MiniQMT_Stragety/DayT/DayT_v51_IntradayStrength.py" --mode live
 
+ python run_bigqmt.py --strategy Stragety/MiniQMT_Stragety/DayT/DayT_v51_IntradayStrength.py --mode live
 ================================================================================
 """
 import os, sys, time as _time, argparse, math, traceback as _traceback
@@ -22,7 +31,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 import numpy as np, pandas as pd
 
-# Permit the documented ``python Stragety/.../DayTradeing_v42...py`` command.
+# Permit the documented ``python Stragety/.../DayT_v51...py`` command.
 _STRATEGY_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _REPOSITORY_ROOT = os.path.dirname(os.path.dirname(_STRATEGY_ROOT))
 for _module_root in (_REPOSITORY_ROOT, _STRATEGY_ROOT):
@@ -31,15 +40,64 @@ for _module_root in (_REPOSITORY_ROOT, _STRATEGY_ROOT):
 
 from core import config as cfg
 from core.signals import compute_signal
-from core.adaptive_linear_regime import compute_adaptive_linear_regime
+from core.quantile_trend_regime import compute_quantile_trend_regime
+from core.atr_reentry import calculate_atr_reentry
+from core.t_position_size import calculate_t_shares
+from core.execution_book import ExecutionBook
+from core.intraday_rebound import rebound_reference
+from core.intraday_strength import IntradayStrength, StrengthConfig, lower_excursion_units
+from core.dayt_checkpoint import read_checkpoint, write_checkpoint
+from core.runtime_watchdog import RuntimeWatchdog, instrument_rpc
+from core.connection_monitor import probe_connections, quote_freshness
 from Stragety.MiniQMT_Stragety.DayT.infra.logger import FileLogger, set_logger, get_logger, _log
 from Stragety.MiniQMT_Stragety.DayT.infra.connector import (
     MiniQMTConnector, MockContextInfo,
     get_trade_detail_data, order_shares, set_global_conn,
 )
 
-ACCOUNT = cfg.ACCOUNT; STOCK_CODE = cfg.STOCK_CODE; STOCK_NAME = cfg.STOCK_NAME
-STOCK_QMT = cfg.STOCK_QMT; TRADE_LOT_SIZE = cfg.TRADE_LOT_SIZE
+# 兼容旧v49/v50账户状态；只接续已核对账本，不从持仓反推成交。
+# 普通运行每 30 秒保存；每笔委托前、处理完成后强制保存。
+# v51沿用v49账户检查点，保留已确认的次数、交易腿与账本。不得同时运行。
+# 仅调整未开仓反T启动价；原开盘价阈值和已有买回目标保持不变。
+# shadow：旧v50规则实际执行，新规则只观察；active须完成回放/影子验收后人工启用。
+INTRADAY_REFERENCE_MODE = 'shadow'
+QUANTILE_UNITS_SCALE = 0.60    # 首轮quantile_units乘此系数；1=原值，0.8=降低20%，须大于0
+REENTRY_UP_UNITS_SCALE = 0.80  # 第二轮及以后反T上行系数的独立缩放；1=原值，0.8=卖出距离缩短20%，须大于0
+                             # 不叠乘首轮系数；不改变正T买入阈值或已成交交易的退出目标。
+STRENGTH_HISTORY_DAYS = 80       # 仅已完成日线；不得使用当前未完成日线
+STRENGTH_LOWER_QUANTILE = 0.35   # 整理时历史上行ATR单位分位
+STRENGTH_LOOKBACK_MIN = 10      # 近期上行和低点观察窗口
+STRENGTH_SMOOTH_MIN = 3         # 三个完整分钟强度平均
+STRENGTH_WARMUP_MIN = 15        # 启动/午休/断流后连续完整观察分钟
+STRENGTH_OPEN_UNITS = 0.25      # 相对开盘涨此倍ATR时，该分量为1
+STRENGTH_AVERAGE_UNITS = 0.10   # 相对日内均价涨此倍ATR时，该分量为1
+STRENGTH_MOMENTUM_UNITS = 0.10  # 10分钟涨此倍ATR时，该分量为1
+STRENGTH_STRONG = 0.8          # 平滑强度达到此值撤回降低后的未成交监控
+STRENGTH_REBOUND_UNITS = 0.25   # 近期低点反弹要求
+STRENGTH_REBOUND_MIN = 0.008    # 最小反弹0.8%
+STRENGTH_REBOUND_MAX = 0.02     # 最大反弹要求2%，不是止损上限
+STRENGTH_AVERAGE_BUFFER = 0.05 # 日内均价上方此倍ATR
+STRENGTH_MAX_GAP_SEC = 90       # 采样断流回退；不替代行情时间戳健康检查
+STRENGTH_LOG_INTERVAL_SEC = 300 # 阶段变化即时输出，其余5分钟汇总
+REBOUND_ENABLED = True
+REBOUND_WINDOW_SEC = 600       # 近期低点窗口，10分钟
+REBOUND_CONFIRM_SEC = 180      # 连续弱势确认，3分钟
+REBOUND_ATR_UNITS = 0.25       # 从近期低点至少反弹多少倍日ATR
+REBOUND_MIN_PCT = 0.008        # 最小反弹0.8%，过滤微小波动
+REBOUND_MAX_PCT = 0.02         # 反弹距离最高2%，不等于收益或止损上限
+REBOUND_AVERAGE_UNITS = 0.05   # 卖出参考价至少在日内均价上方0.05倍ATR
+REBOUND_WEAK_UNITS = 0.08      # 低于开盘价、均价至少此ATR幅度才累计弱势时间
+REBOUND_STRONG_UNITS = 0.15    # 收复均价并超过此ATR幅度，撤回降阈值
+REENTRY_WEAK_DISCOUNT = 0.35   # 第二轮及以后：弱势最强时，上行ATR系数最多折减35%
+REENTRY_WEAK_FULL_UNITS = 0.25 # 低于开盘价/均价较低者0.25倍ATR时，弱势程度达到1
+CHECKPOINT_INTERVAL_SEC = 30
+STATE_SAVE_LOG_INTERVAL_SEC = 300  # 保存成功日志最多每5分钟打印一次；不影响实际保存频率
+# 非交易时段的连接、仓位与普通状态保存间隔；独立看门狗仍持续工作。
+OFF_HOURS_REFRESH_SEC = 300
+STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'state', 'v49_{}.json'.format(cfg.ACCOUNT))
+
+ACCOUNT = cfg.ACCOUNT
+TRADE_LOT_SIZE = cfg.TRADE_LOT_SIZE
 STATE_IDLE = cfg.STATE_IDLE; STATE_SPIKING = cfg.STATE_SPIKING
 STATE_SOLD = cfg.STATE_SOLD; STATE_DIPPING = cfg.STATE_DIPPING
 STATE_DONE = cfg.STATE_DONE; STATE_FORCED = cfg.STATE_FORCED
@@ -71,7 +129,6 @@ MOM_TRIGGER_MIN_PCT   = 0.01          # 触发幅度下限 1% (防超低波动�
 MOM_TRIGGER_MAX_PCT   = 0.06          # 触发幅度上限 6% (防超高波动日无法触发)
 MOM_SHORT_BUYBACK_PCT = 0.015         # 反T: 卖出后价格跌1.2% → 触发探底回升买入
 MOM_LONG_SELLBACK_PCT = 0.018         # 正T: 买入后价格涨1.5% → 触发冲高回落卖出
-MOM_LOT_SIZE          = cfg.TRADE_LOT_SIZE_MOM  # 短线机制单独手数 = 1手 (100股)
 MOM_MAX_DAILY_TRADES  = 3             # 短线机制当日最大开腿次数(防过度交易)
 MOM_EMERGENCY_BUYBACK_ENABLED = False # 紧急买回开关 — 反T卖后价格反涨超卖价3%时强制买回止损。默认关闭; True=开启紧急买回止损
 
@@ -96,30 +153,51 @@ LIMIT_UP_GUARD_PCT = 0.095
 LIMIT_UP_RELEASE_PCT = 0.085
 LIMIT_UP_RELEASE_HOLD_SEC = 120.0
 
+# Check live connectivity every 30 seconds.  The monitor only logs; it does
+# not reconnect, change strategy state, or place an order.
+CONNECTION_CHECK_INTERVAL_SEC = 30.0
+QUOTE_STALE_AFTER_SEC = 90       # 盘中源报价超过90秒仅告警，不阻止交易。
+QUOTE_FUTURE_TOLERANCE_SEC = 5   # 源报价超前本机超过5秒，记录时钟异常。
+QUOTE_HEALTH_LOG_INTERVAL_SEC = 300  # 新鲜度状态变化立即打印，同状态每5分钟汇总。
+
+# 每隔多少秒读取账户持仓，把新持仓加入策略；已卖出的股票保留买回状态。
+PORTFOLIO_REFRESH_SEC = 60.0
+
+# 新开一笔做T的目标金额；高价股不足一手时仍按一手，不是硬性资金上限。
+WATCHDOG_WARN_SEC = 15.0  # 独立线程每15秒检查持续调用
+READ_RPC_TIMEOUT_SEC = 5.0  # BigQMT实时只读RPC等待上限（底层路由仍可能另有超时）
+CAPACITY_REFRESH_SEC = 30.0
+T_TARGET_VALUE = 35000.0
+# 最多使用未被其他正T占用的可卖底仓的此比例；不足一手但有整手时按一手。
+T_POSITION_FRACTION = 0.50
+# 单笔股数覆盖，键为完整代码，例如 {'600000.SH': 100}。
+# 默认普通标的100股，688/689开头标的200股；特殊标的可在这里指定。
+SYMBOL_LOT_OVERRIDES = {}
+
 
 def calculate_execution_capacity(base_can_use, available_cash, price,
-                                 max_daily_trades):
+                                 max_daily_trades, lot_size=TRADE_LOT_SIZE):
     """Calculate executable REV/FWD lots; zero lots are never enabled."""
     sellable_shares = max(0, int(base_can_use or 0))
-    sellable_lots = sellable_shares // TRADE_LOT_SIZE
+    sellable_lots = sellable_shares // lot_size
     cash_lots = 0
     if price and price > 0:
         cash_lots = int(float(available_cash or 0) /
-                        (float(price) * TRADE_LOT_SIZE * 1.01))
+                        (float(price) * lot_size * 1.01))
     short_lots = min(sellable_lots, max_daily_trades)
     long_lots = min(cash_lots, sellable_lots, max_daily_trades)
     can_short = short_lots >= 1
     can_long = long_lots >= 1
 
     short_reason = '' if can_short else 'sellable {} sh < {} sh'.format(
-        sellable_shares, TRADE_LOT_SIZE)
+        sellable_shares, lot_size)
     long_reasons = []
     if cash_lots < 1:
         long_reasons.append('insufficient cash for 1 lot')
     if sellable_lots < 1:
         long_reasons.append(
             'T+1: sellable base shares {} sh < {} sh'.format(
-                sellable_shares, TRADE_LOT_SIZE))
+                sellable_shares, lot_size))
     return {
         'short_lots': short_lots,
         'long_lots': long_lots,
@@ -167,65 +245,87 @@ def calculate_intraday_average(amount, pvolume, last_price=0.0):
     return round(average, 4)
 
 
-def calculate_next_t_triggers(daily_average, atr_pct, sell_mult,
-                              daily_range_ma10, trigger_units=None):
-    """Calculate the next REV/FWD entry thresholds from one VWAP snapshot."""
-    base = float(daily_average or 0.0)
-    if base <= 0:
-        return None
-    effective_units = (float(trigger_units) if trigger_units is not None
-                       else float(sell_mult or 0.0) * cfg.SELL_TRIGGER_SCALE)
-    sell_raw = base * (1.0 + float(atr_pct or 0.0) * effective_units)
-    # A learned trigger is already clipped to empirical historical excursions.
-    # Retain the legacy cap only for the compatibility fallback.
-    range_cap = base * (1.0 + float(daily_range_ma10 or 0.0) *
-                        cfg.DAILY_RANGE_CAP_MULT)
-    range_capped = bool(trigger_units is None and cfg.DAILY_RANGE_CAP_ENABLED
-                        and range_cap > base and sell_raw > range_cap)
-    sell_trigger = range_cap if range_capped else sell_raw
-    buy_trigger = base * (1.0 - cfg.BUY_TRIGGER_PCT)
-    return {
-        'sell_trigger': round(sell_trigger, 2),
-        'sell_trigger_raw': round(sell_raw, 2),
-        'buy_trigger': round(buy_trigger, 2),
-        'range_capped': range_capped,
-    }
+def scale_reentry_signal(signal):
+    """Scale the next-cycle sell distance from its original units, never cumulatively."""
+    if not signal or signal.get('trigger_base') != 'CLOSE_FILL_ATR':
+        return signal
+    scale = float(REENTRY_UP_UNITS_SCALE)
+    if not math.isfinite(scale) or scale <= 0:
+        raise ValueError('REENTRY_UP_UNITS_SCALE must be finite and greater than zero')
+    result = signal['reentry']
+    raw = result.setdefault('unscaled_up_units', result['up_units'])
+    units = raw * scale
+    base, atr_pct = result['base'], result['atr_pct']
+    trigger = round(math.ceil((base + max(base * atr_pct * units, 0.01)) /
+                              0.01 - 1e-9) * 0.01, 2)
+    result.update(up_units=units, up_units_scale=scale, sell_trigger=trigger)
+    signal.update(sell_trigger=trigger, sell_trigger_raw=trigger,
+                  atr_pct=atr_pct, trigger_units=units, trigger_pct=atr_pct * units,
+                  sell_mult=units, sell_mult_base=units)
+    return signal
 
 
-def apply_adaptive_linear_regime(signal, opens, highs, lows, closes, volumes,
-                                 today_open):
-    """Replace fixed MA/ATR multiplier logic with the adaptive linear result."""
-    adaptive = compute_adaptive_linear_regime(
+def scale_quantile_signal(signal):
+    """Apply the configured first-entry scale once, including restored signals."""
+    if not signal or not signal.get('quantile_trend_active') or signal.get('trigger_base') == 'CLOSE_FILL_ATR':
+        return signal
+    scale = float(QUANTILE_UNITS_SCALE)
+    if not math.isfinite(scale) or scale <= 0:
+        raise ValueError('QUANTILE_UNITS_SCALE must be finite and greater than zero')
+    regime = signal['quantile_trend']
+    atr_pct = float(signal['atr_pct'])
+    raw = regime.get('unscaled_trigger_units')
+    if raw is None:
+        raw = regime['trigger_pct'] / atr_pct if atr_pct > 0 else regime['trigger_units']
+        regime['unscaled_trigger_units'] = raw
+    units = raw * scale
+    opening = float(signal.get('open_price', regime['open_price']))
+    trigger = round(opening * (1 + atr_pct * units), 2)
+    regime.update(trigger_units=units, trigger_pct=atr_pct * units,
+                  sell_trigger=trigger, units_scale=scale)
+    signal.update(trigger_units=units, trigger_pct=atr_pct * units,
+                  sell_mult=units, sell_mult_base=units,
+                  sell_trigger=trigger, sell_trigger_raw=trigger)
+    return signal
+
+
+def apply_quantile_trend_regime(signal, opens, highs, lows, closes, volumes,
+                                today_open):
+    """Replace fixed MA/ATR multiplier logic with trend-quantile thresholds."""
+    regime = compute_quantile_trend_regime(
         opens, highs, lows, closes, volumes, today_open=today_open)
-    if adaptive is None:
-        signal['adaptive_linear_active'] = False
+    if regime is None:
+        signal['quantile_trend_active'] = False
         return signal
 
     prior_reason = signal.get('blocked_reason', '')
-    style = adaptive['style']
     signal.update({
-        'adaptive_linear_active': True,
-        'adaptive_linear': adaptive,
-        'trend': style,
-        'sell_trigger': adaptive['sell_trigger'],
-        'sell_trigger_raw': adaptive['sell_trigger'],
-        'sell_mult': adaptive['trigger_units'],
-        'sell_mult_base': adaptive['trigger_units'],
-        'trigger_units': adaptive['trigger_units'],
-        'trigger_pct': adaptive['trigger_pct'],
+        'quantile_trend_active': True,
+        'quantile_trend': regime,
+        'trend': regime['style'],
+        'sell_trigger': regime['sell_trigger'],
+        'sell_trigger_raw': regime['sell_trigger'],
+        'sell_mult': regime['trigger_units'],
+        'sell_mult_base': regime['trigger_units'],
+        'trigger_units': regime['trigger_units'],
+        'trigger_pct': regime['trigger_pct'],
+        'atr_pct': regime['atr_pct'],
         'range_capped': False,
-        'factor_details': adaptive['style_weights'],
+        'factor_details': {
+            'trend_score': regime['trend_score'],
+            'trend_rank': regime['trend_rank'],
+            'trigger_q': regime['trigger_quantile'],
+        },
     })
-
-    # The old strong-bull block comes from lagging MA5/MA20 conditions.  Keep
-    # volume/RSI safety filters, but let the data-driven style make this call.
-    if prior_reason.startswith('strong bull') and style != 'bull':
+    # Only the strongest historical trend tail is blocked. Ordinary positive
+    # trends remain eligible, but receive a higher quantile threshold.
+    if regime['style'] == 'bull':
+        signal['do_short'] = True
+        signal['blocked_reason'] = 'extreme trend-rank guard'
+    elif prior_reason.startswith('strong bull'):
         signal['do_short'] = True
         signal['blocked_reason'] = ''
-    elif style == 'bull':
-        signal['do_short'] = False
-        signal['blocked_reason'] = 'adaptive linear bull style'
-    return signal
+    return scale_quantile_signal(signal)
 
 
 
@@ -278,23 +378,118 @@ def format_signal_base_source(source):
 
 
 class StrategyRunner:
-    """MiniQMT v42 — 自适应线性风格下按当日均价重算下一轮触发价。"""
+    """MiniQMT v51 — 趋势分位数反T与周期性连接监控。"""
 
-    def __init__(self, dry_run=False):
-        logger = get_logger()
-        if logger is None:
-            logger = FileLogger(STOCK_CODE, version='v42')
-            set_logger(logger)
-        self.version = 'v42'
-        self.conn = MiniQMTConnector()
-        set_global_conn(self.conn, dry_run)
+    def __init__(self, portfolio, stock_qmt, stock_name=''):
+        self.portfolio = portfolio
+        self.stock_qmt = stock_qmt
+        self.stock_code = stock_qmt.split('.')[0]
+        self.stock_name = stock_name or stock_qmt
+        self.trade_lot = SYMBOL_LOT_OVERRIDES.get(
+            stock_qmt, 200 if self.stock_code.startswith(('688', '689')) else 100)
+        self.version = 'v51'
+        self.conn = SymbolConnector(portfolio.conn, stock_qmt)
         self.ctx = MockContextInfo(self.conn)
         self.st = self.ctx.st
-        self.dry_run = dry_run
+        self.dry_run = portfolio.dry_run
         self._last_heartbeat = 0.0
+        self._last_connection_check = 0.0
+        self._connection_healthy = None
+        self._quote_health_status = None
+        self._quote_health_log_time = 0.0
+        self._quote_last_received = None
+        self._quote_last_fresh = None
+        self._quote_market_open = None
         self._running = True
         self.total_t_days = 0
         self.total_pnl = 0.0
+        self.execution_book = ExecutionBook()
+        self._execution_price = None
+        self._last_capacity_refresh = 0.0
+        self._reset_strength_reference()
+
+
+    def has_open_legs(self):
+        return (any(self.execution_book.legs.values()) or
+                bool(self.st.get('short_legs') or self.st.get('long_legs')) or
+                self.st.get('mom_leg_shares', 0) > 0 or
+                self.st.get('fstate') in (STATE_SOLD, STATE_DIPPING, STATE_BT_BOUGHT, STATE_BT_SPIKING) or
+                self.st.get('mom_state') in ('MOM_SOLD', 'MOM_DIPPING', 'MOM_BT_BOUGHT',
+                                              'MOM_BT_SPIKING', MOM_STATE_BUYBACK_COOLING,
+                                              MOM_STATE_SELLBACK_COOLING))
+
+    def checkpoint_record(self):
+        return dict(name=self.stock_name, state=self.st,
+                    orders=self.execution_book.orders, legs=self.execution_book.legs,
+                    cycle_gross=self.execution_book.cycle_gross,
+                    total_pnl=self.total_pnl, total_t_days=self.total_t_days,
+                    last_executed_order=getattr(self, '_last_executed_order', None))
+
+    def restore_record(self, record):
+        self._init_state()
+        self.st.update(record['state'])
+        scale_quantile_signal(self.st.get('daily_signal'))
+        scale_reentry_signal(self.st.get('daily_signal'))
+        self.execution_book.orders = record['orders']
+        self.execution_book.legs = record['legs']
+        self.execution_book.cycle_gross = record['cycle_gross']
+        self.total_pnl = record['total_pnl']
+        self.total_t_days = record['total_t_days']
+        if record.get('last_executed_order'):
+            self._last_executed_order = record['last_executed_order']
+        if self.st.get('reentry_pending'):
+            self.st['reentry_pending']['retry_at'] = 0
+        self.st.update(rebound_memory={}, rebound_effective=None, rebound_identity=None)
+        self._reset_strength_reference()
+        if (INTRADAY_REFERENCE_MODE == 'active' and self.st.get('rebound_armed') and
+                self.st.get('fstate') == STATE_SPIKING and not self.has_open_legs()):
+            self.st['strength_armed'] = True
+            self._strength_cancel_arm('restart: rewarm before lowered entry')
+        self._restored = True
+        self._log('[STATE-RESTORED] same-day state={} REV-count={} FWD-count={} MOM-count={}'.format(
+            self.st.get('fstate'), self.st.get('trade_count_short', 0),
+            self.st.get('trade_count_long', 0), self.st.get('mom_trade_count', 0)))
+
+    def _log(self, message):
+        _log('[{}] {}'.format(self.stock_qmt, message))
+
+    def _monitor_connections(self, now_ts):
+        """Log connection degradation/recovery without changing trade state."""
+        market_open = cfg.is_market_open(cfg.now_hms())
+        interval = CONNECTION_CHECK_INTERVAL_SEC if market_open else OFF_HOURS_REFRESH_SEC
+        if self._quote_market_open == market_open and now_ts - self._last_connection_check < interval:
+            return
+        self._quote_market_open = market_open
+        self._last_connection_check = now_ts
+        snapshot = {}
+        healthy, detail = probe_connections(
+            self.conn, self.ctx, self.stock_qmt, check_trade=True, snapshot=snapshot)
+        if not healthy:
+            self._log('[CONNECTION-ALERT] {}'.format(detail))
+        elif self._connection_healthy is False:
+            self._log('[CONNECTION-RECOVERED] {}'.format(detail))
+        elif self._connection_healthy is None:
+            self._log('[CONNECTION] {}'.format(detail))
+        self._connection_healthy = healthy
+        if snapshot.get('received'):
+            self._quote_last_received = now_ts
+        health = quote_freshness(snapshot.get('quote'), now_ts, market_open,
+                                 QUOTE_STALE_AFTER_SEC, QUOTE_FUTURE_TOLERANCE_SEC)
+        status = health['status']
+        if status == 'FRESH':
+            self._quote_last_fresh = now_ts
+        if status != self._quote_health_status or now_ts - self._quote_health_log_time >= QUOTE_HEALTH_LOG_INTERVAL_SEC:
+            tag = 'QUOTE-RECOVERED' if status == 'FRESH' and self._quote_health_status in (
+                'STALE', 'UNKNOWN', 'CLOCK_SKEW', 'UNAVAILABLE') else 'QUOTE-HEALTH'
+            def display_time(value):
+                return datetime.fromtimestamp(value).strftime('%Y-%m-%d %H:%M:%S') if value is not None else 'UNKNOWN'
+            self._log('[{}] {} connection={} quote_time={} age={} last_rpc_success={} '
+                      'last_confirmed_fresh={} reason={} action=LOG_ONLY'.format(
+                          tag, status, 'OK' if healthy else 'ERROR', display_time(health['quote_time']),
+                          '{:.1f}s'.format(health['age']) if health['age'] is not None else 'UNKNOWN',
+                          display_time(self._quote_last_received), display_time(self._quote_last_fresh), health['reason']))
+            self._quote_health_log_time = now_ts
+        self._quote_health_status = status
 
     def _init_state(self):
         self.st.update({
@@ -313,6 +508,9 @@ class StrategyRunner:
             'limit_up_guard': False, 'limit_up_release_since': 0.0,
             'intraday_avg_price': 0.0, 'intraday_avg_valid': False,
             'next_t_cycle': 0,
+            'rebound_memory': {}, 'rebound_effective': None, 'rebound_identity': None,
+            'rebound_armed': False, 'strength_armed': False,
+            'reentry_pending': None, 'reentry_history': None,
             '_pre_market_done': '', '_market_open_logged': False,
             # ★ v22/v23: 阶梯加仓/减仓状态 — 腿记录为 (成交价, 成交股数)
             'ladder_sell_target': 0.0, 'ladder_buy_target': 0.0,
@@ -358,7 +556,7 @@ class StrategyRunner:
         self.st['locked'] = True
         self.st['lock_reason'] = reason
         self.st['lock_since'] = cfg.now_hms()
-        _log('[TRADE-LOCK] {}; all trading disabled'.format(reason))
+        self._log('[TRADE-LOCK] {}; all trading disabled'.format(reason))
 
     def _update_limit_up_guard(self, price, tick_data, now_ts):
         last_close = float(tick_data.get('lastClose', 0) or 0)
@@ -370,18 +568,22 @@ class StrategyRunner:
         self.st['limit_up_release_since'] = release_since
         rise_pct = (price / last_close - 1.0) * 100 if last_close > 0 else 0.0
         if event == 'LOCK':
-            _log('[LIMIT-UP GUARD] Y{:.2f} / lastClose Y{:.2f} ({:+.2f}%) '
+            self._log('[LIMIT-UP GUARD] Y{:.2f} / lastClose Y{:.2f} ({:+.2f}%) '
                  '-> freeze all new legs'.format(price, last_close, rise_pct))
         elif event == 'RELEASE_PENDING':
-            _log('[LIMIT-UP GUARD] opening-board retreat {:+.2f}%; hold {:.0f}s '
+            self._log('[LIMIT-UP GUARD] opening-board retreat {:+.2f}%; hold {:.0f}s '
                  'before release'.format(rise_pct, LIMIT_UP_RELEASE_HOLD_SEC))
         elif event == 'UNLOCK':
-            _log('[LIMIT-UP GUARD RELEASE] retreat stable for {:.0f}s; '
+            self._log('[LIMIT-UP GUARD RELEASE] retreat stable for {:.0f}s; '
                  'new legs enabled by capacity'.format(
                      LIMIT_UP_RELEASE_HOLD_SEC))
         return active
 
     def _new_leg_block_reason(self):
+        if self.portfolio.order_uncertain:
+            return 'account order outcome uncertain; reconcile before restarting'
+        if self.st.get('reentry_pending'):
+            return 'next-T awaiting confirmed closing price / valid ATR history'
         if self.st.get('locked', False):
             return self.st.get('lock_reason', 'strategy locked')
         if self.st.get('limit_up_guard', False):
@@ -391,7 +593,7 @@ class StrategyRunner:
     def _mom_log_block(self, reason):
         if self.st.get('mom_last_block_reason', '') != reason:
             self.st['mom_last_block_reason'] = reason
-            _log('[MOM BLOCKED] {}'.format(reason))
+            self._log('[MOM BLOCKED] {}'.format(reason))
 
     def _daily_init(self):
         today = datetime.now().strftime('%Y%m%d')
@@ -407,7 +609,7 @@ class StrategyRunner:
 
         # ★ 跨日刷新日线缓存，确保指标基于最新数据
         # 当前时点价格与完整历史日线分开管理，禁止用 tick 覆盖历史K线。
-        tick_data = self.ctx.get_full_tick([STOCK_QMT]).get(STOCK_QMT, {})
+        tick_data = self.ctx.get_full_tick([self.stock_qmt]).get(self.stock_qmt, {})
         today_open = float(tick_data.get('open', 0) or 0)
         curr_price_now = float(tick_data.get('lastPrice', 0) or 0)
         last_close = float(tick_data.get('lastClose', 0) or 0)
@@ -425,6 +627,7 @@ class StrategyRunner:
             return
 
         hist = snapshot['adjusted']
+        self.st['reentry_history'] = hist.copy()
         if len(hist) < 60:
             self._lock_all_trading(
                 'complete daily bars {} < 60'.format(len(hist)))
@@ -444,22 +647,22 @@ class StrategyRunner:
         latest_complete_close = float(snapshot['raw'].iloc[-1]['close'])
         signal_open, signal_open_source = resolve_signal_open(
             cfg.now_hms(), today_open, latest_complete_close)
-        _log('[DATA-DBG] last_complete={} hist_open[-3:]={} | tick_open={} | '
-             'lastClose={} | signal_open={} ({})'.format(
+        self._log('[DATA-DBG] last_complete={} hist_open[-3:]={} | tick_open={:.2f} | '
+             'lastClose={:.2f} | signal_open={:.2f} ({})'.format(
                  snapshot['last_complete_date'],
-                 opens_list[-3:] if len(opens_list) >= 3 else opens_list,
+                 '[' + ', '.join('{:.2f}'.format(value) for value in opens_list[-3:]) + ']',
                  today_open, last_close, signal_open, signal_open_source))
         if signal_open_source.startswith('AFTER-HOURS'):
-            _log('[AFTER-HOURS] signal open uses latest complete close Y{:.2f}'.format(
+            self._log('[AFTER-HOURS] signal open uses latest complete close Y{:.2f}'.format(
                 signal_open))
-        _log('[VOLUME-DATA] complete_count={} tail={}'.format(
+        self._log('[VOLUME-DATA] complete_count={} tail={}'.format(
             len(volume_list), volume_list[-3:] if len(volume_list) >= 3 else volume_list))
 
         signal = compute_signal(
             opens_list, highs_list, lows_list, closes_list, volume_list,
             yesterday_close=last_close, today_open=signal_open)
         if signal is None: return
-        signal = apply_adaptive_linear_regime(
+        signal = apply_quantile_trend_regime(
             signal, opens_list, highs_list, lows_list, closes_list,
             volume_list, signal_open)
         signal['open_price_source'] = signal_open_source
@@ -476,13 +679,15 @@ class StrategyRunner:
         avail_cash = account[0].m_dAvailable if account else 0.0
         if curr_price_now <= 0: curr_price_now = open_price
         pos_value = base_shares * curr_price_now
-        total_asset = pos_value + avail_cash
+        total_asset = account[0].m_dBalance if account else 0.0
         pos_pct = pos_value / total_asset * 100 if total_asset > 0 else 0
         capacity = calculate_execution_capacity(
-            base_can_use, avail_cash, curr_price_now, cfg.MAX_DAILY_TRADES)
+            base_can_use, avail_cash, curr_price_now, cfg.MAX_DAILY_TRADES, self.trade_lot)
         short_lots = capacity['short_lots']
         long_lots = capacity['long_lots']
 
+        signal['short_signal_allowed'] = signal['do_short']
+        signal['short_signal_reason'] = signal.get('blocked_reason', '')
         do_short = signal['do_short'] and capacity['can_short']
         short_reason = ''
         if not signal['do_short']:
@@ -523,7 +728,7 @@ class StrategyRunner:
         positions = get_trade_detail_data(ACCOUNT, 'STOCK', 'POSITION')
         found = False
         for pos in positions:
-            if pos.m_strInstrumentID == STOCK_CODE:
+            if pos.m_strInstrumentID == self.stock_code:
                 self.st['base_shares'] = pos.m_nVolume
                 self.st['base_can_use'] = getattr(pos, 'm_nCanUseVolume', pos.m_nVolume)
                 self.st['base_cost'] = pos.m_dOpenPrice
@@ -553,15 +758,15 @@ class StrategyRunner:
         if position is None:
             return False
         self.st['last_ma_report_time'] = now_ts
-        _log('[MA-POS] price Y{:.2f} | MA5 Y{:.2f}: {} {:+.2f}% | MA20 Y{:.2f}: {} {:+.2f}%'.format(
+        self._log('[MA-POS] price Y{:.2f} | MA5 Y{:.2f}: {} {:+.2f}% | MA20 Y{:.2f}: {} {:+.2f}%'.format(
             price, position['ma5'], position['ma5_position'], position['ma5_gap_pct'],
             position['ma20'], position['ma20_position'], position['ma20_gap_pct']))
         if position['risk']:
-            _log('[MA20 RISK] price Y{:.2f} is below 97% of MA20 (risk line Y{:.2f})'.format(
+            self._log('[MA20 RISK] price Y{:.2f} is below 97% of MA20 (risk line Y{:.2f})'.format(
                 price, position['ma20_risk_price']))
         return True
     def _recalculate_next_t_triggers(self, completed_by):
-        """Freeze the next cycle's entry thresholds on the current VWAP."""
+        """Re-anchor entries only after a complete closing leg is confirmed."""
         st = self.st
         signal = st.get('daily_signal') or {}
         # MOM闭环后先无条件撤销尚未下单的旧阈值监测。即使最新均价
@@ -572,67 +777,93 @@ class StrategyRunner:
                     0, st.get('trade_count_short', 0) - 1)
                 st['fstate'] = STATE_SOLD if st.get('short_legs') else STATE_IDLE
                 st['peak_price'] = 0.0
-                _log('[NEXT-T RESET] cancel pending REV-T monitor after MOM close')
+                self._log('[NEXT-T RESET] cancel pending REV-T monitor after MOM close')
             elif st.get('fstate') == STATE_BT_DIPPING:
                 st['trade_count_long'] = max(
                     0, st.get('trade_count_long', 0) - 1)
                 st['fstate'] = (
                     STATE_BT_BOUGHT if st.get('long_legs') else STATE_IDLE)
                 st['bt_dip_price'] = 0.0
-                _log('[NEXT-T RESET] cancel pending FWD-T monitor after MOM close')
+                self._log('[NEXT-T RESET] cancel pending FWD-T monitor after MOM close')
+        closing_order = getattr(self, '_last_executed_order', None)
+        st['reentry_pending'] = dict(closing_order or {}, completed_by=completed_by)
+        return self._retry_atr_reentry()
+
+    def _retry_atr_reentry(self):
+        pending = self.st.get('reentry_pending')
+        if not pending:
+            return False
+        now = _time.monotonic()
+        if now < pending.get('retry_at', 0):
+            return False
+        pending['retry_at'] = now + 5.0
         try:
-            tick_data = self.ctx.get_full_tick([STOCK_QMT]).get(STOCK_QMT, {})
-        except Exception as exc:
-            st['intraday_avg_valid'] = False
-            _log('[NEXT-T RECALC SKIP] {} done, latest tick unavailable: '
-                 '{}'.format(completed_by, exc))
-            return False
-        self._update_intraday_average(tick_data)
-        average = float(st.get('intraday_avg_price', 0.0) or 0.0)
-        if not st.get('intraday_avg_valid', False):
-            _log('[NEXT-T RECALC SKIP] {} done, current tick intraday '
-                 'average invalid; keep existing triggers'.format(completed_by))
-            return False
-        triggers = calculate_next_t_triggers(
-            average, signal.get('atr_pct', 0.0),
-            signal.get('sell_mult', 0.0),
-            signal.get('daily_range_ma10', 0.0),
-            signal.get('trigger_units'))
-        if not triggers:
-            _log('[NEXT-T RECALC SKIP] {} done, intraday average unavailable; '
-                 'keep existing triggers'.format(completed_by))
+            order_id = pending.get('order_id')
+            if order_id is None:
+                raise ValueError('closing order id unavailable')
+            order = self.conn.trader.query_stock_order(self.conn._account_obj, order_id)
+            if order is None or getattr(order, 'stock_code', '') != self.stock_qmt:
+                raise ValueError('closing order not returned for this symbol')
+            ids = (str(getattr(order, 'order_id', '')),
+                   str(getattr(order, 'order_sysid', '')))
+            if str(order_id) not in ids:
+                raise ValueError('closing order id mismatch')
+            price = float(getattr(order, 'traded_price', 0) or 0)
+            quantity = int(getattr(order, 'traded_volume', 0) or 0)
+            if not math.isfinite(price) or price <= 0 or quantity < pending.get('shares', 1):
+                raise ValueError('closing execution price/volume not yet confirmed')
+            history = self.st.get('reentry_history')
+            if history is None:
+                raise ValueError('completed daily history unavailable')
+            result = calculate_atr_reentry(price, *[
+                history[field].tolist() for field in ('open', 'high', 'low', 'close')])
+            if result is None:
+                raise ValueError('ATR history invalid or insufficient')
+        except Exception as error:
+            self._log('[NEXT-T WAIT] {}; new entries paused'.format(error))
             return False
 
-        old_sell = float(signal.get('sell_trigger', 0.0) or 0.0)
-        old_buy = float(signal.get('buy_trigger', 0.0) or 0.0)
-        signal.update(triggers)
-        signal['buy_trigger_floor'] = triggers['buy_trigger']
-        signal['buy_trigger_trail'] = triggers['buy_trigger']
+        signal = self.st.get('daily_signal') or {}
+        signal['sell_trigger'] = result['sell_trigger']
+        signal['sell_trigger_raw'] = result['sell_trigger']
+        signal['buy_trigger'] = result['buy_trigger']
+        signal['buy_trigger_floor'] = result['buy_trigger']
+        signal['buy_trigger_trail'] = result['buy_trigger']
         signal['sellback_target_hint'] = round(
-            triggers['buy_trigger'] * (1.0 + cfg.SELLBACK_RISE_PCT), 2)
-        signal['trigger_base'] = 'INTRADAY_AVG'
-        signal['trigger_base_price'] = average
-        st['bt_max_trail'] = triggers['buy_trigger']
-        st['next_t_cycle'] = st.get('next_t_cycle', 0) + 1
-        _log('[NEXT-T RECALC #{}] {} done | avg Y{:.4f} | REV Y{:.2f}→Y{:.2f} '
-             '| FWD Y{:.2f}→Y{:.2f}'.format(
-                 st['next_t_cycle'], completed_by, average,
-                 old_sell, triggers['sell_trigger'],
-                 old_buy, triggers['buy_trigger']))
+            result['buy_trigger'] * (1 + cfg.SELLBACK_RISE_PCT), 2)
+        signal['trigger_base'] = 'CLOSE_FILL_ATR'
+        signal['trigger_base_price'] = price
+        signal['reentry'] = result
+        scale_reentry_signal(signal)
+        self.st['daily_signal'] = signal
+        self.st['bt_max_trail'] = result['buy_trigger']
+        self.st['next_t_cycle'] = self.st.get('next_t_cycle', 0) + 1
+        self.st['reentry_pending'] = None
+        self._log('[NEXT-T #{}] {} | closing order={} avg=Y{:.4f} | '
+                  'ATR={:.2f}% Q={:.2f} samples={} | '
+                  'REV=base*(1+ATR*{:.4f}) -> Y{:.2f} | '
+                  'FWD=base*(1-ATR*{:.4f}) -> Y{:.2f} (outward tick rounding)'.format(
+                      self.st['next_t_cycle'], pending['completed_by'], order_id, price,
+                      result['atr_pct'] * 100, result['quantile'], result['sample_count'],
+                      result['up_units'], result['sell_trigger'],
+                      result['down_units'], result['buy_trigger']))
+        self._log('[REENTRY-UNIT-FORMULA] raw {:.6f} * scale {:.3f} = {:.6f}'.format(
+            result['unscaled_up_units'], result['up_units_scale'], result['up_units']))
         return True
 
     # ═══ v23: 下单前仓位/现金检查 + 严格成交判定 ═══
 
     def _cur_price(self):
-        tick = self.ctx.get_full_tick([STOCK_QMT])
-        price = tick.get(STOCK_QMT, {}).get('lastPrice', 0)
+        tick = self.ctx.get_full_tick([self.stock_qmt])
+        price = tick.get(self.stock_qmt, {}).get('lastPrice', 0)
         if price <= 0:
             price = self.st.get('daily_signal', {}).get('open_price', 0)
         return price
 
     def _available_cash(self):
         account = get_trade_detail_data(ACCOUNT, 'STOCK', 'ACCOUNT')
-        return account[0].m_dAvailable if account else 0.0
+        cash = account[0].m_dAvailable if account else 0.0
+        return max(0.0, cash - self.portfolio.reserved_cash(exclude=self.stock_qmt))
 
     def _paired_long_capacity(self, price):
         """Capacity for a same-day buy leg backed by still-sellable old shares."""
@@ -645,14 +876,14 @@ class StrategyRunner:
         sellable = max(0, int(self.st.get('base_can_use', 0) or 0))
         pairing_shares = max(0, sellable - reserved)
         capacity = calculate_execution_capacity(
-            pairing_shares, self._available_cash(), price, 1)
+            pairing_shares, self._available_cash(), price, 1, self.trade_lot)
         capacity['reserved_long_shares'] = reserved
         capacity['pairing_shares'] = pairing_shares
-        if pairing_shares < TRADE_LOT_SIZE:
+        if pairing_shares < self.trade_lot:
             capacity['long_reason'] = (
                 'T+1 sellable base shares pairing capacity {} sh '
                 '(sellable {} - reserved {}) < {} sh'
-                .format(pairing_shares, sellable, reserved, TRADE_LOT_SIZE))
+                .format(pairing_shares, sellable, reserved, self.trade_lot))
         return capacity
 
     def _clamp_sell_shares(self, planned):
@@ -685,7 +916,7 @@ class StrategyRunner:
 
     def _buyback_limit_price(self, fallback_price):
         """Use ask1 directly; fall back to the trigger price if ask1 is absent."""
-        tick = self.ctx.get_full_tick([STOCK_QMT]).get(STOCK_QMT, {})
+        tick = self.ctx.get_full_tick([self.stock_qmt]).get(self.stock_qmt, {})
         ask_prices = tick.get('askPrice', []) or []
         ask1 = float(ask_prices[0]) if len(ask_prices) > 0 and ask_prices[0] else 0.0
         base_price = ask1 if ask1 > 0 else float(fallback_price or 0.0)
@@ -696,12 +927,27 @@ class StrategyRunner:
     def _submit_buyback_order(self, shares, fallback_price, label):
         limit_price = self._buyback_limit_price(fallback_price)
         if limit_price <= 0:
-            _log('[{} SKIP] FIX buyback price unavailable'.format(label))
+            self._log('[{} SKIP] FIX buyback price unavailable'.format(label))
             return 'SKIP', 0
         self._last_buyback_price = limit_price
-        _log('[FIX-BUYBACK] trigger Y{:.2f} -> ask1/fallback limit Y{:.2f}'.format(
+        self._log('[FIX-BUYBACK] trigger Y{:.2f} -> ask1/fallback limit Y{:.2f}'.format(
             fallback_price, limit_price))
-        return self._submit_order(shares, limit_price, label, style='FIX')
+        status, delta = self._submit_order(shares, limit_price, label, style='FIX')
+        if delta:
+            self._last_buyback_price = self._execution_price
+        return status, delta
+
+    def _new_t_shares(self, price, side):
+        capacity = self._paired_long_capacity(price)
+        cash = None
+        if side == 'BUY':
+            # 新开正T不能占用任何股票已卖待买回的资金（包括本股票）。
+            own_reserve = (self.portfolio.reserved_cash(exclude='') -
+                           self.portfolio.reserved_cash(exclude=self.stock_qmt))
+            cash = max(0.0, self._available_cash() - own_reserve)
+        return calculate_t_shares(
+            float(price), capacity['pairing_shares'], self.trade_lot,
+            T_TARGET_VALUE, T_POSITION_FRACTION, cash)
 
     def _submit_order(self, shares, price, label, style='COMPETE'):
         """下单 + 等待成交。shares>0 买入, <0 卖出。
@@ -711,51 +957,103 @@ class StrategyRunner:
           status: 'FILLED' 满额 | 'PARTIAL' 部分 | 'TIMEOUT' 未成交 | 'SKIP' 无可用
           actual_delta: 实际成交股数(带符号, 买正卖负)
         """
+        self._last_executed_order = None
         side = 'SELL' if shares < 0 else 'BUY'
-        planned = abs(shares)
+        is_new_leg = label in ('REV-T sell', 'FWD-T buy', 'MOM short', 'MOM long')
+        planned = self._new_t_shares(price, side) if is_new_leg else abs(shares)
         if side == 'SELL':
             actual = self._clamp_sell_shares(planned)
         else:
             actual = self._clamp_buy_shares(planned, price)
-        if actual < cfg.MIN_LOT:
-            _log('[{} SKIP] {} 不足: planned {} actual {}'.format(
+        if is_new_leg:
+            actual = actual // self.trade_lot * self.trade_lot
+            self._log('[T-SIZE] {} | price=Y{:.2f} target=Y{:.0f} '
+                      'base-fraction={:.0f}% | {} units x {} sh = {} sh (~Y{:.0f})'.format(
+                          label, price, T_TARGET_VALUE, T_POSITION_FRACTION * 100,
+                          actual // self.trade_lot, self.trade_lot, actual, price * actual))
+        if self.dry_run:
+            self._log('[SIGNAL-ORDER] {} {} shares={} price={}; no order submitted'.format(
+                label, side, actual, price))
+            return 'SKIP', 0
+        if actual < self.trade_lot:
+            self._log('[{} SKIP] {} 不足: planned {} actual {}'.format(
                 label, '可卖' if side == 'SELL' else '现金', planned, actual))
             return 'SKIP', 0
         signed = -actual if side == 'SELL' else actual
         snap = self._snapshot_account()
         price_str = 'MKT' if price <= 0 else 'Y{:.2f}'.format(price)
-        _log('[ORDER-{}] {} × {} sh'.format(label, price_str, actual))
-        order_shares(STOCK_QMT, signed, style, price, self.ctx, ACCOUNT)
-        return self._wait_for_fill(snap, signed, label, price, signed)
+        self._log('[ORDER-{}] {} × {} sh'.format(label, price_str, actual))
+        if self.portfolio.order_uncertain:
+            self._log('[ORDER-BLOCKED] account has unresolved order')
+            return 'SKIP', 0
+        self.portfolio.before_submit(self.stock_qmt, label, signed, price)
+        with self.portfolio.watchdog.scope('SUBMIT ' + self.stock_qmt):
+            order_id = order_shares(self.stock_qmt, signed, style, price, self.ctx, ACCOUNT)
+        if order_id is None or str(order_id) in ('', '0', '-1'):
+            self._log('[ORDER-REJECTED] no valid order id; no closing price recorded')
+            self.portfolio.order_uncertain = True
+            raise RuntimeError('submission outcome unknown; inspect broker before resuming')
+        self.portfolio.own_order_ids.add(str(order_id))
+        self._submitted_order_id = order_id
+        status, delta = self._wait_for_fill(snap, signed, label, price, signed)
+        if delta:
+            self._last_executed_order = dict(order_id=order_id, shares=abs(delta))
+        return status, delta
 
     # ═══ 成交确认 ═══
 
     def _wait_for_fill(self, snap_before, expected_shares_delta,
                        label, trade_price, trade_shares, timeout_sec=FILL_TIMEOUT_SEC):
-        """严格等待满额成交。返回 (status, actual_delta)。
-
-        status: 'FILLED' 满额 | 'PARTIAL' 部分 | 'TIMEOUT' 未成交。
-        任何结果下 base_shares/base_can_use/base_cost 都会重同步到最新;
-        TIMEOUT 时自动撤掉残留挂单, 避免后续意外成交。
-        """
-        if self.dry_run:
-            self._verify_trade(snap_before, label, trade_price, trade_shares)
-            return 'FILLED', expected_shares_delta
-        waited = 0.0
-        while waited < timeout_sec:
-            _time.sleep(0.5); waited += 0.5
-            curr_snap = self._snapshot_account()
-            actual_delta = curr_snap['shares'] - snap_before['shares']
-            if actual_delta == expected_shares_delta:
-                self._verify_trade(snap_before, label, trade_price, trade_shares)
-                return 'FILLED', actual_delta
-        # 超时: 重同步持仓, 判定部分/未成交
-        self._verify_trade(snap_before, f'{label}(TIMEOUT)', trade_price, trade_shares)
-        actual_delta = self.st['base_shares'] - snap_before['shares']
-        if actual_delta != 0 and actual_delta * expected_shares_delta > 0:
-            return 'PARTIAL', actual_delta
-        self.conn.cancel_order(self.conn.last_order_id)
-        return 'TIMEOUT', 0
+        """Use this order's broker execution, never account position differences."""
+        wanted = abs(expected_shares_delta)
+        sign = 1 if expected_shares_delta > 0 else -1
+        order_id = self._submitted_order_id
+        deadline = _time.monotonic() + timeout_sec
+        cancelled = False
+        while True:
+            try:
+                order = self.conn.trader.query_stock_order(self.conn._account_obj, order_id)
+                if order is not None:
+                    ids = (str(getattr(order, 'order_id', '')), str(getattr(order, 'order_sysid', '')))
+                    if order.stock_code != self.stock_qmt or str(order_id) not in ids:
+                        raise ValueError('order identity mismatch')
+                    volume = int(order.traded_volume or 0)
+                    actual_price = float(order.traded_price or 0)
+                    # xtquant.xtconstant: PART_CANCEL=53 CANCELED=54 SUCCEEDED=56 JUNK=57.
+                    terminal = int(order.order_status) in (53, 54, 56, 57)
+                    if volume > wanted:
+                        raise ValueError('execution quantity exceeds submitted quantity')
+                    if terminal and volume == 0:
+                        return 'TIMEOUT', 0
+                    if (volume == wanted or terminal) and volume > 0 and math.isfinite(actual_price) and actual_price > 0:
+                        self._execution_price = actual_price
+                        gross, completed, cycle = self.execution_book.record(
+                            order_id, label, sign * volume, actual_price)
+                        self.total_pnl += gross
+                        self.st['day_pnl'] = self.st.get('day_pnl', 0) + gross
+                        self.total_t_days += int(completed)
+                        self._last_cycle_gross = cycle
+                        if completed:
+                            self._log('[CYCLE-CLOSED] {} gross=Y{:.2f} fees=NOT_INCLUDED'.format(label, cycle))
+                        self.portfolio.own_order_ids.update(value for value in ids if value)
+                        self._refresh_position()
+                        self._log('[EXECUTION] order={} {} qty={} avg=Y{:.4f} '
+                                  'reference=Y{:.4f} realized-gross=Y{:.2f} '
+                                  'total-gross=Y{:.2f} fees=NOT_INCLUDED'.format(
+                                      order_id, label, volume, actual_price, trade_price, gross, self.total_pnl))
+                        return ('FILLED' if volume == wanted else 'PARTIAL'), sign * volume
+            except Exception as error:
+                self._log('[EXECUTION-WAIT] order={} {}'.format(order_id, error))
+            if _time.monotonic() >= deadline:
+                if not cancelled:
+                    self.conn.cancel_order(order_id)
+                    cancelled = True
+                    deadline = _time.monotonic() + timeout_sec
+                else:
+                    self.portfolio.order_uncertain = True
+                    self._log('[ORDER-UNCERTAIN] order={}; account orders paused; reconcile broker orders'.format(order_id))
+                    raise RuntimeError('unresolved broker order ' + str(order_id))
+            _time.sleep(0.5)
 
     # ═══ 快照 & 校验 ═══
 
@@ -763,48 +1061,40 @@ class StrategyRunner:
         positions = get_trade_detail_data(ACCOUNT, 'STOCK', 'POSITION')
         shares = 0; can_use = 0; cost = 0.0
         for pos in positions:
-            if pos.m_strInstrumentID == STOCK_CODE:
+            if pos.m_strInstrumentID == self.stock_code:
                 shares = pos.m_nVolume; can_use = getattr(pos, 'm_nCanUseVolume', pos.m_nVolume)
                 cost = pos.m_dOpenPrice; break
         account = get_trade_detail_data(ACCOUNT, 'STOCK', 'ACCOUNT')
         cash = account[0].m_dAvailable if account else 0.0
-        tick = self.ctx.get_full_tick([STOCK_QMT])
-        price = tick.get(STOCK_QMT, {}).get('lastPrice', 0)
+        tick = self.ctx.get_full_tick([self.stock_qmt])
+        price = tick.get(self.stock_qmt, {}).get('lastPrice', 0)
         if price <= 0: price = self.st.get('daily_signal', {}).get('open_price', 0)
         return {'shares': shares, 'can_use': can_use, 'cash': cash,
-                'cost': cost, 'total_asset': shares * price + cash, 'price': price}
+                'cost': cost, 'total_asset': account[0].m_dBalance if account else 0.0, 'price': price}
 
     # ★ v21: 成交日志优化 — 清晰打印价格×数量+持仓变化
-    def _verify_trade(self, snap_before, label, trade_price, trade_shares):
-        _time.sleep(0.3)
-        snap_after = self._snapshot_account()
-        d_shares = snap_after['shares'] - snap_before['shares']
-        d_cash = snap_after['cash'] - snap_before['cash']
-        # ★ v22: 兼容多手成交确认 (单手时与原逻辑一致)
-        status = 'OK' if d_shares == trade_shares else ('PENDING' if d_shares == 0 else 'PARTIAL')
-
-        # ★ v21: [成交] 行 — 价格 × 数量 + 持仓变化
-        price_str = 'MKT' if trade_price <= 0 else 'Y{:.2f}'.format(trade_price)
-        _log('[FILL-{}] {} × {} sh | pos {}→{} | cash {:+,.0f}'.format(
-            label, price_str, abs(trade_shares),
-            snap_before['shares'], snap_after['shares'], d_cash))
-
-        # 仅在异常时输出校验详情
-        if status != 'OK':
-            _log('[VERIFY] {}: status {} | exp {:+d} act {:+d} | cashΔ {:+,.0f}'.format(
-                label, status, trade_shares, d_shares, d_cash))
-
-        self.st['base_shares'] = snap_after['shares']
-        self.st['base_can_use'] = snap_after['can_use']
-        self.st['base_cost'] = snap_after['cost']
 
     # ═══ v21: 信号+计划合并输出 (无分隔线, 无空行) ═══
 
     def _print_daily_brief(self, signal):
+        if not cfg.is_market_open(cfg.now_hms()):
+            self._log('[NON-TRADING PREVIEW] indicative plans only; no orders outside trading hours; '
+                      'next trading day recalculates from its opening price')
+        reference = float(signal.get('open_price', 0) or 0)
+        if signal.get('trigger_base') == 'CLOSE_FILL_ATR':
+            reference = signal['reentry']['base']
+        if reference > 0:
+            self._log('[T-SIZE PLAN] at base Y{:.2f}: REV {} sh / FWD {} sh; '
+                      'rechecked at order submission'.format(
+                          reference, self._new_t_shares(reference, 'SELL'),
+                          self._new_t_shares(reference, 'BUY')))
         trend = signal.get('trend', '?')
         trend_labels = {'strong_bull': 'STRONG-BULL', 'weak_bull': 'WEAK-BULL', 'bull': 'ADAPTIVE-BULL', 'sideways': 'ADAPTIVE-SIDEWAYS', 'bear': 'ADAPTIVE-BEAR'}
         open_p = signal.get('open_price', 0); close_y = signal.get('close_yday', 0)
         open_source = format_signal_base_source(signal.get('open_price_source'))
+        if signal.get('trigger_base') == 'CLOSE_FILL_ATR':
+            open_p = signal['reentry']['base']
+            open_source = 'confirmed closing fill; next-cycle base'
         atr_pct = signal.get('atr_pct', 0) * 100; rsi_v = signal.get('rsi', 0)
         vol_r = signal.get('vol_ratio'); sell_mult = signal.get('sell_mult', 0)
         volume_valid = signal.get('volume_valid', False)
@@ -817,35 +1107,49 @@ class StrategyRunner:
         do_long = self.st.get('do_long', False)
         short_lots = self.st.get('short_lots', 0); long_lots = self.st.get('long_lots', 0)
 
-        tick = self.ctx.get_full_tick([STOCK_QMT])
-        curr_price = tick.get(STOCK_QMT, {}).get('lastPrice', 0)
+        tick = self.ctx.get_full_tick([self.stock_qmt])
+        curr_price = tick.get(self.stock_qmt, {}).get('lastPrice', 0)
         if curr_price <= 0: curr_price = open_p
         pos_value = base_shares * curr_price
         trend_cn = trend_labels.get(trend, trend)
 
         # 行1: 核心指标
-        _log('[SIGNAL] {} | SignalBase Y{:.2f} (source: {}) | ATR {:.1f}% | RSI {:.0f} | Vol_ratio {} | Mult {:.2f} | Trig Y{:.2f}{} {}'.format(
+        self._log('[SIGNAL] {} | SignalBase Y{:.2f} (source: {}) | ATR {:.1f}% | RSI {:.0f} | Vol_ratio {} | Mult {:.2f} | base-trigger Y{:.2f}{} {}'.format(
             trend_cn, open_p, open_source, atr_pct, rsi_v, vol_display, sell_mult, sell_trig,
             '(range-capped)' if range_capped else '',
             '[REV-T blocked:{}]'.format(
                 signal.get('short_reason') or
                 signal.get('blocked_reason', 'unknown')) if not do_short else ''))
-        adaptive = signal.get('adaptive_linear') or {}
-        if signal.get('adaptive_linear_active'):
-            _log('[ADAPTIVE-LINEAR] score {score:+.4f} | bear<={bear:+.4f} | bull>={bull:+.4f} | '
-                 'samples {samples} | span {span}d | horizon {horizon}d | '
-                 'trigger ATR-units {units:.3f}'.format(
-                     score=adaptive.get('style_score', 0.0),
-                     bear=adaptive.get('bear_boundary', 0.0),
-                     bull=adaptive.get('bull_boundary', 0.0),
-                     samples=adaptive.get('sample_count', 0),
-                     span=adaptive.get('lookback_span', 0),
-                     horizon=adaptive.get('horizon', 0),
-                     units=adaptive.get('trigger_units', 0.0)))
+        regime = signal.get('quantile_trend') or {}
+        self._log('[REFERENCE] ' + self._reference_log())
+        if signal.get('trigger_base') == 'CLOSE_FILL_ATR':
+            reentry = signal['reentry']
+            self._log('[REENTRY-UNIT-FORMULA] close-fill Y{:.4f} | raw {:.6f} * scale {:.3f} = {:.6f}'.format(
+                reentry['base'], reentry.get('unscaled_up_units', reentry['up_units']),
+                reentry.get('up_units_scale', 1.0), reentry['up_units']))
+        elif signal.get('quantile_trend_active'):
+            self._log('[QUANTILE-TREND] score {score:+.3f} | rank {rank:.3f} | '
+                 'trigger-Q {quantile:.3f} | samples {samples} | span {span}d | '
+                 'ATR-units {units:.3f}'.format(
+                     score=regime.get('trend_score', 0.0),
+                     rank=regime.get('trend_rank', 0.0),
+                     quantile=regime.get('trigger_quantile', 0.0),
+                     samples=regime.get('sample_count', 0),
+                     span=regime.get('lookback_span', 0),
+                     units=regime.get('trigger_units', 0.0)))
+            self._log('[QUANTILE-FORMULA] units=Quantile(next-day open-to-high, '
+                 'tail {tail:.3f} + trend-rank {rank:.3f}*(1-2*tail)) '
+                 '= Q{quantile:.3f} -> raw {raw:.4f} * scale {scale:.2f} = {units:.4f}'.format(
+                     tail=regime.get('tail_rank', 0.0),
+                     rank=regime.get('trend_rank', 0.0),
+                     quantile=regime.get('trigger_quantile', 0.0),
+                     raw=regime.get('unscaled_trigger_units', regime.get('trigger_units', 0.0)),
+                     scale=regime.get('units_scale', 1.0),
+                     units=regime.get('trigger_units', 0.0)))
         vol_last = signal.get('volume_current', 0)
         vol10_ratio = signal.get('volume_ratio10')
         vol20_ratio = signal.get('vol_ratio')
-        _log('[VOLUME] last {:.0f} | prev10_avg {:.0f} (last/10d {}) | '
+        self._log('[VOLUME] last {:.0f} | prev10_avg {:.0f} (last/10d {}) | '
              'prev20_avg {:.0f} (last/20d {}) | n10={} n20={} | {}'.format(
                  vol_last, signal.get('volume_avg10', 0),
                  '{:.2f}x'.format(vol10_ratio) if vol10_ratio is not None else 'N/A',
@@ -858,31 +1162,46 @@ class StrategyRunner:
         # 因子
         fd = signal.get('factor_details', {})
         if fd:
-            _log('[FACTOR] {}'.format(' '.join('{} {:+.2f} | '.format(k, v) for k, v in fd.items())))
+            self._log('[FACTOR] {}'.format(' '.join('{} {:+.2f} | '.format(k, v) for k, v in fd.items())))
 
         # 行2: 持仓 + 方向
         bits = ['Position:{} sh Y{:,.0f}({:.0f}%)'.format(base_shares, pos_value, pos_pct),
                 'Cash:Y{:,.0f}'.format(avail_cash),
                 'Sellable:{} lots({} sh)'.format(
-                    base_can_use // TRADE_LOT_SIZE, base_can_use)]
-        _log('[ACCOUNT] {}'.format(' | '.join(bits)))
+                    base_can_use // self.trade_lot, base_can_use)]
+        self._log('[ACCOUNT] {}'.format(' | '.join(bits)))
 
+        planned_short = self._new_t_shares(curr_price, 'SELL')
+        planned_long = self._new_t_shares(curr_price, 'BUY')
+        remaining_short = max(0, cfg.MAX_DAILY_TRADES - self.st.get('trade_count_short', 0))
+        remaining_long = max(0, cfg.MAX_DAILY_TRADES - self.st.get('trade_count_long', 0))
         # 行3-4: 反T / 正T
         guard_active = self.st.get('limit_up_guard', False)
         atr_fraction = float(signal.get('atr_pct', 0.0) or 0.0)
         rev_buyback_pct = atr_fraction * cfg.BUYBACK_TRIGGER_MULT
-        rev_buyback_plan = round(sell_trig * (1.0 - rev_buyback_pct), 2)
+        execution_trig = self._rev_sell_trigger()
+        rev_buyback_plan = round(execution_trig * (1.0 - rev_buyback_pct), 2)
         rev_emergency_plan = round(
-            sell_trig * (1.0 + cfg.EMERGENCY_BUYBACK_PCT), 2)
+            execution_trig * (1.0 + cfg.EMERGENCY_BUYBACK_PCT), 2)
         sell_raw = float(signal.get('sell_trigger_raw', sell_trig) or sell_trig)
-        if signal.get('adaptive_linear_active'):
-            sell_formula = ('plan sell Y{sell:.2f} = open Y{open:.2f}*'
-                            '(1+ATR {atr:.2f}%*linear_units {units:.3f})').format(
+        if signal.get('trigger_base') == 'CLOSE_FILL_ATR':
+            reentry = signal['reentry']
+            sell_formula = ('base-trigger Y{sell:.2f} = close-fill Y{base:.4f}*'
+                            '(1+ATR {atr:.4f}%*(reentry_units {raw:.6f}*scale {scale:.3f}))'
+                            ' [ceil cent; min distance Y0.01]').format(
+                                sell=sell_trig, base=reentry['base'],
+                                atr=reentry['atr_pct'] * 100,
+                                raw=reentry.get('unscaled_up_units', reentry['up_units']),
+                                scale=reentry.get('up_units_scale', 1.0))
+        elif signal.get('quantile_trend_active'):
+            sell_formula = ('base-trigger Y{sell:.2f} = open Y{open:.2f}*'
+                            '(1+ATR {atr:.2f}%*(raw {raw:.6f}*scale {scale:.3f}))').format(
                                 sell=sell_trig, open=open_p,
                                 atr=atr_fraction * 100,
-                                units=signal.get('trigger_units', 0.0))
+                                raw=regime.get('unscaled_trigger_units', regime.get('trigger_units', 0)),
+                                scale=regime.get('units_scale', 1.0))
         else:
-            sell_formula = ('plan sell Y{sell:.2f} = open Y{open:.2f}*'
+            sell_formula = ('base-trigger Y{sell:.2f} = open Y{open:.2f}*'
                             '(1+ATR {atr:.2f}%*mult {mult:.2f}*scale {scale:.2f})').format(
                                 sell=sell_trig, open=open_p, atr=atr_fraction * 100,
                                 mult=sell_mult, scale=cfg.SELL_TRIGGER_SCALE)
@@ -894,22 +1213,22 @@ class StrategyRunner:
                 sell_raw, range_cap)
         rev_plan = ('{} | buyback Y{buyback:.2f} = '
                     'Y{sell:.2f}*(1-{atr:.2f}%*{mult:.2f})').format(
-                        sell_formula,
-                        sell=sell_trig, buyback=rev_buyback_plan,
+                        sell_formula + ' | ' + self._reference_log(),
+                        sell=execution_trig, buyback=rev_buyback_plan,
                         atr=atr_fraction * 100,
                         mult=cfg.BUYBACK_TRIGGER_MULT)
         if cfg.EMERGENCY_BUYBACK:
             rev_plan += ' | emergency Y{:.2f} = Y{:.2f}*(1+{:.1f}%)'.format(
-                rev_emergency_plan, sell_trig,
+                rev_emergency_plan, execution_trig,
                 cfg.EMERGENCY_BUYBACK_PCT * 100)
         if guard_active:
-            _log('[REV-T] FROZEN near upper limit; capacity {} lots | {}'.format(
+            self._log('[REV-T] FROZEN near upper limit; capacity {} lots | {}'.format(
                 short_lots, rev_plan))
         elif do_short:
-            _log('[REV-T] ENABLED {} lots | {}'.format(short_lots, rev_plan))
+            self._log('[REV-T] {} plan {} sh / remaining {} entries | {}'.format('ENABLED' if cfg.is_market_open(cfg.now_hms()) else 'NON-TRADING PREVIEW', planned_short, remaining_short, rev_plan))
         else:
             reason = signal.get('short_reason', signal.get('blocked_reason', 'unknown'))
-            _log('[REV-T] BLOCKED {} | {}'.format(reason, rev_plan))
+            self._log('[REV-T] BLOCKED {} | {}'.format(reason, rev_plan))
 
         buy_trig = signal.get('buy_trigger', 0)
         buy_floor = signal.get('buy_trigger_floor', 0)
@@ -917,65 +1236,240 @@ class StrategyRunner:
         sell_hint = signal.get('sellback_target_hint', 0)
         fwd_plan = ('plan buy Y{buy:.2f} = max(floor Y{floor:.2f}, trail '
                     'Y{trail:.2f}) | plan sell Y{sell:.2f} = '
-                    'Y{buy:.2f}*(1+{rise:.1f}%) | plan 1 lot~Y{lot:,.0f}').format(
+                    'Y{buy:.2f}*(1+{rise:.1f}%) | planned value~Y{lot:,.0f}').format(
                         buy=buy_trig, floor=buy_floor, trail=buy_trail,
                         sell=sell_hint, rise=cfg.SELLBACK_RISE_PCT * 100,
-                        lot=buy_trig * TRADE_LOT_SIZE)
+                        lot=buy_trig * planned_long)
         if guard_active:
-            _log('[FWD-T] FROZEN near upper limit; capacity {} lots | {}'.format(
+            self._log('[FWD-T] FROZEN near upper limit; capacity {} lots | {}'.format(
                 long_lots, fwd_plan))
         elif do_long:
-            _log('[FWD-T] ENABLED {} lots | {}'.format(long_lots, fwd_plan))
+            self._log('[FWD-T] {} plan {} sh / remaining {} entries | {}'.format('ENABLED' if cfg.is_market_open(cfg.now_hms()) else 'NON-TRADING PREVIEW', planned_long, remaining_long, fwd_plan))
         else:
-            _log('[FWD-T] BLOCKED {} | {}'.format(
+            self._log('[FWD-T] BLOCKED {} | {}'.format(
                 self.st.get('long_reason', 'unknown'), fwd_plan))
 
         if MOM_ENABLED:
-            _log('[MOM] {}minutes±{:.1f}×ATR in 10 minutes({:.1f}%~{:.1f}%) 反T买回-{:.1f}% 正T卖回+{:.1f}% MOM_LOT_SIZE({}sh) 上限{}次 紧急买回{}'.format(
+            self._log('[MOM] {}minutes±{:.1f}×ATR in 10 minutes({:.1f}%~{:.1f}%) 反T买回-{:.1f}% 正T卖回+{:.1f}% 最小单位({}sh)，新开仓按金额/底仓动态计算 上限{}次 紧急买回{}'.format(
                 MOM_WINDOW_SEC // 60, MOM_ATR_MULT,
                 MOM_TRIGGER_MIN_PCT * 100, MOM_TRIGGER_MAX_PCT * 100,
                 MOM_SHORT_BUYBACK_PCT * 100, MOM_LONG_SELLBACK_PCT * 100,
-                MOM_LOT_SIZE, MOM_MAX_DAILY_TRADES,
+                self.trade_lot, MOM_MAX_DAILY_TRADES,
                 '开' if MOM_EMERGENCY_BUYBACK_ENABLED else '关'))
             mom_capacity = calculate_execution_capacity(
-                base_can_use, avail_cash, curr_price, 1)
+                base_can_use, avail_cash, curr_price, 1, self.trade_lot)
             if guard_active:
-                _log('[MOM-CAPACITY] FROZEN near upper limit')
+                self._log('[MOM-CAPACITY] FROZEN near upper limit')
             else:
-                _log('[MOM-CAPACITY] short {} | long {}'.format(
+                self._log('[MOM-CAPACITY] short {} | long {}'.format(
                     'ON' if mom_capacity['can_short'] else
                     'OFF {}'.format(mom_capacity['short_reason']),
                     'ON' if mom_capacity['can_long'] else
                     'OFF {}'.format(mom_capacity['long_reason'])))
-            _log('[MOM-v40] REV让权{} band {:.2f}% (仅低于REV阈值) | 自适应回撤{} {:.2f}~{:.2f}% ATR×{:.2f}'.format(
+            self._log('[MOM-v40] REV让权{} band {:.2f}% (仅低于REV阈值) | 自适应回撤{} {:.2f}~{:.2f}% ATR×{:.2f}'.format(
                 '开' if MOM_REV_PRIORITY_ENABLED else '关', MOM_REV_PRIORITY_BAND_PCT * 100,
                 '开' if MOM_ADAPTIVE_PULLBACK_ENABLED else '关',
                 MOM_PULLBACK_MIN_PCT * 100, MOM_PULLBACK_MAX_PCT * 100,
                 MOM_PULLBACK_ATR_MULT))
         else:
-            _log('[MOM] 已屏蔽 (MOM_ENABLED=False)')
+            self._log('[MOM] 已屏蔽 (MOM_ENABLED=False)')
 
         # 累计
         if self.total_t_days > 0:
-            _log('[CUM] {} trades gross~Y{:,.0f}'.format(self.total_t_days, self.total_pnl))
+            self._log('[CUM] {} trades gross~Y{:,.0f}'.format(self.total_t_days, self.total_pnl))
 
     # ═══ 状态机 ═══
+
+
+
+    def _reset_strength_reference(self):
+        self.strength_engine = IntradayStrength(StrengthConfig(
+            history_days=STRENGTH_HISTORY_DAYS, quantile=STRENGTH_LOWER_QUANTILE,
+            lookback=STRENGTH_LOOKBACK_MIN, smooth=STRENGTH_SMOOTH_MIN,
+            warmup=STRENGTH_WARMUP_MIN, open_units=STRENGTH_OPEN_UNITS,
+            average_units=STRENGTH_AVERAGE_UNITS, momentum_units=STRENGTH_MOMENTUM_UNITS,
+            rebound_units=STRENGTH_REBOUND_UNITS, rebound_min=STRENGTH_REBOUND_MIN,
+            rebound_max=STRENGTH_REBOUND_MAX, average_buffer=STRENGTH_AVERAGE_BUFFER,
+            strong=STRENGTH_STRONG, max_gap=STRENGTH_MAX_GAP_SEC))
+        self._strength_key = None
+        self._strength_lower = None
+        self._strength_result = {}
+        self._strength_phase = None
+        self._strength_log_time = 0
+        self._shadow_strength_armed = False
+
+    def _strength_cancel_arm(self, reason):
+        st = self.st
+        if st.get('fstate') == STATE_SPIKING and st.get('strength_armed'):
+            st['fstate'] = STATE_IDLE
+            st['trade_count_short'] = max(0, st.get('trade_count_short', 0) - 1)
+            st['peak_price'] = 0
+            st['strength_armed'] = False
+            st['rebound_armed'] = False
+            self._log('[STRENGTH-ARM CANCELED] ' + reason)
+
+    def _invalidate_strength(self, reason):
+        original = (self.st.get('daily_signal') or {}).get('sell_trigger', 0)
+        self._strength_result = self.strength_engine.invalidate(original, reason)
+        self._shadow_strength_armed = False
+        if self._strength_phase != reason:
+            self._strength_phase = reason
+            self._log('[STRENGTH {}] {} minutes=0; original reference, observation reset'.format(
+                INTRADAY_REFERENCE_MODE.upper(), reason))
+        if INTRADAY_REFERENCE_MODE == 'active':
+            self._strength_cancel_arm(reason)
+
+    def _update_strength_reference(self, price, now_ts, tick_data):
+        st = self.st
+        sig = st.get('daily_signal') or {}
+        original = float(sig.get('sell_trigger', 0) or 0)
+        reentry = sig.get('reentry') or {}
+        is_reentry = sig.get('trigger_base') == 'CLOSE_FILL_ATR'
+        base = float(reentry.get('base', 0) if is_reentry else sig.get('open_price', 0) or 0)
+        atr = float(reentry.get('atr_pct', sig.get('atr_pct', 0)) if is_reentry else sig.get('atr_pct', 0) or 0)
+        opening = float(tick_data.get('open', 0) or 0)
+        average = st.get('intraday_avg_price', 0) if st.get('intraday_avg_valid') else 0
+        key = (st.get('trade_date'), base, original, atr, st.get('next_t_cycle', 0))
+        if key != self._strength_key:
+            self.strength_engine.reset()
+            self._strength_key, self._strength_lower = key, None
+            self._shadow_strength_armed = False
+        error = None
+        if self._strength_lower is None:
+            try:
+                history = st.get('reentry_history')
+                if history is None:
+                    raise ValueError('completed daily history unavailable')
+                self._strength_lower = lower_excursion_units(*[
+                    history[column].astype(float).tolist() for column in ('open', 'high', 'low', 'close')],
+                    config=self.strength_engine.config)
+            except (ValueError, KeyError, TypeError) as exc:
+                error = str(exc)
+        active = INTRADAY_REFERENCE_MODE == 'active'
+        frozen = st.get('fstate') == STATE_SPIKING if active else self._shadow_strength_armed
+        if error:
+            result = self.strength_engine.invalidate(original, 'INVALID_HISTORY')
+            result['reason'] = error
+        else:
+            result = self.strength_engine.update(
+                now_ts, price, opening, average, atr, base, original, self._strength_lower,
+                frozen=frozen, blocked=self.has_open_legs())
+        self._strength_result = result
+        if active:
+            if result['cancel'] or result['phase'] in ('INVALID', 'INVALID_HISTORY', 'GAP', 'WARMUP'):
+                self._strength_cancel_arm(result['phase'])
+        elif result['cancel'] or result['phase'] in ('INVALID', 'INVALID_HISTORY', 'GAP', 'WARMUP', 'EXISTING_LEG'):
+            self._shadow_strength_armed = False
+        elif (result['touched'] and not self._shadow_strength_armed and
+              st.get('fstate') == STATE_IDLE and st.get('do_short') and
+              not self._new_leg_block_reason()):
+            self._shadow_strength_armed = True
+            self._log('[STRENGTH-SHADOW-TOUCH] price=Y{:.2f} candidate=Y{:.2f}; '
+                      'hypothetical only, no order/count change'.format(price, result['effective']))
+        phase = result['phase']
+        if phase != self._strength_phase or now_ts - self._strength_log_time >= STRENGTH_LOG_INTERVAL_SEC:
+            self._strength_phase, self._strength_log_time = phase, now_ts
+            self._log('[STRENGTH {}] {} minutes={} components={} S={:.3f} '
+                      'base=Y{:.2f} base-trigger=Y{:.2f} candidate={} execution=Y{:.2f} '
+                      'U0={:.4f} Ul={:.4f} U={:.4f} limit={} reason={}'.format(
+                          INTRADAY_REFERENCE_MODE.upper(), phase, result['minutes'],
+                          [round(v, 3) for v in result.get('components', [])], result.get('strength', 0),
+                          base, original, self._candidate_log(), self._rev_sell_trigger(),
+                          result.get('upper_units', 0), result.get('lower_units', self._strength_lower or 0),
+                          result.get('effective_units', 0), result.get('limit', '-'),
+                          result.get('reason', phase)))
+
+    def _candidate_log(self):
+        if not cfg.is_market_open(cfg.now_hms()):
+            return 'NON_TRADING'
+        result = self._strength_result
+        if result.get('minutes', 0) < STRENGTH_WARMUP_MIN or result.get('phase') not in (
+                'ADAPTIVE', 'STRONG', 'FROZEN', 'TOUCHED', 'BELOW_MARKET_HOLD'):
+            return 'NOT_READY'
+        return 'Y{:.2f}'.format(result['effective'])
+
+    def _reference_log(self):
+        base_trigger = (self.st.get('daily_signal') or {}).get('sell_trigger', 0)
+        return 'base-trigger Y{:.2f} | execution Y{:.2f} | {}-candidate {}'.format(
+            base_trigger, self._rev_sell_trigger(), INTRADAY_REFERENCE_MODE, self._candidate_log())
+
+    def _rev_sell_trigger(self):
+        original = (self.st.get('daily_signal') or {}).get('sell_trigger', 999999)
+        if INTRADAY_REFERENCE_MODE == 'active':
+            if self.has_open_legs() or self.st.get('fstate') not in (STATE_IDLE, STATE_SPIKING):
+                return original
+            return self._strength_result.get('effective', original) or original
+        return (self.st.get('rebound_effective') or original) if REBOUND_ENABLED else original
+
+    def _update_rebound_reference(self, price, now_ts, tick_data):
+        st = self.st
+        signal = st.get('daily_signal') or {}
+        original = signal.get('sell_trigger', 0)
+        if not original:
+            return
+        identity = [st.get('trade_date'), signal.get('trigger_base'),
+                    signal.get('trigger_base_price'), original, st.get('next_t_cycle', 0)]
+        if st.get('rebound_identity') != identity:
+            st.update(rebound_identity=identity, rebound_memory={}, rebound_effective=original)
+        if not REBOUND_ENABLED:
+            st['rebound_effective'] = original
+            return
+        # Do not change existing legs or ladder entries.
+        if self.has_open_legs() or st.get('fstate') not in (STATE_IDLE, STATE_SPIKING):
+            st['rebound_effective'] = original
+            return
+        opening = float(tick_data.get('open', 0) or 0)
+        average = st.get('intraday_avg_price', 0) if st.get('intraday_avg_valid') else 0
+        previous = st.get('rebound_effective', original)
+        reentry = signal.get('reentry', {}) if signal.get('trigger_base') == 'CLOSE_FILL_ATR' else {}
+        effective, mode = rebound_reference(
+            st.setdefault('rebound_memory', {}), now_ts, price, opening, average,
+            signal.get('atr_pct', 0), original, REBOUND_WINDOW_SEC,
+            REBOUND_CONFIRM_SEC, REBOUND_ATR_UNITS, REBOUND_MIN_PCT,
+            REBOUND_MAX_PCT, REBOUND_AVERAGE_UNITS, REBOUND_WEAK_UNITS,
+            REBOUND_STRONG_UNITS, reentry.get('base', 0), reentry.get('up_units', 0),
+            REENTRY_WEAK_DISCOUNT, REENTRY_WEAK_FULL_UNITS)
+        st['rebound_effective'] = effective
+        if st.get('rebound_armed') and st.get('fstate') == STATE_SPIKING and mode in ('STRONG', 'INVALID', 'WARMUP'):
+            st['fstate'] = STATE_IDLE
+            st['trade_count_short'] = max(0, st.get('trade_count_short', 0) - 1)
+            st['peak_price'] = 0
+            st['rebound_armed'] = False
+            self._log('[REB-ARM CANCELED] {}; return to original entry reference'.format(mode))
+        if abs(effective - previous) >= .005:
+            memory = st['rebound_memory']
+            if mode == 'REBOUND' and 'effective_units' in memory:
+                self._log('[REB-REENTRY] original=Y{:.2f} effective=Y{:.2f} | '
+                          'units={:.4f}*(1-{:.2f}*weakness {:.3f})={:.4f}; '
+                          'min(original, ceil-cent(max(base Y{:.2f}*(1+ATR {:.2f}%*units), '
+                          'avg Y{:.2f}*(1+ATR*{:.2f})))); reference held during rebound'.format(
+                              original, effective, memory['reentry_units'], memory['reentry_discount'],
+                              memory['weakness'], memory['effective_units'], memory['reentry_base'],
+                              signal.get('atr_pct', 0)*100, memory.get('average', average), REBOUND_AVERAGE_UNITS))
+                return
+            self._log('[REB-REF] {} original=Y{:.2f} effective=Y{:.2f} | '
+                      'min(original, max(low Y{:.2f}*(1+{:.2f}%), avg Y{:.2f}*(1+ATR*{:.2f})))'.format(
+                          mode, original, effective, memory.get('low', 0),
+                          memory.get('rebound', 0)*100, average, REBOUND_AVERAGE_UNITS))
 
     def _handle_idle(self, price):
         st = self.st; signal = st.get('daily_signal', {})
         if self._new_leg_block_reason():
             return
         if st.get('do_short', False):
-            trigger = signal.get('sell_trigger', 999999)
+            trigger = self._rev_sell_trigger()
             if price >= trigger:
                 can_use = st.get('base_can_use', st['base_shares'])
-                if can_use < cfg.MIN_LOT: return
+                if can_use < self.trade_lot: return
                 tc = st.get('trade_count_short', 0)
                 if tc >= cfg.MAX_DAILY_TRADES or st.get('locked', False): return
                 st['trade_count_short'] = tc + 1
+                st['strength_armed'] = (INTRADAY_REFERENCE_MODE == 'active' and
+                                        trigger < signal.get('sell_trigger', trigger))
+                st['rebound_armed'] = trigger < signal.get('sell_trigger', trigger)
                 st['fstate'] = STATE_SPIKING; st['peak_price'] = price
                 st['state_enter_time'] = cfg.now_hms()
-                _log('[REV-T spike #{}/{}] Y{:.2f} >= Y{:.2f}'.format(tc + 1, cfg.MAX_DAILY_TRADES, price, trigger))
+                self._log('[REV-T spike #{}/{}] Y{:.2f} >= Y{:.2f}'.format(tc + 1, cfg.MAX_DAILY_TRADES, price, trigger))
                 return
         if st.get('do_long', False):
             buy_trigger = signal.get('buy_trigger', 0)
@@ -985,7 +1479,7 @@ class StrategyRunner:
                 st['trade_count_long'] = tc + 1
                 st['fstate'] = STATE_BT_DIPPING; st['bt_dip_price'] = price
                 st['bt_buy_trigger'] = buy_trigger; st['state_enter_time'] = cfg.now_hms()
-                _log('[FWD-T dip #{}/{}] Y{:.2f} <= Y{:.2f}(-{:.2f}%)'.format(
+                self._log('[FWD-T dip #{}/{}] Y{:.2f} <= Y{:.2f}(-{:.2f}%)'.format(
                     tc + 1, cfg.MAX_DAILY_TRADES, price, buy_trigger, (buy_trigger - price) / buy_trigger * 100))
 
     def _handle_spiking(self, price):
@@ -995,34 +1489,36 @@ class StrategyRunner:
         if pullback >= cfg.PULLBACK_PCT:
             block_reason = self._new_leg_block_reason()
             if block_reason:
-                _log('[REV-T ARM CANCELED] {}'.format(block_reason))
+                self._log('[REV-T ARM CANCELED] {}'.format(block_reason))
                 st['trade_count_short'] = max(
                     0, st.get('trade_count_short', 0) - 1)
                 st['fstate'] = STATE_IDLE
                 st['peak_price'] = 0.0
                 return
-            _log('[REV-T sell trig] peak Y{:.2f} pullback {:.2f}% → Y{:.2f}'.format(peak, pullback * 100, price))
+            self._log('[REV-T sell trig] peak Y{:.2f} pullback {:.2f}% → Y{:.2f}'.format(peak, pullback * 100, price))
             atr_pct = st['daily_signal']['atr_pct']; buyback_pct = atr_pct * cfg.BUYBACK_TRIGGER_MULT
             buyback_target = round(price * (1.0 - buyback_pct), 2)
             st['buyback_target'] = buyback_target
             st['buyback_target_pct'] = buyback_pct * 100
             st['sell_elapsed_bars'] = 0; st['state_enter_time'] = cfg.now_hms()
             # ★ v23: 下单前检查可卖仓位, 以实际可卖数量下单
-            status, delta = self._submit_order(-TRADE_LOT_SIZE, price, 'REV-T sell')
+            status, delta = self._submit_order(-self.trade_lot, price, 'REV-T sell')
+            if delta: price = self._execution_price
             if status in ('SKIP', 'TIMEOUT'):
                 if status == 'TIMEOUT':
-                    _log('[REV-T sell TIMEOUT] 未成交, 回 IDLE')
+                    self._log('[REV-T sell TIMEOUT] 未成交, 回 IDLE')
                 st['trade_count_short'] = max(0, st.get('trade_count_short', 0) - 1)
                 st['fstate'] = STATE_IDLE
                 return
             # FILLED / PARTIAL: 按实际成交股数入腿
             actual_sold = -delta
+            st['buyback_target'] = round(price * (1.0 - buyback_pct), 2)
             st['sell_fill_price'] = price
             st['rebound_99_armed'] = False
             st['short_legs'].append((price, actual_sold))
             st['ladder_sell_target'] = round(price * (1.0 + LADDER_UP_STEP_PCT), 2) if status == 'FILLED' else 0.0
             if status == 'PARTIAL':
-                _log('[REV-T sell PARTIAL] 实际卖出 {} sh'.format(actual_sold))
+                self._log('[REV-T sell PARTIAL] 实际卖出 {} sh'.format(actual_sold))
             st['fstate'] = STATE_SOLD
 
     def _handle_sold(self, price):
@@ -1032,17 +1528,17 @@ class StrategyRunner:
         if ladder > 0 and price >= ladder:
             tc = st.get('trade_count_short', 0)
             can_use = st.get('base_can_use', st['base_shares'])
-            if (can_use >= cfg.MIN_LOT and tc < cfg.MAX_DAILY_TRADES and
+            if (can_use >= self.trade_lot and tc < cfg.MAX_DAILY_TRADES and
                     not self._new_leg_block_reason()):
                 st['trade_count_short'] = tc + 1
                 st['ladder_sold_count'] = st.get('ladder_sold_count', 0) + 1
                 st['fstate'] = STATE_SPIKING; st['peak_price'] = price
                 st['state_enter_time'] = cfg.now_hms()
-                _log('[REV-T ladder sell #{}/{}] Y{:.2f} >= Y{:.2f}(sell+{:.2f}%)'.format(
+                self._log('[REV-T ladder sell #{}/{}] Y{:.2f} >= Y{:.2f}(sell+{:.2f}%)'.format(
                     tc + 1, cfg.MAX_DAILY_TRADES, price, ladder, LADDER_UP_STEP_PCT * 100))
                 return
         if cfg.EMERGENCY_BUYBACK and price >= sp * (1.0 + cfg.EMERGENCY_BUYBACK_PCT):
-            _log('[EMERG buyback trig] Y{:.2f}→Y{:.2f}(+{:.2f}%)'.format(sp, price, (price - sp) / sp * 100))
+            self._log('[EMERG buyback trig] Y{:.2f}→Y{:.2f}(+{:.2f}%)'.format(sp, price, (price - sp) / sp * 100))
             self._do_buyback(price, 'EMERG'); return
         tightened_bt = bt
         if st['sell_elapsed_bars'] > 30 and price > sp * 0.995:
@@ -1053,7 +1549,7 @@ class StrategyRunner:
         if price <= tightened_bt:
             st['fstate'] = STATE_DIPPING; st['dip_price'] = price
             st['state_enter_time'] = cfg.now_hms()
-            _log('[Buyback trig {}] Y{:.2f}(-{:.2f}%)'.format(
+            self._log('[Buyback trig {}] Y{:.2f}(-{:.2f}%)'.format(
                 '(tightened)' if tightened_bt > bt else '', price, (sp - price) / sp * 100))
             return
 
@@ -1064,11 +1560,11 @@ class StrategyRunner:
         if not st.get('rebound_99_armed', False):
             if bt < rebound_price and price <= rebound_price:
                 st['rebound_99_armed'] = True
-                _log('[REV-T 99% armed] Y{:.2f} <= Y{:.2f}; buyback target Y{:.2f} not reached'.format(
+                self._log('[REV-T 99% armed] Y{:.2f} <= Y{:.2f}; buyback target Y{:.2f} not reached'.format(
                     price, rebound_price, bt))
             return
         if price >= rebound_price:
-            _log('[REV-T 99% rebound] Y{:.2f} >= Y{:.2f} -> ask1 FIX buyback'.format(
+            self._log('[REV-T 99% rebound] Y{:.2f} >= Y{:.2f} -> ask1 FIX buyback'.format(
                 price, rebound_price))
             self._do_buyback(price, 'REBOUND99')
 
@@ -1077,31 +1573,30 @@ class StrategyRunner:
         if price < st['dip_price']: st['dip_price'] = price
         dip = st['dip_price'] or price; bounce = (price - dip) / dip if dip > 0 else 0
         if bounce >= cfg.BOUNCE_PCT:
-            legs = st['short_legs'] or [(st['sell_fill_price'], TRADE_LOT_SIZE)]
+            legs = st['short_legs'] or [(st['sell_fill_price'], self.trade_lot)]
             total_shares = self._leg_shares(legs)
-            _log('[REV-T buyback trig] low Y{:.2f} bounce {:.2f}% → Y{:.2f}'.format(
+            self._log('[REV-T buyback trig] low Y{:.2f} bounce {:.2f}% → Y{:.2f}'.format(
                 dip, bounce * 100, price))
             bought = self._do_buyback(price, 'NORMAL')
             if bought >= total_shares and total_shares > 0:
                 buyback_price = getattr(self, '_last_buyback_price', price)
-                gross = self._short_gross(legs, buyback_price)
-                self.total_t_days += 1
-                self.total_pnl += gross
-                _log('[REV-T done] buyback Y{:.2f} x {}sh gross~Y{:,.0f}'.format(
+                gross = self._last_cycle_gross
+                self._log('[REV-T done] buyback Y{:.2f} x {}sh gross~Y{:,.0f}'.format(
                     buyback_price, bought, gross))
 
     def _do_buyback(self, price, reason=''):
         st = self.st
         # ★ v23: 一次性买回全部未平仓反T腿 (按实际股数)
-        legs = st['short_legs'] or [(st.get('sell_fill_price', price), TRADE_LOT_SIZE)]
+        legs = st['short_legs'] or [(st.get('sell_fill_price', price), self.trade_lot)]
         shares = self._leg_shares(legs)
         if shares <= 0:
             return 0
         status, delta = self._submit_buyback_order(
             shares, price, 'REV-T buyback({})'.format(reason))
+        if delta: price = self._execution_price
         bought = delta if delta > 0 else 0
         if bought <= 0:
-            _log('[Buyback {}-FAIL] 未成交, 保持 SOLD 继续监控'.format(reason))
+            self._log('[Buyback {}-FAIL] 未成交, 保持 SOLD 继续监控'.format(reason))
             st['fstate'] = STATE_SOLD
             return 0
         if bought >= shares:
@@ -1113,19 +1608,20 @@ class StrategyRunner:
             return bought
         # 部分买回: 保留未买回部分继续监控
         remaining = shares - bought
-        st['short_legs'] = [(st.get('sell_fill_price', price), remaining)]
+        st['short_legs'] = list(self.execution_book.legs.get('SHORT', []))
         st['ladder_sell_target'] = 0.0
         st['fstate'] = STATE_SOLD
-        _log('[Buyback PARTIAL] 已买回 {} sh, 剩余 {} sh 继续监控'.format(bought, remaining))
+        self._log('[Buyback PARTIAL] 已买回 {} sh, 剩余 {} sh 继续监控'.format(bought, remaining))
         return bought
 
     def _force_buyback(self):
-        _log('[FORCE buyback trig]')
+        self._log('[FORCE buyback trig]')
         st = self.st
-        shares = self._leg_shares(st['short_legs']) or TRADE_LOT_SIZE
+        shares = self._leg_shares(st['short_legs']) or self.trade_lot
         price = self._cur_price()
         _, delta = self._submit_buyback_order(
             shares, price, 'REV-T force buyback')
+        if delta: price = self._execution_price
         bought = max(0, delta)
         if bought >= shares:
             st['short_legs'] = []
@@ -1133,14 +1629,13 @@ class StrategyRunner:
             st['fstate'] = STATE_FORCED
             self._recalculate_next_t_triggers('REV-T force')
         elif bought > 0:
-            st['short_legs'] = [(
-                st.get('sell_fill_price', price), shares - bought)]
+            st['short_legs'] = list(self.execution_book.legs.get('SHORT', []))
             st['fstate'] = STATE_SOLD
-            _log('[REV-T force PARTIAL] 已买回 {} sh, 剩余 {} sh'.format(
+            self._log('[REV-T force PARTIAL] 已买回 {} sh, 剩余 {} sh'.format(
                 bought, shares - bought))
         else:
             st['fstate'] = STATE_SOLD
-            _log('[WARN] REV-T force buyback 未成交, 保持监控')
+            self._log('[WARN] REV-T force buyback 未成交, 保持监控')
 
     def _handle_bt_dipping(self, price):
         st = self.st
@@ -1149,7 +1644,7 @@ class StrategyRunner:
         if bounce >= cfg.BOUNCE_PCT:
             block_reason = self._new_leg_block_reason()
             if block_reason:
-                _log('[FWD-T ARM CANCELED] {}'.format(block_reason))
+                self._log('[FWD-T ARM CANCELED] {}'.format(block_reason))
                 st['trade_count_long'] = max(
                     0, st.get('trade_count_long', 0) - 1)
                 st['fstate'] = STATE_BT_BOUGHT if st.get('long_legs') else STATE_IDLE
@@ -1157,14 +1652,15 @@ class StrategyRunner:
                 return
             capacity = self._paired_long_capacity(price)
             if not capacity['can_long']:
-                _log('[FWD-T BLOCKED] {}'.format(capacity['long_reason']))
+                self._log('[FWD-T BLOCKED] {}'.format(capacity['long_reason']))
                 st['trade_count_long'] = max(
                     0, st.get('trade_count_long', 0) - 1)
                 st['fstate'] = STATE_BT_BOUGHT if st.get('long_legs') else STATE_IDLE
                 return
-            _log('[FWD-T buy trig] low Y{:.2f} bounce {:.2f}% → Y{:.2f}'.format(dip, bounce * 100, price))
+            self._log('[FWD-T buy trig] low Y{:.2f} bounce {:.2f}% → Y{:.2f}'.format(dip, bounce * 100, price))
             # ★ v23: 下单前检查现金, 以实际可买数量下单
-            status, delta = self._submit_order(TRADE_LOT_SIZE, price, 'FWD-T buy')
+            status, delta = self._submit_order(self.trade_lot, price, 'FWD-T buy')
+            if delta: price = self._execution_price
             if status in ('SKIP', 'TIMEOUT'):
                 st['trade_count_long'] = max(0, st.get('trade_count_long', 0) - 1)
                 st['fstate'] = STATE_BT_BOUGHT if st.get('long_legs') else STATE_IDLE
@@ -1176,7 +1672,7 @@ class StrategyRunner:
             st['bt_sellback_target'] = round(avg_bp * (1.0 + cfg.SELLBACK_RISE_PCT), 2)
             st['ladder_buy_target'] = round(price * (1.0 - LADDER_DOWN_STEP_PCT), 2) if status == 'FILLED' else 0.0
             if status == 'PARTIAL':
-                _log('[FWD-T buy PARTIAL] 实际买入 {} sh'.format(delta))
+                self._log('[FWD-T buy PARTIAL] 实际买入 {} sh'.format(delta))
 
     def _handle_bt_bought(self, price):
         st = self.st; target = st.get('bt_sellback_target', 999999); bp = st.get('bt_buy_fill_price', 0)
@@ -1186,24 +1682,24 @@ class StrategyRunner:
             tc = st.get('trade_count_long', 0)
             account = get_trade_detail_data(ACCOUNT, 'STOCK', 'ACCOUNT')
             avail = account[0].m_dAvailable if account else 0.0
-            if (avail >= price * TRADE_LOT_SIZE * 1.01 and
+            if (avail >= price * self.trade_lot * 1.01 and
                     tc < cfg.MAX_DAILY_TRADES and
                     not self._new_leg_block_reason()):
                 st['trade_count_long'] = tc + 1
                 st['ladder_bought_count'] = st.get('ladder_bought_count', 0) + 1
                 st['fstate'] = STATE_BT_DIPPING; st['bt_dip_price'] = price
                 st['state_enter_time'] = cfg.now_hms()
-                _log('[FWD-T ladder buy #{}/{}] Y{:.2f} <= Y{:.2f}(buy-{:.2f}%)'.format(
+                self._log('[FWD-T ladder buy #{}/{}] Y{:.2f} <= Y{:.2f}(buy-{:.2f}%)'.format(
                     tc + 1, cfg.MAX_DAILY_TRADES, price, ladder, LADDER_DOWN_STEP_PCT * 100))
                 return
         # ★ v23: 止损/卖回以均价为准
         legs = st['long_legs']; avg_bp = self._leg_avg_price(legs) if legs else bp
         if avg_bp > 0 and price <= avg_bp * (1.0 - cfg.STOP_LOSS_PCT):
-            _log('[FWD-T stop-loss trig] avg Y{:.2f} now Y{:.2f}({:.1f}%)'.format(avg_bp, price, (price - avg_bp) / avg_bp * 100))
+            self._log('[FWD-T stop-loss trig] avg Y{:.2f} now Y{:.2f}({:.1f}%)'.format(avg_bp, price, (price - avg_bp) / avg_bp * 100))
             self._do_bt_force_sell(); return
         if price >= target:
             st['fstate'] = STATE_BT_SPIKING; st['bt_sell_peak_price'] = price
-            _log('[FWD-T sellback watch] +{:.2f}% → Y{:.2f}'.format((price - avg_bp) / avg_bp * 100, price))
+            self._log('[FWD-T sellback watch] +{:.2f}% → Y{:.2f}'.format((price - avg_bp) / avg_bp * 100, price))
 
     def _handle_bt_spiking(self, price):
         st = self.st
@@ -1211,36 +1707,38 @@ class StrategyRunner:
         peak = st.get('bt_sell_peak_price', price); pullback = (peak - price) / peak if peak > 0 else 0
         if pullback >= cfg.PULLBACK_PCT:
             # ★ v23: 多腿毛利 = Σ(卖价 - 各腿买价) × 各腿股数
-            legs = st['long_legs'] or [(st.get('bt_buy_fill_price', price), TRADE_LOT_SIZE)]
+            legs = st['long_legs'] or [(st.get('bt_buy_fill_price', price), self.trade_lot)]
             total_shares = self._leg_shares(legs)
             gross = sum((price - p) * s for p, s in legs)
-            _log('[FWD-T sell trig] peak Y{:.2f} pullback {:.2f}% → Y{:.2f} gross~Y{:,.0f}'.format(
+            self._log('[FWD-T sell trig] peak Y{:.2f} pullback {:.2f}% → Y{:.2f} gross~Y{:,.0f}'.format(
                 peak, pullback * 100, price, gross))
             status, delta = self._submit_order(-total_shares, price, 'FWD-T sell')
+            if delta: price = self._execution_price
             if status in ('SKIP', 'TIMEOUT'):
-                _log('[FWD-T sell FAIL] 未成交, 回 BT_BOUGHT')
+                self._log('[FWD-T sell FAIL] 未成交, 回 BT_BOUGHT')
                 st['fstate'] = STATE_BT_BOUGHT
                 return
             sold = -delta
+            gross = sum((price - p) * n for p, n in legs)
             if sold >= total_shares:
                 st['long_legs'] = []; st['ladder_buy_target'] = 0.0; st['ladder_bought_count'] = 0
                 st['fstate'] = STATE_DONE
-                self.total_t_days += 1; self.total_pnl += gross
                 self._recalculate_next_t_triggers('FWD-T')
                 self._maybe_resume_trading()
             else:
                 remaining = total_shares - sold
-                st['long_legs'] = [(st.get('bt_buy_fill_price', price), remaining)]
+                st['long_legs'] = list(self.execution_book.legs.get('LONG', []))
                 st['ladder_buy_target'] = 0.0
                 st['fstate'] = STATE_BT_BOUGHT
-                _log('[FWD-T sell PARTIAL] 已卖 {} sh, 剩余 {} sh'.format(sold, remaining))
+                self._log('[FWD-T sell PARTIAL] 已卖 {} sh, 剩余 {} sh'.format(sold, remaining))
 
     def _do_bt_force_sell(self):
-        _log('[FWD-T force sell trig]')
+        self._log('[FWD-T force sell trig]')
         st = self.st
-        shares = self._leg_shares(st['long_legs']) or TRADE_LOT_SIZE
+        shares = self._leg_shares(st['long_legs']) or self.trade_lot
         price = self._cur_price()
         _, delta = self._submit_order(-shares, price, 'FWD-T force sell')
+        if delta: price = self._execution_price
         sold = max(0, -delta)
         if sold >= shares:
             st['long_legs'] = []
@@ -1248,16 +1746,52 @@ class StrategyRunner:
             st['fstate'] = STATE_FORCED
             self._recalculate_next_t_triggers('FWD-T force')
         elif sold > 0:
-            st['long_legs'] = [(
-                st.get('bt_buy_fill_price', price), shares - sold)]
+            st['long_legs'] = list(self.execution_book.legs.get('LONG', []))
             st['fstate'] = STATE_BT_BOUGHT
-            _log('[FWD-T force PARTIAL] 已卖出 {} sh, 剩余 {} sh'.format(
+            self._log('[FWD-T force PARTIAL] 已卖出 {} sh, 剩余 {} sh'.format(
                 sold, shares - sold))
         else:
             st['fstate'] = STATE_BT_BOUGHT
-            _log('[WARN] FWD-T force sell 未成交, 保持监控')
+            self._log('[WARN] FWD-T force sell 未成交, 保持监控')
+
+    def _refresh_execution_capacity(self, force=False):
+        now = _time.monotonic()
+        interval = CAPACITY_REFRESH_SEC if cfg.is_market_open(cfg.now_hms()) else OFF_HOURS_REFRESH_SEC
+        if not force and now - self._last_capacity_refresh < interval:
+            return
+        self._last_capacity_refresh = now
+        signal = self.st.get('daily_signal') or {}
+        if not signal:
+            return
+        self._refresh_position()
+        asset = self.conn.query_account()
+        if asset is None:
+            self.st['do_short'] = self.st['do_long'] = False
+            self._log('[CAPACITY-WAIT] account unavailable')
+            return
+        price = self._cur_price()
+        cash = max(0.0, float(asset.cash) - self.portfolio.reserved_cash(exclude=''))
+        reserved = self._leg_shares(self.st.get('long_legs', []))
+        if self.st.get('mom_state') in ('MOM_BT_BOUGHT', 'MOM_BT_SPIKING', MOM_STATE_SELLBACK_COOLING):
+            reserved += self.st.get('mom_leg_shares', 0)
+        free = max(0, self.st.get('base_can_use', 0) - reserved)
+        cap = calculate_execution_capacity(free, cash, price, cfg.MAX_DAILY_TRADES, self.trade_lot)
+        allowed = signal.get('short_signal_allowed', signal.get('do_short', False))
+        short = allowed and cap['can_short'] and self.st.get('trade_count_short', 0) < cfg.MAX_DAILY_TRADES
+        long = cap['can_long'] and self.st.get('trade_count_long', 0) < cfg.MAX_DAILY_TRADES
+        changed = (short, long) != (self.st.get('do_short'), self.st.get('do_long'))
+        self.st.update(do_short=short, do_long=long, avail_cash=asset.cash,
+                       long_reason=cap['long_reason'])
+        reason = signal.get('short_signal_reason', '') if not allowed else cap['short_reason']
+        signal.update(do_short=short, short_reason=reason)
+        if changed or force:
+            self._log('[CAPACITY] sellable={} reserved={} free={} cash-free=Y{:.2f} '
+                      'REV={} FWD={} | {} {}'.format(
+                          self.st.get('base_can_use', 0), reserved, free, cash,
+                          short, long, reason, cap['long_reason']))
 
     def _maybe_resume_trading(self):
+        self._refresh_execution_capacity(force=True)
         st = self.st
         tc_s = st.get('trade_count_short', 0); tc_l = st.get('trade_count_long', 0)
         do_short = st.get('do_short', False); do_long = st.get('do_long', False)
@@ -1277,11 +1811,11 @@ class StrategyRunner:
             parts = []
             if can_s: parts.append('REV-T {}/{}'.format(tc_s, cfg.MAX_DAILY_TRADES))
             if can_l: parts.append('FWD-T {}/{}'.format(tc_l, cfg.MAX_DAILY_TRADES))
-            _log('[RESUME] → IDLE ({})'.format(', '.join(parts)))
+            self._log('[RESUME] → IDLE ({})'.format(', '.join(parts)))
         elif block_reason and (can_s or can_l):
-            _log('[RESUME BLOCKED] {}'.format(block_reason))
+            self._log('[RESUME BLOCKED] {}'.format(block_reason))
         else:
-            _log('[DONE] {}/{} trades at limit'.format(tc_s + tc_l, cfg.MAX_DAILY_TRADES * 2))
+            self._log('[DONE] {}/{} trades at limit'.format(tc_s + tc_l, cfg.MAX_DAILY_TRADES * 2))
 
     def _assess_strength(self, price, now_ts):
         st = self.st; sig = st.get('daily_signal', {}); open_price = sig.get('open_price', 0)
@@ -1305,18 +1839,18 @@ class StrategyRunner:
                 st['lock_reason'] = 'P+{:.1f}% M {:.2f}% D {:.2f}%'.format(
                     (pn / open_price - 1) * 100, (pn - p5) / p5 * 100,
                     (dh - pn) / dh * 100 if dh > 0 else 0)
-                _log('[LOCK] {}'.format(st['lock_reason']))
+                self._log('[LOCK] {}'.format(st['lock_reason']))
         elif st.get('locked'):
             # Start the timer on the first non-strength tick and only release
             # after the condition has remained absent continuously.
             cooldown_until = st.get('lock_cooldown_until', 0.0)
             if cooldown_until <= 0.0:
                 st['lock_cooldown_until'] = now_ts + cfg.LOCK_COOLDOWN_SEC
-                _log('[UNLOCK PENDING] {}s'.format(cfg.LOCK_COOLDOWN_SEC))
+                self._log('[UNLOCK PENDING] {}s'.format(cfg.LOCK_COOLDOWN_SEC))
             elif now_ts >= cooldown_until:
                 st['locked'] = False; st['lock_reason'] = ''; st['lock_since'] = ''
                 st['lock_cooldown_until'] = 0.0
-                _log('[UNLOCK]')
+                self._log('[UNLOCK]')
         else:
             st['lock_cooldown_until'] = 0.0
 
@@ -1379,7 +1913,7 @@ class StrategyRunner:
         if not MOM_REV_PRIORITY_ENABLED or not self.st.get('do_short', False):
             return False
         signal = self.st.get('daily_signal') or {}
-        rev_trigger = float(signal.get('sell_trigger', 0.0) or 0.0)
+        rev_trigger = float(self._rev_sell_trigger())
         if rev_trigger <= 0 or price <= 0:
             return False
         # ★ v34: 达到REV-T实际卖出阈值后不再让权，MOM可继续独立监测。
@@ -1392,7 +1926,7 @@ class StrategyRunner:
             return False
         self.st['mom_rev_yield_trigger'] = rev_trigger
         reason = 'main {}'.format(main_state) if main_owns_wave else 'entered priority zone'
-        _log('[MOM yield REV-T] Y{:.2f} | priority Y{:.2f} REV trig Y{:.2f} band {:.2f}% | {}'.format(
+        self._log('[MOM yield REV-T] Y{:.2f} | priority Y{:.2f} REV trig Y{:.2f} band {:.2f}% | {}'.format(
             price, priority_floor, rev_trigger, MOM_REV_PRIORITY_BAND_PCT * 100, reason))
         return True
 
@@ -1409,7 +1943,7 @@ class StrategyRunner:
             self.st['mom_peak'] = 0.0
             self.st['mom_pullback_pct'] = 0.0
             reason = 'reached REV trigger' if reached_rev_trigger else 'exited priority zone'
-            _log('[MOM yield END] Y{:.2f} {}'.format(price, reason))
+            self._log('[MOM yield END] Y{:.2f} {}'.format(price, reason))
 
     def _mom_detect(self, price):
         """检测2分钟内涨/跌是否超过自适应阈值。返回 'UP' / 'DOWN' / None。"""
@@ -1503,7 +2037,7 @@ class StrategyRunner:
 
     def _mom_heartbeat(self, price):
         trig = self.st.get('mom_trigger_pct', 0.0) * 100
-        _log('[MOM-HB] {} Y{:.2f} trig±{:.2f}%'.format(self._mom_status(), price, trig))
+        self._log('[MOM-HB] {} Y{:.2f} trig±{:.2f}%'.format(self._mom_status(), price, trig))
 
     def _mom_handle_idle(self, price):
         st = self.st
@@ -1523,7 +2057,7 @@ class StrategyRunner:
         if sig == 'UP':
             self._refresh_position()
             capacity = calculate_execution_capacity(
-                st.get('base_can_use', 0), self._available_cash(), price, 1)
+                st.get('base_can_use', 0), self._available_cash(), price, 1, self.trade_lot)
             if not capacity['can_short']:
                 self._mom_log_block('MOM short: {}'.format(
                     capacity['short_reason']))
@@ -1531,7 +2065,7 @@ class StrategyRunner:
             st['mom_last_block_reason'] = ''
             st['mom_state'] = 'MOM_SPIKING'; st['mom_peak'] = price
             st['mom_pullback_pct'] = self._mom_pullback_threshold(price)
-            _log('[MOM spike] 2min +{:.2f}% ({:.1f}×ATR10m {:.2f}%) Y{:.2f} → 冲高回落卖出监测 | pullback {:.2f}%{}'.format(
+            self._log('[MOM spike] 2min +{:.2f}% ({:.1f}×ATR10m {:.2f}%) Y{:.2f} → 冲高回落卖出监测 | pullback {:.2f}%{}'.format(
                 trig, MOM_ATR_MULT, trig, price, st['mom_pullback_pct'] * 100,
                 ' adaptive' if MOM_ADAPTIVE_PULLBACK_ENABLED else ' legacy'))
         elif sig == 'DOWN':
@@ -1542,7 +2076,7 @@ class StrategyRunner:
                 return
             st['mom_last_block_reason'] = ''
             st['mom_state'] = 'MOM_BT_DIPPING'; st['mom_dip'] = price
-            _log('[MOM dip] 2min -{:.2f}% ({:.1f}×ATR10m {:.2f}%) Y{:.2f} → 探底回升买入监测'.format(
+            self._log('[MOM dip] 2min -{:.2f}% ({:.1f}×ATR10m {:.2f}%) Y{:.2f} → 探底回升买入监测'.format(
                 trig, MOM_ATR_MULT, trig, price))
 
     def _mom_handle_spiking(self, price):
@@ -1567,12 +2101,13 @@ class StrategyRunner:
                 st['mom_peak'] = 0.0
                 st['mom_pullback_pct'] = 0.0
                 return
-            _log('[MOM sell trig] peak Y{:.2f} 回落{:.2f}% >= {:.2f}% → Y{:.2f}'.format(
+            self._log('[MOM sell trig] peak Y{:.2f} 回落{:.2f}% >= {:.2f}% → Y{:.2f}'.format(
                 peak, pullback * 100, pullback_threshold * 100, price))
-            status, delta = self._submit_order(-MOM_LOT_SIZE, price, 'MOM short')
+            status, delta = self._submit_order(-self.trade_lot, price, 'MOM short')
+            if delta: price = self._execution_price
             if status in ('SKIP', 'TIMEOUT'):
                 if status == 'TIMEOUT':
-                    _log('[MOM short TIMEOUT] 未成交, 回 IDLE')
+                    self._log('[MOM short TIMEOUT] 未成交, 回 IDLE')
                 st['mom_state'] = 'MOM_IDLE'; st['mom_peak'] = 0.0; st['mom_pullback_pct'] = 0.0
                 return
             st['mom_sell_price'] = price
@@ -1580,7 +2115,7 @@ class StrategyRunner:
             st['mom_trade_count'] = st.get('mom_trade_count', 0) + 1
             st['mom_state'] = 'MOM_SOLD'
             st['mom_pullback_pct'] = 0.0
-            _log('[MOM sold] Y{:.2f} x {} sh | 买回触发 ≤Y{:.2f}'.format(
+            self._log('[MOM sold] Y{:.2f} x {} sh | 买回触发 ≤Y{:.2f}'.format(
                 price, st['mom_leg_shares'], round(price * (1 - MOM_SHORT_BUYBACK_PCT), 2)))
 
     def _mom_handle_sold(self, price):
@@ -1591,18 +2126,17 @@ class StrategyRunner:
             st['mom_state'] = 'MOM_IDLE'; return
         # ★ v27: 紧急止损买回开关 — 价格反涨超卖价3%时强制买回 (强牛不回落时防越亏越多)
         if MOM_EMERGENCY_BUYBACK_ENABLED and price >= sp * (1.0 + cfg.EMERGENCY_BUYBACK_PCT):
-            _log('[MOM EMERG buyback] Y{:.2f}→Y{:.2f}(+{:.2f}%) 止损买回'.format(
+            self._log('[MOM EMERG buyback] Y{:.2f}→Y{:.2f}(+{:.2f}%) 止损买回'.format(
                 sp, price, (price - sp) / sp * 100))
-            shares = st.get('mom_leg_shares', 0) or MOM_LOT_SIZE
+            shares = st.get('mom_leg_shares', 0) or self.trade_lot
             _, delta = self._submit_buyback_order(shares, price, 'MOM emrg buyback')
+            if delta: price = self._execution_price
             bought = max(0, delta)
             if bought > 0:
                 buyback_price = getattr(self, '_last_buyback_price', price)
                 gross = (sp - buyback_price) * bought
-                self.total_pnl += gross
                 if bought >= shares:
-                    self.total_t_days += 1
-                    _log('[MOM short done(EMERG)] 卖Y{:.2f} 买Y{:.2f} gross~Y{:,.0f}'.format(
+                    self._log('[MOM short done(EMERG)] 卖Y{:.2f} 买Y{:.2f} gross~Y{:,.0f}'.format(
                         sp, buyback_price, gross))
                     st['mom_state'] = 'MOM_IDLE'
                     st['mom_sell_price'] = 0.0; st['mom_leg_shares'] = 0
@@ -1610,13 +2144,13 @@ class StrategyRunner:
                 else:
                     st['mom_leg_shares'] = shares - bought
                     st['mom_state'] = 'MOM_SOLD'
-                    _log('[MOM EMERG buyback PARTIAL] 已买回 {} sh, 剩余 {} sh'.format(
+                    self._log('[MOM EMERG buyback PARTIAL] 已买回 {} sh, 剩余 {} sh'.format(
                         bought, shares - bought))
             return
         # 正常买回触发: 跌1.2% → 探底回升买回
         if price <= sp * (1.0 - MOM_SHORT_BUYBACK_PCT):
             st['mom_state'] = 'MOM_DIPPING'; st['mom_dip'] = price
-            _log('[MOM buyback trig] Y{:.2f} ≤Y{:.2f}(-{:.2f}%) → 探底回升买回'.format(
+            self._log('[MOM buyback trig] Y{:.2f} ≤Y{:.2f}(-{:.2f}%) → 探底回升买回'.format(
                 price, round(sp * (1 - MOM_SHORT_BUYBACK_PCT), 2), MOM_SHORT_BUYBACK_PCT * 100))
 
     def _mom_start_close_cooldown(self, state, trigger, price, now_ts, label):
@@ -1632,7 +2166,7 @@ class StrategyRunner:
         st['mom_cooldown_cycles'] = cycle
         st['mom_cooldown_duration'] = duration
         st['mom_cooldown_until'] = now + duration
-        _log('[MOM {} cooldown #{}] Y{:.2f}, freeze {:.0f}s until {:.3f}'.format(
+        self._log('[MOM {} cooldown #{}] Y{:.2f}, freeze {:.0f}s until {:.3f}'.format(
             label, cycle, price, duration, st['mom_cooldown_until']))
 
     def _mom_clear_close_cooldown(self):
@@ -1650,7 +2184,7 @@ class StrategyRunner:
         bounce = (price - dip) / dip if dip > 0 else 0
         if bounce >= cfg.BOUNCE_PCT:
             trigger = st['mom_sell_price'] * (1.0 - MOM_SHORT_BUYBACK_PCT)
-            _log('[MOM buyback ready] low Y{:.2f} 回升{:.2f}% → Y{:.2f}'.format(
+            self._log('[MOM buyback ready] low Y{:.2f} 回升{:.2f}% → Y{:.2f}'.format(
                 dip, bounce * 100, price))
             self._mom_start_close_cooldown(
                 MOM_STATE_BUYBACK_COOLING, trigger, price, now_ts, 'buyback')
@@ -1666,28 +2200,27 @@ class StrategyRunner:
             sp * (1.0 - MOM_SHORT_BUYBACK_PCT), 2)
         profit_ceiling = round(sp * (1.0 - MOM_CLOSE_MIN_PROFIT_PCT), 2)
         if price > trigger and price < profit_ceiling:
-            shares = st.get('mom_leg_shares', 0) or MOM_LOT_SIZE
-            _log('[MOM buyback cooldown PASS] Y{:.2f} > trig Y{:.2f} and < sell-0.5% Y{:.2f}'.format(
+            shares = st.get('mom_leg_shares', 0) or self.trade_lot
+            self._log('[MOM buyback cooldown PASS] Y{:.2f} > trig Y{:.2f} and < sell-0.5% Y{:.2f}'.format(
                 price, trigger, profit_ceiling))
             _, delta = self._submit_buyback_order(shares, price, 'MOM buyback')
+            if delta: price = self._execution_price
             bought = max(0, delta)
             if bought <= 0:
-                _log('[MOM buyback FAIL] 未成交, 继续递减冷却')
+                self._log('[MOM buyback FAIL] 未成交, 继续递减冷却')
                 self._mom_start_close_cooldown(
                     MOM_STATE_BUYBACK_COOLING, trigger, price, now, 'buyback')
                 return
             buyback_price = getattr(self, '_last_buyback_price', price)
             gross = (sp - buyback_price) * bought
-            self.total_pnl += gross
             if bought < shares:
                 st['mom_leg_shares'] = shares - bought
                 st['mom_state'] = 'MOM_SOLD'
                 self._mom_clear_close_cooldown()
-                _log('[MOM buyback PARTIAL] 已买回 {} sh, 剩余 {} sh'.format(
+                self._log('[MOM buyback PARTIAL] 已买回 {} sh, 剩余 {} sh'.format(
                     bought, shares - bought))
                 return
-            self.total_t_days += 1
-            _log('[MOM short done] 卖Y{:.2f} 买Y{:.2f} x {}sh gross~Y{:,.0f}'.format(
+            self._log('[MOM short done] 卖Y{:.2f} 买Y{:.2f} x {}sh gross~Y{:,.0f}'.format(
                 sp, buyback_price, bought, gross))
             st['mom_state'] = 'MOM_IDLE'
             st['mom_sell_price'] = 0.0; st['mom_dip'] = 0.0; st['mom_leg_shares'] = 0
@@ -1696,7 +2229,7 @@ class StrategyRunner:
             return
         reason = ('price still below/equal buyback trigger' if price <= trigger
                   else 'price reached/exceeded sell-0.5% ceiling')
-        _log('[MOM buyback cooldown EXTEND] Y{:.2f}: {}, trigger Y{:.2f}, ceiling Y{:.2f}'.format(
+        self._log('[MOM buyback cooldown EXTEND] Y{:.2f}: {}, trigger Y{:.2f}, ceiling Y{:.2f}'.format(
             price, reason, trigger, profit_ceiling))
         self._mom_start_close_cooldown(
             MOM_STATE_BUYBACK_COOLING, trigger, price, now, 'buyback')
@@ -1723,18 +2256,19 @@ class StrategyRunner:
                 st['mom_state'] = 'MOM_IDLE'
                 st['mom_dip'] = 0.0
                 return
-            _log('[MOM buy trig] low Y{:.2f} 回升{:.2f}% → Y{:.2f}'.format(dip, bounce * 100, price))
-            status, delta = self._submit_order(MOM_LOT_SIZE, price, 'MOM long')
+            self._log('[MOM buy trig] low Y{:.2f} 回升{:.2f}% → Y{:.2f}'.format(dip, bounce * 100, price))
+            status, delta = self._submit_order(self.trade_lot, price, 'MOM long')
+            if delta: price = self._execution_price
             if status in ('SKIP', 'TIMEOUT'):
                 if status == 'TIMEOUT':
-                    _log('[MOM long TIMEOUT] 未成交, 回 IDLE')
+                    self._log('[MOM long TIMEOUT] 未成交, 回 IDLE')
                 st['mom_state'] = 'MOM_IDLE'; st['mom_dip'] = 0.0
                 return
             st['mom_buy_price'] = price
             st['mom_leg_shares'] = abs(delta)
             st['mom_trade_count'] = st.get('mom_trade_count', 0) + 1
             st['mom_state'] = 'MOM_BT_BOUGHT'
-            _log('[MOM bought] Y{:.2f} x {} sh | 卖回触发 ≥Y{:.2f}'.format(
+            self._log('[MOM bought] Y{:.2f} x {} sh | 卖回触发 ≥Y{:.2f}'.format(
                 price, st['mom_leg_shares'], round(price * (1 + MOM_LONG_SELLBACK_PCT), 2)))
 
     def _mom_handle_bt_bought(self, price):
@@ -1745,22 +2279,21 @@ class StrategyRunner:
             st['mom_state'] = 'MOM_IDLE'; return
         # 止损卖出: 价格反跌破买价1.5%
         if price <= bp * (1.0 - cfg.STOP_LOSS_PCT):
-            _log('[MOM stop-loss] Y{:.2f}→Y{:.2f}(-{:.2f}%) 止损卖出'.format(
+            self._log('[MOM stop-loss] Y{:.2f}→Y{:.2f}(-{:.2f}%) 止损卖出'.format(
                 bp, price, (bp - price) / bp * 100))
-            shares = st.get('mom_leg_shares', 0) or MOM_LOT_SIZE
+            shares = st.get('mom_leg_shares', 0) or self.trade_lot
             _, delta = self._submit_order(-shares, price, 'MOM stop-loss')
+            if delta: price = self._execution_price
             sold = max(0, -delta)
             if sold > 0:
                 gross = (price - bp) * sold
-                self.total_pnl += gross
                 if sold < shares:
                     st['mom_leg_shares'] = shares - sold
                     st['mom_state'] = 'MOM_BT_BOUGHT'
-                    _log('[MOM stop-loss PARTIAL] 已卖出 {} sh, 剩余 {} sh'.format(
+                    self._log('[MOM stop-loss PARTIAL] 已卖出 {} sh, 剩余 {} sh'.format(
                         sold, shares - sold))
                     return
-                self.total_t_days += 1
-                _log('[MOM long done(stop)] 买Y{:.2f} 卖Y{:.2f} gross~Y{:,.0f}'.format(bp, price, gross))
+                self._log('[MOM long done(stop)] 买Y{:.2f} 卖Y{:.2f} gross~Y{:,.0f}'.format(bp, price, gross))
                 st['mom_state'] = 'MOM_IDLE'
                 st['mom_buy_price'] = 0.0; st['mom_leg_shares'] = 0
                 self._recalculate_next_t_triggers('MOM FWD-T stop')
@@ -1769,7 +2302,7 @@ class StrategyRunner:
         if price >= bp * (1.0 + MOM_LONG_SELLBACK_PCT):
             st['mom_state'] = 'MOM_BT_SPIKING'; st['mom_peak'] = price
             st['mom_pullback_pct'] = self._mom_pullback_threshold(price)
-            _log('[MOM sellback trig] Y{:.2f} ≥Y{:.2f}(+{:.2f}%) → 冲高回落卖出 | pullback {:.2f}%{}'.format(
+            self._log('[MOM sellback trig] Y{:.2f} ≥Y{:.2f}(+{:.2f}%) → 冲高回落卖出 | pullback {:.2f}%{}'.format(
                 price, round(bp * (1 + MOM_LONG_SELLBACK_PCT), 2), MOM_LONG_SELLBACK_PCT * 100,
                 st['mom_pullback_pct'] * 100,
                 ' adaptive' if MOM_ADAPTIVE_PULLBACK_ENABLED else ' legacy'))
@@ -1784,7 +2317,7 @@ class StrategyRunner:
         pullback_threshold = self._mom_pullback_threshold(peak)
         if pullback >= pullback_threshold:
             trigger = st['mom_buy_price'] * (1.0 + MOM_LONG_SELLBACK_PCT)
-            _log('[MOM sellback ready] peak Y{:.2f} 回落{:.2f}% >= {:.2f}% → Y{:.2f}'.format(
+            self._log('[MOM sellback ready] peak Y{:.2f} 回落{:.2f}% >= {:.2f}% → Y{:.2f}'.format(
                 peak, pullback * 100, pullback_threshold * 100, price))
             self._mom_start_close_cooldown(
                 MOM_STATE_SELLBACK_COOLING, trigger, price, now_ts, 'sellback')
@@ -1800,27 +2333,26 @@ class StrategyRunner:
             bp * (1.0 + MOM_LONG_SELLBACK_PCT), 2)
         profit_floor = round(bp * (1.0 + MOM_CLOSE_MIN_PROFIT_PCT), 2)
         if price < trigger and price > profit_floor:
-            shares = st.get('mom_leg_shares', 0) or MOM_LOT_SIZE
-            _log('[MOM sellback cooldown PASS] Y{:.2f} < trig Y{:.2f} and > buy+0.5% Y{:.2f}'.format(
+            shares = st.get('mom_leg_shares', 0) or self.trade_lot
+            self._log('[MOM sellback cooldown PASS] Y{:.2f} < trig Y{:.2f} and > buy+0.5% Y{:.2f}'.format(
                 price, trigger, profit_floor))
             _, delta = self._submit_order(-shares, price, 'MOM sellback')
+            if delta: price = self._execution_price
             sold = -delta
             if sold <= 0:
-                _log('[MOM sellback FAIL] 未成交, 继续递减冷却')
+                self._log('[MOM sellback FAIL] 未成交, 继续递减冷却')
                 self._mom_start_close_cooldown(
                     MOM_STATE_SELLBACK_COOLING, trigger, price, now, 'sellback')
                 return
             gross = (price - bp) * sold
-            self.total_pnl += gross
             if sold < shares:
                 st['mom_leg_shares'] = shares - sold
                 st['mom_state'] = 'MOM_BT_BOUGHT'
                 self._mom_clear_close_cooldown()
-                _log('[MOM sellback PARTIAL] 已卖出 {} sh, 剩余 {} sh'.format(
+                self._log('[MOM sellback PARTIAL] 已卖出 {} sh, 剩余 {} sh'.format(
                     sold, shares - sold))
                 return
-            self.total_t_days += 1
-            _log('[MOM long done] 买Y{:.2f} 卖Y{:.2f} x {}sh gross~Y{:,.0f}'.format(
+            self._log('[MOM long done] 买Y{:.2f} 卖Y{:.2f} x {}sh gross~Y{:,.0f}'.format(
                 bp, price, sold, gross))
             st['mom_state'] = 'MOM_IDLE'
             st['mom_buy_price'] = 0.0; st['mom_peak'] = 0.0; st['mom_leg_shares'] = 0
@@ -1830,7 +2362,7 @@ class StrategyRunner:
             return
         reason = ('price still above/equal sellback trigger' if price >= trigger
                   else 'price fell to/below buy+0.5% floor')
-        _log('[MOM sellback cooldown EXTEND] Y{:.2f}: {}, trigger Y{:.2f}, floor Y{:.2f}'.format(
+        self._log('[MOM sellback cooldown EXTEND] Y{:.2f}: {}, trigger Y{:.2f}, floor Y{:.2f}'.format(
             price, reason, trigger, profit_floor))
         self._mom_start_close_cooldown(
             MOM_STATE_SELLBACK_COOLING, trigger, price, now, 'sellback')
@@ -1840,9 +2372,10 @@ class StrategyRunner:
         st = self.st
         ms = st.get('mom_state')
         if ms in ('MOM_SOLD', MOM_STATE_BUYBACK_COOLING):
-            shares = st.get('mom_leg_shares', 0) or MOM_LOT_SIZE
-            _log('[MOM force buyback] Y{:.2f}'.format(price))
+            shares = st.get('mom_leg_shares', 0) or self.trade_lot
+            self._log('[MOM force buyback] Y{:.2f}'.format(price))
             _, delta = self._submit_buyback_order(shares, price, 'MOM force buyback')
+            if delta: price = self._execution_price
             bought = max(0, delta)
             if bought >= shares:
                 st['mom_state'] = 'MOM_IDLE'
@@ -1851,14 +2384,15 @@ class StrategyRunner:
             elif bought > 0:
                 st['mom_leg_shares'] = shares - bought
                 st['mom_state'] = 'MOM_SOLD'
-                _log('[MOM force buyback PARTIAL] 已买回 {} sh, 剩余 {} sh'.format(
+                self._log('[MOM force buyback PARTIAL] 已买回 {} sh, 剩余 {} sh'.format(
                     bought, shares - bought))
             else:
-                _log('[WARN] MOM force buyback 未成交, 短线腿可能残留!')
+                self._log('[WARN] MOM force buyback 未成交, 短线腿可能残留!')
         elif ms in ('MOM_BT_BOUGHT', 'MOM_BT_SPIKING', MOM_STATE_SELLBACK_COOLING):
-            shares = st.get('mom_leg_shares', 0) or MOM_LOT_SIZE
-            _log('[MOM force sell] Y{:.2f}'.format(price))
+            shares = st.get('mom_leg_shares', 0) or self.trade_lot
+            self._log('[MOM force sell] Y{:.2f}'.format(price))
             _, delta = self._submit_order(-shares, price, 'MOM force sell')
+            if delta: price = self._execution_price
             sold = max(0, -delta)
             if sold >= shares:
                 st['mom_state'] = 'MOM_IDLE'
@@ -1867,10 +2401,10 @@ class StrategyRunner:
             elif sold > 0:
                 st['mom_leg_shares'] = shares - sold
                 st['mom_state'] = 'MOM_BT_BOUGHT'
-                _log('[MOM force sell PARTIAL] 已卖出 {} sh, 剩余 {} sh'.format(
+                self._log('[MOM force sell PARTIAL] 已卖出 {} sh, 剩余 {} sh'.format(
                     sold, shares - sold))
             else:
-                _log('[WARN] MOM force sell 未成交, 短线腿可能残留!')
+                self._log('[WARN] MOM force sell 未成交, 短线腿可能残留!')
         elif ms in ('MOM_SPIKING', 'MOM_DIPPING', 'MOM_BT_DIPPING', MOM_STATE_REV_YIELD):
             # 尚未开腿, 直接复位
             st['mom_state'] = 'MOM_IDLE'; st['mom_peak'] = 0.0; st['mom_dip'] = 0.0
@@ -1880,31 +2414,33 @@ class StrategyRunner:
     # ═══ 主循环 ═══
 
     def run(self):
-        set_global_conn(self.conn, self.dry_run)
-        if not self.dry_run:
-            if not self.conn.connect_data(): _log('[ERROR] market data connect failed'); return
-            if not self.conn.connect_trade(): _log('[ERROR] trade connect failed'); self.conn.disconnect(); return
-        else:
-            if not self.conn.connect_data(): _log('[ERROR] market data connect failed'); return
-        self._init_state()
-        _log('[START] {} {} {} {}'.format(STOCK_NAME, self.version, 'LIVE' if not self.dry_run else 'SIGNAL', STOCK_QMT))
-
+        if not getattr(self, '_restored', False):
+            self._init_state()
+        self._log('[START] {} {}'.format(self.version, 'SIGNAL' if self.dry_run else 'LIVE'))
         try:
             self._daily_init()
             signal = self.st.get('daily_signal')
             if signal: self._print_daily_brief(signal)
         except Exception as e:
             self._lock_all_trading('daily init exception: {}'.format(e))
-            _log('[ERROR] init failed: {}'.format(e)); _traceback.print_exc()
+            self._log('[ERROR] init failed: {}'.format(e)); _traceback.print_exc()
 
         try:
             while self._running:
                 now = cfg.now_hms(); now_ts = _time.time()
+                if (self.st.get('trade_date') not in ('', datetime.now().strftime('%Y%m%d'))
+                        and self.has_open_legs()):
+                    self.portfolio.order_uncertain = True
+                    raise RuntimeError('overnight T legs require manual reconciliation; state retained')
+                self._monitor_connections(now_ts)
+                self._retry_atr_reentry()
+                self._refresh_execution_capacity()
                 if not cfg.is_market_open(now):
+                    self._invalidate_strength('NON_TRADING')
                     today = datetime.now().strftime('%Y%m%d')
                     if '09:30:00' <= now < '09:30:59':
                         if self.st.get('_pre_market_done', '') != today:
-                            _log('[PRE-MKT {}] computing signal...'.format(now))
+                            self._log('[PRE-MKT {}] computing signal...'.format(now))
                             try:
                                 self._daily_init(); self.st['_pre_market_done'] = today
                                 signal = self.st.get('daily_signal')
@@ -1912,12 +2448,12 @@ class StrategyRunner:
                             except Exception as e:
                                 self._lock_all_trading(
                                     'daily init exception: {}'.format(e))
-                                _log('[PRE-MKT ERROR] {}'.format(e))
-                            self._last_heartbeat = now_ts; _time.sleep(5); continue
+                                self._log('[PRE-MKT ERROR] {}'.format(e))
+                            self._last_heartbeat = now_ts; (yield 5); continue
                         if now_ts - self._last_heartbeat >= 60:
                             self._last_heartbeat = now_ts
-                            _log('[PRE-MKT {}] to open {}'.format(now, cfg.time_to_open(now)))
-                        _time.sleep(5); continue
+                            self._log('[PRE-MKT {}] to open {}'.format(now, cfg.time_to_open(now)))
+                        (yield 5); continue
                     if self.st.get('trade_date', '') != today:
                         try:
                             self._daily_init()
@@ -1926,18 +2462,18 @@ class StrategyRunner:
                         except Exception as e:
                             self._lock_all_trading(
                                 'daily init exception: {}'.format(e))
-                            _log('[ERROR] init failed: {}'.format(e))
+                            self._log('[ERROR] init failed: {}'.format(e))
                     if now_ts - self._last_heartbeat >= 300:
                         self._last_heartbeat = now_ts
-                        if now < '09:30:00': _log('[WAIT {}] to open {}'.format(now, cfg.time_to_open(now)))
-                        elif now > '15:00:00': _log('[CLOSE {}]'.format(now))
-                        elif '11:30:00' < now < '13:00:00': _log('[LUNCH {}]'.format(now))
-                    _time.sleep(10); continue
+                        if now < '09:30:00': self._log('[WAIT {}] to open {}'.format(now, cfg.time_to_open(now)))
+                        elif now > '15:00:00': self._log('[CLOSE {}]'.format(now))
+                        elif '11:30:00' < now < '13:00:00': self._log('[LUNCH {}]'.format(now))
+                    (yield 10); continue
 
                 fstate = self.st.get('fstate', STATE_IDLE)
                 if fstate in (STATE_DONE, STATE_FORCED):
-                    tick = self.ctx.get_full_tick([STOCK_QMT])
-                    tick_data = tick.get(STOCK_QMT, {})
+                    tick = self.ctx.get_full_tick([self.stock_qmt])
+                    tick_data = tick.get(self.stock_qmt, {})
                     price = tick_data.get('lastPrice', 0)
                     self._update_intraday_average(tick_data)
                     self._update_limit_up_guard(price, tick_data, now_ts)
@@ -1947,7 +2483,7 @@ class StrategyRunner:
                     if now_ts - self._last_heartbeat >= 30:
                         self._last_heartbeat = now_ts
                         tc_s = self.st.get('trade_count_short', 0); tc_l = self.st.get('trade_count_long', 0)
-                        _log('[STATE] {} Y{:.2f} REV-T {}/{} FWD-T {}/{} cum {} trades~Y{:,.0f}'.format(
+                        self._log('[STATE] {} Y{:.2f} REV-T {}/{} FWD-T {}/{} cum {} trades~Y{:,.0f}'.format(
                             fstate, price, tc_s, cfg.MAX_DAILY_TRADES,
                             tc_l, cfg.MAX_DAILY_TRADES, self.total_t_days, self.total_pnl))
                     if now < '14:57:00':
@@ -1955,26 +2491,30 @@ class StrategyRunner:
                         if ((self.st.get('do_short', False) and tc_s < cfg.MAX_DAILY_TRADES) or
                             (self.st.get('do_long', False) and tc_l < cfg.MAX_DAILY_TRADES)):
                             self._maybe_resume_trading()
-                    _time.sleep(3); continue
+                    (yield 3); continue
 
-                tick = self.ctx.get_full_tick([STOCK_QMT])
-                if STOCK_QMT not in tick: _time.sleep(1); continue
-                tick_data = tick[STOCK_QMT]
+                tick = self.ctx.get_full_tick([self.stock_qmt])
+                if self.stock_qmt not in tick:
+                    self._invalidate_strength('MISSING_TICK')
+                    (yield 1); continue
+                tick_data = tick[self.stock_qmt]
                 price = tick_data.get('lastPrice', 0)
-                if price <= 0: _time.sleep(1); continue
+                if not math.isfinite(price) or price <= 0:
+                    self._invalidate_strength('INVALID_PRICE')
+                    (yield 1); continue
                 self._update_intraday_average(tick_data)
                 self._update_limit_up_guard(price, tick_data, now_ts)
                 # ★ v25: 短线动量机制 (独立于日线信号/主状态机, 每tick运行)
-                if MOM_ENABLED:
+                if MOM_ENABLED and INTRADAY_REFERENCE_MODE == 'shadow':
                     self._mom_tick(price, now_ts)
                 # ★ v21: 开盘首个有效tick打印行情确认
                 if not self.st.get('_market_open_logged', True):
                     self.st['_market_open_logged'] = True
                     sig_chk = self.st.get('daily_signal', {})
                     # 用今日开盘价重算 sell_trigger (盘前计算可能用了昨日开盘价)
-                    _open_now = self.ctx.get_full_tick([STOCK_QMT]).get(STOCK_QMT, {}).get('open', 0)
+                    _open_now = self.ctx.get_full_tick([self.stock_qmt]).get(self.stock_qmt, {}).get('open', 0)
                     _open_old = sig_chk.get('open_price', 0)
-                    if (_open_now > 0 and
+                    if (sig_chk.get('trigger_base') != 'CLOSE_FILL_ATR' and _open_now > 0 and
                             (_open_old <= 0 or abs(_open_now - _open_old) >= 0.005)):
                         _sm = sig_chk.get('sell_mult', 0.40)
                         _atr = sig_chk.get('atr_pct', 0.03)
@@ -2009,7 +2549,7 @@ class StrategyRunner:
                         sig_chk['sellback_target_hint'] = round(
                             sig_chk['buy_trigger'] *
                             (1.0 + cfg.SELLBACK_RISE_PCT), 2)
-                        _log('[SELL-TRIG RECALC] open Y{:.2f}→Y{:.2f} trig Y{:.2f}→Y{:.2f} (units {:.3f} ATR {:.1f}%)'.format(
+                        self._log('[SELL-TRIG RECALC] open Y{:.2f}→Y{:.2f} trig Y{:.2f}→Y{:.2f} (units {:.3f} ATR {:.1f}%)'.format(
                             _open_old, _open_now, _old_trig, _new_trig,
                             _effective_units, _atr * 100))
                     st_trig = sig_chk.get('sell_trigger', 0)
@@ -2030,14 +2570,20 @@ class StrategyRunner:
                                 (price - bt_trig) / price * 100, bt_trig))
                     if self.st.get('locked'): bits.append('LOCKED')
                     if self.st.get('limit_up_guard'): bits.append('LIMIT-UP-GUARD')
-                    _log('[{}]'.format('] ['.join(bits)))
+                    self._log('[{}]'.format('] ['.join(bits)))
+                if INTRADAY_REFERENCE_MODE == 'shadow':
+                    self._update_rebound_reference(price, now_ts, tick_data)
+                self._update_strength_reference(price, now_ts, tick_data)
+                if MOM_ENABLED and INTRADAY_REFERENCE_MODE == 'active':
+                    self._mom_tick(price, now_ts)
+                fstate = self.st.get('fstate', STATE_IDLE)
                 signal = self.st.get('daily_signal')
                 do_short = self.st.get('do_short', False); do_long = self.st.get('do_long', False)
-                if signal is None or (not do_short and not do_long):
+                if fstate == STATE_IDLE and (not signal or (not do_short and not do_long)):
                     if now_ts - self._last_heartbeat >= 300:
                         self._last_heartbeat = now_ts
-                        _log('[STANDBY] Y{:.2f} no trade direction'.format(price))
-                    _time.sleep(5); continue
+                        self._log('[STANDBY] Y{:.2f} no trade direction'.format(price))
+                    (yield 5); continue
                 if fstate == STATE_IDLE: self._assess_strength(price, now_ts)
                 if fstate == STATE_IDLE: self._handle_idle(price)
                 elif fstate == STATE_SPIKING: self._handle_spiking(price)
@@ -2052,40 +2598,37 @@ class StrategyRunner:
                     if f in (STATE_SOLD, STATE_DIPPING): self._force_buyback()
                     elif f in (STATE_BT_BOUGHT, STATE_BT_SPIKING): self._do_bt_force_sell()
                     elif f in (STATE_SPIKING, STATE_BT_DIPPING, STATE_IDLE): self.st['fstate'] = STATE_DONE
-                if fstate == STATE_SOLD and not self.st.get('stop_loss_hit', False):
+                if fstate == STATE_SOLD and signal and not self.st.get('stop_loss_hit', False):
                     loss_limit = self.st['base_shares'] * signal['open_price'] * cfg.STOP_LOSS_PCT
                     if self.st.get('day_pnl', 0) < -loss_limit:
-                        _log('[STOP-LOSS] REV-T loss over limit'); self.st['stop_loss_hit'] = True; self._force_buyback()
+                        self._log('[STOP-LOSS] REV-T loss over limit'); self.st['stop_loss_hit'] = True; self._force_buyback()
                 if now_ts - self._last_heartbeat >= 60:
                     self._last_heartbeat = now_ts; self._heartbeat(price)
-                _time.sleep(0.5)
-        except KeyboardInterrupt: _log('Interrupted by user')
-        except Exception as e: _log('[ERROR] {}'.format(e)); _traceback.print_exc()
+                (yield 0.5)
+        except KeyboardInterrupt: raise
+        except Exception as e: self._log('[ERROR] {}'.format(e)); _traceback.print_exc()
         finally:
-            self.conn.disconnect()
-            if self.st.get('fstate', '') in (STATE_SOLD, STATE_DIPPING): _log('[WARN] position not bought back!')
+            if self.st.get('fstate', '') in (STATE_SOLD, STATE_DIPPING): self._log('[WARN] position not bought back!')
             # ★ v25: 短线腿残留警告 (v29: MOM_ENABLED=False时跳过)
             if MOM_ENABLED:
                 mom_ms = self.st.get('mom_state', '')
                 if mom_ms in ('MOM_SOLD', 'MOM_DIPPING', MOM_STATE_BUYBACK_COOLING):
-                    _log('[WARN] MOM short leg not bought back!')
+                    self._log('[WARN] MOM short leg not bought back!')
                 elif mom_ms in ('MOM_BT_BOUGHT', 'MOM_BT_SPIKING', MOM_STATE_SELLBACK_COOLING):
-                    _log('[WARN] MOM long leg not sold!')
-            _log('[STOP] {} v42 cum {} days gross~Y{:,.0f}'.format(STOCK_NAME, self.total_t_days, self.total_pnl))
-            logger = get_logger()
-            if logger is not None: logger.close()
+                    self._log('[WARN] MOM long leg not sold!')
+            self._log('[STOP] {} v51 cum {} days gross~Y{:,.0f}'.format(self.stock_name, self.total_t_days, self.total_pnl))
 
     def _heartbeat(self, price):
         fs = self.st['fstate']; sig = self.st.get('daily_signal', {})
         if fs in (STATE_DONE, STATE_FORCED):
             tc_s = self.st.get('trade_count_short', 0); tc_l = self.st.get('trade_count_long', 0)
-            _log('[HB] {} Y{:.2f} REV-T {}/{} FWD-T {}/{} cum {} trades~Y{:,.0f}'.format(
+            self._log('[HB] {} Y{:.2f} REV-T {}/{} FWD-T {}/{} cum {} trades~Y{:,.0f}'.format(
                 fs, price, tc_s, cfg.MAX_DAILY_TRADES, tc_l, cfg.MAX_DAILY_TRADES,
                 self.total_t_days, self.total_pnl)); return
         if fs == STATE_IDLE:
             guard_active = self.st.get('limit_up_guard', False)
             if (self.st.get('do_long') and not guard_active and
-                    sig.get('trigger_base') != 'INTRADAY_AVG'):
+                    sig.get('trigger_base') not in ('INTRADAY_AVG', 'CLOSE_FILL_ATR')):
                 bt_floor = sig.get('buy_trigger_floor', 0)
                 bt_trail = round(price * (1.0 - cfg.BUY_TRIGGER_TRAIL), 2)
                 self.st['bt_max_trail'] = max(self.st.get('bt_max_trail', 0), bt_trail)
@@ -2093,7 +2636,7 @@ class StrategyRunner:
                 sig['buy_trigger_trail'] = bt_trail
             parts = []
             if self.st.get('do_short'):
-                st_trig = sig.get('sell_trigger', 0)
+                st_trig = self._rev_sell_trigger()
                 if price >= st_trig:
                     parts.append('REV-T: exceeded Y{:.2f} by Y{:.2f}'.format(
                         st_trig, price - st_trig))
@@ -2116,53 +2659,339 @@ class StrategyRunner:
                     self.st.get('long_reason', 'not executable')))
             if self.st.get('locked'): parts.append('LOCKED')
             if guard_active: parts.append('LIMIT-UP-GUARD')
-            _log('[HB] {} Y{:.2f} {}'.format(fs, price, ' | '.join(parts)))
+            parts.append(self._reference_log())
+            self._log('[HB] {} Y{:.2f} {}'.format(fs, price, ' | '.join(parts)))
         elif fs == STATE_SPIKING:
             peak = self.st.get('peak_price', 0); pb = (peak - price) / peak * 100 if peak > 0 else 0
-            _log('[HB] {} Y{:.2f} peak Y{:.2f} pullback {:.2f}%'.format(fs, price, peak, pb))
+            self._log('[HB] {} Y{:.2f} peak Y{:.2f} pullback {:.2f}% | {}'.format(fs, price, peak, pb, self._reference_log()))
         elif fs in (STATE_SOLD, STATE_DIPPING):
             sp = self.st.get('sell_fill_price', 0); bt = self.st.get('buyback_target', 0)
             ladder = self.st.get('ladder_sell_target', 0)
             extra = ' ladder Y{:.2f}'.format(ladder) if ladder > 0 else ''
-            if sp > 0: _log('[HB] {} Y{:.2f} sell Y{:.2f} {:+.1f}% buyback Y{:.2f}{}'.format(
+            if sp > 0: self._log('[HB] {} Y{:.2f} sell Y{:.2f} {:+.1f}% buyback Y{:.2f}{}'.format(
                 fs, price, sp, (price - sp) / sp * 100, bt, extra))
         elif fs == STATE_BT_DIPPING:
             dip = self.st.get('bt_dip_price', price); bounce = (price - dip) / dip * 100 if dip > 0 else 0
-            _log('[HB] {} Y{:.2f} dip Y{:.2f} bounce {:.2f}%'.format(fs, price, dip, bounce))
+            self._log('[HB] {} Y{:.2f} dip Y{:.2f} bounce {:.2f}%'.format(fs, price, dip, bounce))
         elif fs == STATE_BT_BOUGHT:
             bp = self.st.get('bt_buy_fill_price', 0); target = self.st.get('bt_sellback_target', 0)
             ladder = self.st.get('ladder_buy_target', 0)
             extra = ' ladder Y{:.2f}'.format(ladder) if ladder > 0 else ''
-            if bp > 0: _log('[HB] {} Y{:.2f} buy Y{:.2f} {:+.1f}% sellback Y{:.2f}{}'.format(
+            if bp > 0: self._log('[HB] {} Y{:.2f} buy Y{:.2f} {:+.1f}% sellback Y{:.2f}{}'.format(
                 fs, price, bp, (price - bp) / bp * 100, target, extra))
         elif fs == STATE_BT_SPIKING:
             peak = self.st.get('bt_sell_peak_price', price); pb = (peak - price) / peak * 100 if peak > 0 else 0
-            _log('[HB] {} Y{:.2f} peak Y{:.2f} pullback {:.2f}%'.format(fs, price, peak, pb))
-        else: _log('[HB] {} Y{:.2f}'.format(fs, price))
+            self._log('[HB] {} Y{:.2f} peak Y{:.2f} pullback {:.2f}%'.format(fs, price, peak, pb))
+        else: self._log('[HB] {} Y{:.2f}'.format(fs, price))
 
 
-def run_backtest_mode(start='20250801', end='20260806'):
-    print('=' * 55 + '\n  Backtest QMT mini REV-T v42\n  Range: {} ~ {}\n'.format(start, end) + '=' * 55)
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
-    from backtest.backtest_v10_xtdata import XTDataManager, BacktestEngine
-    data_mgr = XTDataManager('601869.SH', data_dir='C:/QMT/datadir')
-    data_mgr.load_daily(start=start, end=end)
-    engine = BacktestEngine(data_mgr); engine.run(start_date=start, end_date=end)
-    engine.print_report(); engine.save_csv()
+class SymbolConnector:
+    """Share account/transport, but isolate each symbol's daily cache."""
+    def __init__(self, shared, stock_qmt):
+        self.shared = shared
+        self.stock_qmt = stock_qmt
+        self.refresh_daily_cache()
+
+    def __getattr__(self, name):
+        return getattr(self.shared, name)
+
+    def refresh_daily_cache(self):
+        self._daily_data_cache = None
+        self._daily_raw_cache = None
+        self._daily_snapshot_meta = None
+
+    def load_daily_snapshot(self, *args, **kwargs):
+        kwargs['stock_code'] = self.stock_qmt
+        return MiniQMTConnector.load_daily_snapshot(self, *args, **kwargs)
+
+
+class PortfolioRunner:
+    """One cooperative scheduler, one account, independent symbol states."""
+    def __init__(self, dry_run=True):
+        self.dry_run = dry_run
+        self.conn = MiniQMTConnector()
+        self.runners = {}
+        self.tasks = {}
+        self.last_refresh = None
+        self.order_uncertain = False
+        self.own_order_ids = set()
+        self.watchdog = RuntimeWatchdog(_log, WATCHDOG_WARN_SEC)
+        self.rpc_originals = []
+        self.seen_trades = None
+        self.checkpoint_active = False
+        self.inflight = None
+        self._last_checkpoint = 0.0
+        self._last_checkpoint_log = None
+
+
+    def _broker_snapshot(self):
+        # Account-wide orders also detect manual/other-strategy changes during downtime.
+        positions = self.conn.trader.query_stock_positions(self.conn._account_obj)
+        orders = self.conn.trader.query_stock_orders(self.conn._account_obj)
+        if positions is None or orders is None:
+            raise RuntimeError('reconciliation query unavailable')
+        if any(int(order.order_status) not in (53, 54, 56, 57) for order in orders):
+            raise RuntimeError('account has unfinished orders; reconcile before starting')
+        return dict(
+            positions=sorted([[str(p.stock_code), int(p.volume), int(p.can_use_volume)]
+                              for p in positions if int(p.volume) > 0]),
+            orders=sorted([[str(o.order_id), str(o.stock_code), int(o.order_status),
+                            int(o.traded_volume or 0), float(o.traded_price or 0)]
+                           for o in orders]))
+
+    def restore_checkpoint(self):
+        if self.dry_run:
+            return
+        saved = read_checkpoint(STATE_FILE, ACCOUNT)
+        if saved and (saved['inflight'] or saved['order_uncertain']):
+            raise RuntimeError('STATE-BLOCKED: interrupted/uncertain order; inspect broker and checkpoint')
+        today = datetime.now().strftime('%Y%m%d')
+        # Validate every record before restoring any symbol. A previous v51
+        # checkpoint may contain today's envelope but yesterday's flat runner.
+        stale_codes = set()
+        if saved:
+            for code, record in saved['runners'].items():
+                state = record['state']
+                date = state.get('trade_date', '')
+                detail = '{} record-date={} expected={} initialized={}'.format(
+                    code, date, today, state.get('initialized'))
+                if not date or date > today or not state.get('initialized'):
+                    raise RuntimeError('STATE-BLOCKED: ' + detail + '; incomplete runner initialization')
+                if date < today or saved['date'] < today:
+                    probe = StrategyRunner(self, code)
+                    probe.st.update(state)
+                    probe.execution_book.legs = record['legs']
+                    if probe.has_open_legs():
+                        raise RuntimeError('STATE-BLOCKED: ' + detail + '; overnight T legs require reconciliation')
+                    stale_codes.add(code)
+            if saved['date'] > today:
+                raise RuntimeError('STATE-BLOCKED: checkpoint date is in the future')
+        if saved and saved['date'] != today:
+            # All records were checked for outstanding legs above.
+            saved = None
+        broker = self._broker_snapshot()
+        if saved:
+            if saved['broker'] != broker:
+                raise RuntimeError('STATE-BLOCKED: broker positions/orders changed since checkpoint')
+            self.own_order_ids = saved['own_order_ids']
+            for code, record in saved['runners'].items():
+                runner = StrategyRunner(self, code, record['name'])
+                if code in stale_codes:
+                    runner.total_pnl = record['total_pnl']
+                    runner.total_t_days = record['total_t_days']
+                    runner._init_state()
+                    runner._log('[STATE-ROLLOVER] flat record-date={} expected={}; daily initialization required'.format(
+                        record['state']['trade_date'], today))
+                else:
+                    runner.restore_record(record)
+                self.runners[code] = runner
+                self.tasks[code] = (runner.run(), 0.0)
+        else:
+            _log('[STATE-NEW] no same-day compatible v49/v51 checkpoint; unrecorded T legs/counts are NOT reconstructed')
+        self.checkpoint_active = True
+
+    def save_checkpoint(self, force=False, settled=False):
+        if not self.checkpoint_active or self.dry_run:
+            return
+        now = _time.monotonic()
+        interval = CHECKPOINT_INTERVAL_SEC if cfg.is_market_open(cfg.now_hms()) else OFF_HOURS_REFRESH_SEC
+        if not force and not self.inflight and now - self._last_checkpoint < interval:
+            return
+        # Do not label a partially rolled portfolio as a current-day checkpoint.
+        today = datetime.now().strftime('%Y%m%d')
+        for code, runner in self.runners.items():
+            if not runner.st.get('initialized') or runner.st.get('trade_date') != today:
+                raise RuntimeError('STATE-BLOCKED: {} record-date={} expected={} initialized={}; '
+                                   'cannot checkpoint incomplete rollover'.format(
+                                       code, runner.st.get('trade_date'), today, runner.st.get('initialized')))
+        pending = None if settled and not self.order_uncertain else self.inflight
+        data = dict(schema=1, account=str(ACCOUNT),
+                    date=today, inflight=pending,
+                    order_uncertain=self.order_uncertain, own_order_ids=self.own_order_ids,
+                    runners={code: r.checkpoint_record() for code, r in self.runners.items()},
+                    broker=self._broker_snapshot())
+        write_checkpoint(STATE_FILE, data, log=_log)
+        self.inflight = pending
+        self._last_checkpoint = now
+        if (self._last_checkpoint_log is None or
+                now - self._last_checkpoint_log >= STATE_SAVE_LOG_INTERVAL_SEC):
+            _log('[STATE-SAVED] symbols={} inflight={} path={}'.format(
+                len(self.runners), bool(pending), STATE_FILE))
+            self._last_checkpoint_log = now
+
+    def before_submit(self, code, label, shares, price):
+        if not self.checkpoint_active:
+            return
+        self.inflight = dict(symbol=code, label=label, shares=shares, price=price)
+        # If this fails, submission never happens. The marker remains until the
+        # complete caller state transition reaches the scheduler's next yield.
+        self.save_checkpoint(force=True)
+
+    def _prepare_trading_day(self):
+        """Finish the whole portfolio's rollover before a tick can save or submit."""
+        today = datetime.now().strftime('%Y%m%d')
+        pending = [r for r in self.runners.values()
+                   if not r.st.get('initialized') or r.st.get('trade_date') != today]
+        # Inspect all old runners before resetting any of them.
+        for runner in pending:
+            if runner.has_open_legs():
+                raise RuntimeError('STATE-BLOCKED: {} record-date={} expected={}; '
+                                   'overnight/uninitialized T legs require reconciliation'.format(
+                                       runner.stock_qmt, runner.st.get('trade_date'), today))
+        for runner in pending:
+            runner._init_state()
+            runner.execution_book = ExecutionBook()
+            runner._daily_init()
+            if not runner.st.get('initialized') or runner.st.get('trade_date') != today:
+                raise RuntimeError('STATE-BLOCKED: {} daily initialization incomplete; expected={}'.format(
+                    runner.stock_qmt, today))
+            runner._restored = True
+
+    def _audit_account_trades(self):
+        try:
+            trades = self.conn.trader.query_stock_trades(self.conn._account_obj)
+            if trades is None:
+                raise ValueError('trade query returned None')
+            baseline = self.seen_trades is None
+            if baseline:
+                self.seen_trades = set()
+            for trade in trades:
+                oid = str(getattr(trade, 'order_id', ''))
+                sysid = str(getattr(trade, 'order_sysid', ''))
+                key = (oid, str(getattr(trade, 'traded_id', '')),
+                       str(getattr(trade, 'traded_time', '')),
+                       str(getattr(trade, 'stock_code', '')),
+                       str(getattr(trade, 'traded_volume', '')),
+                       str(getattr(trade, 'traded_price', '')))
+                if key in self.seen_trades:
+                    continue
+                self.seen_trades.add(key)
+                if not baseline and oid not in self.own_order_ids and sysid not in self.own_order_ids:
+                    _log('[ACCOUNT-UNATTRIBUTED] order={} symbol={} qty={} avg={} '
+                         'strategy={}; not booked as this strategy T'.format(
+                             oid, key[3], key[4], key[5], getattr(trade, 'strategy_name', '')))
+        except Exception as error:
+            _log('[ACCOUNT-AUDIT-WAIT] {}'.format(error))
+
+    def reserved_cash(self, exclude):
+        reserve = 0.0
+        for code, runner in self.runners.items():
+            if code == exclude:
+                continue
+            st = runner.st
+            reserve += sum(price * shares for price, shares in st.get('short_legs', []))
+            if st.get('mom_state') in ('MOM_SOLD', 'MOM_DIPPING', MOM_STATE_BUYBACK_COOLING):
+                reserve += st.get('mom_sell_price', 0) * st.get('mom_leg_shares', 0)
+        return reserve * 1.01
+
+    def refresh_holdings(self, now):
+        interval = PORTFOLIO_REFRESH_SEC if cfg.is_market_open(cfg.now_hms()) else OFF_HOURS_REFRESH_SEC
+        if self.last_refresh is not None and now - self.last_refresh < interval:
+            return
+        self.last_refresh = now
+        self._audit_account_trades()
+        # Read-only account access is also required in signal mode to discover holdings.
+        try:
+            positions = self.conn.trader.query_stock_positions(self.conn._account_obj)
+            if positions is None:
+                raise RuntimeError('position query returned None')
+        except Exception as error:
+            _log('[PORTFOLIO-ALERT] holdings query failed: {}'.format(error))
+            return
+        for pos in positions:
+            code = str(getattr(pos, 'stock_code', ''))
+            if getattr(pos, 'volume', 0) <= 0 or code in self.runners:
+                continue
+            if '.' not in code:
+                _log('[PORTFOLIO-SKIP] missing exchange suffix: {}'.format(code))
+                continue
+            runner = StrategyRunner(self, code, getattr(pos, 'stock_name', ''))
+            self.runners[code] = runner
+            self.tasks[code] = (runner.run(), 0.0)
+            _log('[PORTFOLIO-ADD] {} shares={} lot={}'.format(
+                code, pos.volume, runner.trade_lot))
+        # Keep runners with zero current holdings: their sold legs may still need buyback.
+
+    def run(self):
+        set_global_conn(self.conn, self.dry_run)
+        self.watchdog.start()
+        try:
+            if not self.conn.connect_data():
+                _log('[PORTFOLIO-ERROR] market connection failed')
+                return
+            if not self.conn.connect_trade():
+                _log('[PORTFOLIO-ERROR] account connection failed')
+                return
+            if str(getattr(self.conn._account_obj, 'account_id', '')) != str(ACCOUNT):
+                _log('[PORTFOLIO-ERROR] connected account differs from configured account')
+                return
+            for endpoint in (self.conn.xtdata, self.conn.trader):
+                client = getattr(endpoint, 'client', None)
+                if client is not None and type(client).__module__.endswith('xtquant_compat') and all(client is not item[0] for item in self.rpc_originals):
+                    original = instrument_rpc(client, self.watchdog, READ_RPC_TIMEOUT_SEC)
+                    self.rpc_originals.append((client, original))
+            _log('[RUNTIME] watchdog={}s read-RPC-timeout={}s instrumented-clients={}; '
+                 'native/router calls may have separate timeouts'.format(
+                     WATCHDOG_WARN_SEC, READ_RPC_TIMEOUT_SEC, len(self.rpc_originals)))
+            _log('[PORTFOLIO-START] all account holdings; mode={}'.format(
+                'SIGNAL' if self.dry_run else 'LIVE'))
+            self.restore_checkpoint()
+            while True:
+                now = _time.monotonic()
+                with self.watchdog.scope('REFRESH holdings'):
+                    self.refresh_holdings(now)
+                # Initialize the complete portfolio before any symbol can submit:
+                # all saved cash reservations must be present in the checkpoint.
+                self._prepare_trading_day()
+                for code, (task, due) in list(self.tasks.items()):
+                    if now < due:
+                        continue
+                    # The inherited order wrappers use this connection. Only one
+                    # task executes at a time; order confirmation stays synchronous.
+                    set_global_conn(self.conn, self.dry_run)
+                    try:
+                        with self.watchdog.scope('TICK ' + code):
+                            delay = next(task)
+                        self.save_checkpoint(settled=True)
+                        self.tasks[code] = (task, _time.monotonic() + float(delay or 0))
+                    except StopIteration:
+                        self.order_uncertain = True
+                        raise RuntimeError('STATE-BLOCKED: worker stopped; preserve checkpoint and reconcile')
+                _time.sleep(0.2)
+        except KeyboardInterrupt:
+            _log('[PORTFOLIO-STOP] interrupted')
+            if self.checkpoint_active and not self.inflight:
+                self.save_checkpoint(force=True)
+        except Exception as error:
+            self.order_uncertain = True
+            _log('[STATE-BLOCKED] {}; automatic trading stopped; checkpoint retained'.format(error))
+        finally:
+            for task, _ in self.tasks.values():
+                task.close()
+            self.conn.disconnect()
+            for client, original in self.rpc_originals:
+                client.call = original
+            self.watchdog.stop()
 
 
 def main():
-    parser = argparse.ArgumentParser(description='MiniQMT v42 - adaptive linear regime and REV-T trigger')
-    parser.add_argument('--mode', '-m', default='signal', choices=['signal', 'live', 'backtest'])
-    parser.add_argument('--start', default='20250801'); parser.add_argument('--end', default='20260806')
+    parser = argparse.ArgumentParser(description='v51: unified minute-strength reference; shadow by default, verified ledger recovery')
+    parser.add_argument('--mode', default='signal', choices=['signal', 'live'])
     args = parser.parse_args()
-    if args.mode == 'backtest': run_backtest_mode(args.start, args.end); return
-    logger = FileLogger(STOCK_CODE, version='v42'); set_logger(logger)
-    dry_run = (args.mode == 'signal')
-    if args.mode == 'live':
-        print('\n!!! LIVE TRADING CONFIRMATION !!!\nTarget: {}({}) Account: {}'.format(STOCK_NAME, STOCK_CODE, ACCOUNT))
-        if input('Type yes to continue: ').strip().lower() != 'yes': print('Cancelled'); logger.close(); return
-    StrategyRunner(dry_run=dry_run).run()
+    if INTRADAY_REFERENCE_MODE not in ('shadow', 'active'):
+        raise ValueError('INTRADAY_REFERENCE_MODE must be shadow or active')
+    logger = FileLogger('portfolio', version='v51')
+    set_logger(logger)
+    try:
+        if args.mode == 'live':
+            print('LIVE: apply T strategy to ALL current and newly detected account holdings. Account: {}'.format(ACCOUNT))
+            if input('Type yes to continue: ').strip().lower() != 'yes':
+                return
+        _log('[REFERENCE-MODE] {}: coefficient scaling affects execution baseline; shadow intraday strength is observation only; active requires user-approved validation'.format(
+            INTRADAY_REFERENCE_MODE))
+        PortfolioRunner(dry_run=args.mode == 'signal').run()
+    finally:
+        logger.close()
 
 
 if __name__ == '__main__':
