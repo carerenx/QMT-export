@@ -37,6 +37,7 @@ class StrictBroker(Broker):
                 self.events.extend([(close-timedelta(minutes=1),'OPEN',day,i,row),
                                     (close,'CLOSE',day,i,row)])
         self.cursor=0
+        self.current_day=None
         self.tick={}
         self.equities=[]
         self.recorded=set()
@@ -149,7 +150,7 @@ class StrictBroker(Broker):
 
 
 def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False):
-    if legacy_carry and version not in ('v39','v51'):
+    if legacy_carry and not version.startswith(('v39','v51')):
         raise ValueError('legacy carry is only defined for v39/v51')
     register_with_legacy_loader()
     mod=load_strategy(version)
@@ -170,12 +171,12 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False):
             (mod,'get_trade_detail_data',lambda a,b,k:broker.query_positions() if k=='POSITION' else [broker.query_account()]),
             (mod.cfg,'now_hms',lambda:Clock.current.strftime('%H:%M:%S'))]:
             stack.enter_context(patch.object(obj,name,value))
-        if version=='v39': runner=mod.StrategyRunner(False)
+        if version.startswith('v39'): runner=mod.StrategyRunner(False)
         else:
             portfolio=mod.PortfolioRunner(False)
             runner=mod.StrategyRunner(portfolio,broker.code)
             portfolio.runners[broker.code]=runner
-            if version=='v52': runner.baseline_shares=200
+            if version.startswith('v52'): runner.baseline_shares=200
             stack.enter_context(patch.object(portfolio,'save_checkpoint',lambda *a,**kw:None))
         original=runner._submit_order
         def submit(shares,price,label,style='COMPETE'):
@@ -187,6 +188,11 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False):
             from backtest.dayt_legacy_carry import LegacyCarry
             carry=LegacyCarry(runner,broker,mod,version)
             carry.install(stack,patch)
+        # Initialize current_day to first trading day so v39's _daily_init() can load daily snapshot
+        if broker.events:
+            broker.current_day = broker.events[0][2]
+            # Filter daily data to only include dates before current_day (same as advance())
+            broker.daily = broker.all_daily.loc[broker.all_daily.index < broker.current_day]
         gen=runner.run()
         failure=None
         previous_day=None
@@ -199,11 +205,11 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False):
                     except RuntimeError as error:
                         failure='INVALID: '+str(error); break
                 # v39 silently resets legs at a new day. Detect, do not repair it.
-                if not carry and previous_day and previous_day!=broker.current_day and version=='v39' and any(broker.book.legs.values()):
+                if not carry and previous_day and previous_day!=broker.current_day and version.startswith('v39') and any(broker.book.legs.values()):
                     failure='INVALID: legacy daily reset would discard open execution legs at '+broker.current_day
                     break
                 previous_day=broker.current_day
-                if version!='v39' and phase=='PREOPEN':
+                if not version.startswith('v39') and phase=='PREOPEN':
                     try: portfolio._prepare_trading_day()
                     except RuntimeError as error:
                         failure='STOPPED: original portfolio rollover: '+str(error)
@@ -228,7 +234,7 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False):
         return dict(version=version,rate=rate,failure=failure,stopped_at=stopped_at if failure else None,
             adaptation='LEGACY_CARRY_EXITS_ONLY' if carry else 'ORIGINAL',
             carry_events=carry.events if carry else [],
-            owned_cycle_records=runner.checkpoint_record().get('v52') if version=='v52' else None,
+            owned_cycle_records=runner.checkpoint_record().get('v52') if version.startswith('v52') else None,
             settings=overrides or {},days=len(broker.days),
             account_net=final-initial,excess_net=final-(100000+200*float(minute.iloc[-1].close)),
             maximum_drawdown=float((1-equity/equity.cummax()).max()),fees=sum(o.fee for o in broker.exchange.orders.values()),
@@ -249,7 +255,7 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--version',choices=['v39','v51','v52'],required=True)
+    parser.add_argument('--version',choices=['v39','v51','v52','v39_nomom','v51_nomom','v52_nomom'],required=True)
     parser.add_argument('--rate',type=float,default=.0005)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--train',action='store_true',help='first 69 sessions only')
@@ -265,7 +271,7 @@ def main():
     minute=minute.loc[minute.index.str[:8]>='20260421']
     if args.train: minute=minute.loc[minute.index.str[:8]<='20260730']
     settings=dict(DIRECTIONAL_THRESHOLD=args.threshold,DIRECTIONAL_ENABLED=not args.no_directional,
-                  OVERNIGHT_ENABLED=not args.no_overnight,LONG_RESEARCH_DISABLED=args.no_long) if args.version=='v52' else {}
+                  OVERNIGHT_ENABLED=not args.no_overnight,LONG_RESEARCH_DISABLED=args.no_long) if args.version.startswith('v52') else {}
     manifest=json.loads((ROOT/'backtest/dayt_golden_20260910/manifest.json').read_text(encoding='utf-8'))
     hashes={}
     for name,expected in manifest['files'].items():

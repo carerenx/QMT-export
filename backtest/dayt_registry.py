@@ -3,6 +3,9 @@ STRATEGIES = {
     'v39': 'DayTradeing_v39_stragety_miniqmt.py',
     'v51': 'DayT_v51_IntradayStrength.py',
     'v52': 'DayT_v52_DirectionalOvernight.py',
+    'v39_nomom': 'DayTradeing_v39_nomom.py',
+    'v51_nomom': 'DayT_v51_nomom.py',
+    'v52_nomom': 'DayT_v52_nomom.py',
 }
 
 
