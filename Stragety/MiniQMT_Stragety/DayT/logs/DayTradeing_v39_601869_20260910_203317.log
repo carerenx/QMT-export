@@ -1,0 +1,20 @@
+============================================================
+  日志文件创建: 2026-09-10 20:33:17
+  策略版本: v39 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[09:30:00] [START] 长飞光纤 v39 SIGNAL 601869.SH
+[09:30:00] [DATA-DBG] last_complete=20260910 hist_open[-3:]=[400.88, 430.0, 437.32] | tick_open=437.32 | lastClose=437.32 | signal_open=437.32
+[09:30:00] [VOLUME-DATA] complete_count=80 tail=[15618084.0, 19841415.0, 11356252.0]
+[09:30:00] [SIGNAL] WEAK-BULL | Open Y437.32 | ATR 6.4% | RSI 67 | Vol_ratio 0.78 | Mult 0.66 | Trig Y448.43 
+[09:30:00] [VOLUME] last 11356252 / prev20_avg 14518204 | n=20 | VALID
+[09:30:00] [FACTOR] trend +0.05 |  volatility -0.08 |  volume +0.12 |  RSI -0.08 | 
+[09:30:00] [ACCOUNT] Position:200 sh Y87,464(47%) | Cash:Y100,000 | Sellable:2 lots(200 sh)
+[09:30:00] [TRADE-LOCK] daily init exception: 'gbk' codec can't encode character '\ufffd' in position 59: illegal multibyte sequence; all trading disabled
+[09:30:00] [ERROR] init failed: 'gbk' codec can't encode character '\ufffd' in position 59: illegal multibyte sequence
+[09:30:00] [ERROR] 'NoneType' object has no attribute 'get'
+[09:30:00] [STOP] 长飞光纤 v39 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-10 20:33:17
+============================================================

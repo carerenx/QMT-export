@@ -5,6 +5,13 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 -新建策略的话不要在import原来同级别的策略文件。要完全新建。但是可以import 复用的config/core/util的公用的文件。
 ## Repository Purpose
 
+### DayT 固定回测约定
+
+- 新策略必须运行 `python backtest/dayt_benchmark.py replay` 复现冻结的 v39/v51 黄金结果，再通过 `backtest/dayt_registry.py` 加入固定比较及严格连续回测。
+- 固定档案位于 `backtest/dayt_golden_20260910`，不得覆盖、联网更新或用新的公共依赖悄悄替换。黄金哈希/收益/成交不一致时，停止发布比较结论。
+- 新策略同时运行严格连续账户回测及执行安全测试（成交、T+1、费用、部分成交、恢复、保存重试、日志与连接监控）；失败或无法运行必须报告，不修改旧策略来绕过停止保护。
+- 每日重置的历史比较和连续账户的严格验收分别报告；研究费用不是实际收费，测试通过不是收益验证。未经明确批准不得启动实盘。
+
 A股量化交易策略开发与实盘运行环境。
 核心标的是**长飞光纤(601869)**，围绕日内做T、选股策略、回测系统三大方向展开。
 后续目标是新建/增肌选股策略。

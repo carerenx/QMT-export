@@ -1,0 +1,145 @@
+============================================================
+  日志文件创建: 2026-09-10 20:35:36
+  策略版本: v39 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[09:30:00] [START] 长飞光纤 v39 SIGNAL 601869.SH
+[09:30:00] [DATA-DBG] last_complete=20260910 hist_open[-3:]=[400.88, 430.0, 437.32] | tick_open=406.8 | lastClose=406.5 | signal_open=406.8
+[09:30:00] [VOLUME-DATA] complete_count=80 tail=[15618084.0, 19841415.0, 11356252.0]
+[09:30:00] [SIGNAL] WEAK-BULL | Open Y406.80 | ATR 6.4% | RSI 67 | Vol_ratio 0.78 | Mult 0.66 | Trig Y417.14 
+[09:30:00] [VOLUME] last 11356252 / prev20_avg 14518204 | n=20 | VALID
+[09:30:00] [FACTOR] trend +0.05 |  volatility -0.08 |  volume +0.12 |  RSI -0.08 | 
+[09:30:00] [ACCOUNT] Position:200 sh Y81,300(45%) | Cash:Y100,000 | Sellable:2 lots(200 sh)
+[09:30:00] [REV-T] ENABLED 2 lots trig Y417.14 buyback=sell��(1-ATR%��0.15) emerg +3% / emergTrigFalse
+[09:30:00] [FWD-T] ENABLED 2 lots buy Y398.37 sell Y403.15(+1.2%) 1 lot��Y40,650
+[09:30:00] [MOM] 2minutes��3.6��ATR in 10 minutes(1.0%~6.0%) ��T���-1.5% ��T����+1.8% MOM_LOT_SIZE(100sh) ����3�� ���������
+[09:30:00] [MOM-CAPACITY] short ON | long ON
+[09:30:00] [MOM-v39] REV��Ȩ�� band 1.20% (������REV��ֵ) | ����Ӧ�س��� 0.35~0.60% ATR��0.50
+[09:30:00] [OPEN] [Y406.50] [REV-T needs +2.62% to Y417.14] [FWD-T needs -2.00% to Y398.37]
+[09:30:00] [HB] IDLE Y406.50 REV-T: needs +Y10.64 to Y417.14 | FWD-T: needs -Y8.13 to Y398.37
+[15:00:00] [LOCK] P+2.9% M 2.97% D 0.00%
+[09:31:00] [UNLOCK]
+[09:53:00] [FWD-T dip #1/5] Y398.03 <= Y398.37(-0.09%)
+[09:54:00] [FWD-T buy trig] low Y398.03 bounce 0.39% �� Y399.58
+[09:54:00] [ORDER-FWD-T buy] Y399.58 �� 100 sh
+[09:55:00] [FILL-FWD-T buy] Y399.58 �� 100 sh | pos 200��300 | cash -39,968
+[13:08:00] [FWD-T sellback watch] +1.38% �� Y405.11
+[13:14:00] [FWD-T sell trig] peak Y409.73 pullback 0.38% �� Y408.19 gross~Y861
+[13:14:00] [ORDER-FWD-T sell] Y408.19 �� 100 sh
+[13:15:00] [FILL-FWD-T sell] Y408.19 �� 100 sh | pos 300��200 | cash +40,768
+[13:15:00] [RESUME] �� IDLE (REV-T 0/5, FWD-T 1/5)
+[09:31:00] [FWD-T dip #2/5] Y392.86 <= Y398.37(-1.38%)
+[09:32:00] [FWD-T buy trig] low Y392.86 bounce 0.33% �� Y394.16
+[09:32:00] [ORDER-FWD-T buy] Y394.16 �� 100 sh
+[09:33:00] [FILL-FWD-T buy] Y394.16 �� 100 sh | pos 200��300 | cash -39,426
+[09:39:00] [FWD-T sellback watch] +1.43% �� Y399.80
+[09:42:00] [FWD-T sell trig] peak Y404.44 pullback 0.11% �� Y404.00 gross~Y984
+[09:42:00] [ORDER-FWD-T sell] Y404.00 �� 100 sh
+[09:43:00] [FILL-FWD-T sell] Y404.00 �� 100 sh | pos 300��200 | cash +40,350
+[09:43:00] [RESUME] �� IDLE (REV-T 0/5, FWD-T 2/5)
+[10:08:00] [FWD-T dip #3/5] Y398.37 <= Y398.37(-0.00%)
+[10:10:00] [FWD-T buy trig] low Y398.05 bounce 0.34% �� Y399.40
+[10:10:00] [ORDER-FWD-T buy] Y399.40 �� 100 sh
+[10:11:00] [FILL-FWD-T buy] Y399.40 �� 100 sh | pos 200��300 | cash -39,950
+[10:41:00] [FWD-T sellback watch] +1.37% �� Y404.87
+[10:45:00] [FWD-T sell trig] peak Y409.88 pullback 0.26% �� Y408.81 gross~Y941
+[10:45:00] [ORDER-FWD-T sell] Y408.81 �� 100 sh
+[10:46:00] [FILL-FWD-T sell] Y408.81 �� 100 sh | pos 300��200 | cash +40,830
+[10:46:00] [RESUME] �� IDLE (REV-T 0/5, FWD-T 3/5)
+[09:43:00] [FWD-T dip #4/5] Y397.34 <= Y398.37(-0.26%)
+[09:45:00] [FWD-T buy trig] low Y397.25 bounce 0.33% �� Y398.58
+[09:45:00] [ORDER-FWD-T buy] Y398.58 �� 100 sh
+[09:46:00] [FILL-FWD-T buy] Y398.58 �� 100 sh | pos 200��300 | cash -39,868
+[09:57:00] [FWD-T ladder buy #5/5] Y392.01 <= Y392.60(buy-1.50%)
+[09:59:00] [FWD-T buy trig] low Y392.00 bounce 0.26% �� Y393.00
+[09:59:00] [ORDER-FWD-T buy] Y393.00 �� 100 sh
+[10:00:00] [FILL-FWD-T buy] Y393.00 �� 100 sh | pos 300��400 | cash -39,310
+[10:46:00] [FWD-T stop-loss trig] avg Y395.79 now Y388.78(-1.8%)
+[10:46:00] [FWD-T force sell trig]
+[10:46:00] [ORDER-FWD-T force sell] Y388.78 �� 200 sh
+[10:47:00] [FILL-FWD-T force sell] Y388.78 �� 200 sh | pos 400��200 | cash +77,659
+[10:48:00] [RESUME] �� IDLE (REV-T 0/5)
+[13:38:00] [MOM dip] 2min -6.00% (3.6��ATR10m 6.00%) Y382.01 �� ̽�׻���������
+[13:39:00] [MOM-HB] ̽�׻�������: dip Y382.01 Y382.22 trig��6.00%
+[13:41:00] [MOM buy trig] low Y381.67 ����0.28% �� Y382.75
+[13:41:00] [ORDER-MOM long] Y382.75 �� 100 sh
+[13:42:00] [FILL-MOM long] Y382.75 �� 100 sh | pos 200��300 | cash -38,285
+[13:42:00] [MOM bought] Y382.75 x 100 sh | ���ش��� ��Y389.64
+[14:34:00] [MOM stop-loss] Y382.75��Y377.00(-1.50%) ֹ������
+[14:34:00] [ORDER-MOM stop-loss] Y377.00 �� 100 sh
+[14:35:00] [FILL-MOM stop-loss] Y377.00 �� 100 sh | pos 300��200 | cash +37,653
+[14:35:00] [MOM long done(stop)] ��Y382.75 ��Y377.00 gross~Y-575
+[14:36:00] [MOM dip] 2min -6.00% (3.6��ATR10m 6.00%) Y376.52 �� ̽�׻���������
+[14:39:00] [MOM buy trig] low Y375.87 ����0.35% �� Y377.20
+[14:39:00] [ORDER-MOM long] Y377.20 �� 100 sh
+[14:40:00] [FILL-MOM long] Y377.20 �� 100 sh | pos 200��300 | cash -37,729
+[14:40:00] [MOM bought] Y377.20 x 100 sh | ���ش��� ��Y383.99
+[14:57:00] [MOM force sell] Y378.90
+[14:57:00] [ORDER-MOM force sell] Y378.90 �� 100 sh
+[15:00:00] [FILL-MOM force sell] Y378.90 �� 100 sh | pos 300��200 | cash +37,843
+[09:40:00] [LOCK] P+2.2% M 2.30% D 0.65%
+[09:42:00] [UNLOCK]
+[10:26:00] [LOCK] P+2.4% M 2.46% D 0.49%
+[10:41:00] [UNLOCK]
+[10:42:00] [LOCK] P+2.8% M 2.87% D 0.43%
+[10:44:00] [UNLOCK]
+[10:45:00] [LOCK] P+2.5% M 2.58% D 0.71%
+[10:59:00] [UNLOCK]
+[10:59:00] [REV-T spike #1/5] Y418.00 >= Y417.14
+[11:03:00] [REV-T sell trig] peak Y419.83 pullback 0.20% �� Y419.00
+[11:03:00] [ORDER-REV-T sell] Y419.00 �� 100 sh
+[11:04:00] [FILL-REV-T sell] Y419.00 �� 100 sh | pos 200��100 | cash +41,848
+[13:04:00] [Buyback trig ] Y414.28(-1.13%)
+[13:06:00] [REV-T buyback trig] low Y414.28 bounce 0.42% �� Y416.00
+[13:06:00] [FIX-BUYBACK] trigger Y416.00 -> ask1/fallback limit Y414.51
+[13:06:00] [ORDER-REV-T buyback(NORMAL)] Y414.51 �� 100 sh
+[13:07:00] [FILL-REV-T buyback(NORMAL)] Y414.51 �� 100 sh | pos 100��200 | cash -41,610
+[13:07:00] [SELL-TRIG UPD] Y417.14��Y419.00 (������, ������ʵ��������)
+[13:07:00] [RESUME] �� IDLE (REV-T 1/5)
+[13:07:00] [REV-T done] buyback Y414.51 x 100sh gross~Y449
+[09:31:00] [MOM spike] 2min +6.00% (3.6��ATR10m 6.00%) Y436.84 �� ��߻���������� | pullback 0.60% adaptive
+[09:31:00] [LOCK] P+7.4% M 7.46% D 0.00%
+[09:50:00] [MOM BLOCKED] MOM short arm canceled: P+7.4% M 7.46% D 0.00%
+[09:50:00] [UNLOCK]
+[09:50:00] [REV-T spike #2/5] Y453.40 >= Y419.00
+[09:51:00] [MOM spike] 2min +6.00% (3.6��ATR10m 6.00%) Y454.38 �� ��߻���������� | pullback 0.60% adaptive
+[09:52:00] [REV-T sell trig] peak Y454.38 pullback 0.47% �� Y452.24
+[09:52:00] [ORDER-REV-T sell] Y452.24 �� 100 sh
+[09:53:00] [FILL-REV-T sell] Y452.24 �� 100 sh | pos 200��100 | cash +45,167
+[09:55:00] [MOM sell trig] peak Y454.38 ����0.61% >= 0.60% �� Y451.59
+[09:55:00] [ORDER-MOM short] Y451.59 �� 100 sh
+[09:56:00] [FILL-MOM short] Y451.59 �� 100 sh | pos 100��0 | cash +45,103
+[09:56:00] [MOM sold] Y451.59 x 100 sh | ��ش��� ��Y444.82
+[09:58:00] [Buyback trig ] Y446.18(-1.34%)
+[09:59:00] [REV-T buyback trig] low Y446.18 bounce 0.80% �� Y449.75
+[09:59:00] [FIX-BUYBACK] trigger Y449.75 -> ask1/fallback limit Y446.18
+[09:59:00] [ORDER-REV-T buyback(NORMAL)] Y446.18 �� 100 sh
+[10:00:00] [FILL-REV-T buyback(NORMAL)] Y446.18 �� 100 sh | pos 0��100 | cash -44,986
+[10:00:00] [SELL-TRIG UPD] Y419.00��Y452.24 (������, ������ʵ��������)
+[10:00:00] [RESUME] �� IDLE (REV-T 2/5)
+[10:00:00] [REV-T done] buyback Y446.18 x 100sh gross~Y606
+[10:08:00] [REV-T spike #3/5] Y453.67 >= Y452.24
+[10:09:00] [REV-T sell trig] peak Y453.67 pullback 0.17% �� Y452.90
+[10:09:00] [ORDER-REV-T sell] Y452.90 �� 100 sh
+[10:10:00] [FILL-REV-T sell] Y452.90 �� 100 sh | pos 100��0 | cash +45,233
+[10:18:00] [Buyback trig ] Y448.38(-1.00%)
+[10:19:00] [REV-T buyback trig] low Y448.38 bounce 0.38% �� Y450.07
+[10:19:00] [FIX-BUYBACK] trigger Y450.07 -> ask1/fallback limit Y448.38
+[10:19:00] [ORDER-REV-T buyback(NORMAL)] Y448.38 �� 100 sh
+[10:20:00] [FILL-REV-T buyback(NORMAL)] Y448.38 �� 100 sh | pos 0��100 | cash -45,018
+[10:20:00] [SELL-TRIG UPD] Y452.24��Y452.90 (������, ������ʵ��������)
+[10:20:00] [RESUME] �� IDLE (REV-T 3/5)
+[10:20:00] [REV-T done] buyback Y448.38 x 100sh gross~Y452
+[11:06:00] [MOM buyback trig] Y444.60 ��Y444.82(-1.50%) �� ̽�׻������
+[11:11:00] [MOM buyback ready] low Y442.67 ����0.51% �� Y444.91
+[11:11:00] [MOM buyback cooldown #1] Y444.91, freeze 12s until 1789043749.458
+[14:57:00] [MOM force buyback] Y442.09
+[14:57:00] [FIX-BUYBACK] trigger Y442.09 -> ask1/fallback limit Y442.10
+[14:57:00] [ORDER-MOM force buyback] Y442.10 �� 100 sh
+[15:00:00] [FILL-MOM force buyback] Y442.10 �� 100 sh | pos 100��200 | cash -44,220
+[15:00:00] [ERROR] All bars consumed
+[15:00:00] [STOP] 长飞光纤 v39 cum 7 days gross~Y3,718
+
+============================================================
+  日志结束: 2026-09-10 20:35:37
+============================================================
