@@ -1,0 +1,47 @@
+============================================================
+  日志文件创建: 2026-09-10 20:34:18
+  策略版本: v39 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[09:30:00] [START] 长飞光纤 v39 SIGNAL 601869.SH
+[09:30:00] [DATA-DBG] last_complete=20260910 hist_open[-3:]=[400.88, 430.0, 437.32] | tick_open=430.0 | lastClose=436.84 | signal_open=430.0
+[09:30:00] [VOLUME-DATA] complete_count=80 tail=[15618084.0, 19841415.0, 11356252.0]
+[09:30:00] [SIGNAL] WEAK-BULL | Open Y430.00 | ATR 6.4% | RSI 67 | Vol_ratio 0.78 | Mult 0.66 | Trig Y440.93 
+[09:30:00] [VOLUME] last 11356252 / prev20_avg 14518204 | n=20 | VALID
+[09:30:00] [FACTOR] trend +0.05 |  volatility -0.08 |  volume +0.12 |  RSI -0.08 | 
+[09:30:00] [ACCOUNT] Position:200 sh Y87,368(47%) | Cash:Y100,000 | Sellable:2 lots(200 sh)
+[09:30:00] [REV-T] ENABLED 2 lots trig Y440.93 buyback=sell��(1-ATR%��0.15) emerg +3% / emergTrigFalse
+[09:30:00] [FWD-T] ENABLED 2 lots buy Y428.10 sell Y433.24(+1.2%) 1 lot��Y43,684
+[09:30:00] [MOM] 2minutes��3.6��ATR in 10 minutes(1.0%~6.0%) ��T���-1.5% ��T����+1.8% MOM_LOT_SIZE(100sh) ����3�� ���������
+[09:30:00] [MOM-CAPACITY] short ON | long ON
+[09:30:00] [MOM-v39] REV��Ȩ�� band 1.20% (������REV��ֵ) | ����Ӧ�س��� 0.35~0.60% ATR��0.50
+[09:30:00] [OPEN] [Y436.84] [REV-T needs +0.94% to Y440.93] [FWD-T needs -2.00% to Y428.10]
+[09:30:00] [HB] IDLE Y436.84 REV-T: needs +Y4.09 to Y440.93 | FWD-T: needs -Y8.74 to Y428.10
+[09:32:00] [REV-T spike #1/5] Y441.78 >= Y440.93
+[09:33:00] [REV-T sell trig] peak Y441.78 pullback 0.28% �� Y440.53
+[09:33:00] [ORDER-REV-T sell] Y440.53 �� 100 sh
+[09:34:00] [FILL-REV-T sell] Y440.53 �� 100 sh | pos 200��100 | cash +43,998
+[09:35:00] [REV-T ladder sell #2/5] Y449.80 >= Y447.14(sell+1.50%)
+[09:39:00] [REV-T sell trig] peak Y455.32 pullback 0.45% �� Y453.27
+[09:39:00] [ORDER-REV-T sell] Y453.27 �� 100 sh
+[09:40:00] [FILL-REV-T sell] Y453.27 �� 100 sh | pos 100��0 | cash +45,270
+[09:57:00] [Buyback trig ] Y448.01(-1.16%)
+[09:59:00] [REV-T buyback trig] low Y446.18 bounce 0.80% �� Y449.75
+[09:59:00] [FIX-BUYBACK] trigger Y449.75 -> ask1/fallback limit Y446.18
+[09:59:00] [ORDER-REV-T buyback(NORMAL)] Y446.18 �� 200 sh
+[10:00:00] [FILL-REV-T buyback(NORMAL)] Y446.18 �� 200 sh | pos 0��200 | cash -89,972
+[10:00:00] [SELL-TRIG UPD] Y440.93��Y453.27 (������, ������ʵ��������)
+[10:00:00] [RESUME] �� IDLE (REV-T 2/5, FWD-T 0/5)
+[10:00:00] [REV-T done] buyback Y446.18 x 200sh gross~Y144
+[10:07:00] [LOCK] P+5.0% M 3.36% D 0.11%
+[10:11:00] [UNLOCK]
+[10:12:00] [LOCK] P+5.2% M 3.52% D 0.32%
+[10:16:00] [UNLOCK]
+[10:19:00] [LOCK] P+4.7% M 3.03% D 0.79%
+[10:29:00] [UNLOCK]
+[15:00:00] [ERROR] All bars consumed
+[15:00:00] [STOP] 长飞光纤 v39 cum 1 days gross~Y144
+
+============================================================
+  日志结束: 2026-09-10 20:34:18
+============================================================

@@ -319,7 +319,11 @@ class StrategyRunner:
     def has_open_legs(self):
         return (any(self.execution_book.legs.values()) or
                 bool(self.st.get('short_legs') or self.st.get('long_legs')) or
-                self.st.get('mom_leg_shares', 0) > 0)
+                self.st.get('mom_leg_shares', 0) > 0 or
+                self.st.get('fstate') in (STATE_SOLD, STATE_DIPPING, STATE_BT_BOUGHT, STATE_BT_SPIKING) or
+                self.st.get('mom_state') in ('MOM_SOLD', 'MOM_DIPPING', 'MOM_BT_BOUGHT',
+                                              'MOM_BT_SPIKING', MOM_STATE_BUYBACK_COOLING,
+                                              MOM_STATE_SELLBACK_COOLING))
 
     def checkpoint_record(self):
         return dict(name=self.stock_name, state=self.st,
@@ -2402,11 +2406,28 @@ class PortfolioRunner:
         if saved and (saved['inflight'] or saved['order_uncertain']):
             raise RuntimeError('STATE-BLOCKED: interrupted/uncertain order; inspect broker and checkpoint')
         today = datetime.now().strftime('%Y%m%d')
+        # Validate every record before restoring any symbol. A previous v49
+        # checkpoint may contain today's envelope but yesterday's flat runner.
+        stale_codes = set()
+        if saved:
+            for code, record in saved['runners'].items():
+                state = record['state']
+                date = state.get('trade_date', '')
+                detail = '{} record-date={} expected={} initialized={}'.format(
+                    code, date, today, state.get('initialized'))
+                if not date or date > today or not state.get('initialized'):
+                    raise RuntimeError('STATE-BLOCKED: ' + detail + '; incomplete runner initialization')
+                if date < today or saved['date'] < today:
+                    probe = StrategyRunner(self, code)
+                    probe.st.update(state)
+                    probe.execution_book.legs = record['legs']
+                    if probe.has_open_legs():
+                        raise RuntimeError('STATE-BLOCKED: ' + detail + '; overnight T legs require reconciliation')
+                    stale_codes.add(code)
+            if saved['date'] > today:
+                raise RuntimeError('STATE-BLOCKED: checkpoint date is in the future')
         if saved and saved['date'] != today:
-            if any(any(r['legs'].values()) or r['state'].get('short_legs') or
-                   r['state'].get('long_legs') or r['state'].get('mom_leg_shares', 0)
-                   for r in saved['runners'].values()):
-                raise RuntimeError('STATE-BLOCKED: overnight T legs; manual reconciliation required')
+            # All records were checked for outstanding legs above.
             saved = None
         broker = self._broker_snapshot()
         if saved:
@@ -2414,10 +2435,15 @@ class PortfolioRunner:
                 raise RuntimeError('STATE-BLOCKED: broker positions/orders changed since checkpoint')
             self.own_order_ids = saved['own_order_ids']
             for code, record in saved['runners'].items():
-                if record['state'].get('trade_date') != today or not record['state'].get('initialized'):
-                    raise RuntimeError('STATE-BLOCKED: incomplete runner initialization')
                 runner = StrategyRunner(self, code, record['name'])
-                runner.restore_record(record)
+                if code in stale_codes:
+                    runner.total_pnl = record['total_pnl']
+                    runner.total_t_days = record['total_t_days']
+                    runner._init_state()
+                    runner._log('[STATE-ROLLOVER] flat record-date={} expected={}; daily initialization required'.format(
+                        record['state']['trade_date'], today))
+                else:
+                    runner.restore_record(record)
                 self.runners[code] = runner
                 self.tasks[code] = (runner.run(), 0.0)
         else:
@@ -2431,16 +2457,20 @@ class PortfolioRunner:
         interval = CHECKPOINT_INTERVAL_SEC if cfg.is_market_open(cfg.now_hms()) else OFF_HOURS_REFRESH_SEC
         if not force and not self.inflight and now - self._last_checkpoint < interval:
             return
-        # Uninitialized symbols must not overwrite a recoverable file.
-        if any(not r.st.get('initialized') for r in self.runners.values()):
-            raise RuntimeError('STATE-BLOCKED: cannot checkpoint an uninitialized worker')
+        # Do not label a partially rolled portfolio as a current-day checkpoint.
+        today = datetime.now().strftime('%Y%m%d')
+        for code, runner in self.runners.items():
+            if not runner.st.get('initialized') or runner.st.get('trade_date') != today:
+                raise RuntimeError('STATE-BLOCKED: {} record-date={} expected={} initialized={}; '
+                                   'cannot checkpoint incomplete rollover'.format(
+                                       code, runner.st.get('trade_date'), today, runner.st.get('initialized')))
         pending = None if settled and not self.order_uncertain else self.inflight
         data = dict(schema=1, account=str(ACCOUNT),
-                    date=datetime.now().strftime('%Y%m%d'), inflight=pending,
+                    date=today, inflight=pending,
                     order_uncertain=self.order_uncertain, own_order_ids=self.own_order_ids,
                     runners={code: r.checkpoint_record() for code, r in self.runners.items()},
                     broker=self._broker_snapshot())
-        write_checkpoint(STATE_FILE, data)
+        write_checkpoint(STATE_FILE, data, log=_log)
         self.inflight = pending
         self._last_checkpoint = now
         _log('[STATE-SAVED] symbols={} inflight={} path={}'.format(
@@ -2453,6 +2483,26 @@ class PortfolioRunner:
         # If this fails, submission never happens. The marker remains until the
         # complete caller state transition reaches the scheduler's next yield.
         self.save_checkpoint(force=True)
+
+    def _prepare_trading_day(self):
+        """Finish the whole portfolio's rollover before a tick can save or submit."""
+        today = datetime.now().strftime('%Y%m%d')
+        pending = [r for r in self.runners.values()
+                   if not r.st.get('initialized') or r.st.get('trade_date') != today]
+        # Inspect all old runners before resetting any of them.
+        for runner in pending:
+            if runner.has_open_legs():
+                raise RuntimeError('STATE-BLOCKED: {} record-date={} expected={}; '
+                                   'overnight/uninitialized T legs require reconciliation'.format(
+                                       runner.stock_qmt, runner.st.get('trade_date'), today))
+        for runner in pending:
+            runner._init_state()
+            runner.execution_book = ExecutionBook()
+            runner._daily_init()
+            if not runner.st.get('initialized') or runner.st.get('trade_date') != today:
+                raise RuntimeError('STATE-BLOCKED: {} daily initialization incomplete; expected={}'.format(
+                    runner.stock_qmt, today))
+            runner._restored = True
 
     def _audit_account_trades(self):
         try:
@@ -2549,13 +2599,7 @@ class PortfolioRunner:
                     self.refresh_holdings(now)
                 # Initialize the complete portfolio before any symbol can submit:
                 # all saved cash reservations must be present in the checkpoint.
-                for runner in self.runners.values():
-                    if not runner.st.get('initialized'):
-                        runner._init_state()
-                        runner._daily_init()
-                        if not runner.st.get('initialized'):
-                            raise RuntimeError('STATE-BLOCKED: daily initialization incomplete')
-                        runner._restored = True
+                self._prepare_trading_day()
                 for code, (task, due) in list(self.tasks.items()):
                     if now < due:
                         continue

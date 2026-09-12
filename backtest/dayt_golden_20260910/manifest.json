@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "expected": {
+    "v51": {
+      "excess": -14042.0,
+      "trades": 366
+    },
+    "v39": {
+      "excess": -11531.0,
+      "trades": 392
+    }
+  },
+  "sessions": 99,
+  "files": {
+    "Stragety/MiniQMT_Stragety/DayT/DayTradeing_v39_stragety_miniqmt.py": "6bcfe76949fb7b10ce0945a19fcb7a5bfc1e0fe5be02d94d760b40ee64f42d70",
+    "Stragety/MiniQMT_Stragety/DayT/DayT_v51_IntradayStrength.py": "f4658f89d8199fe5231d4e322d61c25dc0592ee8c211858216c09780c4b1fa95",
+    "Stragety/MiniQMT_Stragety/core/adaptive_linear_regime.py": "de3b1dc11aa3b847f49556b22e83c17fa2002db9f6b5b8ba9b5a41faff51006d",
+    "Stragety/MiniQMT_Stragety/core/atr_reentry.py": "8c5a0f9e78882a40287f68b2ab79ed15cf6855a50a28e53ab71a0a5bca486ba9",
+    "Stragety/MiniQMT_Stragety/core/config.py": "c2d2d25cd3b1a07dc34b97405e7e4d93cf490ddf9fd63c5e9184d71851c4144e",
+    "Stragety/MiniQMT_Stragety/core/connection_monitor.py": "1c778307d2430f84b086c0e8096e18e956f49e1d87ff6da610d52e6139b5a533",
+    "Stragety/MiniQMT_Stragety/core/dayt_checkpoint.py": "164502807575b80a4e881070dddcfe365d7a0ea144a445c60214749f3e7b4f42",
+    "Stragety/MiniQMT_Stragety/core/execution_book.py": "0401cb3a1ecebf0575439073490350b24a3e78fec0f23bbdea03b929799e136d",
+    "Stragety/MiniQMT_Stragety/core/indicators.py": "d5af9dd936cf50ae2515e28cf8f7204311271097d48e6ebdcb7f1119d4898932",
+    "Stragety/MiniQMT_Stragety/core/indicators_np.py": "59d96dac40e22579266b5880a385b7ab1a245e933d06d65be6aa5ea33f3f8303",
+    "Stragety/MiniQMT_Stragety/core/intraday_rebound.py": "17e55408249c043a57c101b1613c82cb48f13cd2cddba9d7ce790266419e44f8",
+    "Stragety/MiniQMT_Stragety/core/intraday_strength.py": "7fe48953ea18a88f099fbdf81eecab349098bea4c52da7dc46c7e3d784577a7d",
+    "Stragety/MiniQMT_Stragety/core/quantile_trend_regime.py": "691223c9e49f22bfc9a8eda24002cfd77d4d668fb44d02a7a1b689ff8c6ab58c",
+    "Stragety/MiniQMT_Stragety/core/runtime_watchdog.py": "f4e04789e6cd9b8596d334e17e49dc3eec24eef1daeb119b178dc7d783b05929",
+    "Stragety/MiniQMT_Stragety/core/signals.py": "91f70f97cb58abb7096ee033e95f14e277c0b2df5192149175eefbe25d086ee8",
+    "Stragety/MiniQMT_Stragety/core/t_position_size.py": "0de0f6f20e2f08301d6c61779dda08b42d981211e8004d178cfb64568b6134dc",
+    "Stragety/MiniQMT_Stragety/core/__init__.py": "e821d39c8e5bd4d46d444f3a654240af697a13b593036c38105f16e793a19d84",
+    "Stragety/MiniQMT_Stragety/DayT/infra/connector.py": "95c06f6e5f66b72f6c8275c1f4dcf481f6c865c6bcdbdc6e109a626e8f169498",
+    "Stragety/MiniQMT_Stragety/DayT/infra/logger.py": "7dabe1a20b8f050004cace8289459ae9d551264ca8854592ff086b3cc6d92b3f",
+    "Stragety/MiniQMT_Stragety/DayT/infra/__init__.py": "13e876959c6a452ef17d777668eaf12b1f30288b7eeb529e36ac13afa117d171",
+    "analysis/compare_v51_v39_minute.py": "e021e9aa8163cd2b9efbb9a55a5b976d5707a6ed7ede5bb9dae58f07107104e5",
+    "analysis/v51_v39_minute/1m.csv": "e08d169a0d9c3a5cb585375db2d223a974eaf088afe18184b8b408977cc9c11c",
+    "analysis/v51_v39_minute/1d.csv": "c1074bc308adee34d1b7eb04196e4bded40e7e5a7cc8a7ed62390a363a8f2faa",
+    "analysis/v51_v39_minute/results.json": "d804eac858808c90781551890877b3fb283ede80887185acc134a4888ab04fb2"
+  },
+  "python": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+  "parameters": {
+    "cash": 100000,
+    "shares": 200,
+    "slips": [
+      0,
+      0.01
+    ],
+    "reset": "daily"
+  }
+}

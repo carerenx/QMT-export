@@ -1,0 +1,14 @@
+============================================================
+  日志文件创建: 2026-09-10 20:32:18
+  策略版本: v39 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[09:30:00] [START] 长飞光纤 v39 SIGNAL 601869.SH
+[09:30:00] [TRADE-LOCK] daily init exception: 'MockConnector' object has no attribute 'refresh_daily_cache'; all trading disabled
+[09:30:00] [ERROR] init failed: 'MockConnector' object has no attribute 'refresh_daily_cache'
+[09:30:00] [ERROR] 'NoneType' object has no attribute 'get'
+[09:30:00] [STOP] 长飞光纤 v39 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-10 20:32:18
+============================================================

@@ -1,0 +1,120 @@
+============================================================
+  日志文件创建: 2026-09-11 09:31:34
+  策略版本: v51 (for MiniQMT Evn)
+  标的: portfolio
+============================================================
+[09:31:37] [REFERENCE-MODE] shadow: coefficient scaling affects execution baseline; shadow intraday strength is observation only; active requires user-approved validation
+[09:31:37] [连接] MiniQMT 行情服务已连接
+[09:31:37] [账号状态] 8890145315 STOCK: 正常
+[09:31:38] [交易] 已订阅账号 8890145315
+[09:31:38] [RUNTIME] watchdog=15.0s read-RPC-timeout=5.0s instrumented-clients=2; native/router calls may have separate timeouts
+[09:31:38] [PORTFOLIO-START] all account holdings; mode=LIVE
+[09:31:38] [600584.SH] [STATE-RESTORED] same-day state=IDLE REV-count=0 FWD-count=0 MOM-count=0
+[09:31:38] [601869.SH] [STATE-RESTORED] same-day state=IDLE REV-count=0 FWD-count=0 MOM-count=0
+[09:31:38] [600584.SH] [START] v51 LIVE
+[09:31:39] [600584.SH] [T-SIZE PLAN] at base Y68.12: REV 400 sh / FWD 100 sh; rechecked at order submission
+[09:31:39] [600584.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y68.12 (source: latest complete close; after-hours) | ATR 4.7% | RSI 26 | Vol_ratio 0.48 | Mult 0.20 | base-trigger Y68.76 
+[09:31:39] [600584.SH] [REFERENCE] base-trigger Y68.76 | execution Y68.76 | shadow-candidate NOT_READY
+[09:31:39] [600584.SH] [QUANTILE-TREND] score -0.490 | rank 0.429 | trigger-Q 0.446 | samples 70 | span 8d | ATR-units 0.198
+[09:31:39] [600584.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.429*(1-2*tail)) = Q0.446 -> raw 0.3302 * scale 0.60 = 0.1981
+[09:31:39] [600584.SH] [VOLUME] last 481936 | prev10_avg 757222 (last/10d 0.64x) | prev20_avg 1004353 (last/20d 0.48x) | n10=10 n20=20 | VALID
+[09:31:39] [600584.SH] [FACTOR] trend_score -0.49 |  trend_rank +0.43 |  trigger_q +0.45 | 
+[09:31:39] [600584.SH] [ACCOUNT] Position:900 sh Y60,462(52%) | Cash:Y13,391 | Sellable:9 lots(900 sh)
+[09:31:40] [600584.SH] [REV-T] ENABLED plan 400 sh / remaining 5 entries | base-trigger Y68.76 = open Y68.12*(1+ATR 4.73%*(raw 0.330188*scale 0.600)) | base-trigger Y68.76 | execution Y68.76 | shadow-candidate NOT_READY | buyback Y68.27 = Y68.76*(1-4.73%*0.15)
+[09:31:40] [600584.SH] [FWD-T] ENABLED plan 100 sh / remaining 5 entries | plan buy Y66.76 = max(floor Y66.08, trail Y66.76) | plan sell Y67.56 = Y66.76*(1+1.2%) | planned value~Y6,676
+[09:31:40] [600584.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% 最小单位(100sh)，新开仓按金额/底仓动态计算 上限3次 紧急买回关
+[09:31:40] [600584.SH] [MOM-CAPACITY] short ON | long ON
+[09:31:40] [600584.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[09:31:40] [600584.SH] [CUM] 1 trades gross~Y112
+[09:31:40] [600584.SH] [CONNECTION] market/trade probes OK
+[09:31:40] [600584.SH] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-11 09:31:35 age=5.0s last_rpc_success=2026-09-11 09:31:40 last_confirmed_fresh=2026-09-11 09:31:40 reason=source quote within age limit action=LOG_ONLY
+[09:31:40] [600584.SH] [MA-POS] price Y67.18 | MA5 Y68.31: BELOW -1.65% | MA20 Y74.03: BELOW -9.25%
+[09:31:40] [600584.SH] [MA20 RISK] price Y67.18 is below 97% of MA20 (risk line Y71.81)
+[09:31:40] [600584.SH] [SELL-TRIG RECALC] open Y68.12→Y66.50 trig Y68.76→Y67.12 (units 0.198 ATR 4.7%)
+[09:31:40] [600584.SH] [OPEN] [Y67.18] [REV-T exceeded by Y0.06] [FWD-T needs -1.99% to Y65.84]
+[09:31:40] [600584.SH] [STRENGTH SHADOW] WARMUP minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y66.50 base-trigger=Y67.12 candidate=NOT_READY execution=Y67.12 U0=0.0000 Ul=0.2574 U=0.0000 limit=- reason=WARMUP
+[09:31:40] [600584.SH] [REV-T spike #1/5] Y67.18 >= Y67.12
+[09:31:40] [600584.SH] [HB] SPIKING Y67.18 peak Y67.18 pullback 0.00% | base-trigger Y67.12 | execution Y67.12 | shadow-candidate NOT_READY
+[09:31:40] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[09:31:40] [601869.SH] [START] v51 LIVE
+[09:31:41] [601869.SH] [T-SIZE PLAN] at base Y435.74: REV 100 sh / FWD 0 sh; rechecked at order submission
+[09:31:41] [601869.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y435.74 (source: latest complete close; after-hours) | ATR 6.2% | RSI 67 | Vol_ratio 0.78 | Mult 0.37 | base-trigger Y445.66 
+[09:31:41] [601869.SH] [REFERENCE] base-trigger Y445.66 | execution Y445.66 | shadow-candidate NOT_READY
+[09:31:41] [601869.SH] [QUANTILE-TREND] score +0.978 | rank 0.729 | trigger-Q 0.671 | samples 70 | span 8d | ATR-units 0.368
+[09:31:41] [601869.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.729*(1-2*tail)) = Q0.671 -> raw 0.6141 * scale 0.60 = 0.3684
+[09:31:41] [601869.SH] [VOLUME] last 113563 | prev10_avg 142905 (last/10d 0.79x) | prev20_avg 145182 (last/20d 0.78x) | n10=10 n20=20 | VALID
+[09:31:41] [601869.SH] [FACTOR] trend_score +0.98 |  trend_rank +0.73 |  trigger_q +0.67 | 
+[09:31:41] [601869.SH] [ACCOUNT] Position:100 sh Y44,400(37%) | Cash:Y13,391 | Sellable:1 lots(100 sh)
+[09:31:42] [601869.SH] [REV-T] ENABLED plan 100 sh / remaining 5 entries | base-trigger Y445.66 = open Y435.74*(1+ATR 6.18%*(raw 0.614081*scale 0.600)) | base-trigger Y445.66 | execution Y445.66 | shadow-candidate NOT_READY | buyback Y441.53 = Y445.66*(1-6.18%*0.15)
+[09:31:42] [601869.SH] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y427.03 = max(floor Y422.67, trail Y427.03) | plan sell Y432.15 = Y427.03*(1+1.2%) | planned value~Y0
+[09:31:42] [601869.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% 最小单位(100sh)，新开仓按金额/底仓动态计算 上限3次 紧急买回关
+[09:31:42] [601869.SH] [MOM-CAPACITY] short ON | long OFF insufficient cash for 1 lot
+[09:31:42] [601869.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[09:31:42] [601869.SH] [CONNECTION] market/trade probes OK
+[09:31:42] [601869.SH] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-11 09:31:40 age=2.0s last_rpc_success=2026-09-11 09:31:42 last_confirmed_fresh=2026-09-11 09:31:42 reason=source quote within age limit action=LOG_ONLY
+[09:31:42] [601869.SH] [MA-POS] price Y444.00 | MA5 Y427.83: ABOVE +3.78% | MA20 Y398.72: ABOVE +11.36%
+[09:31:42] [601869.SH] [SELL-TRIG RECALC] open Y435.74→Y428.00 trig Y445.66→Y437.74 (units 0.368 ATR 6.2%)
+[09:31:42] [601869.SH] [OPEN] [Y444.00] [REV-T exceeded by Y6.26] [FWD-T needs -2.00% to Y435.12]
+[09:31:42] [601869.SH] [STRENGTH SHADOW] WARMUP minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y428.00 base-trigger=Y437.74 candidate=NOT_READY execution=Y437.74 U0=0.0000 Ul=0.2907 U=0.0000 limit=- reason=WARMUP
+[09:31:42] [601869.SH] [REV-T spike #1/5] Y444.00 >= Y437.74
+[09:31:42] [601869.SH] [HB] SPIKING Y444.00 peak Y444.00 pullback 0.00% | base-trigger Y437.74 | execution Y437.74 | shadow-candidate NOT_READY
+[09:31:51] [601869.SH] [REV-T sell trig] peak Y444.00 pullback 0.23% → Y443.00
+[09:31:51] [601869.SH] [T-SIZE] REV-T sell | price=Y443.00 target=Y35000 base-fraction=50% | 1 units x 100 sh = 100 sh (~Y44300)
+[09:31:51] [601869.SH] [ORDER-REV-T sell] Y443.00 × 100 sh
+[09:31:53]   >>> 下单卖出: PEER x 100股 601869.SH [COMPETE]
+[09:31:53] [委托] 卖 Y392.17 0/100股 -> 已报
+[09:31:53] [委托] 卖 Y392.17 0/100股 -> 已报
+[09:31:53] [成交] 卖 601869.SH Y442.28 x 100股 = Y44,228
+[09:31:53] [委托] 卖 Y392.17 100/100股 -> 全成
+[09:31:53] [601869.SH] [EXECUTION] order=635025001 REV-T sell qty=100 avg=Y442.2800 reference=Y443.0000 realized-gross=Y0.00 total-gross=Y0.00 fees=NOT_INCLUDED
+[09:31:54] [601869.SH] [STRENGTH SHADOW] EXISTING_LEG minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y428.00 base-trigger=Y437.74 candidate=NOT_READY execution=Y437.74 U0=0.0000 Ul=0.2907 U=0.0000 limit=- reason=EXISTING_LEG
+[09:31:55] [600584.SH] [REV-T sell trig] peak Y67.29 pullback 0.10% → Y67.22
+[09:31:56] [600584.SH] [T-SIZE] REV-T sell | price=Y67.22 target=Y35000 base-fraction=50% | 4 units x 100 sh = 400 sh (~Y26888)
+[09:31:56] [600584.SH] [ORDER-REV-T sell] Y67.22 × 400 sh
+[09:31:56]   >>> 下单卖出: PEER x 400股 600584.SH [COMPETE]
+[09:31:56] [委托] 卖 Y61.31 0/400股 -> 已报
+[09:31:56] [委托] 卖 Y61.31 0/400股 -> 已报
+[09:31:56] [成交] 卖 600584.SH Y67.29 x 100股 = Y6,729
+[09:31:56] [委托] 卖 Y61.31 100/400股 -> 部成
+[09:31:56] [成交] 卖 600584.SH Y67.29 x 300股 = Y20,187
+[09:31:56] [委托] 卖 Y61.31 400/400股 -> 全成
+[09:31:56] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:31:57] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:31:57] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:31:58] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:31:59] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:31:59] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:00] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:00] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:01] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:02] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:02] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:03] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:04] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:04] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:04] [撤单] order_id=635025001
+[09:32:05] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:06] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:06] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:07] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:07] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:08] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:09] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:09] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:10] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:10] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:11] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:11] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:12] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:13] [600584.SH] [EXECUTION-WAIT] order=635025001 order identity mismatch
+[09:32:13] [600584.SH] [ORDER-UNCERTAIN] order=635025001; account orders paused; reconcile broker orders
+[09:32:13] [600584.SH] [ERROR] unresolved broker order 635025001
+[09:32:13] [600584.SH] [STOP] 长电科技 v51 cum 1 days gross~Y112
+[09:32:13] [CALL-SLOW] TICK 600584.SH elapsed=17.5s
+[09:32:13] [STATE-BLOCKED] STATE-BLOCKED: worker stopped; preserve checkpoint and reconcile; automatic trading stopped; checkpoint retained
+[09:32:13] [601869.SH] [WARN] position not bought back!
+[09:32:13] [601869.SH] [STOP] 长飞光纤 v51 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-11 09:32:13
+============================================================

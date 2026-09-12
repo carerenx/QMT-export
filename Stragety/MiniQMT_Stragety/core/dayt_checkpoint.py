@@ -5,9 +5,13 @@ import json
 import os
 from pathlib import Path
 import tempfile
+import time
 
 import numpy as np
 import pandas as pd
+
+# 仅重试Windows替换文件的访问/共享/锁冲突，合计等待3秒，不重发交易委托。
+REPLACE_RETRY_DELAYS = (0.2, 0.4, 0.8, 1.6)
 
 
 def _encode(value):
@@ -45,7 +49,7 @@ def read_checkpoint(path, account):
     return data
 
 
-def write_checkpoint(path, data):
+def write_checkpoint(path, data, log=None):
     payload = json.dumps(data, ensure_ascii=False, default=_encode)
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -55,7 +59,26 @@ def write_checkpoint(path, data):
             stream.write(payload)
             stream.flush()
             os.fsync(stream.fileno())
-        os.replace(temporary, path)
+        for attempt in range(len(REPLACE_RETRY_DELAYS) + 1):
+            try:
+                os.replace(temporary, path)
+                if attempt and log:
+                    log('[STATE-SAVE-RECOVERED] replacement succeeded on attempt {}'.format(attempt + 1))
+                break
+            except OSError as error:
+                if (getattr(error, 'winerror', None) not in (5, 32, 33) or
+                        attempt >= len(REPLACE_RETRY_DELAYS)):
+                    raise
+                delay = REPLACE_RETRY_DELAYS[attempt]
+                if log:
+                    log('[STATE-SAVE-RETRY] winerror={} attempt={}/{} wait={:.1f}s path={}'.format(
+                        error.winerror, attempt + 1, len(REPLACE_RETRY_DELAYS) + 1, delay, path))
+                time.sleep(delay)
     finally:
         if os.path.exists(temporary):
-            os.unlink(temporary)
+            try:
+                os.unlink(temporary)
+            except OSError as error:
+                # Preserve the original replacement failure, not a cleanup error.
+                if log:
+                    log('[STATE-TEMP-CLEANUP] retained {}: {}'.format(temporary, error))

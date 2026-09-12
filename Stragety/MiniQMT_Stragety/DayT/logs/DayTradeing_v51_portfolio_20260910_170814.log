@@ -1,0 +1,74 @@
+============================================================
+  日志文件创建: 2026-09-10 17:08:14
+  策略版本: v51 (for MiniQMT Evn)
+  标的: portfolio
+============================================================
+[17:08:15] [REFERENCE-MODE] shadow: shadow keeps v50 execution; active requires user-approved validation
+[17:08:15] [连接] MiniQMT 行情服务已连接
+[17:08:16] [账号状态] 8890145315 STOCK: 正常
+[17:08:16] [交易] 已订阅账号 8890145315
+[17:08:16] [RUNTIME] watchdog=15.0s read-RPC-timeout=5.0s instrumented-clients=2; native/router calls may have separate timeouts
+[17:08:16] [PORTFOLIO-START] all account holdings; mode=LIVE
+[17:08:17] [600584.SH] [STATE-RESTORED] same-day state=IDLE REV-count=1 FWD-count=0 MOM-count=0
+[17:08:17] [601869.SH] [STATE-RESTORED] same-day state=IDLE REV-count=0 FWD-count=0 MOM-count=0
+[17:08:17] [600584.SH] [START] v51 LIVE
+[17:08:17] [600584.SH] [NON-TRADING PREVIEW] indicative plans only; no orders outside trading hours; next trading day recalculates from its opening price
+[17:08:18] [600584.SH] [T-SIZE PLAN] at base Y68.64: REV 300 sh / FWD 100 sh; rechecked at order submission
+[17:08:18] [600584.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y68.64 (source: latest complete close; after-hours) | ATR 4.9% | RSI 26 | Vol_ratio 0.60 | Mult 0.26 | Trig Y69.42 
+[17:08:18] [600584.SH] [QUANTILE-TREND] score -0.600 | rank 0.314 | trigger-Q 0.361 | samples 70 | span 8d | ATR-units 0.259
+[17:08:18] [600584.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.314*(1-2*tail)) = Q0.361 -> raw 0.2587 * scale 1.00 = 0.2587
+[17:08:18] [600584.SH] [VOLUME] last 613675 | prev10_avg 762994 (last/10d 0.80x) | prev20_avg 1025718 (last/20d 0.60x) | n10=10 n20=20 | VALID
+[17:08:18] [600584.SH] [FACTOR] trend_score -0.60 |  trend_rank +0.31 |  trigger_q +0.36 | 
+[17:08:18] [600584.SH] [ACCOUNT] Position:900 sh Y61,308(52%) | Cash:Y13,390 | Sellable:7 lots(700 sh)
+[17:08:18] [600584.SH] [REV-T] NON-TRADING PREVIEW plan 300 sh / remaining 4 entries | plan sell Y69.42 = open Y68.64*(1+ATR 4.89%*quantile_units 0.259) | buyback Y68.91 = Y69.42*(1-4.89%*0.15)
+[17:08:18] [600584.SH] [FWD-T] NON-TRADING PREVIEW plan 100 sh / remaining 5 entries | plan buy Y67.08 = max(floor Y67.08, trail Y67.08) | plan sell Y67.88 = Y67.08*(1+1.2%) | planned value~Y6,708
+[17:08:18] [600584.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% 最小单位(100sh)，新开仓按金额/底仓动态计算 上限3次 紧急买回关
+[17:08:18] [600584.SH] [MOM-CAPACITY] short ON | long ON
+[17:08:18] [600584.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[17:08:18] [600584.SH] [CUM] 1 trades gross~Y112
+[17:08:18] [600584.SH] [CONNECTION] market/trade probes OK
+[17:08:19] [600584.SH] [STRENGTH SHADOW] NON_TRADING minutes=0; original reference, observation reset
+[17:08:19] [600584.SH] [CLOSE 17:08:18]
+[17:08:19] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[17:08:19] [601869.SH] [START] v51 LIVE
+[17:08:19] [601869.SH] [NON-TRADING PREVIEW] indicative plans only; no orders outside trading hours; next trading day recalculates from its opening price
+[17:08:20] [601869.SH] [T-SIZE PLAN] at base Y437.32: REV 100 sh / FWD 0 sh; rechecked at order submission
+[17:08:20] [601869.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y437.32 (source: today open tick) | ATR 6.5% | RSI 70 | Vol_ratio 1.41 | Mult 0.42 | Trig Y449.29 
+[17:08:20] [601869.SH] [QUANTILE-TREND] score +1.203 | rank 0.786 | trigger-Q 0.714 | samples 70 | span 8d | ATR-units 0.419
+[17:08:20] [601869.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.786*(1-2*tail)) = Q0.714 -> raw 0.6977 * scale 0.60 = 0.4186
+[17:08:20] [601869.SH] [VOLUME] last 198414 | prev10_avg 141748 (last/10d 1.40x) | prev20_avg 140775 (last/20d 1.41x) | n10=10 n20=20 | VALID
+[17:08:20] [601869.SH] [FACTOR] trend_score +1.20 |  trend_rank +0.79 |  trigger_q +0.71 | 
+[17:08:20] [601869.SH] [ACCOUNT] Position:100 sh Y43,574(37%) | Cash:Y13,390 | Sellable:1 lots(100 sh)
+[17:08:20] [601869.SH] [REV-T] NON-TRADING PREVIEW plan 100 sh / remaining 5 entries | plan sell Y449.29 = open Y437.32*(1+ATR 6.54%*quantile_units 0.419) | buyback Y444.88 = Y449.29*(1-6.54%*0.15)
+[17:08:20] [601869.SH] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y425.61 = max(floor Y424.20, trail Y425.61) | plan sell Y430.72 = Y425.61*(1+1.2%) | planned value~Y0
+[17:08:20] [601869.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% 最小单位(100sh)，新开仓按金额/底仓动态计算 上限3次 紧急买回关
+[17:08:20] [601869.SH] [MOM-CAPACITY] short ON | long OFF insufficient cash for 1 lot
+[17:08:20] [601869.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[17:08:20] [601869.SH] [CONNECTION] market/trade probes OK
+[17:08:21] [601869.SH] [STRENGTH SHADOW] NON_TRADING minutes=0; original reference, observation reset
+[17:08:21] [601869.SH] [CLOSE 17:08:20]
+[17:13:20] [600584.SH] [CLOSE 17:13:20]
+[17:13:20] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[17:13:22] [601869.SH] [CLOSE 17:13:21]
+[17:18:22] [600584.SH] [CLOSE 17:18:21]
+[17:18:22] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[17:18:23] [601869.SH] [CLOSE 17:18:23]
+[17:23:24] [600584.SH] [CLOSE 17:23:23]
+[17:23:24] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[17:23:25] [601869.SH] [CLOSE 17:23:25]
+[17:28:26] [600584.SH] [CLOSE 17:28:25]
+[17:28:26] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[17:28:27] [601869.SH] [CLOSE 17:28:26]
+[17:33:28] [600584.SH] [CLOSE 17:33:27]
+[17:33:28] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[17:33:29] [601869.SH] [CLOSE 17:33:28]
+[17:38:29] [600584.SH] [CLOSE 17:38:29]
+[17:38:30] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[17:38:30] [601869.SH] [CLOSE 17:38:30]
+[17:42:35] [PORTFOLIO-STOP] interrupted
+[17:42:35] [600584.SH] [STOP] 长电科技 v51 cum 1 days gross~Y112
+[17:42:35] [601869.SH] [STOP] 长飞光纤 v51 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-10 17:42:36
+============================================================

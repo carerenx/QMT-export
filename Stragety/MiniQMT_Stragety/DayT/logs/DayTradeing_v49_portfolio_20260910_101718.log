@@ -1,0 +1,198 @@
+============================================================
+  日志文件创建: 2026-09-10 10:17:18
+  策略版本: v49 (for MiniQMT Evn)
+  标的: portfolio
+============================================================
+[10:17:20] [连接] MiniQMT 行情服务已连接
+[10:17:20] [账号状态] 8890145315 STOCK: 正常
+[10:17:20] [交易] 已订阅账号 8890145315
+[10:17:20] [RUNTIME] watchdog=15.0s read-RPC-timeout=5.0s instrumented-clients=2; native/router calls may have separate timeouts
+[10:17:20] [PORTFOLIO-START] all account holdings; mode=LIVE
+[10:17:21] [600584.SH] [STATE-RESTORED] same-day state=IDLE REV-count=1 FWD-count=0 MOM-count=0
+[10:17:21] [601869.SH] [STATE-ROLLOVER] flat record-date=20260909 expected=20260910; daily initialization required
+[10:17:22] [DailyData] excluded incomplete current-day bar 20260910
+[10:17:23] [DATA-HEALTH] last_complete=20260909 expected=20260909 raw_close=442.03 tick_lastClose=442.03 count=79 aligned=True status=OK
+[10:17:23] [601869.SH] [DATA-DBG] last_complete=20260909 hist_open[-3:]=[390.00, 400.88, 430.00] | tick_open=437.32 | lastClose=442.03 | signal_open=437.32 (TICK_OPEN)
+[10:17:23] [601869.SH] [VOLUME-DATA] complete_count=79 tail=[124725.0, 156181.0, 198414.0]
+[10:17:23] [600584.SH] [START] v49 LIVE
+[10:17:23] [600584.SH] [T-SIZE PLAN] at base Y68.64: REV 200 sh / FWD 100 sh; rechecked at order submission
+[10:17:23] [600584.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y68.64 (source: latest complete close; after-hours) | ATR 4.9% | RSI 26 | Vol_ratio 0.60 | Mult 0.26 | Trig Y69.42 
+[10:17:23] [600584.SH] [QUANTILE-TREND] score -0.600 | rank 0.314 | trigger-Q 0.361 | samples 70 | span 8d | ATR-units 0.259
+[10:17:23] [600584.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.314*(1-2*tail)) = Q0.361 -> 0.259
+[10:17:23] [600584.SH] [VOLUME] last 613675 | prev10_avg 762994 (last/10d 0.80x) | prev20_avg 1025718 (last/20d 0.60x) | n10=10 n20=20 | VALID
+[10:17:23] [600584.SH] [FACTOR] trend_score -0.60 |  trend_rank +0.31 |  trigger_q +0.36 | 
+[10:17:23] [600584.SH] [ACCOUNT] Position:900 sh Y61,470(52%) | Cash:Y13,304 | Sellable:7 lots(700 sh)
+[10:17:24] [600584.SH] [REV-T] ENABLED plan 200 sh / remaining 4 entries | plan sell Y69.42 = open Y68.64*(1+ATR 4.89%*quantile_units 0.259) | buyback Y68.91 = Y69.42*(1-4.89%*0.15)
+[10:17:24] [600584.SH] [FWD-T] ENABLED plan 100 sh / remaining 5 entries | plan buy Y67.08 = max(floor Y67.08, trail Y67.08) | plan sell Y67.88 = Y67.08*(1+1.2%) | planned value~Y6,708
+[10:17:24] [600584.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% 最小单位(100sh)，新开仓按金额/底仓动态计算 上限3次 紧急买回关
+[10:17:24] [600584.SH] [MOM-CAPACITY] short ON | long ON
+[10:17:24] [600584.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[10:17:24] [600584.SH] [CUM] 1 trades gross~Y112
+[10:17:24] [600584.SH] [CONNECTION] market/trade probes OK
+[10:17:24] [600584.SH] [MA-POS] price Y68.30 | MA5 Y68.38: BELOW -0.12% | MA20 Y74.61: BELOW -8.46%
+[10:17:24] [600584.SH] [MA20 RISK] price Y68.30 is below 97% of MA20 (risk line Y72.37)
+[10:17:24] [600584.SH] [OPEN] [Y68.30] [REV-T needs +1.64% to Y69.42] [FWD-T needs -1.79% to Y67.08]
+[10:17:24] [600584.SH] [HB] IDLE Y68.30 REV-T: needs +Y1.12 to Y69.42 | FWD-T: needs -Y1.22 to Y67.08
+[10:17:25] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:17:25] [601869.SH] [START] v49 LIVE
+[10:17:25] [601869.SH] [T-SIZE PLAN] at base Y437.32: REV 100 sh / FWD 0 sh; rechecked at order submission
+[10:17:25] [601869.SH] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y437.32 (source: today open tick) | ATR 6.5% | RSI 70 | Vol_ratio 1.41 | Mult 0.70 | Trig Y457.27 
+[10:17:25] [601869.SH] [QUANTILE-TREND] score +1.203 | rank 0.786 | trigger-Q 0.714 | samples 70 | span 8d | ATR-units 0.698
+[10:17:25] [601869.SH] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.786*(1-2*tail)) = Q0.714 -> 0.698
+[10:17:25] [601869.SH] [VOLUME] last 198414 | prev10_avg 141748 (last/10d 1.40x) | prev20_avg 140775 (last/20d 1.41x) | n10=10 n20=20 | VALID
+[10:17:25] [601869.SH] [FACTOR] trend_score +1.20 |  trend_rank +0.79 |  trigger_q +0.71 | 
+[10:17:25] [601869.SH] [ACCOUNT] Position:100 sh Y43,425(37%) | Cash:Y13,390 | Sellable:1 lots(100 sh)
+[10:17:26] [601869.SH] [REV-T] ENABLED plan 100 sh / remaining 5 entries | plan sell Y457.27 = open Y437.32*(1+ATR 6.54%*quantile_units 0.698) | buyback Y452.78 = Y457.27*(1-6.54%*0.15)
+[10:17:26] [601869.SH] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y425.61 = max(floor Y424.20, trail Y425.61) | plan sell Y430.72 = Y425.61*(1+1.2%) | planned value~Y0
+[10:17:26] [601869.SH] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% 最小单位(100sh)，新开仓按金额/底仓动态计算 上限3次 紧急买回关
+[10:17:26] [601869.SH] [MOM-CAPACITY] short ON | long OFF insufficient cash for 1 lot
+[10:17:26] [601869.SH] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[10:17:26] [601869.SH] [CONNECTION] market/trade probes OK
+[10:17:26] [601869.SH] [MA-POS] price Y434.25 | MA5 Y414.49: ABOVE +4.77% | MA20 Y394.19: ABOVE +10.16%
+[10:17:27] [601869.SH] [OPEN] [Y434.25] [REV-T needs +5.30% to Y457.27] [FWD-T needs -1.99% to Y425.61]
+[10:17:27] [601869.SH] [HB] IDLE Y434.25 REV-T: needs +Y23.02 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:17:55] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:18:24] [600584.SH] [HB] IDLE Y68.37 REV-T: needs +Y1.05 to Y69.42 | FWD-T: needs -Y1.29 to Y67.08
+[10:18:26] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:18:27] [601869.SH] [HB] IDLE Y434.31 REV-T: needs +Y22.96 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:18:56] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:19:24] [600584.SH] [HB] IDLE Y68.26 REV-T: needs +Y1.16 to Y69.42 | FWD-T: needs -Y1.18 to Y67.08
+[10:19:27] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:19:27] [601869.SH] [HB] IDLE Y434.31 REV-T: needs +Y22.96 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:19:57] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:20:24] [600584.SH] [HB] IDLE Y68.36 REV-T: needs +Y1.06 to Y69.42 | FWD-T: needs -Y1.28 to Y67.08
+[10:20:27] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:20:27] [601869.SH] [HB] IDLE Y434.76 REV-T: needs +Y22.51 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:20:58] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:21:25] [600584.SH] [HB] IDLE Y68.42 REV-T: needs +Y1.00 to Y69.42 | FWD-T: needs -Y1.34 to Y67.08
+[10:21:28] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:21:28] [601869.SH] [HB] IDLE Y434.06 REV-T: needs +Y23.21 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:21:58] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:22:26] [600584.SH] [HB] IDLE Y68.49 REV-T: needs +Y0.93 to Y69.42 | FWD-T: needs -Y1.41 to Y67.08
+[10:22:29] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:22:29] [601869.SH] [HB] IDLE Y434.20 REV-T: needs +Y23.07 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:22:59] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:23:26] [600584.SH] [HB] IDLE Y68.55 REV-T: needs +Y0.87 to Y69.42 | FWD-T: needs -Y1.47 to Y67.08
+[10:23:29] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:23:30] [601869.SH] [HB] IDLE Y435.09 REV-T: needs +Y22.18 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:24:00] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:24:26] [600584.SH] [HB] IDLE Y68.44 REV-T: needs +Y0.98 to Y69.42 | FWD-T: needs -Y1.36 to Y67.08
+[10:24:30] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:24:30] [601869.SH] [HB] IDLE Y435.60 REV-T: needs +Y21.67 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:25:00] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:25:27] [600584.SH] [HB] IDLE Y68.54 REV-T: needs +Y0.88 to Y69.42 | FWD-T: needs -Y1.46 to Y67.08
+[10:25:30] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:25:31] [601869.SH] [HB] IDLE Y435.36 REV-T: needs +Y21.91 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:26:01] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:26:27] [600584.SH] [HB] IDLE Y68.44 REV-T: needs +Y0.98 to Y69.42 | FWD-T: needs -Y1.36 to Y67.08
+[10:26:31] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:26:32] [601869.SH] [HB] IDLE Y434.77 REV-T: needs +Y22.50 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:27:02] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:27:25] [600584.SH] [MA-POS] price Y68.60 | MA5 Y68.44: ABOVE +0.23% | MA20 Y74.63: BELOW -8.08%
+[10:27:25] [600584.SH] [MA20 RISK] price Y68.60 is below 97% of MA20 (risk line Y72.39)
+[10:27:26] [601869.SH] [MA-POS] price Y436.00 | MA5 Y414.84: ABOVE +5.10% | MA20 Y394.28: ABOVE +10.58%
+[10:27:27] [600584.SH] [HB] IDLE Y68.61 REV-T: needs +Y0.81 to Y69.42 | FWD-T: needs -Y1.53 to Y67.08
+[10:27:32] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:27:32] [601869.SH] [HB] IDLE Y435.98 REV-T: needs +Y21.29 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:28:02] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:28:27] [600584.SH] [HB] IDLE Y68.71 REV-T: needs +Y0.71 to Y69.42 | FWD-T: needs -Y1.63 to Y67.08
+[10:28:33] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:28:33] [601869.SH] [HB] IDLE Y436.11 REV-T: needs +Y21.16 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:29:03] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:29:27] [600584.SH] [HB] IDLE Y68.72 REV-T: needs +Y0.70 to Y69.42 | FWD-T: needs -Y1.64 to Y67.08
+[10:29:33] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:29:33] [601869.SH] [HB] IDLE Y436.53 REV-T: needs +Y20.74 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:30:04] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:30:28] [600584.SH] [HB] IDLE Y68.79 REV-T: needs +Y0.63 to Y69.42 | FWD-T: needs -Y1.71 to Y67.08
+[10:30:34] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:30:34] [601869.SH] [HB] IDLE Y438.12 REV-T: needs +Y19.15 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:31:04] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:31:28] [600584.SH] [HB] IDLE Y68.69 REV-T: needs +Y0.73 to Y69.42 | FWD-T: needs -Y1.61 to Y67.08
+[10:31:35] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:31:35] [601869.SH] [HB] IDLE Y436.00 REV-T: needs +Y21.27 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:32:05] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:32:30] [600584.SH] [HB] IDLE Y68.71 REV-T: needs +Y0.71 to Y69.42 | FWD-T: needs -Y1.63 to Y67.08
+[10:32:36] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:32:36] [601869.SH] [HB] IDLE Y437.57 REV-T: needs +Y19.70 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:33:06] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:33:29] [600584.SH] [HB] IDLE Y68.62 REV-T: needs +Y0.80 to Y69.42 | FWD-T: needs -Y1.54 to Y67.08
+[10:33:36] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:33:37] [601869.SH] [HB] IDLE Y437.75 REV-T: needs +Y19.52 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:34:06] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:34:30] [600584.SH] [HB] IDLE Y68.46 REV-T: needs +Y0.96 to Y69.42 | FWD-T: needs -Y1.38 to Y67.08
+[10:34:37] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:34:38] [601869.SH] [HB] IDLE Y436.50 REV-T: needs +Y20.77 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:35:07] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:35:30] [600584.SH] [HB] IDLE Y68.52 REV-T: needs +Y0.90 to Y69.42 | FWD-T: needs -Y1.44 to Y67.08
+[10:35:37] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:35:38] [601869.SH] [HB] IDLE Y437.15 REV-T: needs +Y20.12 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:36:07] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:36:30] [600584.SH] [HB] IDLE Y68.62 REV-T: needs +Y0.80 to Y69.42 | FWD-T: needs -Y1.54 to Y67.08
+[10:36:37] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:36:39] [601869.SH] [HB] IDLE Y437.14 REV-T: needs +Y20.13 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:37:08] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:37:25] [600584.SH] [MA-POS] price Y68.77 | MA5 Y68.47: ABOVE +0.43% | MA20 Y74.64: BELOW -7.86%
+[10:37:25] [600584.SH] [MA20 RISK] price Y68.77 is below 97% of MA20 (risk line Y72.40)
+[10:37:27] [601869.SH] [MA-POS] price Y437.58 | MA5 Y415.15: ABOVE +5.40% | MA20 Y394.36: ABOVE +10.96%
+[10:37:30] [600584.SH] [HB] IDLE Y68.79 REV-T: needs +Y0.63 to Y69.42 | FWD-T: needs -Y1.71 to Y67.08
+[10:37:38] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:37:40] [601869.SH] [HB] IDLE Y437.86 REV-T: needs +Y19.41 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:38:08] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:38:31] [600584.SH] [HB] IDLE Y68.97 REV-T: needs +Y0.45 to Y69.42 | FWD-T: needs -Y1.89 to Y67.08
+[10:38:38] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:38:40] [601869.SH] [HB] IDLE Y438.00 REV-T: needs +Y19.27 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:39:09] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:39:31] [600584.SH] [HB] IDLE Y69.02 REV-T: needs +Y0.40 to Y69.42 | FWD-T: needs -Y1.94 to Y67.08
+[10:39:39] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:39:40] [601869.SH] [HB] IDLE Y439.48 REV-T: needs +Y17.79 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:40:09] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:40:32] [600584.SH] [HB] IDLE Y68.95 REV-T: needs +Y0.47 to Y69.42 | FWD-T: needs -Y1.87 to Y67.08
+[10:40:40] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:40:40] [601869.SH] [HB] IDLE Y437.99 REV-T: needs +Y19.28 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:41:10] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:41:32] [600584.SH] [HB] IDLE Y68.95 REV-T: needs +Y0.47 to Y69.42 | FWD-T: needs -Y1.87 to Y67.08
+[10:41:40] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:41:41] [601869.SH] [HB] IDLE Y437.90 REV-T: needs +Y19.37 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:42:11] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:42:32] [600584.SH] [HB] IDLE Y68.94 REV-T: needs +Y0.48 to Y69.42 | FWD-T: needs -Y1.86 to Y67.08
+[10:42:41] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:42:42] [601869.SH] [HB] IDLE Y438.00 REV-T: needs +Y19.27 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:43:11] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:43:33] [600584.SH] [HB] IDLE Y68.95 REV-T: needs +Y0.47 to Y69.42 | FWD-T: needs -Y1.87 to Y67.08
+[10:43:41] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:43:42] [601869.SH] [HB] IDLE Y438.52 REV-T: needs +Y18.75 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:44:11] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:44:33] [600584.SH] [HB] IDLE Y68.90 REV-T: needs +Y0.52 to Y69.42 | FWD-T: needs -Y1.82 to Y67.08
+[10:44:42] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:44:43] [601869.SH] [HB] IDLE Y437.50 REV-T: needs +Y19.77 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:45:13] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:45:33] [600584.SH] [HB] IDLE Y68.98 REV-T: needs +Y0.44 to Y69.42 | FWD-T: needs -Y1.90 to Y67.08
+[10:45:42] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:45:43] [601869.SH] [HB] IDLE Y438.81 REV-T: needs +Y18.46 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:46:13] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:46:34] [600584.SH] [HB] IDLE Y68.86 REV-T: needs +Y0.56 to Y69.42 | FWD-T: needs -Y1.78 to Y67.08
+[10:46:44] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:46:44] [601869.SH] [HB] IDLE Y438.06 REV-T: needs +Y19.21 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:47:13] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:47:26] [600584.SH] [MA-POS] price Y68.77 | MA5 Y68.47: ABOVE +0.43% | MA20 Y74.64: BELOW -7.86%
+[10:47:26] [600584.SH] [MA20 RISK] price Y68.77 is below 97% of MA20 (risk line Y72.40)
+[10:47:28] [601869.SH] [MA-POS] price Y438.23 | MA5 Y415.28: ABOVE +5.53% | MA20 Y394.39: ABOVE +11.12%
+[10:47:35] [600584.SH] [HB] IDLE Y68.79 REV-T: needs +Y0.63 to Y69.42 | FWD-T: needs -Y1.71 to Y67.08
+[10:47:43] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:47:45] [601869.SH] [HB] IDLE Y438.50 REV-T: needs +Y18.77 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:48:14] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:48:35] [600584.SH] [HB] IDLE Y68.80 REV-T: needs +Y0.62 to Y69.42 | FWD-T: needs -Y1.72 to Y67.08
+[10:48:44] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:48:46] [601869.SH] [HB] IDLE Y439.49 REV-T: needs +Y17.78 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:49:14] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:49:36] [600584.SH] [HB] IDLE Y68.73 REV-T: needs +Y0.69 to Y69.42 | FWD-T: needs -Y1.65 to Y67.08
+[10:49:45] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:49:46] [601869.SH] [HB] IDLE Y438.11 REV-T: needs +Y19.16 to Y457.27 | FWD-T: off (insufficient cash for 1 lot)
+[10:49:48] [PORTFOLIO-STOP] interrupted
+[10:49:48] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v49_8890145315.json
+[10:49:48] [600584.SH] [STOP] 长电科技 v49 cum 1 days gross~Y112
+[10:49:48] [601869.SH] [STOP] 长飞光纤 v49 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-10 10:49:48
+============================================================
