@@ -23,18 +23,25 @@ import pandas as pd
 
 
 class StrictBroker(Broker):
-    def __init__(self,daily,minute,rate):
-        self.exchange=Exchange(rate=rate)
-        super().__init__(daily,minute,0)
+    def __init__(self,daily,minute,rate,code='601869.SH',stock_name='601869',
+                 initial_cash=100000.0,initial_shares=200):
+        self.exchange=Exchange(cash=initial_cash,shares=initial_shares,rate=rate)
+        super().__init__(daily,minute,0,initial_cash,initial_shares)
+        self.code=code
+        self.stock_name=stock_name
         self.all_daily=daily
         self.days={d:f for d,f in minute.groupby(minute.index.str[:8])}
         self.events=[]
         for day,bars in self.days.items():
             self.events.append((datetime.strptime(day+'092900','%Y%m%d%H%M%S'),'PREOPEN',day,0,None))
+            stamps=[datetime.strptime(value,'%Y%m%d%H%M%S') for value in bars.index]
+            intraday_gaps=[later-earlier for earlier,later in zip(stamps,stamps[1:])
+                           if later.date()==earlier.date() and later-earlier<=timedelta(minutes=60)]
+            bar_span=min(intraday_gaps) if intraday_gaps else timedelta(minutes=1)
             for i,(stamp,row) in enumerate(bars.iterrows()):
                 if stamp[8:12]=='0930': continue  # opening auction is not a continuous minute
                 close=datetime.strptime(stamp,'%Y%m%d%H%M%S')
-                self.events.extend([(close-timedelta(minutes=1),'OPEN',day,i,row),
+                self.events.extend([(close-bar_span,'OPEN',day,i,row),
                                     (close,'CLOSE',day,i,row)])
         self.cursor=0
         self.current_day=None
@@ -68,6 +75,14 @@ class StrictBroker(Broker):
     def query_account(self):
         return SimpleNamespace(cash=self.cash,total_asset=self.exchange.equity,
                                m_dAvailable=self.cash,m_dBalance=self.exchange.equity)
+    def get_stock_name(self,*args): return self.stock_name
+    def query_positions(self):
+        instrument=self.code.split('.')[0]
+        return [SimpleNamespace(stock_code=self.code,volume=self.position,
+            can_use_volume=self.sellable,open_price=self.avg_cost,
+            stock_name=self.stock_name,m_strInstrumentID=instrument,
+            m_nVolume=self.position,m_nCanUseVolume=self.sellable,
+            m_dOpenPrice=self.avg_cost)] if self.position else []
 
     def order(self,code,shares,style,price,*args):
         oid=self.exchange.submit(int(shares),float(price) if style=='FIX' else None,self.label)
@@ -149,7 +164,10 @@ class StrictBroker(Broker):
         Clock.current=deadline
 
 
-def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False):
+def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False,
+           symbol='601869.SH',stock_name='601869',initial_cash=100000.0,
+           initial_shares=200,research_short_cutoff=None,
+           research_short_5d_max_return=None):
     if legacy_carry and not version.startswith(('v39','v51')):
         raise ValueError('legacy carry is only defined for v39/v51')
     register_with_legacy_loader()
@@ -157,30 +175,57 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False):
     for key,value in (overrides or {}).items():
         if not hasattr(mod,key): raise ValueError('unknown research setting: '+key)
         setattr(mod,key,value)
-    broker=StrictBroker(daily,minute,rate)
+    broker=StrictBroker(daily,minute,rate,symbol,stock_name,initial_cash,initial_shares)
     logs=[]
     class Factory:
         def __new__(cls): return broker
         load_daily_snapshot=StrictBroker.load_daily_snapshot
         get_history_data=Broker.get_history_data
     with ExitStack() as stack:
-        for obj,name,value in [(mod,'MiniQMTConnector',Factory),(mod,'_time',Clock),(mod,'datetime',Clock),
+        replacements=[(mod,'MiniQMTConnector',Factory),(mod,'_time',Clock),(mod,'datetime',Clock),
             (Clock,'sleep',broker.sleep),(mod,'_log',lambda msg:logs.append(str(msg))),
             (mod,'get_logger',lambda:SimpleNamespace(close=lambda:None)),
             (mod,'set_global_conn',lambda *a:None),(mod,'order_shares',broker.order),
             (mod,'get_trade_detail_data',lambda a,b,k:broker.query_positions() if k=='POSITION' else [broker.query_account()]),
-            (mod.cfg,'now_hms',lambda:Clock.current.strftime('%H:%M:%S'))]:
+            (mod.cfg,'now_hms',lambda:Clock.current.strftime('%H:%M:%S'))]
+        symbol_code=symbol.split('.')[0]
+        for obj,name,value in ((mod,'STOCK_CODE',symbol_code),(mod,'STOCK_QMT',symbol),
+                               (mod,'STOCK_NAME',stock_name),(mod.cfg,'STOCK_CODE',symbol_code),
+                               (mod.cfg,'STOCK_QMT',symbol),(mod.cfg,'STOCK_NAME',stock_name)):
+            if hasattr(obj,name): replacements.append((obj,name,value))
+        for obj,name,value in replacements:
             stack.enter_context(patch.object(obj,name,value))
         if version.startswith('v39'): runner=mod.StrategyRunner(False)
         else:
             portfolio=mod.PortfolioRunner(False)
             runner=mod.StrategyRunner(portfolio,broker.code)
             portfolio.runners[broker.code]=runner
-            if version.startswith('v52'): runner.baseline_shares=200
+            if hasattr(runner, 'baseline_shares'):
+                runner.baseline_shares=initial_shares
             stack.enter_context(patch.object(portfolio,'save_checkpoint',lambda *a,**kw:None))
+            if research_short_cutoff and hasattr(runner, '_short_cycle_risk_reason'):
+                original_risk_reason=runner._short_cycle_risk_reason
+                def cutoff_risk_reason(price):
+                    reason=original_risk_reason(price)
+                    if reason:
+                        return reason
+                    cycle=runner.cycle
+                    now_hms=Clock.current.strftime('%H:%M:%S')
+                    if (cycle and cycle.direction=='SHORT' and cycle.quantity>0 and
+                            now_hms>=research_short_cutoff):
+                        return 'SESSION_END'
+                    return ''
+                stack.enter_context(patch.object(
+                    runner,'_short_cycle_risk_reason',cutoff_risk_reason))
         original=runner._submit_order
         def submit(shares,price,label,style='COMPETE'):
             broker.label=label
+            if label=='REV-T sell' and research_short_5d_max_return is not None:
+                completed=broker.daily.close.tail(6)
+                if (len(completed)>=6 and
+                        float(completed.iloc[-1])/float(completed.iloc[-6])-1.0 >
+                        research_short_5d_max_return):
+                    return 'SKIP',0
             return original(shares,price,label,style)
         stack.enter_context(patch.object(runner,'_submit_order',submit))
         carry=None
@@ -204,10 +249,19 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False):
                     try: carry.before_event(broker.current_day)
                     except RuntimeError as error:
                         failure='INVALID: '+str(error); break
+                expected_carry_shares = None
                 # v39 silently resets legs at a new day. Detect, do not repair it.
-                if not carry and previous_day and previous_day!=broker.current_day and version.startswith('v39') and any(broker.book.legs.values()):
+                if (not carry and previous_day and previous_day != broker.current_day and
+                        version.startswith('v39') and
+                        not getattr(mod, 'SUPPORTS_OVERNIGHT_CARRY', False) and
+                        any(broker.book.legs.values())):
                     failure='INVALID: legacy daily reset would discard open execution legs at '+broker.current_day
                     break
+                if (previous_day and previous_day != broker.current_day and
+                        getattr(mod, 'SUPPORTS_OVERNIGHT_CARRY', False)):
+                    expected_carry_shares = sum(
+                        quantity for legs in broker.book.legs.values()
+                        for _, quantity in legs)
                 previous_day=broker.current_day
                 if not version.startswith('v39') and phase=='PREOPEN':
                     try: portfolio._prepare_trading_day()
@@ -220,11 +274,22 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False):
                 errors=[line for line in logs[-20:] if '[ERROR]' in line or 'init failed' in line]
                 if errors:
                     failure='INVALID: '+str(errors[-1]); break
+                if expected_carry_shares:
+                    restored_shares = (
+                        sum(quantity for _, quantity in runner.st.get('short_legs', [])) +
+                        sum(quantity for _, quantity in runner.st.get('long_legs', [])) +
+                        int(runner.st.get('mom_leg_shares', 0) or 0))
+                    if restored_shares != expected_carry_shares:
+                        failure = ('INVALID: overnight carry mismatch at {}: '
+                                   'ledger={} strategy={}'.format(
+                                       broker.current_day, expected_carry_shares,
+                                       restored_shares))
+                        break
         finally: gen.close()
         stopped_at=Clock.current.isoformat()
         # Mark retained inventory through period end; never silently delete open risk.
         while broker.cursor<len(broker.events): broker.advance()
-        initial=100000+200*float(minute.iloc[0].open)
+        initial=initial_cash+initial_shares*float(minute.iloc[0].open)
         final=broker.exchange.equity
         equity=pd.Series([initial]+[row['equity'] for row in broker.equities])
         session_days=list(broker.days)
@@ -234,9 +299,11 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False):
         return dict(version=version,rate=rate,failure=failure,stopped_at=stopped_at if failure else None,
             adaptation='LEGACY_CARRY_EXITS_ONLY' if carry else 'ORIGINAL',
             carry_events=carry.events if carry else [],
-            owned_cycle_records=runner.checkpoint_record().get('v52') if version.startswith('v52') else None,
+            owned_cycle_records=(runner.checkpoint_record().get('v52')
+                                 if hasattr(runner, 'baseline_shares') else None),
             settings=overrides or {},days=len(broker.days),
-            account_net=final-initial,excess_net=final-(100000+200*float(minute.iloc[-1].close)),
+            account_net=final-initial,
+            excess_net=final-(initial_cash+initial_shares*float(minute.iloc[-1].close)),
             maximum_drawdown=float((1-equity/equity.cummax()).max()),fees=sum(o.fee for o in broker.exchange.orders.values()),
             completed_cycles=len(broker.closed),open_legs=broker.book.legs,
             final_cash=broker.cash,final_position=broker.position,
@@ -255,7 +322,7 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--version',choices=['v39','v51','v52','v39_nomom','v51_nomom','v52_nomom'],required=True)
+    parser.add_argument('--version',choices=list(register_with_legacy_loader().FILES),required=True)
     parser.add_argument('--rate',type=float,default=.0005)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--train',action='store_true',help='first 69 sessions only')

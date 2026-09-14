@@ -77,9 +77,9 @@ def simulate_candidate_trade(code, entry_date, exit_date, history, variant,
                 history, float(close), variant=variant)
             if (time_text not in blocked_screen_times and
                     index_price is not None and
-                    strategy.v11.is_market_allowed(index_closes, index_price) and
+                    strategy.is_market_allowed(index_closes, index_price) and
                     result and result['matched']):
-                watch = strategy.v11.new_buy_watch(
+                watch = strategy.new_buy_watch(
                     day_open, float(close), time_text)
                 screen_result = result
                 previous_price = float(close)
@@ -94,13 +94,13 @@ def simulate_candidate_trade(code, entry_date, exit_date, history, variant,
                 index_by_time, time_text, point_index)
             if (not math.isfinite(price) or price <= 0 or
                     index_price is None or
-                    not strategy.v11.is_market_allowed(
+                    not strategy.is_market_allowed(
                         index_closes, index_price)):
                 previous_price = price
                 continue
-            if strategy.v11.advance_buy_watch(watch, price, time_text) == 'BUY':
+            if strategy.advance_buy_watch(watch, price, time_text) == 'BUY':
                 trigger = float(watch['dip_price']) * (
-                    1.0 + strategy.v11.BUY_BOUNCE_PCT)
+                    1.0 + strategy.BUY_BOUNCE_PCT)
                 raw_fill = bt11._continuous_fill(
                     previous_price, price, trigger, 'UP')
                 buy_price = bt11._slipped(raw_fill, 'BUY')
@@ -137,11 +137,11 @@ def collect_variant_opportunities(xtdata, candidates, breadth_candidates,
         breadth_pairs = breadth_candidates.get(entry_date, [])
         index_closes = index_history.get(entry_date, [])
         index_data = bt10._read_minute_range(
-            xtdata, [strategy.v11.INDEX_CODE], entry_date, exit_date)
+            xtdata, [strategy.INDEX_CODE], entry_date, exit_date)
         index_bars = bt10._minute_rows(
-            index_data.get(strategy.v11.INDEX_CODE), entry_date)
+            index_data.get(strategy.INDEX_CODE), entry_date)
         market_has_entry_window = any(
-            strategy.v11.is_market_allowed(index_closes, float(price))
+            strategy.is_market_allowed(index_closes, float(price))
             for row in index_bars for price in row[1:])
         if len(index_closes) < 25 or not market_has_entry_window:
             print('[SIM {}/{}] {} skipped: market filter'.format(
@@ -152,7 +152,7 @@ def collect_variant_opportunities(xtdata, candidates, breadth_candidates,
             for code, _ in candidates[variant].get(entry_date, [])]
         request_codes = sorted(set(
             candidate_codes + [code for code, _ in breadth_pairs]))
-        request_codes.append(strategy.v11.INDEX_CODE)
+        request_codes.append(strategy.INDEX_CODE)
         minute_data = bt10._read_minute_range(
             xtdata, request_codes, entry_date, exit_date)
         missing = [
@@ -167,7 +167,7 @@ def collect_variant_opportunities(xtdata, candidates, breadth_candidates,
                 xtdata, request_codes, entry_date, exit_date)
 
         index_bars = bt10._minute_rows(
-            minute_data.get(strategy.v11.INDEX_CODE), entry_date)
+            minute_data.get(strategy.INDEX_CODE), entry_date)
         if len(index_closes) < 25 or not index_bars:
             continue
         blocked = bt11._screen_times(

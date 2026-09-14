@@ -3,6 +3,7 @@
 This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 -关于策略的py文件如果有新建机制，则新建py文件。如果只是修改参数、优化机制，不涉及新增机制则在原有策略上运行。
 -新建策略的话不要在import原来同级别的策略文件。要完全新建。但是可以import 复用的config/core/util的公用的文件。
+-声明变量时，不要一行多个变量。要便与阅读。
 ## Repository Purpose
 
 ### DayT 固定回测约定

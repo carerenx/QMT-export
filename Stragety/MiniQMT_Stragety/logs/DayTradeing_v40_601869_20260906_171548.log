@@ -1,0 +1,20 @@
+============================================================
+  日志文件创建: 2026-09-06 17:15:48
+  策略版本: v40 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[17:15:48] [连接] MiniQMT 行情服务已连接
+[17:15:48] [START] 长飞光纤 v40 SIGNAL 601869.SH
+[17:15:49] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[17:15:50] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[17:15:51] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[17:15:51] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[17:15:51] [CLOSE 17:15:51]
+[17:20:51] [CLOSE 17:20:51]
+[17:25:51] [CLOSE 17:25:51]
+[17:26:59] Interrupted by user
+[17:26:59] [STOP] 长飞光纤 v40 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-06 17:26:59
+============================================================

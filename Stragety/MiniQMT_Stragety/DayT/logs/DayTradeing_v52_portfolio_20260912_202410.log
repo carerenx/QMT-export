@@ -1,0 +1,744 @@
+============================================================
+  日志文件创建: 2026-09-12 20:24:10
+  策略版本: v52 (for MiniQMT Evn)
+  标的: portfolio
+============================================================
+[20:24:10] [REFERENCE-MODE] shadow: coefficient scaling affects execution baseline; shadow intraday strength is observation only; active requires user-approved validation
+[20:24:10] [连接] MiniQMT 行情服务已连接
+[20:24:10] [账号状态] 8890145315 STOCK: 正常
+[20:24:11] [交易] 已订阅账号 8890145315
+[20:24:11] [RUNTIME] watchdog=15.0s read-RPC-timeout=5.0s instrumented-clients=2; native/router calls may have separate timeouts
+[20:24:11] [PORTFOLIO-START] all account holdings; mode=SIGNAL
+[20:24:11] [PORTFOLIO-ADD] 600584.SH shares=1000 lot=100
+[20:24:11] [PORTFOLIO-ADD] 601869.SH shares=100 lot=100
+[20:24:14] [DATA-HEALTH] last_complete=20260911 expected=20260911 raw_close=67.74 tick_lastClose=68.12 count=80 aligned=True status=OK
+[20:24:14] [600584.SH] [LANE 0] [DATA-DBG] last_complete=20260911 hist_open[-3:]=[69.10, 68.00, 66.50] | tick_open=66.50 | lastClose=68.12 | signal_open=67.74 (AFTER-HOURS latest_complete_close)
+[20:24:14] [600584.SH] [LANE 0] [AFTER-HOURS] signal open uses latest complete close Y67.74
+[20:24:14] [600584.SH] [LANE 0] [VOLUME-DATA] complete_count=80 tail=[613675.0, 481936.0, 665414.0]
+[20:24:14] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:24:16] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:24:17] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:24:17] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:24:17] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:24:19] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:24:20] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:24:20] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:24:23] [DATA-HEALTH] last_complete=20260911 expected=20260911 raw_close=67.74 tick_lastClose=68.12 count=80 aligned=True status=OK
+[20:24:23] [600584.SH] [LANE 1] [DATA-DBG] last_complete=20260911 hist_open[-3:]=[69.10, 68.00, 66.50] | tick_open=66.50 | lastClose=68.12 | signal_open=67.74 (AFTER-HOURS latest_complete_close)
+[20:24:23] [600584.SH] [LANE 1] [AFTER-HOURS] signal open uses latest complete close Y67.74
+[20:24:23] [600584.SH] [LANE 1] [VOLUME-DATA] complete_count=80 tail=[613675.0, 481936.0, 665414.0]
+[20:24:23] [600584.SH] [LANE 0] [START] v52 SIGNAL
+[20:24:23] [600584.SH] [LANE 0] [NON-TRADING PREVIEW] indicative plans only; no orders outside trading hours; next trading day recalculates from its opening price
+[20:24:23] [600584.SH] [LANE 0] [T-SIZE PLAN] at base Y67.74: REV 0 sh / FWD 0 sh; rechecked at order submission
+[20:24:23] [600584.SH] [LANE 0] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y67.74 (source: latest complete close; after-hours) | ATR 4.6% | RSI 33 | Vol_ratio 0.70 | Mult 0.21 | base-trigger Y68.40 [REV-T blocked:sellable 0 sh < 100 sh]
+[20:24:23] [600584.SH] [LANE 0] [REFERENCE] base-trigger Y68.40 | execution Y68.40 | shadow-candidate NON_TRADING
+[20:24:23] [600584.SH] [LANE 0] [QUANTILE-TREND] score -0.402 | rank 0.451 | trigger-Q 0.463 | samples 71 | span 8d | ATR-units 0.208
+[20:24:23] [600584.SH] [LANE 0] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.451*(1-2*tail)) = Q0.463 -> raw 0.3474 * scale 0.60 = 0.2084
+[20:24:23] [600584.SH] [LANE 0] [VOLUME] last 665414 | prev10_avg 707951 (last/10d 0.94x) | prev20_avg 953425 (last/20d 0.70x) | n10=10 n20=20 | VALID
+[20:24:23] [600584.SH] [LANE 0] [FACTOR] trend_score -0.40 |  trend_rank +0.45 |  trigger_q +0.46 | 
+[20:24:23] [600584.SH] [LANE 0] [ACCOUNT] Position:1000 sh Y67,740(55%) | Cash:Y7,495 | Sellable:0 lots(0 sh)
+[20:24:23] [600584.SH] [LANE 0] [REV-T] BLOCKED sellable 0 sh < 100 sh | base-trigger Y68.40 = open Y67.74*(1+ATR 4.65%*(raw 0.347388*scale 0.600)) | base-trigger Y68.40 | execution Y68.40 | shadow-candidate NON_TRADING | buyback Y67.92 = Y68.40*(1-4.65%*0.15)
+[20:24:23] [600584.SH] [LANE 0] [FWD-T] BLOCKED T+1: sellable base shares 0 sh < 100 sh | plan buy Y66.39 = max(floor Y65.71, trail Y66.39) | plan sell Y67.19 = Y66.39*(1+1.2%) | planned value~Y0
+[20:24:23] [600584.SH] [LANE 0] [MOM] 已屏蔽 (MOM_ENABLED=False)
+[20:24:23] [600584.SH] [LANE 0] [CONNECTION] market/trade probes OK
+[20:24:23] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-12 20:24:23 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[20:24:23] [600584.SH] [LANE 0] [STRENGTH SHADOW] NON_TRADING minutes=0; original reference, observation reset
+[20:24:23] [600584.SH] [LANE 0] [CLOSE 20:24:23]
+[20:24:23] [600584.SH] [LANE 1] [START] v52 SIGNAL
+[20:24:23] [600584.SH] [LANE 1] [NON-TRADING PREVIEW] indicative plans only; no orders outside trading hours; next trading day recalculates from its opening price
+[20:24:23] [600584.SH] [LANE 1] [T-SIZE PLAN] at base Y67.74: REV 0 sh / FWD 0 sh; rechecked at order submission
+[20:24:23] [600584.SH] [LANE 1] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y67.74 (source: latest complete close; after-hours) | ATR 4.6% | RSI 33 | Vol_ratio 0.70 | Mult 0.21 | base-trigger Y68.40 [REV-T blocked:sellable 0 sh < 100 sh]
+[20:24:23] [600584.SH] [LANE 1] [REFERENCE] base-trigger Y68.40 | execution Y68.40 | shadow-candidate NON_TRADING
+[20:24:23] [600584.SH] [LANE 1] [QUANTILE-TREND] score -0.402 | rank 0.451 | trigger-Q 0.463 | samples 71 | span 8d | ATR-units 0.208
+[20:24:23] [600584.SH] [LANE 1] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.451*(1-2*tail)) = Q0.463 -> raw 0.3474 * scale 0.60 = 0.2084
+[20:24:23] [600584.SH] [LANE 1] [VOLUME] last 665414 | prev10_avg 707951 (last/10d 0.94x) | prev20_avg 953425 (last/20d 0.70x) | n10=10 n20=20 | VALID
+[20:24:23] [600584.SH] [LANE 1] [FACTOR] trend_score -0.40 |  trend_rank +0.45 |  trigger_q +0.46 | 
+[20:24:23] [600584.SH] [LANE 1] [ACCOUNT] Position:1000 sh Y67,740(55%) | Cash:Y7,495 | Sellable:0 lots(0 sh)
+[20:24:24] [600584.SH] [LANE 1] [REV-T] BLOCKED sellable 0 sh < 100 sh | base-trigger Y68.40 = open Y67.74*(1+ATR 4.65%*(raw 0.347388*scale 0.600)) | base-trigger Y68.40 | execution Y68.40 | shadow-candidate NON_TRADING | buyback Y67.92 = Y68.40*(1-4.65%*0.15)
+[20:24:24] [600584.SH] [LANE 1] [FWD-T] BLOCKED T+1: sellable base shares 0 sh < 100 sh | plan buy Y66.39 = max(floor Y65.71, trail Y66.39) | plan sell Y67.19 = Y66.39*(1+1.2%) | planned value~Y0
+[20:24:24] [600584.SH] [LANE 1] [MOM] 已屏蔽 (MOM_ENABLED=False)
+[20:24:24] [600584.SH] [LANE 1] [CONNECTION] market/trade probes OK
+[20:24:24] [600584.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-12 20:24:24 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[20:24:24] [600584.SH] [LANE 1] [STRENGTH SHADOW] NON_TRADING minutes=0; original reference, observation reset
+[20:24:24] [600584.SH] [LANE 1] [CLOSE 20:24:24]
+[20:24:24] [601869.SH] [LANE 0] [START] v52 SIGNAL
+[20:24:24] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:24:26] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:24:27] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:24:27] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:24:27] [601869.SH] [LANE 0] [CONNECTION] market/trade probes OK
+[20:24:27] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-12 20:24:27 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[20:24:27] [601869.SH] [LANE 0] [STRENGTH SHADOW] NON_TRADING minutes=0; original reference, observation reset
+[20:24:27] [601869.SH] [LANE 0] [CLOSE 20:24:27]
+[20:24:27] [601869.SH] [LANE 1] [START] v52 SIGNAL
+[20:24:27] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:24:29] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:24:30] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:24:30] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:24:30] [601869.SH] [LANE 1] [CONNECTION] market/trade probes OK
+[20:24:30] [601869.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-12 20:24:30 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[20:24:30] [601869.SH] [LANE 1] [STRENGTH SHADOW] NON_TRADING minutes=0; original reference, observation reset
+[20:24:30] [601869.SH] [LANE 1] [CLOSE 20:24:30]
+[20:24:31] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:24:32] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:24:33] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:24:33] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:24:34] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:24:35] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:24:36] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:24:36] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:24:37] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:24:38] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:24:40] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:24:40] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:24:40] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:24:41] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:24:43] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:24:43] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:24:43] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:24:45] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:24:46] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:24:46] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:24:46] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:24:48] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:24:49] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:24:49] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:24:50] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:24:51] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:24:52] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:24:52] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:24:53] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:24:54] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:24:55] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:24:55] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:24:56] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:24:57] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:24:59] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:24:59] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:24:59] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:00] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:02] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:02] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:02] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:04] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:05] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:05] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:05] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:07] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:08] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:08] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:09] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:10] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:11] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:11] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:12] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:13] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:14] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:14] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:15] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:16] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:18] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:18] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:18] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:19] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:21] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:21] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:21] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:23] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:24] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:24] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:24] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:26] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:27] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:27] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:28] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:29] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:30] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:30] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:31] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:32] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:33] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:33] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:34] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:35] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:37] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:37] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:37] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:38] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:40] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:40] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:40] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:42] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:43] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:43] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:43] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:45] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:46] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:46] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:47] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:48] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:49] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:49] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:50] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:51] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:52] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:53] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:53] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:54] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:56] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:56] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:56] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:25:57] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:25:59] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:25:59] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:25:59] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:01] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:02] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:02] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:02] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:04] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:05] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:05] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:06] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:07] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:08] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:09] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:09] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:10] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:12] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:12] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:12] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:14] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:15] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:15] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:15] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:17] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:18] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:18] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:19] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:20] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:21] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:21] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:22] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:23] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:24] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:24] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:25] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:26] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:28] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:28] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:28] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:29] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:31] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:31] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:31] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:33] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:34] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:34] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:34] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:36] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:37] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:37] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:38] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:39] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:40] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:40] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:41] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:42] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:43] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:43] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:44] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:45] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:46] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:47] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:47] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:48] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:50] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:50] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:50] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:52] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:53] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:53] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:53] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:55] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:56] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:56] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:26:57] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:26:58] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:26:59] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:26:59] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:00] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:01] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:02] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:02] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:03] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:04] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:06] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:06] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:06] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:07] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:09] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:09] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:09] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:11] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:12] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:12] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:12] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:14] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:15] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:15] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:16] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:17] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:18] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:18] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:19] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:20] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:21] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:21] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:22] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:23] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:25] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:25] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:25] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:26] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:28] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:28] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:28] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:30] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:31] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:31] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:31] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:33] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:34] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:34] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:35] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:36] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:37] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:37] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:38] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:39] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:40] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:40] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:41] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:42] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:44] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:44] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:44] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:45] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:47] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:47] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:47] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:49] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:50] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:50] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:50] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:52] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:53] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:53] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:54] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:55] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:56] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:56] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:27:57] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:27:58] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:27:59] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:27:59] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:00] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:01] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:03] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:03] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:03] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:04] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:06] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:06] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:06] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:08] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:09] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:09] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:09] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:11] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:12] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:12] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:13] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:14] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:15] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:15] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:16] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:17] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:18] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:18] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:19] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:20] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:22] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:22] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:22] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:23] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:25] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:25] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:25] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:27] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:28] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:28] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:28] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:30] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:31] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:31] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:32] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:33] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:34] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:34] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:35] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:36] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:37] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:37] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:38] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:39] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:41] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:41] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:41] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:42] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:44] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:44] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:44] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:46] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:47] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:47] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:47] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:49] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:50] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:50] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:51] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:52] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:53] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:53] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:53] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:55] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:28:56] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:28:56] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:28:57] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:28:58] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:00] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:00] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:00] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:01] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:03] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:03] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:03] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:05] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:06] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:06] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:06] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:08] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:09] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:09] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:10] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:11] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:12] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:12] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:13] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:14] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:15] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:15] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:16] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:18] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:19] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:19] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:19] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:21] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:22] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:22] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:23] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:24] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:25] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:25] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:26] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:27] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:28] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:28] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:28] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-12 20:29:28 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[20:29:29] [600584.SH] [LANE 0] [CLOSE 20:29:28]
+[20:29:29] [600584.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-12 20:29:29 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[20:29:29] [600584.SH] [LANE 1] [CLOSE 20:29:29]
+[20:29:30] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:31] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:32] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:32] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:33] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:34] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:35] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:35] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:35] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-12 20:29:35 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[20:29:35] [601869.SH] [LANE 0] [CLOSE 20:29:35]
+[20:29:36] [601869.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-12 20:29:35 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[20:29:36] [601869.SH] [LANE 1] [CLOSE 20:29:35]
+[20:29:36] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:37] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:39] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:39] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:39] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:40] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:42] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:42] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:42] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:44] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:45] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:45] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:45] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:47] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:48] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:48] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:49] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:50] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:51] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:51] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:52] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:53] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:54] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:54] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:55] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:56] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:29:57] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:29:58] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:29:58] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:29:59] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:01] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:01] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:01] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:03] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:04] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:04] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:04] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:06] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:07] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:07] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:08] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:09] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:10] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:10] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:11] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:12] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:13] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:13] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:14] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:15] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:17] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:17] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:17] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:18] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:20] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:20] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:20] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:22] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:23] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:23] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:23] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:25] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:26] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:26] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:27] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:28] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:29] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:29] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:30] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:31] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:32] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:32] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:33] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:34] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:36] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:36] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:36] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:37] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:39] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:39] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:39] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:41] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:42] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:42] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:43] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:44] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:45] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:45] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:46] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:47] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:48] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:49] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:49] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:50] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:51] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:52] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:52] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:53] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:55] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:55] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:55] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:30:56] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:30:58] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:30:58] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:30:58] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:00] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:01] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:01] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:01] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:03] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:04] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:04] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:05] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:06] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:07] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:07] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:08] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:09] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:10] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:10] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:11] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:12] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:14] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:14] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:14] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:15] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:17] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:17] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:17] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:19] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:20] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:20] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:20] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:22] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:23] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:23] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:24] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:25] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:26] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:26] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:27] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:28] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:29] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:29] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:30] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:31] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:32] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:32] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:33] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:34] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:35] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:36] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:36] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:37] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:39] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:39] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:39] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:40] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:42] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:42] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:42] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:44] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:45] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:45] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:45] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:47] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:48] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:48] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:49] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:50] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:51] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:51] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:52] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:53] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:54] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:54] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:55] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:56] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:31:58] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:31:58] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:31:58] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:31:59] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:01] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:01] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:01] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:03] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:04] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:04] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:04] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:06] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:07] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:07] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:08] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:09] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:10] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:10] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:11] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:12] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:13] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:13] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:14] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:15] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:16] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:17] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:17] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:18] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:19] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:19] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:20] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:21] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:23] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:23] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:23] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:24] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:26] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:26] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:26] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:28] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:29] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:29] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:29] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:31] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:32] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:32] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:33] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:34] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:35] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:35] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:36] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:37] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:38] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:39] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:39] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:40] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:42] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:42] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:42] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:43] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:45] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:45] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:45] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:47] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:48] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:48] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:48] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:50] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:51] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:51] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:52] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:53] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:54] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:54] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:55] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:56] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:32:57] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:32:57] [601869.SH] [LANE 1] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:32:58] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:32:59] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:33:01] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[20:33:01] [601869.SH] [LANE 0] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[20:33:01] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[20:33:02] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[20:33:03] [PORTFOLIO-STOP] interrupted
+[20:33:03] [600584.SH] [LANE 0] [STOP] 长电科技 v52 cum 0 days gross~Y0
+[20:33:03] [600584.SH] [LANE 1] [STOP] 长电科技 v52 cum 0 days gross~Y0
+[20:33:03] [601869.SH] [LANE 0] [STOP] 长飞光纤 v52 cum 0 days gross~Y0
+[20:33:03] [601869.SH] [LANE 1] [STOP] 长飞光纤 v52 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-12 20:33:03
+============================================================

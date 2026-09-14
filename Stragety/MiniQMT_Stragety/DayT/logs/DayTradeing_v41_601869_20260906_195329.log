@@ -1,0 +1,32 @@
+============================================================
+  日志文件创建: 2026-09-06 19:53:29
+  策略版本: v41 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[19:53:32] [连接] MiniQMT 行情服务已连接
+[19:53:32] [账号状态] 8890145315 未知(STOCK): 正常
+[19:53:32] [交易] 已订阅账号 8890145315
+[19:53:32] [START] 长飞光纤 v41 LIVE 601869.SH
+[19:53:35] [DailyData WARN] tick lastClose 393.46 is one trading day stale; using verified raw close 378.80
+[19:53:35] [DATA-HEALTH] last_complete=20260904 expected=20260904 raw_close=378.80 tick_lastClose=393.46 count=80 aligned=True status=OK
+[19:53:35] [DATA-FALLBACK] confirmed one-day stale tick lastClose 393.46 -> verified raw close 378.80
+[19:53:38] [DATA-HEALTH] last_complete=20260904 expected=20260904 raw_close=378.80 tick_lastClose=378.80 count=80 aligned=True status=OK
+[19:53:38] [DATA-DBG] last_complete=20260904 hist_open[-3:]=[392.59, 412.0, 399.66] | tick_open=399.66 | lastClose=378.8 | signal_open=399.66
+[19:53:38] [VOLUME-DATA] complete_count=80 tail=[125787.0, 118768.0, 100158.0]
+[19:53:38] [SIGNAL] WEAK-BULL | Open Y399.66 | ATR 7.5% | RSI 51 | Vol_ratio 0.71 | Mult 0.70 | Trig Y412.28 
+[19:53:38] [VOLUME] last 100158 | prev10_avg 150399 (last/10d 0.67x) | prev20_avg 141785 (last/20d 0.71x) | n10=10 n20=20 | VALID
+[19:53:38] [FACTOR] trend +0.05 |  volatility -0.12 |  volume +0.12 |  RSI +0.00 | 
+[19:53:38] [ACCOUNT] Position:200 sh Y75,760(99%) | Cash:Y455 | Sellable:2 lots(200 sh)
+[19:53:38] [REV-T] ENABLED 2 lots | plan sell Y412.28 | buyback Y407.63 = Y412.28*(1-7.52%*0.15) | emergency Y424.65 = Y412.28*(1+3.0%) | emergencyEnabled=False
+[19:53:38] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y387.67 = max(floor Y387.67, trail Y371.22) | plan sell Y392.32 = Y387.67*(1+1.2%) | plan 1 lot~Y38,767
+[19:53:38] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[19:53:38] [MOM-CAPACITY] short ON | long OFF insufficient cash for 1 lot
+[19:53:38] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[19:53:38] [CLOSE 19:53:38]
+[19:58:38] [CLOSE 19:58:38]
+[19:59:29] Interrupted by user
+[19:59:30] [STOP] 长飞光纤 v41 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-06 19:59:30
+============================================================

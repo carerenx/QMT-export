@@ -58,7 +58,9 @@ def load_strategy(version):
     path = DAYT / STRATEGIES[version]
     source = path.read_bytes()
     tree = ast.parse(source, filename=str(path))
-    if version == 'v39':
+    # v39 derivatives retain the same generator-based runner contract.  They
+    # need the identical in-memory sleep-to-yield conversion for replay.
+    if version.startswith('v39'):
         class Sleeps(ast.NodeTransformer):
             def visit_Expr(self, node):
                 call = node.value
@@ -171,11 +173,12 @@ def replay(version, daily, bars, slip=0):
                 (mod, 'get_trade_detail_data', lambda a,b,kind: broker.query_positions() if kind == 'POSITION' else [broker.query_account()]),
                 (mod.cfg, 'now_hms', lambda: Clock.current.strftime('%H:%M:%S'))]:
             stack.enter_context(patch.object(obj, name, value))
-        if version != 'v39':
+        if not version.startswith('v39'):
             portfolio = mod.PortfolioRunner(False)
             runner = mod.StrategyRunner(portfolio, broker.code)
             portfolio.runners[broker.code] = runner
-            if version == 'v52': runner.baseline_shares = broker.position
+            if hasattr(runner, 'baseline_shares'):
+                runner.baseline_shares = broker.position
             stack.enter_context(patch.object(portfolio, 'save_checkpoint', lambda *a, **kw: None))
         else:
             runner = mod.StrategyRunner(False)

@@ -1,0 +1,21 @@
+============================================================
+  日志文件创建: 2026-09-10 09:22:51
+  策略版本: v41 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[09:22:52] [连接] MiniQMT 行情服务已连接
+[09:22:53] [账号状态] 8890145315 STOCK: 正常
+[09:22:53] [交易] 已订阅账号 8890145315
+[09:22:53] [START] 长飞光纤 v41 LIVE 601869.SH
+[09:22:54] [DailyData] excluded incomplete current-day bar 20260910
+[09:22:54] [DATA-STALE] attempt 1/3: adjusted/raw date indexes differ
+[09:22:55] [DailyData] excluded incomplete current-day bar 20260910
+[09:22:55] [DATA-STALE] attempt 2/3: adjusted/raw date indexes differ
+[09:22:57] [DailyData] excluded incomplete current-day bar 20260910
+[09:22:57] [DATA-STALE] attempt 3/3: adjusted/raw date indexes differ
+[09:22:57] [TRADE-LOCK] daily data unavailable or stale; all trading disabled
+[09:22:57] [WAIT 09:22:57] to open 7分3秒
+[09:27:57] [WAIT 09:27:57] to open 2分3秒
+[09:30:07] [SELL-TRIG RECALC] open Y0.00→Y437.32 trig Y0.00→Y437.32 (Mult 0.40 ATR 3.0%)
+[09:30:07] [OPEN] [Y437.33] [REV-T exceeded by Y0.01] [FWD-T needs -2.00% to Y428.58] [LOCKED]
+[09:32:51] Interrupted by user

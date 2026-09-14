@@ -1,0 +1,38 @@
+============================================================
+  日志文件创建: 2026-09-06 19:15:54
+  策略版本: v41 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[19:15:57] [连接] MiniQMT 行情服务已连接
+[19:15:58] [账号状态] 8890145315 未知(STOCK): 正常
+[19:15:58] [交易] 已订阅账号 8890145315
+[19:15:58] [START] 长飞光纤 v41 LIVE 601869.SH
+[19:16:01] [DailyData WARN] tick lastClose 393.46 is one trading day stale; using verified raw close 378.80
+[19:16:01] [DATA-HEALTH] last_complete=20260904 expected=20260904 raw_close=378.80 tick_lastClose=393.46 count=80 aligned=True status=OK
+[19:16:01] [DATA-FALLBACK] confirmed one-day stale tick lastClose 393.46 -> verified raw close 378.80
+[19:16:03] [DATA-HEALTH] last_complete=20260904 expected=20260904 raw_close=378.80 tick_lastClose=378.80 count=80 aligned=True status=OK
+[19:16:03] [DATA-DBG] last_complete=20260904 hist_open[-3:]=[392.59, 412.0, 399.66] | tick_open=399.66 | lastClose=378.8 | signal_open=399.66
+[19:16:03] [VOLUME-DATA] complete_count=80 tail=[125787.0, 118768.0, 100158.0]
+[19:16:03] [SIGNAL] WEAK-BULL | Open Y399.66 | ATR 7.5% | RSI 51 | Vol_ratio 0.71 | Mult 0.70 | Trig Y412.28 
+[19:16:03] [VOLUME] last 100158 | prev10_avg 150399 (last/10d 0.67x) | prev20_avg 141785 (last/20d 0.71x) | n10=10 n20=20 | VALID
+[19:16:03] [FACTOR] trend +0.05 |  volatility -0.12 |  volume +0.12 |  RSI +0.00 | 
+[19:16:03] [ACCOUNT] Position:200 sh Y75,760(99%) | Cash:Y455 | Sellable:2 lots(200 sh)
+[19:16:03] [REV-T] ENABLED 2 lots trig Y412.28 buyback=sell×(1-ATR%×0.15) emerg +3% / emergTrigFalse
+[19:16:03] [FWD-T] BLOCKED insufficient cash for 1 lot  1 lot≈Y37,880
+[19:16:03] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[19:16:03] [MOM-CAPACITY] short ON | long OFF insufficient cash for 1 lot
+[19:16:03] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[19:16:03] [CLOSE 19:16:03]
+[19:21:03] [CLOSE 19:21:03]
+[19:26:03] [CLOSE 19:26:03]
+[19:31:03] [CLOSE 19:31:03]
+[19:36:03] [CLOSE 19:36:03]
+[19:41:03] [CLOSE 19:41:03]
+[19:46:03] [CLOSE 19:46:03]
+[19:51:03] [CLOSE 19:51:03]
+[19:53:24] Interrupted by user
+[19:53:24] [STOP] 长飞光纤 v41 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-06 19:53:24
+============================================================

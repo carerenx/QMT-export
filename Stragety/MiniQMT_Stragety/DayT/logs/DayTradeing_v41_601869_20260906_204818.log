@@ -1,0 +1,29 @@
+============================================================
+  日志文件创建: 2026-09-06 20:48:18
+  策略版本: v41 (for MiniQMT Evn)
+  标的: 601869
+============================================================
+[20:48:20] [连接] MiniQMT 行情服务已连接
+[20:48:20] [账号状态] 8890145315 STOCK: 正常
+[20:48:21] [交易] 已订阅账号 8890145315
+[20:48:21] [START] 长飞光纤 v41 LIVE 601869.SH
+[20:48:23] [DATA-HEALTH] last_complete=20260904 expected=20260904 raw_close=378.80 tick_lastClose=393.46 count=80 aligned=True status=OK
+[20:48:23] [DATA-DBG] last_complete=20260904 hist_open[-3:]=[392.59, 412.0, 399.66] | tick_open=399.66 | lastClose=393.46 | signal_open=378.8 (AFTER-HOURS latest_complete_close)
+[20:48:23] [AFTER-HOURS] signal open uses latest complete close Y378.80
+[20:48:23] [VOLUME-DATA] complete_count=80 tail=[125787.0, 118768.0, 100158.0]
+[20:48:23] [SIGNAL] WEAK-BULL | SignalBase Y378.80 (source: latest complete close; after-hours) | ATR 7.5% | RSI 51 | Vol_ratio 0.71 | Mult 0.70 | Trig Y390.76 
+[20:48:23] [VOLUME] last 100158 | prev10_avg 150399 (last/10d 0.67x) | prev20_avg 141785 (last/20d 0.71x) | n10=10 n20=20 | VALID
+[20:48:23] [FACTOR] trend +0.05 |  volatility -0.12 |  volume +0.12 |  RSI +0.00 | 
+[20:48:23] [ACCOUNT] Position:200 sh Y75,760(99%) | Cash:Y455 | Sellable:2 lots(200 sh)
+[20:48:23] [REV-T] ENABLED 2 lots | plan sell Y390.76 = open Y378.80*(1+ATR 7.52%*mult 0.70*scale 0.60) | buyback Y386.35 = Y390.76*(1-7.52%*0.15)
+[20:48:23] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y371.22 = max(floor Y367.44, trail Y371.22) | plan sell Y375.67 = Y371.22*(1+1.2%) | plan 1 lot~Y37,122
+[20:48:23] [MOM] 2minutes±3.6×ATR in 10 minutes(1.0%~6.0%) 反T买回-1.5% 正T卖回+1.8% MOM_LOT_SIZE(100sh) 上限3次 紧急买回关
+[20:48:23] [MOM-CAPACITY] short ON | long OFF insufficient cash for 1 lot
+[20:48:23] [MOM-v40] REV让权开 band 1.20% (仅低于REV阈值) | 自适应回撤开 0.20~0.60% ATR×0.30
+[20:48:23] [CLOSE 20:48:23]
+[20:52:32] Interrupted by user
+[20:52:32] [STOP] 长飞光纤 v41 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-06 20:52:32
+============================================================
