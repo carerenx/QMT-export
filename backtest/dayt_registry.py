@@ -1,4 +1,6 @@
 """Single local strategy registration seam; golden artifacts are never edited."""
+import importlib.util
+from pathlib import Path
 # Different runtime interface: do not inject Policy objects into the legacy runner.
 RESEARCH_STRATEGIES = {
     'long_hold_factorial': {
@@ -29,6 +31,30 @@ STRATEGIES = {
     'v55_nomom': 'DayT_v55_nomom_NoOvernightMomentumGuard.py',
     'v56_nomom': 'DayT_v56_nomom_ConfirmedReversalRiskBudget.py',
 }
+
+# External RedisQMT strategies use a different runner interface from the
+# generator-based MiniQMT replay.  The entry is registered here without being
+# injected into the legacy loader, so offline tests can supply a fake adapter
+# and live Redis is never contacted by a backtest.
+REDIS_STRATEGIES = {
+    'dt_v1': {
+        'entry': 'Stragety/RedisQMT/DT/DT_v1.py',
+        'interface': 'StrategyRunner',
+        'adapter': 'Stragety.RedisQMT.Common.redis_qmt.RedisQmtAdapter',
+        'legacy_daily_reset_compatible': False,
+    },
+}
+
+
+def load_redis_strategy(name, adapter, logger=None):
+    """Load an external strategy against an explicitly supplied safe adapter."""
+    registration = REDIS_STRATEGIES[name]
+    root = Path(__file__).resolve().parents[1]
+    path = root / registration['entry']
+    spec = importlib.util.spec_from_file_location('redis_dayt_' + name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.StrategyRunner(adapter=adapter, logger=logger)
 
 
 def register_with_legacy_loader():

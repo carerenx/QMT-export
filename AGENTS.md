@@ -1,10 +1,23 @@
 # AGENTS.md
 
 This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
--关于策略的py文件如果有新建机制，则新建py文件。如果只是修改参数、优化机制，不涉及新增机制则在原有策略上运行。
--新建策略的话不要在import原来同级别的策略文件。要完全新建。但是可以import 复用的config/core/util的公用的文件。
--声明变量时，不要一行多个变量。要便与阅读。
+- 关于策略的py文件如果有新建机制，则新建py文件。如果只是修改参数、优化机制、小改动等，不涉及新增机制的变更则在原有策略上改动。
+- 新建策略的不要import原来同级别的其他版本策略文件。要完全新建。但是可以import 复用的config/core/util等公用的文件。
+- 声明变量时，不要一行多个变量。要便与阅读。
+
+## 策略研究记录约定
+
+- 本约定适用于 `Stragety/` 下每一种可独立比较版本的策略类型。
+- 新增研究方向、变更策略机制、调整参数或形成新版本时，必须同步更新该策略类型目录中的 `StrategicResearchDirectionsAndEffectivenessRecords.md`。
+- 尚无记录文件的策略类型，在下一次发生研究或变更时，按 `Stragety/STRATEGY_RESEARCH_RECORD_RULES.md` 创建；不为没有研究活动的目录批量创建空文件。
+- 通用记录规则、状态定义、最佳版本判定和记录模板以 `Stragety/STRATEGY_RESEARCH_RECORD_RULES.md` 为唯一来源。各类型记录文件只保存当前结论和研究记录，不复制通用规则。
+- 未提供统一口径的可复现证据时，不得把版本标记为“最佳”。失败、无效和不可比的研究也必须记录。
+
 ## Repository Purpose
+
+### 策略回测数据周期约定
+
+- 策略进行回测时，默认使用 1 分钟级别的 K 线数据。
 
 ### DayT 固定回测约定
 
@@ -15,16 +28,6 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 A股量化交易策略开发与实盘运行环境。
 核心标的是**长飞光纤(601869)**，围绕日内做T、选股策略、回测系统三大方向展开。
-后续目标是新建/增肌选股策略。
-## Key Rules via `/QMT-export` Skill
-
-When answering QMT API questions, the Skill at `C:\Users\pp313\.Codex\skills\QMT-export\SKILL.md` mandates:
-- **Never invent** function names, parameters, or features — verify against `references/md/python/python_api.md` first
-- **Cite sources** as `[Python API, p.XX]` or `[系统功能, p.XX]`
-- **Answer completely in one reply** — don't pause mid-response to ask "should I continue?"
-- **Code examples always** — full signatures + parameter docs + runnable code
-
-QMT API reference is in `references/md/` (python, systemfunction, vba subdirectories).
 
 ## Architecture
 

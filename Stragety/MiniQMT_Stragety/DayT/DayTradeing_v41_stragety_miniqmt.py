@@ -22,6 +22,13 @@ from datetime import datetime, timedelta
 from typing import Optional
 import numpy as np, pandas as pd
 
+# Permit the documented ``python Stragety/.../DayTradeing_v41...py`` command.
+_STRATEGY_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_REPOSITORY_ROOT = os.path.dirname(os.path.dirname(_STRATEGY_ROOT))
+for _module_root in (_REPOSITORY_ROOT, _STRATEGY_ROOT):
+    if _module_root not in sys.path:
+        sys.path.insert(0, _module_root)
+
 from core import config as cfg
 from core.signals import compute_signal
 from Stragety.MiniQMT_Stragety.DayT.infra.logger import FileLogger, set_logger, get_logger, _log
