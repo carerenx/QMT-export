@@ -37,6 +37,7 @@ class FileLogger:
         self.log_path = os.path.join(self.log_dir, self.log_filename)
 
         self._file = open(self.log_path, 'w', encoding='utf-8')
+        self._file_error_reported = False
         self._write_header()
         self.start_time = start_time
 
@@ -48,19 +49,26 @@ class FileLogger:
         self._file.write(f'{"="*60}\n')
         self._file.flush()
 
-    def write(self, *args, sep=' ', end='\n'):
-        """写入日志 (控制台 + 文件), 用法与 print() 一致"""
+    def write(self, *args, sep=' ', end='\n', console=True):
+        """写入日志；默认双写，也可仅写文件。"""
         msg = sep.join(str(a) for a in args) + end
 
-        # 控制台 (TTY 自动行缓冲, 不手动 flush)
-        sys.stdout.write(msg)
+        if console:
+            # 控制台 (TTY 自动行缓冲, 不手动 flush)
+            sys.stdout.write(msg)
 
         # 文件: 立即 flush 确保崩溃不丢日志
         try:
             self._file.write(msg)
             self._file.flush()
-        except Exception:
-            pass
+            if self._file_error_reported:
+                sys.stderr.write('[LOGGER-FILE-RECOVERED] file logging resumed\n')
+                self._file_error_reported = False
+        except Exception as error:
+            if not self._file_error_reported:
+                sys.stderr.write('[LOGGER-FILE-ERROR] {}; messages may be missing from {}\n'.format(
+                    error, self.log_path))
+                self._file_error_reported = True
 
     def close(self):
         """关闭日志文件"""
@@ -91,31 +99,37 @@ def get_logger() -> 'FileLogger | None':
     return _logger_instance
 
 
+def _format_message(args):
+    from core.config import ts_prefix
+    ts = ts_prefix()
+    if not args:
+        return ''
+    msg = f'{ts} {args[0]}'
+    if args[1:]:
+        msg += ' ' + ' '.join(str(a) for a in args[1:])
+    return msg
+
+
+def _write_log(args, console):
+    msg = _format_message(args)
+    if _logger_instance is not None:
+        _logger_instance.write(msg, console=console)
+    else:
+        try:
+            print(msg)
+        except UnicodeEncodeError:
+            encoding = sys.stdout.encoding or 'utf-8'
+            print(msg.encode(encoding, errors='replace').decode(encoding))
+
+
 def _log(*args):
     """
     全局日志输出 — 自动添加 [HH:MM:SS] 时间戳前缀。
     若未初始化 FileLogger 则回退到 print()。
     """
-    from core.config import ts_prefix
-    ts = ts_prefix()
+    _write_log(args, console=True)
 
-    if args:
-        msg = f'{ts} {args[0]}'
-        extra = args[1:]
-        if extra:
-            msg += ' ' + ' '.join(str(a) for a in extra)
-    else:
-        msg = ''
 
-    if _logger_instance is not None:
-        _logger_instance.write(msg)
-    else:
-        try:
-            print(msg)
-        except UnicodeEncodeError:
-            # Offline tests and some legacy strategy files may run under a
-            # GBK console while containing UTF-8-only replacement characters.
-            # Logging must never interrupt a trading state transition.
-            import sys
-            encoding = sys.stdout.encoding or 'utf-8'
-            print(msg.encode(encoding, errors='replace').decode(encoding))
+def _log_file_only(*args):
+    """带时间戳写入日志文件，不在终端打印。"""
+    _write_log(args, console=False)

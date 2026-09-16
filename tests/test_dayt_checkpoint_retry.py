@@ -57,6 +57,17 @@ class CheckpointRetryTests(unittest.TestCase):
         replace.assert_called_once()
         sleep.assert_not_called()
 
+    def test_checkpoint_json_is_indented_for_human_reading(self):
+        checkpoint.write_checkpoint(
+            self.path,
+            {'schema': 1, 'account': 'test', 'nested': {'value': 3}})
+
+        text = self.path.read_text(encoding='utf-8')
+
+        self.assertIn('\n  "account": "test",\n', text)
+        self.assertIn('\n  "nested": {\n    "value": 3\n  }\n', text)
+        self.assertTrue(text.endswith('\n'))
+
 
 if __name__ == '__main__':
     unittest.main()

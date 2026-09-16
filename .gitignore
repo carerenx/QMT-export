@@ -3,9 +3,14 @@
 #.claude/
 __pycache__/
 *.pyc
+*.json
+
 .DS_Store
 Log/
 
-
+/backtest
 backtest/cache
 .venv-bigqmt/
+/tests
+
+

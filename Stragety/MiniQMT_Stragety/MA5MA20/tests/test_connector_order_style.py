@@ -5,7 +5,9 @@
 import os
 import sys
 import types
+from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
 
 MINIQMT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -34,10 +36,22 @@ from xtquant import xtconstant
 class _FakeTrader:
     def __init__(self):
         self.calls = []
+        self.return_order_id = 123456
 
     def order_stock(self, *args):
         self.calls.append(args)
-        return 123456
+        return self.return_order_id
+
+    def query_stock_orders(self, account, cancelable_only):
+        call = self.calls[-1]
+        return [SimpleNamespace(
+            order_id=789012,
+            order_sysid='789012',
+            order_remark=call[7],
+            stock_code=call[1],
+            order_type=call[2],
+            order_volume=call[3],
+        )]
 
 
 class _FakeAccount:
@@ -85,6 +99,23 @@ class ConnectorOrderStyleTest(unittest.TestCase):
     def test_unknown_style_is_rejected(self):
         with self.assertRaises(ValueError):
             self.connector.order_stock('601869.SH', 100, 'UNKNOWN', 354.29)
+
+    def test_repeated_orders_use_distinct_correlation_remarks(self):
+        self.connector.order_stock('600584.SH', -400, 'COMPETE', 67.69)
+        self.connector.order_stock('600584.SH', -100, 'COMPETE', 67.68)
+
+        first_remark = self.connector.trader.calls[0][7]
+        second_remark = self.connector.trader.calls[1][7]
+        self.assertNotEqual(first_remark, second_remark)
+
+    def test_missing_sync_order_id_is_recovered_by_unique_remark(self):
+        self.connector.trader.return_order_id = -1
+
+        with patch('Stragety.MiniQMT_Stragety.DayT.infra.connector._time.sleep'):
+            order_id = self.connector.order_stock(
+                '600584.SH', 400, 'COMPETE', 68.38)
+
+        self.assertEqual(789012, order_id)
 
 
 if __name__ == '__main__':

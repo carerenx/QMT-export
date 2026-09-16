@@ -46,7 +46,9 @@ from core.intraday_strength import IntradayStrength, StrengthConfig, lower_excur
 from core.dayt_checkpoint import read_checkpoint, write_checkpoint
 from core.runtime_watchdog import RuntimeWatchdog, instrument_rpc
 from core.connection_monitor import probe_connections, quote_freshness
-from Stragety.MiniQMT_Stragety.DayT.infra.logger import FileLogger, set_logger, get_logger, _log
+from Stragety.MiniQMT_Stragety.DayT.infra.logger import (
+    FileLogger, set_logger, get_logger, _log, _log_file_only,
+)
 from Stragety.MiniQMT_Stragety.DayT.infra.connector import (
     MiniQMTConnector, MockContextInfo,
     get_trade_detail_data, order_shares, set_global_conn,
@@ -476,6 +478,9 @@ class ExecutionRunner:
     def _log(self, message):
         _log('[{}] {}'.format(self.stock_qmt, message))
 
+    def _file_log(self, message):
+        _log_file_only('[{}] {}'.format(self.stock_qmt, message))
+
     def _monitor_connections(self, now_ts):
         """Log connection degradation/recovery without changing trade state."""
         market_open = cfg.is_market_open(cfg.now_hms())
@@ -492,7 +497,7 @@ class ExecutionRunner:
         elif self._connection_healthy is False:
             self._log('[CONNECTION-RECOVERED] {}'.format(detail))
         elif self._connection_healthy is None:
-            self._log('[CONNECTION] {}'.format(detail))
+            self._file_log('[CONNECTION] {}'.format(detail))
         self._connection_healthy = healthy
         if snapshot.get('received'):
             self._quote_last_received = now_ts
@@ -506,11 +511,15 @@ class ExecutionRunner:
                 'STALE', 'UNKNOWN', 'CLOCK_SKEW', 'UNAVAILABLE') else 'QUOTE-HEALTH'
             def display_time(value):
                 return datetime.fromtimestamp(value).strftime('%Y-%m-%d %H:%M:%S') if value is not None else 'UNKNOWN'
-            self._log('[{}] {} connection={} quote_time={} age={} last_rpc_success={} '
-                      'last_confirmed_fresh={} reason={} action=LOG_ONLY'.format(
-                          tag, status, 'OK' if healthy else 'ERROR', display_time(health['quote_time']),
-                          '{:.1f}s'.format(health['age']) if health['age'] is not None else 'UNKNOWN',
-                          display_time(self._quote_last_received), display_time(self._quote_last_fresh), health['reason']))
+            message = ('[{}] {} connection={} quote_time={} age={} last_rpc_success={} '
+                       'last_confirmed_fresh={} reason={} action=LOG_ONLY'.format(
+                           tag, status, 'OK' if healthy else 'ERROR', display_time(health['quote_time']),
+                           '{:.1f}s'.format(health['age']) if health['age'] is not None else 'UNKNOWN',
+                           display_time(self._quote_last_received), display_time(self._quote_last_fresh), health['reason']))
+            if tag == 'QUOTE-HEALTH' and status in ('FRESH', 'NOT_APPLICABLE'):
+                self._file_log(message)
+            else:
+                self._log(message)
             self._quote_health_log_time = now_ts
         self._quote_health_status = status
 
@@ -765,7 +774,7 @@ class ExecutionRunner:
         if position is None:
             return False
         self.st['last_ma_report_time'] = now_ts
-        self._log('[MA-POS] price Y{:.2f} | MA5 Y{:.2f}: {} {:+.2f}% | MA20 Y{:.2f}: {} {:+.2f}%'.format(
+        self._file_log('[MA-POS] price Y{:.2f} | MA5 Y{:.2f}: {} {:+.2f}% | MA20 Y{:.2f}: {} {:+.2f}%'.format(
             price, position['ma5'], position['ma5_position'], position['ma5_gap_pct'],
             position['ma20'], position['ma20_position'], position['ma20_gap_pct']))
         if position['risk']:
@@ -1280,7 +1289,8 @@ class ExecutionRunner:
         self._shadow_strength_armed = False
         if self._strength_phase != reason:
             self._strength_phase = reason
-            self._log('[STRENGTH {}] {} minutes=0; original reference, observation reset'.format(
+            writer = self._file_log if INTRADAY_REFERENCE_MODE == 'shadow' else self._log
+            writer('[STRENGTH {}] {} minutes=0; original reference, observation reset'.format(
                 INTRADAY_REFERENCE_MODE.upper(), reason))
         if INTRADAY_REFERENCE_MODE == 'active':
             self._strength_cancel_arm(reason)
@@ -1330,20 +1340,22 @@ class ExecutionRunner:
               st.get('fstate') == STATE_IDLE and st.get('do_short') and
               not self._new_leg_block_reason()):
             self._shadow_strength_armed = True
-            self._log('[STRENGTH-SHADOW-TOUCH] price=Y{:.2f} candidate=Y{:.2f}; '
-                      'hypothetical only, no order/count change'.format(price, result['effective']))
+            self._file_log('[STRENGTH-SHADOW-TOUCH] price=Y{:.2f} candidate=Y{:.2f}; '
+                           'hypothetical only, no order/count change'.format(price, result['effective']))
         phase = result['phase']
         if phase != self._strength_phase or now_ts - self._strength_log_time >= STRENGTH_LOG_INTERVAL_SEC:
             self._strength_phase, self._strength_log_time = phase, now_ts
-            self._log('[STRENGTH {}] {} minutes={} components={} S={:.3f} '
-                      'base=Y{:.2f} base-trigger=Y{:.2f} candidate={} execution=Y{:.2f} '
-                      'U0={:.4f} Ul={:.4f} U={:.4f} limit={} reason={}'.format(
-                          INTRADAY_REFERENCE_MODE.upper(), phase, result['minutes'],
-                          [round(v, 3) for v in result.get('components', [])], result.get('strength', 0),
-                          base, original, self._candidate_log(), self._rev_sell_trigger(),
-                          result.get('upper_units', 0), result.get('lower_units', self._strength_lower or 0),
-                          result.get('effective_units', 0), result.get('limit', '-'),
-                          result.get('reason', phase)))
+            message = ('[STRENGTH {}] {} minutes={} components={} S={:.3f} '
+                       'base=Y{:.2f} base-trigger=Y{:.2f} candidate={} execution=Y{:.2f} '
+                       'U0={:.4f} Ul={:.4f} U={:.4f} limit={} reason={}'.format(
+                           INTRADAY_REFERENCE_MODE.upper(), phase, result['minutes'],
+                           [round(v, 3) for v in result.get('components', [])], result.get('strength', 0),
+                           base, original, self._candidate_log(), self._rev_sell_trigger(),
+                           result.get('upper_units', 0), result.get('lower_units', self._strength_lower or 0),
+                           result.get('effective_units', 0), result.get('limit', '-'),
+                           result.get('reason', phase)))
+            writer = self._file_log if INTRADAY_REFERENCE_MODE == 'shadow' else self._log
+            writer(message)
 
     def _candidate_log(self):
         if not cfg.is_market_open(cfg.now_hms()):
@@ -1848,7 +1860,7 @@ class ExecutionRunner:
                             self._last_heartbeat = now_ts; (yield 5); continue
                         if now_ts - self._last_heartbeat >= 60:
                             self._last_heartbeat = now_ts
-                            self._log('[PRE-MKT {}] to open {}'.format(now, cfg.time_to_open(now)))
+                            self._file_log('[PRE-MKT {}] to open {}'.format(now, cfg.time_to_open(now)))
                         (yield 5); continue
                     if self.st.get('trade_date', '') != today:
                         try:
@@ -1861,9 +1873,9 @@ class ExecutionRunner:
                             self._log('[ERROR] init failed: {}'.format(e))
                     if now_ts - self._last_heartbeat >= 300:
                         self._last_heartbeat = now_ts
-                        if now < '09:30:00': self._log('[WAIT {}] to open {}'.format(now, cfg.time_to_open(now)))
-                        elif now > '15:00:00': self._log('[CLOSE {}]'.format(now))
-                        elif '11:30:00' < now < '13:00:00': self._log('[LUNCH {}]'.format(now))
+                        if now < '09:30:00': self._file_log('[WAIT {}] to open {}'.format(now, cfg.time_to_open(now)))
+                        elif now > '15:00:00': self._file_log('[CLOSE {}]'.format(now))
+                        elif '11:30:00' < now < '13:00:00': self._file_log('[LUNCH {}]'.format(now))
                     (yield 10); continue
 
                 fstate = self.st.get('fstate', STATE_IDLE)
@@ -1879,7 +1891,7 @@ class ExecutionRunner:
                     if now_ts - self._last_heartbeat >= 30:
                         self._last_heartbeat = now_ts
                         tc_s = self.st.get('trade_count_short', 0); tc_l = self.st.get('trade_count_long', 0)
-                        self._log('[STATE] {} Y{:.2f} REV-T {}/{} FWD-T {}/{} cum {} trades~Y{:,.0f}'.format(
+                        self._file_log('[STATE] {} Y{:.2f} REV-T {}/{} FWD-T {}/{} cum {} trades~Y{:,.0f}'.format(
                             fstate, price, tc_s, cfg.MAX_DAILY_TRADES,
                             tc_l, cfg.MAX_DAILY_TRADES, self.total_t_days, self.total_pnl))
                     if now < '14:57:00':
@@ -1974,7 +1986,7 @@ class ExecutionRunner:
                 if fstate == STATE_IDLE and (not signal or (not do_short and not do_long)):
                     if now_ts - self._last_heartbeat >= 300:
                         self._last_heartbeat = now_ts
-                        self._log('[STANDBY] Y{:.2f} no trade direction'.format(price))
+                        self._file_log('[STANDBY] Y{:.2f} no trade direction'.format(price))
                     (yield 5); continue
                 if fstate == STATE_IDLE: self._assess_strength(price, now_ts)
                 if fstate == STATE_IDLE: self._handle_idle(price)
@@ -2005,7 +2017,7 @@ class ExecutionRunner:
         fs = self.st['fstate']; sig = self.st.get('daily_signal', {})
         if fs in (STATE_DONE, STATE_FORCED):
             tc_s = self.st.get('trade_count_short', 0); tc_l = self.st.get('trade_count_long', 0)
-            self._log('[HB] {} Y{:.2f} REV-T {}/{} FWD-T {}/{} cum {} trades~Y{:,.0f}'.format(
+            self._file_log('[HB] {} Y{:.2f} REV-T {}/{} FWD-T {}/{} cum {} trades~Y{:,.0f}'.format(
                 fs, price, tc_s, cfg.MAX_DAILY_TRADES, tc_l, cfg.MAX_DAILY_TRADES,
                 self.total_t_days, self.total_pnl)); return
         if fs == STATE_IDLE:
@@ -2042,29 +2054,29 @@ class ExecutionRunner:
             if self.st.get('locked'): parts.append('LOCKED')
             if guard_active: parts.append('LIMIT-UP-GUARD')
             parts.append(self._reference_log())
-            self._log('[HB] {} Y{:.2f} {}'.format(fs, price, ' | '.join(parts)))
+            self._file_log('[HB] {} Y{:.2f} {}'.format(fs, price, ' | '.join(parts)))
         elif fs == STATE_SPIKING:
             peak = self.st.get('peak_price', 0); pb = (peak - price) / peak * 100 if peak > 0 else 0
-            self._log('[HB] {} Y{:.2f} peak Y{:.2f} pullback {:.2f}% | {}'.format(fs, price, peak, pb, self._reference_log()))
+            self._file_log('[HB] {} Y{:.2f} peak Y{:.2f} pullback {:.2f}% | {}'.format(fs, price, peak, pb, self._reference_log()))
         elif fs in (STATE_SOLD, STATE_DIPPING):
             sp = self.st.get('sell_fill_price', 0); bt = self.st.get('buyback_target', 0)
             ladder = self.st.get('ladder_sell_target', 0)
             extra = ' ladder Y{:.2f}'.format(ladder) if ladder > 0 else ''
-            if sp > 0: self._log('[HB] {} Y{:.2f} sell Y{:.2f} {:+.1f}% buyback Y{:.2f}{}'.format(
+            if sp > 0: self._file_log('[HB] {} Y{:.2f} sell Y{:.2f} {:+.1f}% buyback Y{:.2f}{}'.format(
                 fs, price, sp, (price - sp) / sp * 100, bt, extra))
         elif fs == STATE_BT_DIPPING:
             dip = self.st.get('bt_dip_price', price); bounce = (price - dip) / dip * 100 if dip > 0 else 0
-            self._log('[HB] {} Y{:.2f} dip Y{:.2f} bounce {:.2f}%'.format(fs, price, dip, bounce))
+            self._file_log('[HB] {} Y{:.2f} dip Y{:.2f} bounce {:.2f}%'.format(fs, price, dip, bounce))
         elif fs == STATE_BT_BOUGHT:
             bp = self.st.get('bt_buy_fill_price', 0); target = self.st.get('bt_sellback_target', 0)
             ladder = self.st.get('ladder_buy_target', 0)
             extra = ' ladder Y{:.2f}'.format(ladder) if ladder > 0 else ''
-            if bp > 0: self._log('[HB] {} Y{:.2f} buy Y{:.2f} {:+.1f}% sellback Y{:.2f}{}'.format(
+            if bp > 0: self._file_log('[HB] {} Y{:.2f} buy Y{:.2f} {:+.1f}% sellback Y{:.2f}{}'.format(
                 fs, price, bp, (price - bp) / bp * 100, target, extra))
         elif fs == STATE_BT_SPIKING:
             peak = self.st.get('bt_sell_peak_price', price); pb = (peak - price) / peak * 100 if peak > 0 else 0
-            self._log('[HB] {} Y{:.2f} peak Y{:.2f} pullback {:.2f}%'.format(fs, price, peak, pb))
-        else: self._log('[HB] {} Y{:.2f}'.format(fs, price))
+            self._file_log('[HB] {} Y{:.2f} peak Y{:.2f} pullback {:.2f}%'.format(fs, price, peak, pb))
+        else: self._file_log('[HB] {} Y{:.2f}'.format(fs, price))
 
 
 class SymbolConnector:
@@ -2197,7 +2209,7 @@ class ExecutionPortfolio:
         self._last_checkpoint = now
         if (self._last_checkpoint_log is None or
                 now - self._last_checkpoint_log >= STATE_SAVE_LOG_INTERVAL_SEC):
-            _log('[STATE-SAVED] symbols={} inflight={} path={}'.format(
+            _log_file_only('[STATE-SAVED] symbols={} inflight={} path={}'.format(
                 len({r.stock_qmt for r in self.runners.values()}), bool(pending), STATE_FILE))
             self._last_checkpoint_log = now
 

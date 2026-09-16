@@ -238,3 +238,114 @@
 [18:44:59] [600584.SH] [LANE 1] [CLOSE 18:44:59]
 [18:45:05] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 18:45:04 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
 [18:45:05] [601869.SH] [LANE 0] [CLOSE 18:45:04]
+[18:48:54] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[18:49:41] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 18:49:41 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[18:49:42] [600584.SH] [LANE 0] [CLOSE 18:49:41]
+[18:50:06] [601869.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 18:50:06 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[18:50:06] [601869.SH] [LANE 1] [CLOSE 18:50:06]
+[18:50:08] [600584.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 18:50:08 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[18:50:08] [600584.SH] [LANE 1] [CLOSE 18:50:08]
+[18:50:13] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 18:50:13 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[18:50:13] [601869.SH] [LANE 0] [CLOSE 18:50:13]
+[18:53:56] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[18:54:42] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 18:54:41 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[18:54:42] [600584.SH] [LANE 0] [CLOSE 18:54:41]
+[18:55:08] [600584.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 18:55:08 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[18:55:09] [600584.SH] [LANE 1] [CLOSE 18:55:08]
+[18:55:15] [601869.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 18:55:15 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[18:55:15] [601869.SH] [LANE 1] [CLOSE 18:55:15]
+[18:55:23] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 18:55:23 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[18:55:23] [601869.SH] [LANE 0] [CLOSE 18:55:23]
+[18:59:00] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[18:59:51] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 18:59:51 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[18:59:51] [600584.SH] [LANE 0] [CLOSE 18:59:51]
+[19:00:18] [600584.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:00:18 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:00:19] [600584.SH] [LANE 1] [CLOSE 19:00:18]
+[19:00:23] [601869.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:00:23 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:00:23] [601869.SH] [LANE 1] [CLOSE 19:00:23]
+[19:00:33] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:00:33 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:00:33] [601869.SH] [LANE 0] [CLOSE 19:00:33]
+[19:03:59] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[19:04:59] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:04:59 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:04:59] [600584.SH] [LANE 0] [CLOSE 19:04:59]
+[19:05:28] [600584.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:05:28 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:05:29] [600584.SH] [LANE 1] [CLOSE 19:05:28]
+[19:05:32] [601869.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:05:31 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:05:32] [601869.SH] [LANE 1] [CLOSE 19:05:31]
+[19:05:42] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:05:42 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:05:42] [601869.SH] [LANE 0] [CLOSE 19:05:42]
+[19:09:06] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[19:10:08] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:10:08 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:10:08] [600584.SH] [LANE 0] [CLOSE 19:10:08]
+[19:10:29] [600584.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:10:29 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:10:29] [600584.SH] [LANE 1] [CLOSE 19:10:29]
+[19:10:41] [601869.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:10:40 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:10:41] [601869.SH] [LANE 1] [CLOSE 19:10:40]
+[19:10:51] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:10:51 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:10:51] [601869.SH] [LANE 0] [CLOSE 19:10:51]
+[19:14:06] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[19:15:08] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:15:08 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:15:08] [600584.SH] [LANE 0] [CLOSE 19:15:08]
+[19:15:29] [600584.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:15:29 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:15:30] [600584.SH] [LANE 1] [CLOSE 19:15:29]
+[19:15:51] [601869.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:15:51 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:15:51] [601869.SH] [LANE 1] [CLOSE 19:15:51]
+[19:16:01] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:16:01 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:16:02] [601869.SH] [LANE 0] [CLOSE 19:16:01]
+[19:19:06] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[19:20:09] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:20:08 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:20:09] [600584.SH] [LANE 0] [CLOSE 19:20:08]
+[19:20:30] [600584.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:20:30 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:20:30] [600584.SH] [LANE 1] [CLOSE 19:20:30]
+[19:20:52] [601869.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:20:51 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:20:52] [601869.SH] [LANE 1] [CLOSE 19:20:51]
+[19:21:01] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:21:01 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:21:02] [601869.SH] [LANE 0] [CLOSE 19:21:01]
+[19:24:08] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[19:25:09] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:25:09 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:25:10] [600584.SH] [LANE 0] [CLOSE 19:25:09]
+[19:25:31] [600584.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:25:30 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:25:31] [600584.SH] [LANE 1] [CLOSE 19:25:30]
+[19:25:52] [601869.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:25:52 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:25:52] [601869.SH] [LANE 1] [CLOSE 19:25:52]
+[19:26:02] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:26:02 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:26:03] [601869.SH] [LANE 0] [CLOSE 19:26:02]
+[19:29:10] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[19:30:12] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:30:12 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:30:12] [600584.SH] [LANE 0] [CLOSE 19:30:12]
+[19:30:33] [600584.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:30:33 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:30:34] [600584.SH] [LANE 1] [CLOSE 19:30:33]
+[19:30:54] [601869.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:30:54 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:30:55] [601869.SH] [LANE 1] [CLOSE 19:30:54]
+[19:31:05] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:31:04 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:31:05] [601869.SH] [LANE 0] [CLOSE 19:31:04]
+[19:34:11] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[19:35:13] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:35:13 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:35:14] [600584.SH] [LANE 0] [CLOSE 19:35:13]
+[19:35:34] [600584.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:35:34 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:35:35] [600584.SH] [LANE 1] [CLOSE 19:35:34]
+[19:35:55] [601869.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:35:55 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:35:55] [601869.SH] [LANE 1] [CLOSE 19:35:55]
+[19:36:06] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:36:05 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:36:06] [601869.SH] [LANE 0] [CLOSE 19:36:05]
+[19:39:11] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[19:40:21] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:40:21 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:40:22] [600584.SH] [LANE 0] [CLOSE 19:40:21]
+[19:40:42] [600584.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:40:42 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:40:43] [600584.SH] [LANE 1] [CLOSE 19:40:42]
+[19:41:04] [601869.SH] [LANE 1] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:41:04 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:41:05] [601869.SH] [LANE 1] [CLOSE 19:41:04]
+[19:41:15] [601869.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:41:15 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:41:15] [601869.SH] [LANE 0] [CLOSE 19:41:15]
+[19:44:11] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[19:45:30] [600584.SH] [LANE 0] [QUOTE-HEALTH] NOT_APPLICABLE connection=OK quote_time=UNKNOWN age=UNKNOWN last_rpc_success=2026-09-16 19:45:30 last_confirmed_fresh=UNKNOWN reason=non-trading session action=LOG_ONLY
+[19:45:30] [600584.SH] [LANE 0] [CLOSE 19:45:30]
+[19:45:52] [600584.SH] [LANE 1] [STOP] 长电科技 v56 cum 0 days gross~Y0
+[19:45:52] [PORTFOLIO-STOP] interrupted
+[19:45:52] [600584.SH] [LANE 0] [STOP] 长电科技 v56 cum 0 days gross~Y0
+[19:45:52] [601869.SH] [LANE 0] [STOP] 长飞光纤 v56 cum 0 days gross~Y0
+[19:45:52] [601869.SH] [LANE 1] [STOP] 长飞光纤 v56 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-16 19:45:53
+============================================================
