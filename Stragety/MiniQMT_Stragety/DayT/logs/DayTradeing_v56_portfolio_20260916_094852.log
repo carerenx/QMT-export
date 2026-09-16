@@ -1,0 +1,279 @@
+============================================================
+  日志文件创建: 2026-09-16 09:48:52
+  策略版本: v56 (for MiniQMT Evn)
+  标的: portfolio
+============================================================
+[09:48:54] [REFERENCE-MODE] shadow: coefficient scaling affects execution baseline; shadow intraday strength is observation only; active requires user-approved validation
+[09:48:54] [连接] MiniQMT 行情服务已连接
+[09:48:54] [账号状态] 8890145315 STOCK: 正常
+[09:48:54] [交易] 已订阅账号 8890145315
+[09:48:54] [RUNTIME] watchdog=15.0s read-RPC-timeout=5.0s instrumented-clients=2; native/router calls may have separate timeouts
+[09:48:54] [PORTFOLIO-START] all account holdings; mode=LIVE
+[09:48:55] [PORTFOLIO-ADD] 600584.SH shares=1000 lot=100
+[09:48:55] [PORTFOLIO-ADD] 601869.SH shares=100 lot=100
+[09:48:56] [DailyData] excluded incomplete current-day bar 20260916
+[09:48:59] [DATA-HEALTH] last_complete=20260915 expected=20260915 raw_close=66.86 tick_lastClose=66.86 count=79 aligned=True status=OK
+[09:48:59] [600584.SH] [LANE 0] [DATA-DBG] last_complete=20260915 hist_open[-3:]=[66.50, 66.80, 65.79] | tick_open=66.91 | lastClose=66.86 | signal_open=66.91 (TICK_OPEN)
+[09:48:59] [600584.SH] [LANE 0] [VOLUME-DATA] complete_count=79 tail=[665414.0, 458552.0, 525796.0]
+[09:48:59] [600584.SH] [LANE 0] [TREND-GUARD PASS] 3-session return -1.85%
+[09:49:00] [DailyData] excluded incomplete current-day bar 20260916
+[09:49:02] [DATA-HEALTH] last_complete=20260915 expected=20260915 raw_close=462.00 tick_lastClose=462.00 count=79 aligned=True status=OK
+[09:49:02] [601869.SH] [LANE 0] [DATA-DBG] last_complete=20260915 hist_open[-3:]=[428.00, 450.00, 446.34] | tick_open=453.03 | lastClose=462.00 | signal_open=453.03 (TICK_OPEN)
+[09:49:02] [601869.SH] [LANE 0] [VOLUME-DATA] complete_count=79 tail=[187736.0, 152814.0, 118593.0]
+[09:49:02] [601869.SH] [LANE 0] [TREND-GUARD BLOCK] 3-session return +6.03%
+[09:49:03] [DailyData] excluded incomplete current-day bar 20260916
+[09:49:05] [DATA-HEALTH] last_complete=20260915 expected=20260915 raw_close=66.86 tick_lastClose=66.86 count=79 aligned=True status=OK
+[09:49:05] [600584.SH] [LANE 1] [DATA-DBG] last_complete=20260915 hist_open[-3:]=[66.50, 66.80, 65.79] | tick_open=66.91 | lastClose=66.86 | signal_open=66.91 (TICK_OPEN)
+[09:49:05] [600584.SH] [LANE 1] [VOLUME-DATA] complete_count=79 tail=[665414.0, 458552.0, 525796.0]
+[09:49:05] [600584.SH] [LANE 1] [TREND-GUARD PASS] 3-session return -1.85%
+[09:49:06] [DailyData] excluded incomplete current-day bar 20260916
+[09:49:08] [DATA-HEALTH] last_complete=20260915 expected=20260915 raw_close=462.00 tick_lastClose=462.00 count=79 aligned=True status=OK
+[09:49:08] [601869.SH] [LANE 1] [DATA-DBG] last_complete=20260915 hist_open[-3:]=[428.00, 450.00, 446.34] | tick_open=453.03 | lastClose=462.00 | signal_open=453.03 (TICK_OPEN)
+[09:49:08] [601869.SH] [LANE 1] [VOLUME-DATA] complete_count=79 tail=[187736.0, 152814.0, 118593.0]
+[09:49:08] [601869.SH] [LANE 1] [TREND-GUARD BLOCK] 3-session return +6.03%
+[09:49:08] [600584.SH] [LANE 0] [START] v56 LIVE
+[09:49:08] [600584.SH] [LANE 0] [TREND-GUARD PASS] 3-session return -1.85%
+[09:49:09] [600584.SH] [LANE 0] [T-SIZE PLAN] at base Y66.91: REV 400 sh / FWD 100 sh; rechecked at order submission
+[09:49:09] [600584.SH] [LANE 0] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y66.91 (source: today open tick) | ATR 4.4% | RSI 32 | Vol_ratio 0.61 | Mult 0.25 | base-trigger Y67.64 
+[09:49:09] [600584.SH] [LANE 0] [REFERENCE] base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:49:09] [600584.SH] [LANE 0] [QUANTILE-TREND] score -0.333 | rank 0.543 | trigger-Q 0.532 | samples 70 | span 8d | ATR-units 0.250
+[09:49:09] [600584.SH] [LANE 0] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.543*(1-2*tail)) = Q0.532 -> raw 0.4171 * scale 0.60 = 0.2503
+[09:49:09] [600584.SH] [LANE 0] [VOLUME] last 525796 | prev10_avg 657290 (last/10d 0.80x) | prev20_avg 856805 (last/20d 0.61x) | n10=10 n20=20 | VALID
+[09:49:09] [600584.SH] [LANE 0] [FACTOR] trend_score -0.33 |  trend_rank +0.54 |  trigger_q +0.53 | 
+[09:49:09] [600584.SH] [LANE 0] [ACCOUNT] Position:1000 sh Y67,130(56%) | Cash:Y7,492 | Sellable:10 lots(1000 sh)
+[09:49:10] [600584.SH] [LANE 0] [REV-T] ENABLED plan 400 sh / remaining 5 entries | base-trigger Y67.64 = open Y66.91*(1+ATR 4.36%*(raw 0.417147*scale 0.600)) | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY | buyback Y67.20 = Y67.64*(1-4.36%*0.15)
+[09:49:10] [600584.SH] [LANE 0] [FWD-T] ENABLED plan 100 sh / remaining 5 entries | plan buy Y65.84 = max(floor Y64.90, trail Y65.84) | plan sell Y66.63 = Y65.84*(1+1.2%) | planned value~Y6,584
+[09:49:10] [600584.SH] [LANE 0] [MOM] 已屏蔽 (MOM_ENABLED=False)
+[09:49:10] [600584.SH] [LANE 0] [CONNECTION] market/trade probes OK
+[09:49:10] [600584.SH] [LANE 0] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 09:49:06 age=4.3s last_rpc_success=2026-09-16 09:49:10 last_confirmed_fresh=2026-09-16 09:49:10 reason=source quote within age limit action=LOG_ONLY
+[09:49:10] [600584.SH] [LANE 0] [MA-POS] price Y67.13 | MA5 Y67.24: BELOW -0.16% | MA20 Y71.62: BELOW -6.27%
+[09:49:10] [600584.SH] [LANE 0] [MA20 RISK] price Y67.13 is below 97% of MA20 (risk line Y69.47)
+[09:49:11] [600584.SH] [LANE 0] [OPEN] [Y67.13] [REV-T needs +0.76% to Y67.64] [FWD-T needs -1.92% to Y65.84]
+[09:49:11] [600584.SH] [LANE 0] [STRENGTH SHADOW] WARMUP minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y66.91 base-trigger=Y67.64 candidate=NOT_READY execution=Y67.64 U0=0.0000 Ul=0.2624 U=0.0000 limit=- reason=WARMUP
+[09:49:11] [600584.SH] [LANE 0] [HB] IDLE Y67.13 REV-T: needs +Y0.51 to Y67.64 | FWD-T: needs -Y1.34 to Y65.79 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:49:18] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[09:49:18] [600584.SH] [LANE 1] [START] v56 LIVE
+[09:49:18] [600584.SH] [LANE 1] [TREND-GUARD PASS] 3-session return -1.85%
+[09:49:18] [600584.SH] [LANE 1] [T-SIZE PLAN] at base Y66.91: REV 400 sh / FWD 100 sh; rechecked at order submission
+[09:49:18] [600584.SH] [LANE 1] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y66.91 (source: today open tick) | ATR 4.4% | RSI 32 | Vol_ratio 0.61 | Mult 0.25 | base-trigger Y67.64 
+[09:49:18] [600584.SH] [LANE 1] [REFERENCE] base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:49:18] [600584.SH] [LANE 1] [QUANTILE-TREND] score -0.333 | rank 0.543 | trigger-Q 0.532 | samples 70 | span 8d | ATR-units 0.250
+[09:49:18] [600584.SH] [LANE 1] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.543*(1-2*tail)) = Q0.532 -> raw 0.4171 * scale 0.60 = 0.2503
+[09:49:18] [600584.SH] [LANE 1] [VOLUME] last 525796 | prev10_avg 657290 (last/10d 0.80x) | prev20_avg 856805 (last/20d 0.61x) | n10=10 n20=20 | VALID
+[09:49:18] [600584.SH] [LANE 1] [FACTOR] trend_score -0.33 |  trend_rank +0.54 |  trigger_q +0.53 | 
+[09:49:18] [600584.SH] [LANE 1] [ACCOUNT] Position:1000 sh Y67,180(56%) | Cash:Y7,492 | Sellable:10 lots(1000 sh)
+[09:49:19] [600584.SH] [LANE 1] [REV-T] ENABLED plan 400 sh / remaining 5 entries | base-trigger Y67.64 = open Y66.91*(1+ATR 4.36%*(raw 0.417147*scale 0.600)) | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY | buyback Y67.20 = Y67.64*(1-4.36%*0.15)
+[09:49:19] [600584.SH] [LANE 1] [FWD-T] ENABLED plan 100 sh / remaining 5 entries | plan buy Y65.79 = max(floor Y64.90, trail Y65.79) | plan sell Y66.58 = Y65.79*(1+1.2%) | planned value~Y6,579
+[09:49:19] [600584.SH] [LANE 1] [MOM] 已屏蔽 (MOM_ENABLED=False)
+[09:49:19] [600584.SH] [LANE 1] [CONNECTION] market/trade probes OK
+[09:49:19] [600584.SH] [LANE 1] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 09:49:15 age=4.2s last_rpc_success=2026-09-16 09:49:19 last_confirmed_fresh=2026-09-16 09:49:19 reason=source quote within age limit action=LOG_ONLY
+[09:49:19] [600584.SH] [LANE 1] [MA-POS] price Y67.18 | MA5 Y67.25: BELOW -0.10% | MA20 Y71.62: BELOW -6.20%
+[09:49:19] [600584.SH] [LANE 1] [MA20 RISK] price Y67.18 is below 97% of MA20 (risk line Y69.47)
+[09:49:19] [600584.SH] [LANE 1] [OPEN] [Y67.18] [REV-T needs +0.68% to Y67.64] [FWD-T needs -2.07% to Y65.79]
+[09:49:19] [600584.SH] [LANE 1] [STRENGTH SHADOW] WARMUP minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y66.91 base-trigger=Y67.64 candidate=NOT_READY execution=Y67.64 U0=0.0000 Ul=0.2624 U=0.0000 limit=- reason=WARMUP
+[09:49:19] [600584.SH] [LANE 1] [HB] IDLE Y67.18 REV-T: needs +Y0.46 to Y67.64 | FWD-T: needs -Y1.34 to Y65.84 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:49:19] [601869.SH] [LANE 0] [START] v56 LIVE
+[09:49:20] [601869.SH] [LANE 0] [TREND-GUARD BLOCK] 3-session return +6.03%
+[09:49:20] [601869.SH] [LANE 0] [T-SIZE PLAN] at base Y453.03: REV 100 sh / FWD 0 sh; rechecked at order submission
+[09:49:20] [601869.SH] [LANE 0] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y453.03 (source: today open tick) | ATR 6.5% | RSI 66 | Vol_ratio 0.81 | Mult 0.37 | base-trigger Y463.83 [REV-T blocked:REV-T blocked by 3-session return +6.03%]
+[09:49:20] [601869.SH] [LANE 0] [REFERENCE] base-trigger Y463.83 | execution Y463.83 | shadow-candidate NOT_READY
+[09:49:20] [601869.SH] [LANE 0] [QUANTILE-TREND] score +0.946 | rank 0.729 | trigger-Q 0.671 | samples 70 | span 8d | ATR-units 0.368
+[09:49:20] [601869.SH] [LANE 0] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.729*(1-2*tail)) = Q0.671 -> raw 0.6132 * scale 0.60 = 0.3679
+[09:49:20] [601869.SH] [LANE 0] [VOLUME] last 118593 | prev10_avg 138694 (last/10d 0.86x) | prev20_avg 147162 (last/20d 0.81x) | n10=10 n20=20 | VALID
+[09:49:20] [601869.SH] [LANE 0] [FACTOR] trend_score +0.95 |  trend_rank +0.73 |  trigger_q +0.67 | 
+[09:49:20] [601869.SH] [LANE 0] [ACCOUNT] Position:100 sh Y46,300(38%) | Cash:Y7,492 | Sellable:1 lots(100 sh)
+[09:49:21] [601869.SH] [LANE 0] [REV-T] BLOCKED REV-T blocked by 3-session return +6.03% | base-trigger Y463.83 = open Y453.03*(1+ATR 6.48%*(raw 0.613163*scale 0.600)) | base-trigger Y463.83 | execution Y463.83 | shadow-candidate NOT_READY | buyback Y459.32 = Y463.83*(1-6.48%*0.15)
+[09:49:21] [601869.SH] [LANE 0] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y453.72 = max(floor Y439.44, trail Y453.72) | plan sell Y459.16 = Y453.72*(1+1.2%) | planned value~Y0
+[09:49:21] [601869.SH] [LANE 0] [MOM] 已屏蔽 (MOM_ENABLED=False)
+[09:49:22] [601869.SH] [LANE 0] [CONNECTION] market/trade probes OK
+[09:49:22] [601869.SH] [LANE 0] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 09:49:18 age=3.8s last_rpc_success=2026-09-16 09:49:21 last_confirmed_fresh=2026-09-16 09:49:21 reason=source quote within age limit action=LOG_ONLY
+[09:49:23] [601869.SH] [LANE 0] [MA-POS] price Y463.13 | MA5 Y458.90: ABOVE +0.92% | MA20 Y414.24: ABOVE +11.80%
+[09:49:23] [601869.SH] [LANE 0] [OPEN] [Y463.13] [REV-T needs +0.15% to Y463.83] [FWD-T needs -2.03% to Y453.72]
+[09:49:23] [601869.SH] [LANE 0] [STRENGTH SHADOW] WARMUP minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y453.03 base-trigger=Y463.83 candidate=NOT_READY execution=Y463.83 U0=0.0000 Ul=0.2904 U=0.0000 limit=- reason=WARMUP
+[09:49:23] [601869.SH] [LANE 0] [STANDBY] Y463.13 no trade direction
+[09:49:23] [601869.SH] [LANE 1] [START] v56 LIVE
+[09:49:23] [601869.SH] [LANE 1] [TREND-GUARD BLOCK] 3-session return +6.03%
+[09:49:24] [601869.SH] [LANE 1] [T-SIZE PLAN] at base Y453.03: REV 100 sh / FWD 0 sh; rechecked at order submission
+[09:49:24] [601869.SH] [LANE 1] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y453.03 (source: today open tick) | ATR 6.5% | RSI 66 | Vol_ratio 0.81 | Mult 0.37 | base-trigger Y463.83 [REV-T blocked:REV-T blocked by 3-session return +6.03%]
+[09:49:24] [601869.SH] [LANE 1] [REFERENCE] base-trigger Y463.83 | execution Y463.83 | shadow-candidate NOT_READY
+[09:49:24] [601869.SH] [LANE 1] [QUANTILE-TREND] score +0.946 | rank 0.729 | trigger-Q 0.671 | samples 70 | span 8d | ATR-units 0.368
+[09:49:24] [601869.SH] [LANE 1] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.729*(1-2*tail)) = Q0.671 -> raw 0.6132 * scale 0.60 = 0.3679
+[09:49:24] [601869.SH] [LANE 1] [VOLUME] last 118593 | prev10_avg 138694 (last/10d 0.86x) | prev20_avg 147162 (last/20d 0.81x) | n10=10 n20=20 | VALID
+[09:49:24] [601869.SH] [LANE 1] [FACTOR] trend_score +0.95 |  trend_rank +0.73 |  trigger_q +0.67 | 
+[09:49:24] [601869.SH] [LANE 1] [ACCOUNT] Position:100 sh Y46,313(38%) | Cash:Y7,492 | Sellable:1 lots(100 sh)
+[09:49:25] [601869.SH] [LANE 1] [REV-T] BLOCKED REV-T blocked by 3-session return +6.03% | base-trigger Y463.83 = open Y453.03*(1+ATR 6.48%*(raw 0.613163*scale 0.600)) | base-trigger Y463.83 | execution Y463.83 | shadow-candidate NOT_READY | buyback Y459.32 = Y463.83*(1-6.48%*0.15)
+[09:49:25] [601869.SH] [LANE 1] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y453.01 = max(floor Y439.44, trail Y453.01) | plan sell Y458.45 = Y453.01*(1+1.2%) | planned value~Y0
+[09:49:25] [601869.SH] [LANE 1] [MOM] 已屏蔽 (MOM_ENABLED=False)
+[09:49:25] [601869.SH] [LANE 1] [CONNECTION] market/trade probes OK
+[09:49:25] [601869.SH] [LANE 1] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 09:49:21 age=4.0s last_rpc_success=2026-09-16 09:49:25 last_confirmed_fresh=2026-09-16 09:49:25 reason=source quote within age limit action=LOG_ONLY
+[09:49:25] [601869.SH] [LANE 1] [MA-POS] price Y463.13 | MA5 Y458.90: ABOVE +0.92% | MA20 Y414.24: ABOVE +11.80%
+[09:49:25] [601869.SH] [LANE 1] [OPEN] [Y463.13] [REV-T needs +0.15% to Y463.83] [FWD-T needs -2.19% to Y453.01]
+[09:49:25] [601869.SH] [LANE 1] [STRENGTH SHADOW] WARMUP minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y453.03 base-trigger=Y463.83 candidate=NOT_READY execution=Y463.83 U0=0.0000 Ul=0.2904 U=0.0000 limit=- reason=WARMUP
+[09:49:25] [601869.SH] [LANE 1] [STANDBY] Y463.13 no trade direction
+[09:50:11] [600584.SH] [LANE 0] [HB] IDLE Y67.34 REV-T: needs +Y0.30 to Y67.64 | FWD-T: needs -Y1.35 to Y65.99 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:50:21] [600584.SH] [LANE 1] [HB] IDLE Y67.33 REV-T: needs +Y0.31 to Y67.64 | FWD-T: needs -Y1.35 to Y65.98 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:51:11] [600584.SH] [LANE 0] [HB] IDLE Y67.29 REV-T: needs +Y0.35 to Y67.64 | FWD-T: needs -Y1.30 to Y65.99 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:51:20] [600584.SH] [LANE 1] [HB] IDLE Y67.23 REV-T: needs +Y0.41 to Y67.64 | FWD-T: needs -Y1.25 to Y65.98 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:52:14] [600584.SH] [LANE 0] [HB] IDLE Y67.34 REV-T: needs +Y0.30 to Y67.64 | FWD-T: needs -Y1.35 to Y65.99 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:52:21] [600584.SH] [LANE 1] [HB] IDLE Y67.37 REV-T: needs +Y0.27 to Y67.64 | FWD-T: needs -Y1.35 to Y66.02 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:53:16] [600584.SH] [LANE 0] [HB] IDLE Y67.46 REV-T: needs +Y0.18 to Y67.64 | FWD-T: needs -Y1.35 to Y66.11 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:53:21] [600584.SH] [LANE 1] [HB] IDLE Y67.47 REV-T: needs +Y0.17 to Y67.64 | FWD-T: needs -Y1.35 to Y66.12 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:54:10] [600584.SH] [LANE 0] [STRENGTH SHADOW] WARMUP minutes=4 components=[0.0, 0.0, 0.0] S=0.000 base=Y66.91 base-trigger=Y67.64 candidate=NOT_READY execution=Y67.64 U0=0.0000 Ul=0.2624 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[09:54:14] [600584.SH] [LANE 0] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 09:54:12 age=2.5s last_rpc_success=2026-09-16 09:54:14 last_confirmed_fresh=2026-09-16 09:54:14 reason=source quote within age limit action=LOG_ONLY
+[09:54:14] [600584.SH] [LANE 0] [HB] IDLE Y67.41 REV-T: needs +Y0.23 to Y67.64 | FWD-T: needs -Y1.30 to Y66.11 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:54:19] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[09:54:20] [600584.SH] [LANE 1] [STRENGTH SHADOW] WARMUP minutes=4 components=[0.0, 0.0, 0.0] S=0.000 base=Y66.91 base-trigger=Y67.64 candidate=NOT_READY execution=Y67.64 U0=0.0000 Ul=0.2624 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[09:54:22] [600584.SH] [LANE 1] [HB] IDLE Y67.36 REV-T: needs +Y0.28 to Y67.64 | FWD-T: needs -Y1.24 to Y66.12 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:54:26] [601869.SH] [LANE 0] [STRENGTH SHADOW] WARMUP minutes=2 components=[0.0, 0.0, 0.0] S=0.000 base=Y453.03 base-trigger=Y463.83 candidate=NOT_READY execution=Y463.83 U0=0.0000 Ul=0.2904 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[09:54:26] [601869.SH] [LANE 0] [STANDBY] Y462.88 no trade direction
+[09:54:26] [600584.SH] [LANE 1] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 09:54:24 age=2.6s last_rpc_success=2026-09-16 09:54:26 last_confirmed_fresh=2026-09-16 09:54:26 reason=source quote within age limit action=LOG_ONLY
+[09:54:27] [601869.SH] [LANE 1] [STRENGTH SHADOW] WARMUP minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y453.03 base-trigger=Y463.83 candidate=NOT_READY execution=Y463.83 U0=0.0000 Ul=0.2904 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[09:54:27] [601869.SH] [LANE 1] [STANDBY] Y462.88 no trade direction
+[09:54:43] [601869.SH] [LANE 0] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 09:54:39 age=4.2s last_rpc_success=2026-09-16 09:54:43 last_confirmed_fresh=2026-09-16 09:54:43 reason=source quote within age limit action=LOG_ONLY
+[09:54:51] [601869.SH] [LANE 1] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 09:54:48 age=3.4s last_rpc_success=2026-09-16 09:54:51 last_confirmed_fresh=2026-09-16 09:54:51 reason=source quote within age limit action=LOG_ONLY
+[09:55:15] [600584.SH] [LANE 0] [HB] IDLE Y67.31 REV-T: needs +Y0.33 to Y67.64 | FWD-T: needs -Y1.20 to Y66.11 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:55:23] [600584.SH] [LANE 1] [HB] IDLE Y67.29 REV-T: needs +Y0.35 to Y67.64 | FWD-T: needs -Y1.17 to Y66.12 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:56:16] [600584.SH] [LANE 0] [HB] IDLE Y67.29 REV-T: needs +Y0.35 to Y67.64 | FWD-T: needs -Y1.18 to Y66.11 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:56:24] [600584.SH] [LANE 1] [HB] IDLE Y67.23 REV-T: needs +Y0.41 to Y67.64 | FWD-T: needs -Y1.11 to Y66.12 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:57:16] [600584.SH] [LANE 0] [HB] IDLE Y67.27 REV-T: needs +Y0.37 to Y67.64 | FWD-T: needs -Y1.16 to Y66.11 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:57:25] [600584.SH] [LANE 1] [HB] IDLE Y67.25 REV-T: needs +Y0.39 to Y67.64 | FWD-T: needs -Y1.13 to Y66.12 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:58:17] [600584.SH] [LANE 0] [HB] IDLE Y67.15 REV-T: needs +Y0.49 to Y67.64 | FWD-T: needs -Y1.04 to Y66.11 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:58:25] [600584.SH] [LANE 1] [HB] IDLE Y67.13 REV-T: needs +Y0.51 to Y67.64 | FWD-T: needs -Y1.01 to Y66.12 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:59:10] [600584.SH] [LANE 0] [STRENGTH SHADOW] WARMUP minutes=9 components=[0.0, 0.0, 0.0] S=0.000 base=Y66.91 base-trigger=Y67.64 candidate=NOT_READY execution=Y67.64 U0=0.0000 Ul=0.2624 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[09:59:11] [600584.SH] [LANE 0] [MA-POS] price Y67.18 | MA5 Y67.25: BELOW -0.10% | MA20 Y71.62: BELOW -6.20%
+[09:59:11] [600584.SH] [LANE 0] [MA20 RISK] price Y67.18 is below 97% of MA20 (risk line Y69.47)
+[09:59:17] [600584.SH] [LANE 0] [HB] IDLE Y67.19 REV-T: needs +Y0.45 to Y67.64 | FWD-T: needs -Y1.08 to Y66.11 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:59:19] [600584.SH] [LANE 0] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 09:59:15 age=4.0s last_rpc_success=2026-09-16 09:59:18 last_confirmed_fresh=2026-09-16 09:59:18 reason=source quote within age limit action=LOG_ONLY
+[09:59:20] [600584.SH] [LANE 1] [MA-POS] price Y67.20 | MA5 Y67.25: BELOW -0.07% | MA20 Y71.62: BELOW -6.18%
+[09:59:20] [600584.SH] [LANE 1] [MA20 RISK] price Y67.20 is below 97% of MA20 (risk line Y69.47)
+[09:59:20] [600584.SH] [LANE 1] [STRENGTH SHADOW] WARMUP minutes=9 components=[0.0, 0.0, 0.0] S=0.000 base=Y66.91 base-trigger=Y67.64 candidate=NOT_READY execution=Y67.64 U0=0.0000 Ul=0.2624 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[09:59:24] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[09:59:24] [601869.SH] [LANE 0] [MA-POS] price Y460.49 | MA5 Y458.38: ABOVE +0.46% | MA20 Y414.11: ABOVE +11.20%
+[09:59:26] [600584.SH] [LANE 1] [HB] IDLE Y67.17 REV-T: needs +Y0.47 to Y67.64 | FWD-T: needs -Y1.05 to Y66.12 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[09:59:29] [601869.SH] [LANE 1] [MA-POS] price Y460.50 | MA5 Y458.38: ABOVE +0.46% | MA20 Y414.11: ABOVE +11.20%
+[09:59:29] [601869.SH] [LANE 1] [STRENGTH SHADOW] WARMUP minutes=2 components=[0.0, 0.0, 0.0] S=0.000 base=Y453.03 base-trigger=Y463.83 candidate=NOT_READY execution=Y463.83 U0=0.0000 Ul=0.2904 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[09:59:29] [601869.SH] [LANE 1] [STANDBY] Y460.50 no trade direction
+[09:59:30] [601869.SH] [LANE 0] [STRENGTH SHADOW] WARMUP minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y453.03 base-trigger=Y463.83 candidate=NOT_READY execution=Y463.83 U0=0.0000 Ul=0.2904 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[09:59:30] [601869.SH] [LANE 0] [STANDBY] Y460.50 no trade direction
+[09:59:41] [600584.SH] [LANE 1] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 09:59:36 age=4.4s last_rpc_success=2026-09-16 09:59:40 last_confirmed_fresh=2026-09-16 09:59:40 reason=source quote within age limit action=LOG_ONLY
+[10:00:10] [601869.SH] [LANE 0] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:00:06 age=3.8s last_rpc_success=2026-09-16 10:00:09 last_confirmed_fresh=2026-09-16 10:00:09 reason=source quote within age limit action=LOG_ONLY
+[10:00:17] [600584.SH] [LANE 0] [HB] IDLE Y67.10 REV-T: needs +Y0.54 to Y67.64 | FWD-T: needs -Y0.99 to Y66.11 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[10:00:20] [601869.SH] [LANE 1] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:00:18 age=2.4s last_rpc_success=2026-09-16 10:00:20 last_confirmed_fresh=2026-09-16 10:00:20 reason=source quote within age limit action=LOG_ONLY
+[10:00:30] [600584.SH] [LANE 1] [HB] IDLE Y67.13 REV-T: needs +Y0.51 to Y67.64 | FWD-T: needs -Y1.01 to Y66.12 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[10:01:20] [600584.SH] [LANE 0] [HB] IDLE Y67.06 REV-T: needs +Y0.58 to Y67.64 | FWD-T: needs -Y0.95 to Y66.11 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[10:01:34] [600584.SH] [LANE 1] [HB] IDLE Y67.12 REV-T: needs +Y0.52 to Y67.64 | FWD-T: needs -Y1.00 to Y66.12 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[10:02:19] [600584.SH] [LANE 0] [HB] IDLE Y67.13 REV-T: needs +Y0.51 to Y67.64 | FWD-T: needs -Y1.02 to Y66.11 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[10:02:36] [600584.SH] [LANE 1] [HB] IDLE Y67.19 REV-T: needs +Y0.45 to Y67.64 | FWD-T: needs -Y1.07 to Y66.12 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[10:03:19] [600584.SH] [LANE 0] [HB] IDLE Y67.22 REV-T: needs +Y0.42 to Y67.64 | FWD-T: needs -Y1.11 to Y66.11 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[10:03:37] [600584.SH] [LANE 1] [HB] IDLE Y67.22 REV-T: needs +Y0.42 to Y67.64 | FWD-T: needs -Y1.10 to Y66.12 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[10:04:11] [600584.SH] [LANE 0] [STRENGTH SHADOW] WARMUP minutes=14 components=[0.507, 0.618, 0.0] S=0.444 base=Y66.91 base-trigger=Y67.64 candidate=NOT_READY execution=Y67.64 U0=0.0000 Ul=0.2624 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[10:04:20] [600584.SH] [LANE 1] [STRENGTH SHADOW] WARMUP minutes=14 components=[0.549, 0.718, 0.0] S=0.477 base=Y66.91 base-trigger=Y67.64 candidate=NOT_READY execution=Y67.64 U0=0.0000 Ul=0.2624 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[10:04:21] [600584.SH] [LANE 0] [HB] IDLE Y67.52 REV-T: needs +Y0.12 to Y67.64 | FWD-T: needs -Y1.35 to Y66.17 | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[10:04:24] [600584.SH] [LANE 0] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:04:21 age=3.6s last_rpc_success=2026-09-16 10:04:24 last_confirmed_fresh=2026-09-16 10:04:24 reason=source quote within age limit action=LOG_ONLY
+[10:04:26] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[10:04:31] [601869.SH] [LANE 0] [STRENGTH SHADOW] WARMUP minutes=5 components=[0.0, 0.0, 0.0] S=0.000 base=Y453.03 base-trigger=Y463.83 candidate=NOT_READY execution=Y463.83 U0=0.0000 Ul=0.2904 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[10:04:31] [601869.SH] [LANE 0] [STANDBY] Y464.64 no trade direction
+[10:04:34] [601869.SH] [LANE 1] [STRENGTH SHADOW] WARMUP minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y453.03 base-trigger=Y463.83 candidate=NOT_READY execution=Y463.83 U0=0.0000 Ul=0.2904 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[10:04:34] [601869.SH] [LANE 1] [STANDBY] Y465.00 no trade direction
+[10:04:38] [600584.SH] [LANE 0] [REV-T spike #1/5] Y67.64 >= Y67.64
+[10:04:38] [600584.SH] [LANE 1] [REV-T spike #1/5] Y67.64 >= Y67.64
+[10:04:38] [600584.SH] [LANE 1] [HB] SPIKING Y67.64 peak Y67.64 pullback 0.00% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[10:04:49] [600584.SH] [LANE 1] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:04:45 age=3.8s last_rpc_success=2026-09-16 10:04:48 last_confirmed_fresh=2026-09-16 10:04:48 reason=source quote within age limit action=LOG_ONLY
+[10:05:01] [600584.SH] [LANE 1] [STRENGTH SHADOW] ADAPTIVE minutes=15 components=[0.837, 1.0, 0.784] S=0.714 base=Y66.91 base-trigger=Y67.64 candidate=Y67.64 execution=Y67.64 U0=0.2503 Ul=0.2503 U=0.2503 limit=original reason=ADAPTIVE
+[10:05:01] [600584.SH] [LANE 0] [STRENGTH SHADOW] ADAPTIVE minutes=15 components=[0.837, 1.0, 0.784] S=0.681 base=Y66.91 base-trigger=Y67.64 candidate=Y67.64 execution=Y67.64 U0=0.2503 Ul=0.2503 U=0.2503 limit=original reason=ADAPTIVE
+[10:05:21] [600584.SH] [LANE 0] [HB] SPIKING Y67.50 peak Y67.64 pullback 0.21% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:05:38] [600584.SH] [LANE 1] [HB] SPIKING Y67.49 peak Y67.64 pullback 0.22% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:05:41] [601869.SH] [LANE 0] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:05:39 age=2.7s last_rpc_success=2026-09-16 10:05:41 last_confirmed_fresh=2026-09-16 10:05:41 reason=source quote within age limit action=LOG_ONLY
+[10:05:42] [601869.SH] [LANE 1] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:05:39 age=3.3s last_rpc_success=2026-09-16 10:05:42 last_confirmed_fresh=2026-09-16 10:05:42 reason=source quote within age limit action=LOG_ONLY
+[10:06:00] [600584.SH] [LANE 1] [STRENGTH SHADOW] STRONG minutes=16 components=[0.768, 1.0, 0.409] S=0.906 base=Y66.91 base-trigger=Y67.64 candidate=Y67.64 execution=Y67.64 U0=0.2503 Ul=0.2503 U=0.2503 limit=original reason=STRONG
+[10:06:01] [600584.SH] [LANE 0] [STRENGTH SHADOW] STRONG minutes=16 components=[0.768, 1.0, 0.409] S=0.873 base=Y66.91 base-trigger=Y67.64 candidate=Y67.64 execution=Y67.64 U0=0.2503 Ul=0.2503 U=0.2503 limit=original reason=STRONG
+[10:06:24] [600584.SH] [LANE 0] [HB] SPIKING Y67.50 peak Y67.64 pullback 0.21% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:06:39] [600584.SH] [LANE 1] [HB] SPIKING Y67.59 peak Y67.64 pullback 0.07% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:06:44] [600584.SH] [LANE 0] [STRENGTH SHADOW] TOUCHED minutes=16 components=[0.768, 1.0, 0.409] S=0.873 base=Y66.91 base-trigger=Y67.64 candidate=Y67.64 execution=Y67.64 U0=0.2503 Ul=0.2503 U=0.2503 limit=original reason=TOUCHED
+[10:06:44] [600584.SH] [LANE 1] [STRENGTH SHADOW] TOUCHED minutes=16 components=[0.768, 1.0, 0.409] S=0.906 base=Y66.91 base-trigger=Y67.64 candidate=Y67.64 execution=Y67.64 U0=0.2503 Ul=0.2503 U=0.2503 limit=original reason=TOUCHED
+[10:07:05] [600584.SH] [LANE 1] [STRENGTH SHADOW] STRONG minutes=17 components=[1.0, 1.0, 1.0] S=1.000 base=Y66.91 base-trigger=Y67.64 candidate=Y67.64 execution=Y67.64 U0=0.2503 Ul=0.2503 U=0.2503 limit=original reason=STRONG
+[10:07:05] [600584.SH] [LANE 0] [STRENGTH SHADOW] STRONG minutes=17 components=[1.0, 1.0, 1.0] S=1.000 base=Y66.91 base-trigger=Y67.64 candidate=Y67.64 execution=Y67.64 U0=0.2503 Ul=0.2503 U=0.2503 limit=original reason=STRONG
+[10:07:25] [600584.SH] [LANE 0] [HB] SPIKING Y67.60 peak Y67.65 pullback 0.07% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:07:39] [600584.SH] [LANE 1] [HB] SPIKING Y67.59 peak Y67.65 pullback 0.09% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:07:45] [600584.SH] [LANE 0] [STRENGTH SHADOW] TOUCHED minutes=17 components=[1.0, 1.0, 1.0] S=1.000 base=Y66.91 base-trigger=Y67.64 candidate=Y67.64 execution=Y67.64 U0=0.2503 Ul=0.2503 U=0.2503 limit=original reason=TOUCHED
+[10:07:45] [600584.SH] [LANE 1] [STRENGTH SHADOW] TOUCHED minutes=17 components=[1.0, 1.0, 1.0] S=1.000 base=Y66.91 base-trigger=Y67.64 candidate=Y67.64 execution=Y67.64 U0=0.2503 Ul=0.2503 U=0.2503 limit=original reason=TOUCHED
+[10:08:25] [600584.SH] [LANE 0] [HB] SPIKING Y67.74 peak Y67.74 pullback 0.00% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:08:39] [600584.SH] [LANE 1] [HB] SPIKING Y67.79 peak Y67.79 pullback 0.00% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:09:11] [600584.SH] [LANE 0] [MA-POS] price Y67.84 | MA5 Y67.38: ABOVE +0.69% | MA20 Y71.66: BELOW -5.32%
+[10:09:11] [600584.SH] [LANE 0] [MA20 RISK] price Y67.84 is below 97% of MA20 (risk line Y69.51)
+[10:09:22] [600584.SH] [LANE 1] [MA-POS] price Y67.84 | MA5 Y67.38: ABOVE +0.69% | MA20 Y71.66: BELOW -5.32%
+[10:09:22] [600584.SH] [LANE 1] [MA20 RISK] price Y67.84 is below 97% of MA20 (risk line Y69.51)
+[10:09:27] [600584.SH] [LANE 0] [HB] SPIKING Y67.83 peak Y67.86 pullback 0.04% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:09:29] [601869.SH] [LANE 1] [MA-POS] price Y464.88 | MA5 Y459.25: ABOVE +1.23% | MA20 Y414.33: ABOVE +12.20%
+[10:09:30] [601869.SH] [LANE 0] [MA-POS] price Y464.88 | MA5 Y459.25: ABOVE +1.23% | MA20 Y414.33: ABOVE +12.20%
+[10:09:31] [600584.SH] [LANE 0] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:09:27 age=4.2s last_rpc_success=2026-09-16 10:09:31 last_confirmed_fresh=2026-09-16 10:09:31 reason=source quote within age limit action=LOG_ONLY
+[10:09:32] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[10:09:34] [601869.SH] [LANE 1] [STRENGTH SHADOW] WARMUP minutes=1 components=[0.0, 0.0, 0.0] S=0.000 base=Y453.03 base-trigger=Y463.83 candidate=NOT_READY execution=Y463.83 U0=0.0000 Ul=0.2904 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[10:09:34] [601869.SH] [LANE 1] [STANDBY] Y464.96 no trade direction
+[10:09:37] [601869.SH] [LANE 0] [STRENGTH SHADOW] WARMUP minutes=4 components=[0.0, 0.0, 0.0] S=0.000 base=Y453.03 base-trigger=Y463.83 candidate=NOT_READY execution=Y463.83 U0=0.0000 Ul=0.2904 U=0.0000 limit=- reason=INCOMPLETE_MINUTE
+[10:09:37] [601869.SH] [LANE 0] [STANDBY] Y464.88 no trade direction
+[10:09:40] [600584.SH] [LANE 1] [HB] SPIKING Y67.85 peak Y67.86 pullback 0.01% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:09:57] [600584.SH] [LANE 1] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:09:54 age=3.4s last_rpc_success=2026-09-16 10:09:57 last_confirmed_fresh=2026-09-16 10:09:57 reason=source quote within age limit action=LOG_ONLY
+[10:10:27] [600584.SH] [LANE 0] [HB] SPIKING Y67.84 peak Y67.88 pullback 0.06% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:10:40] [600584.SH] [LANE 1] [HB] SPIKING Y67.81 peak Y67.88 pullback 0.10% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:11:08] [601869.SH] [LANE 0] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:11:06 age=2.2s last_rpc_success=2026-09-16 10:11:08 last_confirmed_fresh=2026-09-16 10:11:08 reason=source quote within age limit action=LOG_ONLY
+[10:11:23] [601869.SH] [LANE 1] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:11:18 age=4.7s last_rpc_success=2026-09-16 10:11:22 last_confirmed_fresh=2026-09-16 10:11:22 reason=source quote within age limit action=LOG_ONLY
+[10:11:29] [600584.SH] [LANE 0] [HB] SPIKING Y67.80 peak Y67.88 pullback 0.12% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:11:41] [600584.SH] [LANE 1] [HB] SPIKING Y67.81 peak Y67.88 pullback 0.10% | base-trigger Y67.64 | execution Y67.64 | shadow-candidate Y67.64
+[10:12:11] [600584.SH] [LANE 0] [REV-T sell trig] peak Y67.88 pullback 0.22% → Y67.73
+[10:12:11] [600584.SH] [LANE 0] [T-SIZE] REV-T sell | price=Y67.73 target=Y40000 base-fraction=40% | 4 units x 100 sh = 400 sh (~Y27092)
+[10:12:12] [600584.SH] [LANE 0] [ORDER-REV-T sell] Y67.73 × 400 sh
+[10:12:12]   >>> 下单卖出: PEER x 400股 600584.SH [COMPETE]
+[10:12:12] [委托] 卖 Y60.17 0/400股 -> 已报
+[10:12:12] [委托] 卖 Y60.17 0/400股 -> 已报
+[10:12:12] [成交] 卖 600584.SH Y67.69 x 400股 = Y27,076
+[10:12:12] [委托] 卖 Y60.17 400/400股 -> 全成
+[10:12:12] [600584.SH] [LANE 0] [EXECUTION] order=635106068 REV-T sell qty=400 avg=Y67.6900 reference=Y67.7300 realized-gross=Y0.00 total-gross=Y0.00 fees=NOT_INCLUDED
+[10:12:15] [600584.SH] [LANE 1] [REV-T sell trig] peak Y67.88 pullback 0.29% → Y67.68
+[10:12:16] [600584.SH] [LANE 1] [T-SIZE] REV-T sell | price=Y67.68 target=Y40000 base-fraction=40% | 1 units x 100 sh = 100 sh (~Y6768)
+[10:12:16] [600584.SH] [LANE 1] [ORDER-REV-T sell] Y67.68 × 100 sh
+[10:12:16]   >>> 下单卖出: PEER x 100股 600584.SH [COMPETE]
+[10:12:17] [委托] 卖 Y60.17 0/100股 -> 已报
+[10:12:17] [委托] 卖 Y60.17 0/100股 -> 已报
+[10:12:17] [成交] 卖 600584.SH Y67.68 x 100股 = Y6,768
+[10:12:17] [委托] 卖 Y60.17 100/100股 -> 全成
+[10:12:17] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:17] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:18] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:18] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:19] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:20] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:20] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:21] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:22] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:22] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:23] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:24] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:24] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:25] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:25] [撤单] order_id=635106068
+[10:12:26] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:26] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:27] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:28] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:29] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:29] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:30] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:31] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:31] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:32] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:33] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:33] [600584.SH] [LANE 1] [EXECUTION-WAIT] order=635106068 execution quantity exceeds submitted quantity
+[10:12:33] [600584.SH] [LANE 1] [ORDER-UNCERTAIN] order=635106068; account orders paused; reconcile broker orders
+[10:12:33] [600584.SH] [LANE 1] [ERROR] unresolved broker order 635106068
+[10:12:33] [600584.SH] [LANE 1] [STOP] 长电科技 v56 cum 0 days gross~Y0
+[10:12:33] [CALL-SLOW] TICK 600584.SH#1 elapsed=18.7s
+[10:12:33] [STATE-BLOCKED] STATE-BLOCKED: worker stopped; preserve checkpoint and reconcile; automatic trading stopped; checkpoint retained
+[10:12:33] [600584.SH] [LANE 0] [WARN] position not bought back!
+[10:12:33] [600584.SH] [LANE 0] [STOP] 长电科技 v56 cum 0 days gross~Y0
+[10:12:33] [601869.SH] [LANE 0] [STOP] 长飞光纤 v56 cum 0 days gross~Y0
+[10:12:33] [601869.SH] [LANE 1] [STOP] 长飞光纤 v56 cum 0 days gross~Y0
+
+============================================================
+  日志结束: 2026-09-16 10:12:34
+============================================================

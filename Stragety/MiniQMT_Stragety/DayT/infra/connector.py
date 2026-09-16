@@ -676,6 +676,29 @@ class MiniQMTConnector:
 
     # ── 下单 ──
 
+    def _recover_order_id(self, remark, stock_code, order_type, shares):
+        """Resolve an accepted asynchronous order by its unique correlation remark."""
+        for delay in (0.0, 0.2, 0.5):
+            if delay:
+                _time.sleep(delay)
+            try:
+                orders = self.trader.query_stock_orders(
+                    self._account_obj, cancelable_only=False) or []
+            except Exception:
+                continue
+            for order in orders:
+                if (_pick(order, 'order_remark', 'm_strOrderRemark', default='') == remark and
+                        _pick(order, 'stock_code', 'm_strInstrumentID', default='') == stock_code and
+                        int(_pick(order, 'order_type', 'm_nOrderType', default=0)) == order_type and
+                        int(_pick(order, 'order_volume', 'm_nOrderVolume', default=0)) == shares):
+                    order_id = _pick(order, 'order_id', 'm_nOrderID',
+                                     'order_sysid', 'm_strOrderSysID', default=None)
+                    if order_id is not None and str(order_id) not in ('', '0', '-1'):
+                        _log('[ORDER-ID-RECOVERED] remark={} order={}'.format(
+                            remark, order_id))
+                        return order_id
+        return None
+
     def order_stock(self, stock_code, shares, style, price=None):
         """对应 QMT: order_shares(...)"""
         from xtquant import xtconstant
@@ -718,11 +741,19 @@ class MiniQMTConnector:
             dir_name, display_price, shares, stock_code, style_name))
 
         try:
+            sequence = getattr(self, '_order_sequence', 0) + 1
+            self._order_sequence = sequence
+            correlation_remark = 'DayT{}{:x}{:x}'.format(
+                'B' if order_type == xtconstant.STOCK_BUY else 'S',
+                _time.time_ns(), sequence)
             ret = self.trader.order_stock(
                 self._account_obj, stock_code, order_type, shares,
                 price_type, order_price,
-                cfg.STRATEGY_NAME, '迷你反T_{}'.format(dir_name),
+                cfg.STRATEGY_NAME, correlation_remark,
             )
+            if ret is None or str(ret) in ('', '0', '-1'):
+                ret = self._recover_order_id(
+                    correlation_remark, stock_code, order_type, shares)
             self.order_pending = True
             return ret
         except Exception as e:

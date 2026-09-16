@@ -10,21 +10,17 @@ DIRECTIONAL_THRESHOLD = 0.20  # 候选仅 0 / 0.20 / 0.40；不得按留出结�
 DIRECTIONAL_ENABLED = True
 LONG_RESEARCH_DISABLED = True  # v56：正T消融为负，冻结该通道直至独立样本验证通过。
 OVERNIGHT_ENABLED = True
-MAX_OPEN_CYCLES = 2  # 主策略和MOM合计；阶梯属于原周期。
+MAX_OPEN_CYCLES = 2  # 两条主策略研究通道；阶梯属于原周期。
 CYCLE_EXPOSURE_FRACTION = 0.50  # 未平数量绝对值合计/原始底仓，双向不得抵消。
 CYCLE_FEE_RATE = 0.0005  # 研究预留假设，不代表券商真实费率。
 CYCLE_MINIMUM_FEE = 5.0
 CYCLE_AGE_ALERT_DAYS = 3
 CYCLE_MAX_HOLDING_DAYS = 3
-CYCLE_ADVERSE_ATR_MULT = 0.10
-CYCLE_MIN_ADVERSE_PCT = 0.01
-SHORT_SESSION_EXIT_TIME = '14:50:00'
 SHORT_FIVE_DAY_RETURN_MAX = 0.03
 SHORT_NEW_ENTRY_CUTOFF = '14:20:00'
 SHORT_CONFIRM_MIN_BARS = 2
 SHORT_CONFIRM_MIN_EXTENSION_PCT = 0.0015
 SHORT_CONFIRM_MIN_PULLBACK_PCT = 0.0020
-SHORT_ADVERSE_COOLDOWN_SEC = 3600.0
 import os, sys, time as _time, argparse, math, traceback as _traceback
 from collections import deque
 from datetime import datetime, timedelta
@@ -137,11 +133,6 @@ def short_five_day_momentum_guard(completed_closes,
     }
 
 
-def short_session_exit_reason(now_hms, cutoff=SHORT_SESSION_EXIT_TIME):
-    """Return the deterministic close-out reason at or after the cutoff."""
-    return 'SESSION_END' if now_hms >= cutoff else ''
-
-
 def confirmed_short_reversal(trigger, peak, price, armed_bars,
                              minimum_bars=SHORT_CONFIRM_MIN_BARS,
                              minimum_extension_pct=SHORT_CONFIRM_MIN_EXTENSION_PCT,
@@ -163,12 +154,8 @@ STATE_SOLD = cfg.STATE_SOLD; STATE_DIPPING = cfg.STATE_DIPPING
 STATE_DONE = cfg.STATE_DONE; STATE_FORCED = cfg.STATE_FORCED
 STATE_BT_DIPPING = cfg.STATE_BT_DIPPING; STATE_BT_BOUGHT = cfg.STATE_BT_BOUGHT
 STATE_BT_SPIKING = cfg.STATE_BT_SPIKING
-MOM_STATE_REV_YIELD = 'MOM_REV_YIELD'
-MOM_STATE_BUYBACK_COOLING = 'MOM_BUYBACK_COOLING'
-MOM_STATE_SELLBACK_COOLING = 'MOM_SELLBACK_COOLING'
 
 # 反T卖出后先跌到卖价99%，未触及原买回价即反弹回99%时买回
-REV_REBOUND_BUYBACK_RATIO = 0.99
 
 # 阶梯加仓/减仓参数 (成功卖出/买入后, 在成交价基础上加减价监测追加)
 LADDER_UP_STEP_PCT   = 0.015   # 反T: 卖出后价格再涨 +1.5% → 追加冲高回落卖出
@@ -178,35 +165,6 @@ LADDER_DOWN_STEP_PCT = 0.015   # 正T: 买入后价格再跌 -1.5% → 追加探
 FILL_TIMEOUT_SEC = 8.0   # 等待满额成交的超时秒数
 
 # 短线动量反转机制 (2分钟事件驱动, 独立于日线信号)
-# MOM/REV-T buybacks use an explicit ask1 limit to avoid peer-price
-# orders reserving cash at the daily upper-limit price.
-
-MOM_ENABLED           = False          # ← MOM屏蔽回测: 禁用动量触发，仅保留REV-T
-MOM_WINDOW_SEC        = 120           # 检测窗口: 2分钟内价格变化
-MOM_ATR_WINDOW_SEC    = 600           # ATR计算窗口: 最近10分钟
-MOM_ATR_MULT          = 3.6           # 触发幅度 = 2 × 最近10分钟ATR (自适应)
-MOM_TRIGGER_MIN_PCT   = 0.01          # 触发幅度下限 1% (防超低波动日过度触发)
-MOM_TRIGGER_MAX_PCT   = 0.06          # 触发幅度上限 6% (防超高波动日无法触发)
-MOM_SHORT_BUYBACK_PCT = 0.015         # 反T: 卖出后价格跌1.2% → 触发探底回升买入
-MOM_LONG_SELLBACK_PCT = 0.018         # 正T: 买入后价格涨1.5% → 触发冲高回落卖出
-MOM_MAX_DAILY_TRADES  = 3             # 短线机制当日最大开腿次数(防过度交易)
-MOM_EMERGENCY_BUYBACK_ENABLED = False # 紧急买回开关 — 反T卖后价格反涨超卖价3%时强制买回止损。默认关闭; True=开启紧急买回止损
-
-# REV-T临近触发区时MOM让权（独立开关）
-MOM_REV_PRIORITY_ENABLED  = True       # True=MOM接近REV-T触发区时停止卖出并让权
-MOM_REV_PRIORITY_BAND_PCT = 0.012      # REV-T触发价下方1.2%起进入让权区
-
-# MOM独立、波动自适应回撤确认,回落冻结（独立开关）
-MOM_ADAPTIVE_PULLBACK_ENABLED = True   # False=恢复使用cfg.PULLBACK_PCT
-MOM_PULLBACK_ATR_MULT         = 0.30   # 回撤阈值取最近分钟波幅ATR的30%
-MOM_PULLBACK_MIN_PCT          = 0.0020 # 下限0.20%，过滤高价股盘口微回撤
-MOM_PULLBACK_MAX_PCT          = 0.0060 # 上限0.60%，限制峰值让利
-
-# MOM平仓确认冷却（首次12秒，续冻每轮递减2秒，最低2秒）
-MOM_CLOSE_COOLDOWN_START_SEC = 12.0
-MOM_CLOSE_COOLDOWN_STEP_SEC = 2.0
-MOM_CLOSE_COOLDOWN_MIN_SEC = 2.0
-MOM_CLOSE_MIN_PROFIT_PCT = 0.005
 
 # v39: Freeze new legs near the normal 10% upper limit, then require a meaningful opening-board retreat to persist for 120s.
 LIMIT_UP_GUARD_PCT = 0.095
@@ -472,11 +430,7 @@ class ExecutionRunner:
     def has_open_legs(self):
         return (any(self.execution_book.legs.values()) or
                 bool(self.st.get('short_legs') or self.st.get('long_legs')) or
-                self.st.get('mom_leg_shares', 0) > 0 or
-                self.st.get('fstate') in (STATE_SOLD, STATE_DIPPING, STATE_BT_BOUGHT, STATE_BT_SPIKING) or
-                self.st.get('mom_state') in ('MOM_SOLD', 'MOM_DIPPING', 'MOM_BT_BOUGHT',
-                                              'MOM_BT_SPIKING', MOM_STATE_BUYBACK_COOLING,
-                                              MOM_STATE_SELLBACK_COOLING))
+                self.st.get('fstate') in (STATE_SOLD, STATE_DIPPING, STATE_BT_BOUGHT, STATE_BT_SPIKING))
 
     def checkpoint_record(self):
         return dict(name=self.stock_name, state=self.st,
@@ -487,7 +441,16 @@ class ExecutionRunner:
 
     def restore_record(self, record):
         self._init_state()
-        self.st.update(record['state'])
+        saved_state = record['state']
+        legacy_state = saved_state.get('mom_state', 'MOM_IDLE')
+        legacy_shares = int(saved_state.get('mom_leg_shares', 0) or 0)
+        if legacy_shares > 0 or legacy_state not in ('', 'MOM_IDLE', None):
+            raise RuntimeError(
+                'legacy MOM execution state requires manual reconciliation')
+        self.st.update(saved_state)
+        for key in tuple(self.st):
+            if key.startswith('mom_'):
+                del self.st[key]
         scale_quantile_signal(self.st.get('daily_signal'))
         scale_reentry_signal(self.st.get('daily_signal'))
         self.execution_book.orders = record['orders']
@@ -506,9 +469,9 @@ class ExecutionRunner:
             self.st['strength_armed'] = True
             self._strength_cancel_arm('restart: rewarm before lowered entry')
         self._restored = True
-        self._log('[STATE-RESTORED] ledger state={} REV-count={} FWD-count={} MOM-count={}'.format(
+        self._log('[STATE-RESTORED] ledger state={} REV-count={} FWD-count={}'.format(
             self.st.get('fstate'), self.st.get('trade_count_short', 0),
-            self.st.get('trade_count_long', 0), self.st.get('mom_trade_count', 0)))
+            self.st.get('trade_count_long', 0)))
 
     def _log(self, message):
         _log('[{}] {}'.format(self.stock_qmt, message))
@@ -557,8 +520,7 @@ class ExecutionRunner:
             'entry_price': 0.0, 'fstate': STATE_IDLE,
             'peak_price': 0.0, 'dip_price': 0.0,
             'sell_fill_price': 0.0, 'buyback_target': 0.0, 'buyback_target_pct': 0.0,
-            'rebound_99_armed': False,
-            'day_pnl': 0.0, 'stop_loss_hit': False,
+            'day_pnl': 0.0,
             'total_t_days': self.total_t_days, 'total_pnl': self.total_pnl,
             'trade_date': '', '_guard_date': '',
             'initialized': False, 'init_attempts': 0, 'last_init_time': 0.0,
@@ -571,26 +533,12 @@ class ExecutionRunner:
             'rebound_memory': {}, 'rebound_effective': None, 'rebound_identity': None,
             'rebound_armed': False, 'strength_armed': False,
             'short_arm_bars': 0, 'short_arm_trigger': 0.0,
-            'short_cooldown_until': 0.0,
             'reentry_pending': None, 'reentry_history': None,
             '_pre_market_done': '', '_market_open_logged': False,
             # ★ v22/v23: 阶梯加仓/减仓状态 — 腿记录为 (成交价, 成交股数)
             'ladder_sell_target': 0.0, 'ladder_buy_target': 0.0,
             'ladder_sold_count': 0, 'ladder_bought_count': 0,
             'short_legs': [], 'long_legs': [],
-            # ★ v25: 短线动量反转机制状态 (独立于主状态机)
-            'mom_state': 'MOM_IDLE', 'mom_peak': 0.0, 'mom_dip': 0.0,
-            'mom_sell_price': 0.0, 'mom_buy_price': 0.0,
-            'mom_leg_shares': 0, 'mom_trade_count': 0,
-            'mom_price_history': deque(), 'mom_last_hb': 0.0,
-            # ★ v26: 自适应ATR — 10分钟价格窗口 + 当前触发幅度
-            'mom_atr_history': deque(), 'mom_trigger_pct': 0.0,
-            # ★ v33: MOM让权状态 + 建仓时冻结的独立回撤确认阈值
-            'mom_rev_yield_trigger': 0.0, 'mom_pullback_pct': 0.0,
-            # ★ v36: MOM平仓冷却状态
-            'mom_cooldown_until': 0.0, 'mom_cooldown_trigger': 0.0,
-            'mom_cooldown_cycles': 0, 'mom_cooldown_duration': 0.0,
-            'mom_last_block_reason': '',
             # Completed closes plus the current intraday price form MA5/MA20.
             'ma_completed_closes': [], 'ma_history_date': '', 'last_ma_report_time': 0.0,
         })
@@ -651,11 +599,6 @@ class ExecutionRunner:
         if self.st.get('limit_up_guard', False):
             return 'near upper limit guard active'
         return ''
-
-    def _mom_log_block(self, reason):
-        if self.st.get('mom_last_block_reason', '') != reason:
-            self.st['mom_last_block_reason'] = reason
-            self._log('[MOM BLOCKED] {}'.format(reason))
 
     def _daily_init(self):
         today = datetime.now().strftime('%Y%m%d')
@@ -767,6 +710,7 @@ class ExecutionRunner:
         signal['do_short'] = do_short; signal['short_reason'] = short_reason
         signal['buy_trigger'] = buy_trigger; signal['buy_trigger_floor'] = buy_trigger_floor
         signal['buy_trigger_trail'] = buy_trigger_trail
+        signal['buy_trigger_max_trail'] = buy_trigger_trail
         signal['sellback_target_hint'] = sellback_target_hint
 
         self.st['daily_signal'] = signal
@@ -778,12 +722,13 @@ class ExecutionRunner:
 
         for k in ('fstate', 'peak_price', 'dip_price', 'sell_fill_price', 'buyback_target', 'buyback_target_pct'):
             self.st[k] = STATE_IDLE if k == 'fstate' else 0.0
-        self.st['day_pnl'] = 0.0; self.st['stop_loss_hit'] = False
+        self.st['day_pnl'] = 0.0
         self.st['state_enter_time'] = cfg.now_hms(); self.st['sell_elapsed_bars'] = 0
         self.st['initialized'] = True
         for k in ('bt_dip_price', 'bt_buy_trigger', 'bt_buy_fill_price',
                    'bt_sellback_target', 'bt_max_trail', 'bt_sell_peak_price'):
             self.st[k] = 0.0
+        self.st['bt_max_trail'] = buy_trigger_trail
         self.st['locked'] = False; self.st['lock_reason'] = ''; self.st['lock_since'] = ''
 
     def _refresh_position(self):
@@ -831,22 +776,6 @@ class ExecutionRunner:
         """Re-anchor entries only after a complete closing leg is confirmed."""
         st = self.st
         signal = st.get('daily_signal') or {}
-        # MOM闭环后先无条件撤销尚未下单的旧阈值监测。即使最新均价
-        # 暂时不可用，也不能让旧监测继续形成下一笔T；已有成交腿不动。
-        if completed_by.startswith('MOM'):
-            if st.get('fstate') == STATE_SPIKING:
-                st['trade_count_short'] = max(
-                    0, st.get('trade_count_short', 0) - 1)
-                st['fstate'] = STATE_SOLD if st.get('short_legs') else STATE_IDLE
-                st['peak_price'] = 0.0
-                self._log('[NEXT-T RESET] cancel pending REV-T monitor after MOM close')
-            elif st.get('fstate') == STATE_BT_DIPPING:
-                st['trade_count_long'] = max(
-                    0, st.get('trade_count_long', 0) - 1)
-                st['fstate'] = (
-                    STATE_BT_BOUGHT if st.get('long_legs') else STATE_IDLE)
-                st['bt_dip_price'] = 0.0
-                self._log('[NEXT-T RESET] cancel pending FWD-T monitor after MOM close')
         closing_order = getattr(self, '_last_executed_order', None)
         st['reentry_pending'] = dict(closing_order or {}, completed_by=completed_by)
         return self._retry_atr_reentry()
@@ -891,6 +820,7 @@ class ExecutionRunner:
         signal['buy_trigger'] = result['buy_trigger']
         signal['buy_trigger_floor'] = result['buy_trigger']
         signal['buy_trigger_trail'] = result['buy_trigger']
+        signal['buy_trigger_max_trail'] = result['buy_trigger']
         signal['sellback_target_hint'] = round(
             result['buy_trigger'] * (1 + cfg.SELLBACK_RISE_PCT), 2)
         signal['trigger_base'] = 'CLOSE_FILL_ATR'
@@ -931,10 +861,7 @@ class ExecutionRunner:
         """Capacity for a same-day buy leg backed by still-sellable old shares."""
         self._refresh_position()
         main_reserved = self._leg_shares(self.st.get('long_legs', []))
-        mom_state = self.st.get('mom_state', 'MOM_IDLE')
-        mom_reserved = self.st.get('mom_leg_shares', 0) if mom_state in (
-            'MOM_BT_BOUGHT', 'MOM_BT_SPIKING', MOM_STATE_SELLBACK_COOLING) else 0
-        reserved = main_reserved + mom_reserved
+        reserved = main_reserved
         sellable = max(0, int(self.st.get('base_can_use', 0) or 0))
         pairing_shares = max(0, sellable - reserved)
         capacity = calculate_execution_capacity(
@@ -1021,7 +948,7 @@ class ExecutionRunner:
         """
         self._last_executed_order = None
         side = 'SELL' if shares < 0 else 'BUY'
-        is_new_leg = label in ('REV-T sell', 'FWD-T buy', 'MOM short', 'MOM long')
+        is_new_leg = label in ('REV-T sell', 'FWD-T buy')
         planned = self._new_t_shares(price, side) if is_new_leg else abs(shares)
         if side == 'SELL':
             actual = self._clamp_sell_shares(planned)
@@ -1055,6 +982,12 @@ class ExecutionRunner:
             self._log('[ORDER-REJECTED] no valid order id; no closing price recorded')
             self.portfolio.order_uncertain = True
             raise RuntimeError('submission outcome unknown; inspect broker before resuming')
+        if str(order_id) in self.portfolio.own_order_ids:
+            self._log('[ORDER-ID-REUSED] broker returned existing order={}; '
+                      'account orders stopped before execution lookup'.format(order_id))
+            self.portfolio.order_uncertain = True
+            raise RuntimeError('duplicate broker order id {}; inspect broker before resuming'.format(
+                order_id))
         self.portfolio.own_order_ids.add(str(order_id))
         self._submitted_order_id = order_id
         status, delta = self._wait_for_fill(snap, signed, label, price, signed)
@@ -1243,8 +1176,6 @@ class ExecutionRunner:
         rev_buyback_pct = atr_fraction * cfg.BUYBACK_TRIGGER_MULT
         execution_trig = self._rev_sell_trigger()
         rev_buyback_plan = round(execution_trig * (1.0 - rev_buyback_pct), 2)
-        rev_emergency_plan = round(
-            execution_trig * (1.0 + cfg.EMERGENCY_BUYBACK_PCT), 2)
         sell_raw = float(signal.get('sell_trigger_raw', sell_trig) or sell_trig)
         if signal.get('trigger_base') == 'CLOSE_FILL_ATR':
             reentry = signal['reentry']
@@ -1279,10 +1210,6 @@ class ExecutionRunner:
                         sell=execution_trig, buyback=rev_buyback_plan,
                         atr=atr_fraction * 100,
                         mult=cfg.BUYBACK_TRIGGER_MULT)
-        if cfg.EMERGENCY_BUYBACK:
-            rev_plan += ' | emergency Y{:.2f} = Y{:.2f}*(1+{:.1f}%)'.format(
-                rev_emergency_plan, execution_trig,
-                cfg.EMERGENCY_BUYBACK_PCT * 100)
         if guard_active:
             self._log('[REV-T] FROZEN near upper limit; capacity {} lots | {}'.format(
                 short_lots, rev_plan))
@@ -1296,10 +1223,12 @@ class ExecutionRunner:
         buy_floor = signal.get('buy_trigger_floor', 0)
         buy_trail = signal.get('buy_trigger_trail', 0)
         sell_hint = signal.get('sellback_target_hint', 0)
-        fwd_plan = ('plan buy Y{buy:.2f} = max(floor Y{floor:.2f}, trail '
-                    'Y{trail:.2f}) | plan sell Y{sell:.2f} = '
+        max_trail = signal.get('buy_trigger_max_trail', buy_trail)
+        fwd_plan = ('plan buy Y{buy:.2f} = max(floor Y{floor:.2f}, max-trail '
+                    'Y{max_trail:.2f}); current-trail Y{trail:.2f} | plan sell Y{sell:.2f} = '
                     'Y{buy:.2f}*(1+{rise:.1f}%) | planned value~Y{lot:,.0f}').format(
                         buy=buy_trig, floor=buy_floor, trail=buy_trail,
+                        max_trail=max_trail,
                         sell=sell_hint, rise=cfg.SELLBACK_RISE_PCT * 100,
                         lot=buy_trig * planned_long)
         if guard_active:
@@ -1310,31 +1239,6 @@ class ExecutionRunner:
         else:
             self._log('[FWD-T] BLOCKED {} | {}'.format(
                 self.st.get('long_reason', 'unknown'), fwd_plan))
-
-        if MOM_ENABLED:
-            self._log('[MOM] {}minutes±{:.1f}×ATR in 10 minutes({:.1f}%~{:.1f}%) 反T买回-{:.1f}% 正T卖回+{:.1f}% 最小单位({}sh)，新开仓按金额/底仓动态计算 上限{}次 紧急买回{}'.format(
-                MOM_WINDOW_SEC // 60, MOM_ATR_MULT,
-                MOM_TRIGGER_MIN_PCT * 100, MOM_TRIGGER_MAX_PCT * 100,
-                MOM_SHORT_BUYBACK_PCT * 100, MOM_LONG_SELLBACK_PCT * 100,
-                self.trade_lot, MOM_MAX_DAILY_TRADES,
-                '开' if MOM_EMERGENCY_BUYBACK_ENABLED else '关'))
-            mom_capacity = calculate_execution_capacity(
-                base_can_use, avail_cash, curr_price, 1, self.trade_lot)
-            if guard_active:
-                self._log('[MOM-CAPACITY] FROZEN near upper limit')
-            else:
-                self._log('[MOM-CAPACITY] short {} | long {}'.format(
-                    'ON' if mom_capacity['can_short'] else
-                    'OFF {}'.format(mom_capacity['short_reason']),
-                    'ON' if mom_capacity['can_long'] else
-                    'OFF {}'.format(mom_capacity['long_reason'])))
-            self._log('[MOM-v40] REV让权{} band {:.2f}% (仅低于REV阈值) | 自适应回撤{} {:.2f}~{:.2f}% ATR×{:.2f}'.format(
-                '开' if MOM_REV_PRIORITY_ENABLED else '关', MOM_REV_PRIORITY_BAND_PCT * 100,
-                '开' if MOM_ADAPTIVE_PULLBACK_ENABLED else '关',
-                MOM_PULLBACK_MIN_PCT * 100, MOM_PULLBACK_MAX_PCT * 100,
-                MOM_PULLBACK_ATR_MULT))
-        else:
-            self._log('[MOM] 已屏蔽 (MOM_ENABLED=False)')
 
         # 累计
         if self.total_t_days > 0:
@@ -1514,14 +1418,29 @@ class ExecutionRunner:
                           mode, original, effective, memory.get('low', 0),
                           memory.get('rebound', 0)*100, average, REBOUND_AVERAGE_UNITS))
 
+    def _update_fwd_buy_trigger(self, price):
+        st = self.st
+        signal = st.get('daily_signal') or {}
+        if (st.get('fstate') != STATE_IDLE or
+                signal.get('trigger_base') in ('INTRADAY_AVG', 'CLOSE_FILL_ATR') or
+                not math.isfinite(price) or price <= 0):
+            return
+        current_trail = round(price * (1.0 - cfg.BUY_TRIGGER_TRAIL), 2)
+        max_trail = max(st.get('bt_max_trail', 0), current_trail)
+        floor = signal.get('buy_trigger_floor', 0)
+        st['bt_max_trail'] = max_trail
+        signal['buy_trigger_trail'] = current_trail
+        signal['buy_trigger_max_trail'] = max_trail
+        signal['buy_trigger'] = max(floor, max_trail)
+        signal['sellback_target_hint'] = round(
+            signal['buy_trigger'] * (1.0 + cfg.SELLBACK_RISE_PCT), 2)
+
     def _handle_idle(self, price):
         st = self.st; signal = st.get('daily_signal', {})
         if self._new_leg_block_reason():
             return
         if st.get('do_short', False):
             if cfg.now_hms() >= SHORT_NEW_ENTRY_CUTOFF:
-                return
-            if datetime.now().timestamp() < st.get('short_cooldown_until', 0.0):
                 return
             trigger = self._rev_sell_trigger()
             if price >= trigger:
@@ -1584,7 +1503,6 @@ class ExecutionRunner:
             actual_sold = -delta
             st['buyback_target'] = round(price * (1.0 - buyback_pct), 2)
             st['sell_fill_price'] = price
-            st['rebound_99_armed'] = False
             st['short_legs'].append((price, actual_sold))
             st['ladder_sell_target'] = round(price * (1.0 + LADDER_UP_STEP_PCT), 2) if status == 'FILLED' else 0.0
             if status == 'PARTIAL':
@@ -1609,9 +1527,6 @@ class ExecutionRunner:
                 self._log('[REV-T ladder sell #{}/{}] Y{:.2f} >= Y{:.2f}(sell+{:.2f}%)'.format(
                     tc + 1, cfg.MAX_DAILY_TRADES, price, ladder, LADDER_UP_STEP_PCT * 100))
                 return
-        if cfg.EMERGENCY_BUYBACK and price >= sp * (1.0 + cfg.EMERGENCY_BUYBACK_PCT):
-            self._log('[EMERG buyback trig] Y{:.2f}→Y{:.2f}(+{:.2f}%)'.format(sp, price, (price - sp) / sp * 100))
-            self._do_buyback(price, 'EMERG'); return
         tightened_bt = bt
         if st['sell_elapsed_bars'] > 30 and price > sp * 0.995:
             tightened_bt = sp * (1.0 - st['daily_signal']['atr_pct'] *
@@ -1625,20 +1540,6 @@ class ExecutionRunner:
                 '(tightened)' if tightened_bt > bt else '', price, (sp - price) / sp * 100))
             return
 
-        # ★ v35: 99%二次回升买回。
-        # 仅在原买回价低于99%线时才可能成立；首次向下到线只锁存，
-        # 随后未触及原买回价便向上回到该线，才执行卖一价FIX买回。
-        rebound_price = round(sp * REV_REBOUND_BUYBACK_RATIO, 2)
-        if not st.get('rebound_99_armed', False):
-            if bt < rebound_price and price <= rebound_price:
-                st['rebound_99_armed'] = True
-                self._log('[REV-T 99% armed] Y{:.2f} <= Y{:.2f}; buyback target Y{:.2f} not reached'.format(
-                    price, rebound_price, bt))
-            return
-        if price >= rebound_price:
-            self._log('[REV-T 99% rebound] Y{:.2f} >= Y{:.2f} -> ask1 FIX buyback'.format(
-                price, rebound_price))
-            self._do_buyback(price, 'REBOUND99')
 
     def _handle_dipping(self, price):
         st = self.st
@@ -1685,29 +1586,6 @@ class ExecutionRunner:
         st['fstate'] = STATE_SOLD
         self._log('[Buyback PARTIAL] 已买回 {} sh, 剩余 {} sh 继续监控'.format(bought, remaining))
         return bought
-
-    def _force_buyback(self):
-        self._log('[FORCE buyback trig]')
-        st = self.st
-        shares = self._leg_shares(st['short_legs']) or self.trade_lot
-        price = self._cur_price()
-        _, delta = self._submit_buyback_order(
-            shares, price, 'REV-T force buyback')
-        if delta: price = self._execution_price
-        bought = max(0, delta)
-        if bought >= shares:
-            st['short_legs'] = []
-            st['ladder_sell_target'] = 0.0; st['ladder_sold_count'] = 0
-            st['fstate'] = STATE_FORCED
-            self._recalculate_next_t_triggers('REV-T force')
-        elif bought > 0:
-            st['short_legs'] = list(self.execution_book.legs.get('SHORT', []))
-            st['fstate'] = STATE_SOLD
-            self._log('[REV-T force PARTIAL] 已买回 {} sh, 剩余 {} sh'.format(
-                bought, shares - bought))
-        else:
-            st['fstate'] = STATE_SOLD
-            self._log('[WARN] REV-T force buyback 未成交, 保持监控')
 
     def _handle_bt_dipping(self, price):
         st = self.st
@@ -1844,8 +1722,6 @@ class ExecutionRunner:
         price = self._cur_price()
         cash = max(0.0, float(asset.cash) - self.portfolio.reserved_cash(exclude=''))
         reserved = self._leg_shares(self.st.get('long_legs', []))
-        if self.st.get('mom_state') in ('MOM_BT_BOUGHT', 'MOM_BT_SPIKING', MOM_STATE_SELLBACK_COOLING):
-            reserved += self.st.get('mom_leg_shares', 0)
         free = max(0, self.st.get('base_can_use', 0) - reserved)
         cap = calculate_execution_capacity(free, cash, price, cfg.MAX_DAILY_TRADES, self.trade_lot)
         allowed = signal.get('short_signal_allowed', signal.get('do_short', False))
@@ -1874,12 +1750,11 @@ class ExecutionRunner:
             self._refresh_position()
             st['fstate'] = STATE_IDLE; st['peak_price'] = 0.0; st['dip_price'] = 0.0
             st['sell_fill_price'] = 0.0; st['buyback_target'] = 0.0
-            st['rebound_99_armed'] = False
             # ★ v22: 清空阶梯状态
             st['short_legs'] = []; st['long_legs'] = []
             st['ladder_sell_target'] = 0.0; st['ladder_buy_target'] = 0.0
             st['ladder_sold_count'] = 0; st['ladder_bought_count'] = 0
-            st['state_enter_time'] = cfg.now_hms(); st['stop_loss_hit'] = False
+            st['state_enter_time'] = cfg.now_hms()
             parts = []
             if can_s: parts.append('REV-T {}/{}'.format(tc_s, cfg.MAX_DAILY_TRADES))
             if can_l: parts.append('FWD-T {}/{}'.format(tc_l, cfg.MAX_DAILY_TRADES))
@@ -1927,563 +1802,6 @@ class ExecutionRunner:
             st['lock_cooldown_until'] = 0.0
 
     # ═══ v25/v26/v33: 短线动量反转机制 (2分钟自适应ATR + REV让权 + 独立回撤) ═══
-
-    def _mom_update_history(self, price, now_ts):
-        """维护2分钟检测窗口 + 10分钟ATR窗口。"""
-        hist = self.st['mom_price_history']
-        hist.append((now_ts, price))
-        cutoff = now_ts - MOM_WINDOW_SEC
-        while hist and hist[0][0] < cutoff:
-            hist.popleft()
-        # ★ v26: 10分钟ATR窗口 (独立于2分钟检测窗口)
-        atr_hist = self.st['mom_atr_history']
-        atr_hist.append((now_ts, price))
-        atr_cutoff = now_ts - MOM_ATR_WINDOW_SEC
-        while atr_hist and atr_hist[0][0] < atr_cutoff:
-            atr_hist.popleft()
-
-    def _mom_compute_atr(self):
-        """计算最近10分钟ATR (近似: 各1分钟桶内高低区间之中位数)。
-
-        用中位数而非均值, 可剔除跨分钟边界产生的"半桶"低区间干扰。
-        """
-        hist = self.st['mom_atr_history']
-        if len(hist) < 2:
-            return 0.0
-        buckets = {}
-        for ts, px in hist:
-            b = int(ts // 60)          # 按1分钟分桶
-            rec = buckets.get(b)
-            if rec is None:
-                buckets[b] = [px, px]
-            else:
-                if px > rec[0]: rec[0] = px
-                if px < rec[1]: rec[1] = px
-        ranges = sorted(h - l for h, l in buckets.values())
-        if not ranges:
-            return 0.0
-        n = len(ranges)
-        mid = n // 2
-        if n % 2 == 1:
-            return ranges[mid]
-        return (ranges[mid - 1] + ranges[mid]) / 2.0
-
-    def _mom_pullback_threshold(self, reference_price):
-        """返回MOM冲高回落确认阈值；关闭开关时保持v32的全局阈值。"""
-        if not MOM_ADAPTIVE_PULLBACK_ENABLED:
-            return cfg.PULLBACK_PCT
-        frozen = self.st.get('mom_pullback_pct', 0.0)
-        if frozen > 0:
-            return frozen
-        atr = self._mom_compute_atr()
-        raw = MOM_PULLBACK_ATR_MULT * atr / reference_price \
-            if reference_price > 0 and atr > 0 else MOM_PULLBACK_MIN_PCT
-        return min(max(raw, MOM_PULLBACK_MIN_PCT), MOM_PULLBACK_MAX_PCT)
-
-    def _mom_should_yield_to_rev(self, price):
-        """MOM卖出点进入REV-T优先区时让权，避免同一上涨波段重复卖出。"""
-        if not MOM_REV_PRIORITY_ENABLED or not self.st.get('do_short', False):
-            return False
-        signal = self.st.get('daily_signal') or {}
-        rev_trigger = float(self._rev_sell_trigger())
-        if rev_trigger <= 0 or price <= 0:
-            return False
-        # ★ v34: 达到REV-T实际卖出阈值后不再让权，MOM可继续独立监测。
-        if price >= rev_trigger:
-            return False
-        priority_floor = rev_trigger * (1.0 - MOM_REV_PRIORITY_BAND_PCT)
-        main_state = self.st.get('fstate', STATE_IDLE)
-        main_owns_wave = main_state in (STATE_SPIKING, STATE_SOLD, STATE_DIPPING)
-        if price < priority_floor and not main_owns_wave:
-            return False
-        self.st['mom_rev_yield_trigger'] = rev_trigger
-        reason = 'main {}'.format(main_state) if main_owns_wave else 'entered priority zone'
-        self._log('[MOM yield REV-T] Y{:.2f} | priority Y{:.2f} REV trig Y{:.2f} band {:.2f}% | {}'.format(
-            price, priority_floor, rev_trigger, MOM_REV_PRIORITY_BAND_PCT * 100, reason))
-        return True
-
-    def _mom_handle_rev_yield(self, price):
-        """保持让权；达到REV阈值立即释放，向下退出优先区则在主REV-T空闲后释放。"""
-        rev_trigger = self.st.get('mom_rev_yield_trigger', 0.0)
-        priority_floor = rev_trigger * (1.0 - MOM_REV_PRIORITY_BAND_PCT)
-        main_busy = self.st.get('fstate', STATE_IDLE) != STATE_IDLE
-        reached_rev_trigger = rev_trigger > 0 and price >= rev_trigger
-        exited_below = price < priority_floor and not main_busy
-        if rev_trigger <= 0 or reached_rev_trigger or exited_below:
-            self.st['mom_state'] = 'MOM_IDLE'
-            self.st['mom_rev_yield_trigger'] = 0.0
-            self.st['mom_peak'] = 0.0
-            self.st['mom_pullback_pct'] = 0.0
-            reason = 'reached REV trigger' if reached_rev_trigger else 'exited priority zone'
-            self._log('[MOM yield END] Y{:.2f} {}'.format(price, reason))
-
-    def _mom_detect(self, price):
-        """检测2分钟内涨/跌是否超过自适应阈值。返回 'UP' / 'DOWN' / None。"""
-        trig = self.st.get('mom_trigger_pct', 0.0)
-        if trig <= 0:
-            return None
-        hist = self.st['mom_price_history']
-        if len(hist) < 2:
-            return None
-        base = hist[0][1]          # 窗口内最早价 (约2分钟前)
-        if base <= 0 or price <= 0:
-            return None
-        chg = (price - base) / base
-        if chg >= trig:
-            return 'UP'
-        if chg <= -trig:
-            return 'DOWN'
-        return None
-
-    def _mom_tick(self, price, now_ts):
-        """短线动量机制主入口 (每tick调用, 与主机制并行)。"""
-        self._mom_update_history(price, now_ts)
-        # ★ v26: 自适应触发幅度 = 2 × 最近10分钟ATR
-        #   除以"2分钟基准价"而非当前价, 与 _mom_detect 的涨跌幅同基准, 避免自参考偏差
-        atr = self._mom_compute_atr()
-        hist = self.st['mom_price_history']
-        base = hist[0][1] if hist else 0.0
-        if base > 0 and atr > 0:
-            trig = MOM_ATR_MULT * atr / base
-        else:
-            trig = MOM_TRIGGER_MIN_PCT    # 数据不足/平静市 → 用下限, 避免永不触发
-        trig = min(max(trig, MOM_TRIGGER_MIN_PCT), MOM_TRIGGER_MAX_PCT)
-        self.st['mom_trigger_pct'] = trig
-        ms = self.st.get('mom_state', 'MOM_IDLE')
-        if ms == 'MOM_IDLE':
-            self._mom_handle_idle(price)
-        elif ms == 'MOM_SPIKING':
-            self._mom_handle_spiking(price)
-        elif ms == 'MOM_SOLD':
-            self._mom_handle_sold(price)
-        elif ms == 'MOM_DIPPING':
-            self._mom_handle_dipping(price, now_ts)
-        elif ms == 'MOM_BT_DIPPING':
-            self._mom_handle_bt_dipping(price)
-        elif ms == 'MOM_BT_BOUGHT':
-            self._mom_handle_bt_bought(price)
-        elif ms == 'MOM_BT_SPIKING':
-            self._mom_handle_bt_spiking(price, now_ts)
-        elif ms == MOM_STATE_BUYBACK_COOLING:
-            self._mom_handle_buyback_cooling(price, now_ts)
-        elif ms == MOM_STATE_SELLBACK_COOLING:
-            self._mom_handle_sellback_cooling(price, now_ts)
-        elif ms == MOM_STATE_REV_YIELD:
-            self._mom_handle_rev_yield(price)
-        # 尾盘强制平掉短线腿 (短线不隔夜)
-        if cfg.now_hms() >= cfg.FORCE_CLOSE_TIME:
-            self._mom_force_close(price)
-        # 心跳: 非空闲时每60s打印一次短线状态
-        if ms != 'MOM_IDLE' and now_ts - self.st.get('mom_last_hb', 0) >= 60:
-            self.st['mom_last_hb'] = now_ts
-            self._mom_heartbeat(price)
-
-    def _mom_status(self):
-        """返回短线机制状态摘要。"""
-        st = self.st; ms = st.get('mom_state', 'MOM_IDLE')
-        if ms == 'MOM_IDLE':
-            return ''
-        if ms == 'MOM_SPIKING':
-            return '冲高回落卖出: peak Y{:.2f}'.format(st['mom_peak'])
-        if ms == 'MOM_SOLD':
-            return '已卖Y{:.2f} 等跌{:.1f}%买回'.format(st['mom_sell_price'], MOM_SHORT_BUYBACK_PCT * 100)
-        if ms == 'MOM_DIPPING':
-            return '探底回升买回: dip Y{:.2f}'.format(st['mom_dip'])
-        if ms == MOM_STATE_BUYBACK_COOLING:
-            return '买回冷却: trigger Y{:.2f} cycle {} / {:.0f}s'.format(
-                st.get('mom_cooldown_trigger', 0.0), st.get('mom_cooldown_cycles', 0),
-                st.get('mom_cooldown_duration', 0.0))
-        if ms == 'MOM_BT_DIPPING':
-            return '探底回升买入: dip Y{:.2f}'.format(st['mom_dip'])
-        if ms == 'MOM_BT_BOUGHT':
-            return '已买Y{:.2f} 等涨{:.1f}%卖回'.format(st['mom_buy_price'], MOM_LONG_SELLBACK_PCT * 100)
-        if ms == 'MOM_BT_SPIKING':
-            return '冲高回落卖出: peak Y{:.2f}'.format(st['mom_peak'])
-        if ms == MOM_STATE_SELLBACK_COOLING:
-            return '卖回冷却: trigger Y{:.2f} cycle {} / {:.0f}s'.format(
-                st.get('mom_cooldown_trigger', 0.0), st.get('mom_cooldown_cycles', 0),
-                st.get('mom_cooldown_duration', 0.0))
-        if ms == MOM_STATE_REV_YIELD:
-            return '已让权REV-T trig Y{:.2f}'.format(st.get('mom_rev_yield_trigger', 0.0))
-        return ms
-
-    def _mom_heartbeat(self, price):
-        trig = self.st.get('mom_trigger_pct', 0.0) * 100
-        self._log('[MOM-HB] {} Y{:.2f} trig±{:.2f}%'.format(self._mom_status(), price, trig))
-
-    def _mom_handle_idle(self, price):
-        st = self.st
-        # 尾盘不再开新腿
-        if cfg.now_hms() >= cfg.FORCE_CLOSE_TIME:
-            return
-        if st.get('mom_trade_count', 0) >= MOM_MAX_DAILY_TRADES:
-            return
-        sig = self._mom_detect(price)
-        trig = st.get('mom_trigger_pct', 0.0) * 100
-        if sig is None:
-            return
-        block_reason = self._new_leg_block_reason()
-        if block_reason:
-            self._mom_log_block(block_reason)
-            return
-        if sig == 'UP':
-            self._refresh_position()
-            capacity = calculate_execution_capacity(
-                st.get('base_can_use', 0), self._available_cash(), price, 1, self.trade_lot)
-            if not capacity['can_short']:
-                self._mom_log_block('MOM short: {}'.format(
-                    capacity['short_reason']))
-                return
-            st['mom_last_block_reason'] = ''
-            st['mom_state'] = 'MOM_SPIKING'; st['mom_peak'] = price
-            st['mom_pullback_pct'] = self._mom_pullback_threshold(price)
-            self._log('[MOM spike] 2min +{:.2f}% ({:.1f}×ATR10m {:.2f}%) Y{:.2f} → 冲高回落卖出监测 | pullback {:.2f}%{}'.format(
-                trig, MOM_ATR_MULT, trig, price, st['mom_pullback_pct'] * 100,
-                ' adaptive' if MOM_ADAPTIVE_PULLBACK_ENABLED else ' legacy'))
-        elif sig == 'DOWN':
-            capacity = self._paired_long_capacity(price)
-            if not capacity['can_long']:
-                self._mom_log_block('MOM long: {}'.format(
-                    capacity['long_reason']))
-                return
-            st['mom_last_block_reason'] = ''
-            st['mom_state'] = 'MOM_BT_DIPPING'; st['mom_dip'] = price
-            self._log('[MOM dip] 2min -{:.2f}% ({:.1f}×ATR10m {:.2f}%) Y{:.2f} → 探底回升买入监测'.format(
-                trig, MOM_ATR_MULT, trig, price))
-
-    def _mom_handle_spiking(self, price):
-        """MOM反T冲高回落卖出：独立回撤确认，并在REV-T优先区让权。"""
-        st = self.st
-        if price > st['mom_peak']:
-            st['mom_peak'] = price
-        peak = st['mom_peak']
-        if self._mom_should_yield_to_rev(price):
-            st['mom_state'] = MOM_STATE_REV_YIELD
-            st['mom_peak'] = 0.0
-            st['mom_pullback_pct'] = 0.0
-            return
-        pullback = (peak - price) / peak if peak > 0 else 0
-        pullback_threshold = self._mom_pullback_threshold(peak)
-        if pullback >= pullback_threshold:
-            block_reason = self._new_leg_block_reason()
-            if block_reason:
-                self._mom_log_block(
-                    'MOM short arm canceled: {}'.format(block_reason))
-                st['mom_state'] = 'MOM_IDLE'
-                st['mom_peak'] = 0.0
-                st['mom_pullback_pct'] = 0.0
-                return
-            self._log('[MOM sell trig] peak Y{:.2f} 回落{:.2f}% >= {:.2f}% → Y{:.2f}'.format(
-                peak, pullback * 100, pullback_threshold * 100, price))
-            status, delta = self._submit_order(-self.trade_lot, price, 'MOM short')
-            if delta: price = self._execution_price
-            if status in ('SKIP', 'TIMEOUT'):
-                if status == 'TIMEOUT':
-                    self._log('[MOM short TIMEOUT] 未成交, 回 IDLE')
-                st['mom_state'] = 'MOM_IDLE'; st['mom_peak'] = 0.0; st['mom_pullback_pct'] = 0.0
-                return
-            st['mom_sell_price'] = price
-            st['mom_leg_shares'] = abs(delta)
-            st['mom_trade_count'] = st.get('mom_trade_count', 0) + 1
-            st['mom_state'] = 'MOM_SOLD'
-            st['mom_pullback_pct'] = 0.0
-            self._log('[MOM sold] Y{:.2f} x {} sh | 买回触发 ≤Y{:.2f}'.format(
-                price, st['mom_leg_shares'], round(price * (1 - MOM_SHORT_BUYBACK_PCT), 2)))
-
-    def _mom_handle_sold(self, price):
-        """卖出后: 跌1.2%进入探底回升买回; (可选)反涨3%紧急止损买回。"""
-        st = self.st
-        sp = st['mom_sell_price']
-        if sp <= 0:
-            st['mom_state'] = 'MOM_IDLE'; return
-        # ★ v27: 紧急止损买回开关 — 价格反涨超卖价3%时强制买回 (强牛不回落时防越亏越多)
-        if MOM_EMERGENCY_BUYBACK_ENABLED and price >= sp * (1.0 + cfg.EMERGENCY_BUYBACK_PCT):
-            self._log('[MOM EMERG buyback] Y{:.2f}→Y{:.2f}(+{:.2f}%) 止损买回'.format(
-                sp, price, (price - sp) / sp * 100))
-            shares = st.get('mom_leg_shares', 0) or self.trade_lot
-            _, delta = self._submit_buyback_order(shares, price, 'MOM emrg buyback')
-            if delta: price = self._execution_price
-            bought = max(0, delta)
-            if bought > 0:
-                buyback_price = getattr(self, '_last_buyback_price', price)
-                gross = (sp - buyback_price) * bought
-                if bought >= shares:
-                    self._log('[MOM short done(EMERG)] 卖Y{:.2f} 买Y{:.2f} gross~Y{:,.0f}'.format(
-                        sp, buyback_price, gross))
-                    st['mom_state'] = 'MOM_IDLE'
-                    st['mom_sell_price'] = 0.0; st['mom_leg_shares'] = 0
-                    self._recalculate_next_t_triggers('MOM REV-T')
-                else:
-                    st['mom_leg_shares'] = shares - bought
-                    st['mom_state'] = 'MOM_SOLD'
-                    self._log('[MOM EMERG buyback PARTIAL] 已买回 {} sh, 剩余 {} sh'.format(
-                        bought, shares - bought))
-            return
-        # 正常买回触发: 跌1.2% → 探底回升买回
-        if price <= sp * (1.0 - MOM_SHORT_BUYBACK_PCT):
-            st['mom_state'] = 'MOM_DIPPING'; st['mom_dip'] = price
-            self._log('[MOM buyback trig] Y{:.2f} ≤Y{:.2f}(-{:.2f}%) → 探底回升买回'.format(
-                price, round(sp * (1 - MOM_SHORT_BUYBACK_PCT), 2), MOM_SHORT_BUYBACK_PCT * 100))
-
-    def _mom_start_close_cooldown(self, state, trigger, price, now_ts, label):
-        """启动/续期MOM平仓冷却；只记录截止时间，不阻塞行情主循环。"""
-        st = self.st
-        now = _time.time() if now_ts is None else now_ts
-        cycle = st.get('mom_cooldown_cycles', 0) + 1
-        duration = max(
-            MOM_CLOSE_COOLDOWN_MIN_SEC,
-            MOM_CLOSE_COOLDOWN_START_SEC - MOM_CLOSE_COOLDOWN_STEP_SEC * (cycle - 1))
-        st['mom_state'] = state
-        st['mom_cooldown_trigger'] = round(trigger, 2)
-        st['mom_cooldown_cycles'] = cycle
-        st['mom_cooldown_duration'] = duration
-        st['mom_cooldown_until'] = now + duration
-        self._log('[MOM {} cooldown #{}] Y{:.2f}, freeze {:.0f}s until {:.3f}'.format(
-            label, cycle, price, duration, st['mom_cooldown_until']))
-
-    def _mom_clear_close_cooldown(self):
-        self.st['mom_cooldown_until'] = 0.0
-        self.st['mom_cooldown_trigger'] = 0.0
-        self.st['mom_cooldown_cycles'] = 0
-        self.st['mom_cooldown_duration'] = 0.0
-
-    def _mom_handle_dipping(self, price, now_ts=None):
-        """探底回升准备买回：达到回升确认后进入逐轮递减的非阻塞冷却。"""
-        st = self.st
-        if price < st['mom_dip']:
-            st['mom_dip'] = price
-        dip = st['mom_dip'] or price
-        bounce = (price - dip) / dip if dip > 0 else 0
-        if bounce >= cfg.BOUNCE_PCT:
-            trigger = st['mom_sell_price'] * (1.0 - MOM_SHORT_BUYBACK_PCT)
-            self._log('[MOM buyback ready] low Y{:.2f} 回升{:.2f}% → Y{:.2f}'.format(
-                dip, bounce * 100, price))
-            self._mom_start_close_cooldown(
-                MOM_STATE_BUYBACK_COOLING, trigger, price, now_ts, 'buyback')
-
-    def _mom_handle_buyback_cooling(self, price, now_ts=None):
-        """冷却到期后，仅在买回触发价与卖价-0.5%之间买回，否则续冻。"""
-        st = self.st
-        now = _time.time() if now_ts is None else now_ts
-        if now < st.get('mom_cooldown_until', 0.0):
-            return
-        sp = st.get('mom_sell_price', 0.0)
-        trigger = st.get('mom_cooldown_trigger', 0.0) or round(
-            sp * (1.0 - MOM_SHORT_BUYBACK_PCT), 2)
-        profit_ceiling = round(sp * (1.0 - MOM_CLOSE_MIN_PROFIT_PCT), 2)
-        if price > trigger and price < profit_ceiling:
-            shares = st.get('mom_leg_shares', 0) or self.trade_lot
-            self._log('[MOM buyback cooldown PASS] Y{:.2f} > trig Y{:.2f} and < sell-0.5% Y{:.2f}'.format(
-                price, trigger, profit_ceiling))
-            _, delta = self._submit_buyback_order(shares, price, 'MOM buyback')
-            if delta: price = self._execution_price
-            bought = max(0, delta)
-            if bought <= 0:
-                self._log('[MOM buyback FAIL] 未成交, 继续递减冷却')
-                self._mom_start_close_cooldown(
-                    MOM_STATE_BUYBACK_COOLING, trigger, price, now, 'buyback')
-                return
-            buyback_price = getattr(self, '_last_buyback_price', price)
-            gross = (sp - buyback_price) * bought
-            if bought < shares:
-                st['mom_leg_shares'] = shares - bought
-                st['mom_state'] = 'MOM_SOLD'
-                self._mom_clear_close_cooldown()
-                self._log('[MOM buyback PARTIAL] 已买回 {} sh, 剩余 {} sh'.format(
-                    bought, shares - bought))
-                return
-            self._log('[MOM short done] 卖Y{:.2f} 买Y{:.2f} x {}sh gross~Y{:,.0f}'.format(
-                sp, buyback_price, bought, gross))
-            st['mom_state'] = 'MOM_IDLE'
-            st['mom_sell_price'] = 0.0; st['mom_dip'] = 0.0; st['mom_leg_shares'] = 0
-            self._mom_clear_close_cooldown()
-            self._recalculate_next_t_triggers('MOM REV-T')
-            return
-        reason = ('price still below/equal buyback trigger' if price <= trigger
-                  else 'price reached/exceeded sell-0.5% ceiling')
-        self._log('[MOM buyback cooldown EXTEND] Y{:.2f}: {}, trigger Y{:.2f}, ceiling Y{:.2f}'.format(
-            price, reason, trigger, profit_ceiling))
-        self._mom_start_close_cooldown(
-            MOM_STATE_BUYBACK_COOLING, trigger, price, now, 'buyback')
-
-    def _mom_handle_bt_dipping(self, price):
-        """探底回升买入: 跟踪谷值, 回升BOUNCE_PCT后买入1手。"""
-        st = self.st
-        if price < st['mom_dip']:
-            st['mom_dip'] = price
-        dip = st['mom_dip'] or price
-        bounce = (price - dip) / dip if dip > 0 else 0
-        if bounce >= cfg.BOUNCE_PCT:
-            block_reason = self._new_leg_block_reason()
-            if block_reason:
-                self._mom_log_block(
-                    'MOM long arm canceled: {}'.format(block_reason))
-                st['mom_state'] = 'MOM_IDLE'
-                st['mom_dip'] = 0.0
-                return
-            capacity = self._paired_long_capacity(price)
-            if not capacity['can_long']:
-                self._mom_log_block('MOM long recheck: {}'.format(
-                    capacity['long_reason']))
-                st['mom_state'] = 'MOM_IDLE'
-                st['mom_dip'] = 0.0
-                return
-            self._log('[MOM buy trig] low Y{:.2f} 回升{:.2f}% → Y{:.2f}'.format(dip, bounce * 100, price))
-            status, delta = self._submit_order(self.trade_lot, price, 'MOM long')
-            if delta: price = self._execution_price
-            if status in ('SKIP', 'TIMEOUT'):
-                if status == 'TIMEOUT':
-                    self._log('[MOM long TIMEOUT] 未成交, 回 IDLE')
-                st['mom_state'] = 'MOM_IDLE'; st['mom_dip'] = 0.0
-                return
-            st['mom_buy_price'] = price
-            st['mom_leg_shares'] = abs(delta)
-            st['mom_trade_count'] = st.get('mom_trade_count', 0) + 1
-            st['mom_state'] = 'MOM_BT_BOUGHT'
-            self._log('[MOM bought] Y{:.2f} x {} sh | 卖回触发 ≥Y{:.2f}'.format(
-                price, st['mom_leg_shares'], round(price * (1 + MOM_LONG_SELLBACK_PCT), 2)))
-
-    def _mom_handle_bt_bought(self, price):
-        """买入后: 涨1.5%进入冲高回落卖出; 反跌1.5%止损卖出。"""
-        st = self.st
-        bp = st['mom_buy_price']
-        if bp <= 0:
-            st['mom_state'] = 'MOM_IDLE'; return
-        # 止损卖出: 价格反跌破买价1.5%
-        if price <= bp * (1.0 - cfg.STOP_LOSS_PCT):
-            self._log('[MOM stop-loss] Y{:.2f}→Y{:.2f}(-{:.2f}%) 止损卖出'.format(
-                bp, price, (bp - price) / bp * 100))
-            shares = st.get('mom_leg_shares', 0) or self.trade_lot
-            _, delta = self._submit_order(-shares, price, 'MOM stop-loss')
-            if delta: price = self._execution_price
-            sold = max(0, -delta)
-            if sold > 0:
-                gross = (price - bp) * sold
-                if sold < shares:
-                    st['mom_leg_shares'] = shares - sold
-                    st['mom_state'] = 'MOM_BT_BOUGHT'
-                    self._log('[MOM stop-loss PARTIAL] 已卖出 {} sh, 剩余 {} sh'.format(
-                        sold, shares - sold))
-                    return
-                self._log('[MOM long done(stop)] 买Y{:.2f} 卖Y{:.2f} gross~Y{:,.0f}'.format(bp, price, gross))
-                st['mom_state'] = 'MOM_IDLE'
-                st['mom_buy_price'] = 0.0; st['mom_leg_shares'] = 0
-                self._recalculate_next_t_triggers('MOM FWD-T stop')
-            return
-        # 正常卖回触发: 涨1.5% → 冲高回落卖出
-        if price >= bp * (1.0 + MOM_LONG_SELLBACK_PCT):
-            st['mom_state'] = 'MOM_BT_SPIKING'; st['mom_peak'] = price
-            st['mom_pullback_pct'] = self._mom_pullback_threshold(price)
-            self._log('[MOM sellback trig] Y{:.2f} ≥Y{:.2f}(+{:.2f}%) → 冲高回落卖出 | pullback {:.2f}%{}'.format(
-                price, round(bp * (1 + MOM_LONG_SELLBACK_PCT), 2), MOM_LONG_SELLBACK_PCT * 100,
-                st['mom_pullback_pct'] * 100,
-                ' adaptive' if MOM_ADAPTIVE_PULLBACK_ENABLED else ' legacy'))
-
-    def _mom_handle_bt_spiking(self, price, now_ts=None):
-        """MOM正T卖回：回撤确认后进入逐轮递减的非阻塞冷却。"""
-        st = self.st
-        if price > st['mom_peak']:
-            st['mom_peak'] = price
-        peak = st['mom_peak']
-        pullback = (peak - price) / peak if peak > 0 else 0
-        pullback_threshold = self._mom_pullback_threshold(peak)
-        if pullback >= pullback_threshold:
-            trigger = st['mom_buy_price'] * (1.0 + MOM_LONG_SELLBACK_PCT)
-            self._log('[MOM sellback ready] peak Y{:.2f} 回落{:.2f}% >= {:.2f}% → Y{:.2f}'.format(
-                peak, pullback * 100, pullback_threshold * 100, price))
-            self._mom_start_close_cooldown(
-                MOM_STATE_SELLBACK_COOLING, trigger, price, now_ts, 'sellback')
-
-    def _mom_handle_sellback_cooling(self, price, now_ts=None):
-        """冷却到期后，仅在买价+0.5%与卖回触发价之间卖出，否则续冻。"""
-        st = self.st
-        now = _time.time() if now_ts is None else now_ts
-        if now < st.get('mom_cooldown_until', 0.0):
-            return
-        bp = st.get('mom_buy_price', 0.0)
-        trigger = st.get('mom_cooldown_trigger', 0.0) or round(
-            bp * (1.0 + MOM_LONG_SELLBACK_PCT), 2)
-        profit_floor = round(bp * (1.0 + MOM_CLOSE_MIN_PROFIT_PCT), 2)
-        if price < trigger and price > profit_floor:
-            shares = st.get('mom_leg_shares', 0) or self.trade_lot
-            self._log('[MOM sellback cooldown PASS] Y{:.2f} < trig Y{:.2f} and > buy+0.5% Y{:.2f}'.format(
-                price, trigger, profit_floor))
-            _, delta = self._submit_order(-shares, price, 'MOM sellback')
-            if delta: price = self._execution_price
-            sold = -delta
-            if sold <= 0:
-                self._log('[MOM sellback FAIL] 未成交, 继续递减冷却')
-                self._mom_start_close_cooldown(
-                    MOM_STATE_SELLBACK_COOLING, trigger, price, now, 'sellback')
-                return
-            gross = (price - bp) * sold
-            if sold < shares:
-                st['mom_leg_shares'] = shares - sold
-                st['mom_state'] = 'MOM_BT_BOUGHT'
-                self._mom_clear_close_cooldown()
-                self._log('[MOM sellback PARTIAL] 已卖出 {} sh, 剩余 {} sh'.format(
-                    sold, shares - sold))
-                return
-            self._log('[MOM long done] 买Y{:.2f} 卖Y{:.2f} x {}sh gross~Y{:,.0f}'.format(
-                bp, price, sold, gross))
-            st['mom_state'] = 'MOM_IDLE'
-            st['mom_buy_price'] = 0.0; st['mom_peak'] = 0.0; st['mom_leg_shares'] = 0
-            st['mom_pullback_pct'] = 0.0
-            self._mom_clear_close_cooldown()
-            self._recalculate_next_t_triggers('MOM FWD-T')
-            return
-        reason = ('price still above/equal sellback trigger' if price >= trigger
-                  else 'price fell to/below buy+0.5% floor')
-        self._log('[MOM sellback cooldown EXTEND] Y{:.2f}: {}, trigger Y{:.2f}, floor Y{:.2f}'.format(
-            price, reason, trigger, profit_floor))
-        self._mom_start_close_cooldown(
-            MOM_STATE_SELLBACK_COOLING, trigger, price, now, 'sellback')
-
-    def _mom_force_close(self, price):
-        """尾盘强制平掉短线腿 (卖出的买回 / 买入的卖出), 短线不隔夜。"""
-        st = self.st
-        ms = st.get('mom_state')
-        if ms in ('MOM_SOLD', MOM_STATE_BUYBACK_COOLING):
-            shares = st.get('mom_leg_shares', 0) or self.trade_lot
-            self._log('[MOM force buyback] Y{:.2f}'.format(price))
-            _, delta = self._submit_buyback_order(shares, price, 'MOM force buyback')
-            if delta: price = self._execution_price
-            bought = max(0, delta)
-            if bought >= shares:
-                st['mom_state'] = 'MOM_IDLE'
-                st['mom_sell_price'] = 0.0; st['mom_leg_shares'] = 0
-                self._recalculate_next_t_triggers('MOM REV-T force')
-            elif bought > 0:
-                st['mom_leg_shares'] = shares - bought
-                st['mom_state'] = 'MOM_SOLD'
-                self._log('[MOM force buyback PARTIAL] 已买回 {} sh, 剩余 {} sh'.format(
-                    bought, shares - bought))
-            else:
-                self._log('[WARN] MOM force buyback 未成交, 短线腿可能残留!')
-        elif ms in ('MOM_BT_BOUGHT', 'MOM_BT_SPIKING', MOM_STATE_SELLBACK_COOLING):
-            shares = st.get('mom_leg_shares', 0) or self.trade_lot
-            self._log('[MOM force sell] Y{:.2f}'.format(price))
-            _, delta = self._submit_order(-shares, price, 'MOM force sell')
-            if delta: price = self._execution_price
-            sold = max(0, -delta)
-            if sold >= shares:
-                st['mom_state'] = 'MOM_IDLE'
-                st['mom_buy_price'] = 0.0; st['mom_leg_shares'] = 0
-                self._recalculate_next_t_triggers('MOM FWD-T force')
-            elif sold > 0:
-                st['mom_leg_shares'] = shares - sold
-                st['mom_state'] = 'MOM_BT_BOUGHT'
-                self._log('[MOM force sell PARTIAL] 已卖出 {} sh, 剩余 {} sh'.format(
-                    sold, shares - sold))
-            else:
-                self._log('[WARN] MOM force sell 未成交, 短线腿可能残留!')
-        elif ms in ('MOM_SPIKING', 'MOM_DIPPING', 'MOM_BT_DIPPING', MOM_STATE_REV_YIELD):
-            # 尚未开腿, 直接复位
-            st['mom_state'] = 'MOM_IDLE'; st['mom_peak'] = 0.0; st['mom_dip'] = 0.0
-            st['mom_pullback_pct'] = 0.0; st['mom_rev_yield_trigger'] = 0.0
-        self._mom_clear_close_cooldown()
-
-    # ═══ 主循环 ═══
 
     def run(self):
         if not getattr(self, '_restored', False):
@@ -2558,9 +1876,6 @@ class ExecutionRunner:
                         (yield 30)
                         continue
                     self._update_limit_up_guard(price, tick_data, now_ts)
-                    # ★ v25: 短线动量机制在主机制收尾(DONE/FORCED)时仍独立运行
-                    if MOM_ENABLED and price > 0:
-                        self._mom_tick(price, now_ts)
                     if now_ts - self._last_heartbeat >= 30:
                         self._last_heartbeat = now_ts
                         tc_s = self.st.get('trade_count_short', 0); tc_l = self.st.get('trade_count_long', 0)
@@ -2588,9 +1903,7 @@ class ExecutionRunner:
                     (yield 30)
                     continue
                 self._update_limit_up_guard(price, tick_data, now_ts)
-                # ★ v25: 短线动量机制 (独立于日线信号/主状态机, 每tick运行)
-                if MOM_ENABLED and INTRADAY_REFERENCE_MODE == 'shadow':
-                    self._mom_tick(price, now_ts)
+                self._update_fwd_buy_trigger(price)
                 # ★ v21: 开盘首个有效tick打印行情确认
                 if not self.st.get('_market_open_logged', True):
                     self.st['_market_open_logged'] = True
@@ -2625,11 +1938,8 @@ class ExecutionRunner:
                         sig_chk['open_price'] = _open_now
                         _buy_floor = round(
                             _open_now * (1.0 - cfg.BUY_TRIGGER_PCT), 2)
-                        _buy_trail = round(
-                            price * (1.0 - cfg.BUY_TRIGGER_TRAIL), 2)
                         sig_chk['buy_trigger_floor'] = _buy_floor
-                        sig_chk['buy_trigger_trail'] = _buy_trail
-                        sig_chk['buy_trigger'] = max(_buy_floor, _buy_trail)
+                        self._update_fwd_buy_trigger(price)
                         sig_chk['sellback_target_hint'] = round(
                             sig_chk['buy_trigger'] *
                             (1.0 + cfg.SELLBACK_RISE_PCT), 2)
@@ -2658,8 +1968,6 @@ class ExecutionRunner:
                 if INTRADAY_REFERENCE_MODE == 'shadow':
                     self._update_rebound_reference(price, now_ts, tick_data)
                 self._update_strength_reference(price, now_ts, tick_data)
-                if MOM_ENABLED and INTRADAY_REFERENCE_MODE == 'active':
-                    self._mom_tick(price, now_ts)
                 fstate = self.st.get('fstate', STATE_IDLE)
                 signal = self.st.get('daily_signal')
                 do_short = self.st.get('do_short', False); do_long = self.st.get('do_long', False)
@@ -2679,13 +1987,10 @@ class ExecutionRunner:
                 if self.st['fstate'] in (STATE_SOLD, STATE_DIPPING): self.st['sell_elapsed_bars'] += 1
                 if cfg.ENABLE_FORCE_CLOSE and now >= cfg.FORCE_CLOSE_TIME:
                     f = self.st['fstate']
-                    if f in (STATE_SOLD, STATE_DIPPING): self._force_buyback()
-                    elif f in (STATE_BT_BOUGHT, STATE_BT_SPIKING): self._do_bt_force_sell()
-                    elif f in (STATE_SPIKING, STATE_BT_DIPPING, STATE_IDLE): self.st['fstate'] = STATE_DONE
-                if fstate == STATE_SOLD and signal and not self.st.get('stop_loss_hit', False):
-                    loss_limit = self.st['base_shares'] * signal['open_price'] * cfg.STOP_LOSS_PCT
-                    if self.st.get('day_pnl', 0) < -loss_limit:
-                        self._log('[STOP-LOSS] REV-T loss over limit'); self.st['stop_loss_hit'] = True; self._force_buyback()
+                    if f in (STATE_BT_BOUGHT, STATE_BT_SPIKING):
+                        self._do_bt_force_sell()
+                    elif f in (STATE_SPIKING, STATE_BT_DIPPING, STATE_IDLE):
+                        self.st['fstate'] = STATE_DONE
                 if now_ts - self._last_heartbeat >= 60:
                     self._last_heartbeat = now_ts; self._heartbeat(price)
                 (yield 0.5)
@@ -2693,13 +1998,6 @@ class ExecutionRunner:
         except Exception as e: self._log('[ERROR] {}'.format(e)); _traceback.print_exc()
         finally:
             if self.st.get('fstate', '') in (STATE_SOLD, STATE_DIPPING): self._log('[WARN] position not bought back!')
-            # ★ v25: 短线腿残留警告 (v29: MOM_ENABLED=False时跳过)
-            if MOM_ENABLED:
-                mom_ms = self.st.get('mom_state', '')
-                if mom_ms in ('MOM_SOLD', 'MOM_DIPPING', MOM_STATE_BUYBACK_COOLING):
-                    self._log('[WARN] MOM short leg not bought back!')
-                elif mom_ms in ('MOM_BT_BOUGHT', 'MOM_BT_SPIKING', MOM_STATE_SELLBACK_COOLING):
-                    self._log('[WARN] MOM long leg not sold!')
             self._log('[STOP] {} v56 cum {} days gross~Y{:,.0f}'.format(
                 self.stock_name, self.total_t_days, self.total_pnl))
 
@@ -2712,13 +2010,6 @@ class ExecutionRunner:
                 self.total_t_days, self.total_pnl)); return
         if fs == STATE_IDLE:
             guard_active = self.st.get('limit_up_guard', False)
-            if (self.st.get('do_long') and not guard_active and
-                    sig.get('trigger_base') not in ('INTRADAY_AVG', 'CLOSE_FILL_ATR')):
-                bt_floor = sig.get('buy_trigger_floor', 0)
-                bt_trail = round(price * (1.0 - cfg.BUY_TRIGGER_TRAIL), 2)
-                self.st['bt_max_trail'] = max(self.st.get('bt_max_trail', 0), bt_trail)
-                sig['buy_trigger'] = max(bt_floor, self.st['bt_max_trail'])
-                sig['buy_trigger_trail'] = bt_trail
             parts = []
             if self.st.get('do_short'):
                 st_trig = self._rev_sell_trigger()
@@ -2733,12 +2024,18 @@ class ExecutionRunner:
                     sig.get('short_reason', 'not executable')))
             if self.st.get('do_long'):
                 bt_dyn = sig.get('buy_trigger', 0)
+                trail_detail = ('floor Y{:.2f} current-trail Y{:.2f} '
+                                'max-trail Y{:.2f} effective Y{:.2f}').format(
+                                    sig.get('buy_trigger_floor', 0),
+                                    sig.get('buy_trigger_trail', 0),
+                                    sig.get('buy_trigger_max_trail', 0),
+                                    bt_dyn)
                 if price <= bt_dyn:
-                    parts.append('FWD-T: threshold reached Y{:.2f}'.format(
-                        bt_dyn))
+                    parts.append('FWD-T: threshold reached Y{:.2f} ({})'.format(
+                        bt_dyn, trail_detail))
                 else:
-                    parts.append('FWD-T: needs -Y{:.2f} to Y{:.2f}'.format(
-                        price - bt_dyn, bt_dyn))
+                    parts.append('FWD-T: needs -Y{:.2f} to Y{:.2f} ({})'.format(
+                        price - bt_dyn, bt_dyn, trail_detail))
             else:
                 parts.append('FWD-T: off ({})'.format(
                     self.st.get('long_reason', 'not executable')))
@@ -2965,8 +2262,6 @@ class ExecutionPortfolio:
                 continue
             st = runner.st
             reserve += sum(price * shares for price, shares in st.get('short_legs', []))
-            if st.get('mom_state') in ('MOM_SOLD', 'MOM_DIPPING', MOM_STATE_BUYBACK_COOLING):
-                reserve += st.get('mom_sell_price', 0) * st.get('mom_leg_shares', 0)
         return reserve * 1.01
 
     def refresh_holdings(self, now):
@@ -3061,7 +2356,7 @@ class ExecutionPortfolio:
 
 
 class StrategyRunner(ExecutionRunner):
-    """Research lane: one independently owned main/MOM cycle per lane."""
+    """Research lane: one independently owned cycle per lane."""
     def __init__(self, portfolio, stock_qmt, stock_name='', lane=0):
         super().__init__(portfolio, stock_qmt, stock_name)
         self.lane = lane
@@ -3077,8 +2372,8 @@ class StrategyRunner(ExecutionRunner):
     def checkpoint_record(self):
         if self.cycle:
             self.cycle.targets = {key: self.st.get(key) for key in (
-                'buyback_target', 'bt_sellback_target', 'mom_buyback_target',
-                'mom_sellback_target', 'ladder_sell_target', 'ladder_buy_target')}
+                'buyback_target', 'bt_sellback_target',
+                'ladder_sell_target', 'ladder_buy_target')}
         record = super().checkpoint_record()
         record['v52'] = dict(lane=self.lane, baseline=self.baseline_shares,
                             cycle=self.cycle.record() if self.cycle else None,
@@ -3101,7 +2396,8 @@ class StrategyRunner(ExecutionRunner):
         self.paused_reason = extra.get('paused', '')
         self.imported_entry_counts = extra.get('imported_counts', {})
         ledger_quantity = sum(q for legs in self.execution_book.legs.values() for _, q in legs)
-        state_quantity = sum(q for _, q in self.st.get('short_legs', [])) + sum(q for _, q in self.st.get('long_legs', [])) + self.st.get('mom_leg_shares', 0)
+        state_quantity = (sum(q for _, q in self.st.get('short_legs', [])) +
+                          sum(q for _, q in self.st.get('long_legs', [])))
         if ledger_quantity != (self.cycle.quantity if self.cycle else 0) or state_quantity != ledger_quantity:
             raise RuntimeError('restored state/execution ledger/cycle quantities disagree')
         if self.has_open_legs() and (not self.cycle or not self.st.get('initialized')):
@@ -3147,7 +2443,7 @@ class StrategyRunner(ExecutionRunner):
                 raise RuntimeError('unattributed overnight execution legs')
             # Targets, signal ATR, execution book and monetary amounts remain untouched.
             self.st['trade_date'] = today
-            for key in ('trade_count_short', 'trade_count_long', 'mom_trade_count'):
+            for key in ('trade_count_short', 'trade_count_long'):
                 self.st[key] = 0
             self.st['price_history'] = []
             self._reset_strength_reference()
@@ -3239,12 +2535,6 @@ class StrategyRunner(ExecutionRunner):
             return None
         return super()._handle_dipping(price)
 
-    def _force_buyback(self):
-        if not self.cycle or not self.st.get('short_legs'):
-            self._log('[FORCE buyback SKIP] cycle already flat')
-            return None
-        return super()._force_buyback()
-
     def _short_cycle_risk_reason(self, price):
         cycle = self.cycle
         if not cycle or cycle.direction != 'SHORT' or cycle.quantity <= 0:
@@ -3252,16 +2542,6 @@ class StrategyRunner(ExecutionRunner):
         average = cycle.average
         if average <= 0 or price <= 0:
             return ''
-        session_reason = short_session_exit_reason(
-            datetime.now().strftime('%H:%M:%S'))
-        if session_reason:
-            return session_reason
-        adverse_pct = price / average - 1.0
-        adverse_limit = max(
-            CYCLE_MIN_ADVERSE_PCT,
-            float(cycle.atr or 0.0) * CYCLE_ADVERSE_ATR_MULT)
-        if adverse_pct >= adverse_limit:
-            return 'ADVERSE_MOVE'
         if len(cycle.trading_days) >= CYCLE_MAX_HOLDING_DAYS:
             return 'MAX_HOLDING_DAYS'
         return ''
@@ -3297,9 +2577,6 @@ class StrategyRunner(ExecutionRunner):
             st['ladder_sell_target'] = 0.0
             st['ladder_sold_count'] = 0
             st['fstate'] = STATE_FORCED
-            if reason == 'ADVERSE_MOVE':
-                st['short_cooldown_until'] = (
-                    datetime.now().timestamp() + SHORT_ADVERSE_COOLDOWN_SEC)
             self._recalculate_next_t_triggers(label)
             self._maybe_resume_trading()
             return bought
@@ -3339,7 +2616,7 @@ class StrategyRunner(ExecutionRunner):
         return min(original, max(0, remaining) // self.trade_lot * self.trade_lot)
 
     def _submit_order(self, shares, price, label, style='COMPETE'):
-        opening = label in ('REV-T sell', 'FWD-T buy', 'MOM short', 'MOM long')
+        opening = label in ('REV-T sell', 'FWD-T buy')
         ladder = bool(opening and self.cycle and getattr(self, '_ladder_context', False) and self.cycle.label == label)
         if self.paused_reason:
             self._log('[CYCLE-PAUSED] ' + self.paused_reason)
@@ -3355,7 +2632,7 @@ class StrategyRunner(ExecutionRunner):
                     self._log('[MOMENTUM-GUARD] five-day return {} exceeds/has no safe history; REV-T blocked'.format(
                         display))
                     return 'SKIP', 0
-            if LONG_RESEARCH_DISABLED and label in ('FWD-T buy', 'MOM long'):
+            if LONG_RESEARCH_DISABLED and label == 'FWD-T buy':
                 return 'SKIP', 0
             if self._new_leg_block_reason():
                 return 'SKIP', 0
@@ -3365,17 +2642,15 @@ class StrategyRunner(ExecutionRunner):
                 records.extend(sibling.cycle_history)
                 if sibling.cycle:
                     records.append(sibling.cycle.record())
-            count = sum(record['opened_day'] == today and (
-                record.get('label', '').startswith('MOM') if label.startswith('MOM')
-                else record.get('label') == label) for record in records)
+            count = sum(record['opened_day'] == today and
+                        record.get('label') == label for record in records)
             count += sum(sibling.imported_entry_counts.get(today, {}).get(
-                'MOM' if label.startswith('MOM') else label, 0)
+                label, 0)
                 for sibling in self.portfolio.symbol_runners(self.stock_qmt))
-            limit = MOM_MAX_DAILY_TRADES if label.startswith('MOM') else cfg.MAX_DAILY_TRADES
-            if count >= limit:
+            if count >= cfg.MAX_DAILY_TRADES:
                 self._log('[CYCLE-BLOCKED] shared symbol daily entry limit reached')
                 return 'SKIP', 0
-            if not ladder and label in ('FWD-T buy', 'MOM long') and DIRECTIONAL_ENABLED and not self.admission.allowed:
+            if not ladder and label == 'FWD-T buy' and DIRECTIONAL_ENABLED and not self.admission.allowed:
                 self._log('[DIRECTION-BLOCKED] score={} threshold={} ready={}'.format(
                     self.admission.score, DIRECTIONAL_THRESHOLD, self.admission.allowed))
                 return 'SKIP', 0
@@ -3512,14 +2787,16 @@ class PortfolioRunner(ExecutionPortfolio):
                 positions = {row[0]: row[1] for row in saved['broker']['positions']}
                 for code, record in saved['runners'].items():
                     state = record['state']
-                    if (any(record['legs'].values()) or state.get('short_legs') or state.get('long_legs')
-                            or state.get('mom_leg_shares', 0)):
+                    if (any(record['legs'].values()) or state.get('short_legs') or
+                            state.get('long_legs') or
+                            state.get('mom_leg_shares', 0) or
+                            state.get('mom_state', 'MOM_IDLE') not in (
+                                '', 'MOM_IDLE', None)):
                         raise RuntimeError('UPGRADE BLOCKED: legacy open legs lack unique order-to-cycle ownership')
                     record['v52'] = dict(lane=0, baseline=positions.get(code, 0),
                         cycle=None, history=[], paused='', imported_counts={state['trade_date']: {
                             'REV-T sell': state.get('trade_count_short', 0),
-                            'FWD-T buy': state.get('trade_count_long', 0),
-                            'MOM': state.get('mom_trade_count', 0)}})
+                            'FWD-T buy': state.get('trade_count_long', 0)}})
                 _log('[UPGRADE] flat legacy ledger imported read-only; old file unchanged')
             else:
                 self.checkpoint_active = True
@@ -3544,11 +2821,9 @@ class PortfolioRunner(ExecutionPortfolio):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='v56: confirmed reversals and protected core position; research only')
+    parser = argparse.ArgumentParser(description='v56: confirmed reversals and protected core position')
     parser.add_argument('--mode', default='signal', choices=['signal', 'live'])
     args = parser.parse_args()
-    if args.mode == 'live':
-        raise RuntimeError('v56 RESEARCH ONLY: out-of-sample acceptance pending; live disabled')
     if INTRADAY_REFERENCE_MODE not in ('shadow', 'active'):
         raise ValueError('INTRADAY_REFERENCE_MODE must be shadow or active')
     logger = FileLogger('portfolio', version='v56')

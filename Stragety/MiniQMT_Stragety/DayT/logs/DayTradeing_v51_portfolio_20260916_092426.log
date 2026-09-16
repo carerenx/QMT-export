@@ -1,0 +1,13 @@
+============================================================
+  日志文件创建: 2026-09-16 09:24:26
+  策略版本: v51 (for MiniQMT Evn)
+  标的: portfolio
+============================================================
+[09:24:28] [REFERENCE-MODE] shadow: coefficient scaling affects execution baseline; shadow intraday strength is observation only; active requires user-approved validation
+[09:24:30] [连接] 行情服务连接失败: 无法连接xtquant服务，请检查QMT-投研版或QMT-极简版是否开启
+[09:24:30] [提示] 请先启动 MiniQMT (QMT → 右上角"极简mode")
+[09:24:30] [PORTFOLIO-ERROR] market connection failed
+
+============================================================
+  日志结束: 2026-09-16 09:24:30
+============================================================

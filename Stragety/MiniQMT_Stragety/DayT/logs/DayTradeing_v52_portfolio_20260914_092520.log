@@ -1,0 +1,13 @@
+============================================================
+  日志文件创建: 2026-09-14 09:25:20
+  策略版本: v52 (for MiniQMT Evn)
+  标的: portfolio
+============================================================
+[09:25:20] [REFERENCE-MODE] shadow: coefficient scaling affects execution baseline; shadow intraday strength is observation only; active requires user-approved validation
+[09:25:20] [连接] MiniQMT 行情服务已连接
+[09:25:59] [交易] 连接异常: Error 10061 connecting to 192.168.30.46:16688. 由于目标计算机积极拒绝，无法连接。.
+[09:25:59] [PORTFOLIO-ERROR] account connection failed
+
+============================================================
+  日志结束: 2026-09-14 09:25:59
+============================================================

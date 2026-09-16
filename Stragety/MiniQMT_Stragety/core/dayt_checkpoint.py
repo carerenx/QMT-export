@@ -50,7 +50,8 @@ def read_checkpoint(path, account):
 
 
 def write_checkpoint(path, data, log=None):
-    payload = json.dumps(data, ensure_ascii=False, default=_encode)
+    payload = json.dumps(
+        data, ensure_ascii=False, default=_encode, indent=2) + '\n'
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, temporary = tempfile.mkstemp(prefix=path.name + '.', suffix='.tmp', dir=path.parent)

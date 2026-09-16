@@ -314,14 +314,25 @@ def run(mode):
     log_dir = Path(__file__).resolve().parent / "logs"
     logger = build_logger("DT_v1_live", log_dir)
     runner = StrategyRunner(adapter=adapter, logger=logger)
+    logger.info(
+        "[START] mode=%s symbol=%s account=%s orders=%s",
+        mode, config.STOCK_QMT, config.ACCOUNT,
+        "ENABLED" if mode == "live" else "DISABLED (signal-only)")
     active_date = ""
+    _market_was_open = False
     while True:
         now = datetime.now()
         today = now.strftime("%Y%m%d")
         hms = now.strftime("%H:%M:%S")
         if not config.is_market_open(hms):
+            if _market_was_open:
+                logger.info("market closed, sleeping until next session")
+                _market_was_open = False
             time.sleep(5)
             continue
+        if not _market_was_open:
+            logger.info("market open, starting tick loop")
+            _market_was_open = True
         snapshot = adapter.snapshot(config.STOCK_QMT)
         if active_date != today:
             columns = _history_columns(adapter.history(config.STOCK_QMT), today)
@@ -339,6 +350,12 @@ def run(mode):
             signal["buy_trigger"] = max(buy_trigger_floor, buy_trigger_trail)
             runner.start_day(signal, snapshot["cash"],
                              snapshot["sellable_shares"])
+            logger.info(
+                "[DAY-READY] date=%s price=%.2f cash=%.2f position=%s sellable=%s "
+                "rev_t=%s sell_trigger=%.2f fwd_t=%s buy_trigger=%.2f",
+                today, snapshot["price"], snapshot["cash"], snapshot["shares"],
+                snapshot["sellable_shares"], signal["do_short"],
+                signal["sell_trigger"], signal["do_long"], signal["buy_trigger"])
             active_date = today
         runner.process_tick(snapshot["price"], hms, snapshot["last_close"])
         time.sleep(config.LOOP_INTERVAL_SECONDS)

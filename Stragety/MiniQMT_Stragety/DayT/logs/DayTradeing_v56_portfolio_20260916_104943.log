@@ -1,0 +1,139 @@
+============================================================
+  日志文件创建: 2026-09-16 10:49:43
+  策略版本: v56 (for MiniQMT Evn)
+  标的: portfolio
+============================================================
+[10:49:52] [REFERENCE-MODE] shadow: coefficient scaling affects execution baseline; shadow intraday strength is observation only; active requires user-approved validation
+[10:49:52] [连接] MiniQMT 行情服务已连接
+[10:49:52] [账号状态] 8890145315 STOCK: 正常
+[10:49:53] [交易] 已订阅账号 8890145315
+[10:49:53] [RUNTIME] watchdog=15.0s read-RPC-timeout=5.0s instrumented-clients=2; native/router calls may have separate timeouts
+[10:49:53] [PORTFOLIO-START] all account holdings; mode=LIVE
+[10:49:53] [600584.SH] [LANE 0] [STATE-RESTORED] ledger state=SOLD REV-count=1 FWD-count=0 MOM-count=0
+[10:49:53] [601869.SH] [LANE 0] [STATE-RESTORED] ledger state=IDLE REV-count=0 FWD-count=0 MOM-count=0
+[10:49:53] [600584.SH] [LANE 0] [STATE-RESTORED] ledger state=SOLD REV-count=1 FWD-count=0 MOM-count=0
+[10:49:53] [601869.SH] [LANE 0] [STATE-RESTORED] ledger state=IDLE REV-count=0 FWD-count=0 MOM-count=0
+[10:49:54] [600584.SH] [LANE 0] [START] v56 LIVE
+[10:49:54] [600584.SH] [LANE 0] [T-SIZE PLAN] at base Y66.91: REV 0 sh / FWD 0 sh; rechecked at order submission
+[10:49:55] [600584.SH] [LANE 0] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y66.91 (source: today open tick) | ATR 4.4% | RSI 32 | Vol_ratio 0.61 | Mult 0.25 | base-trigger Y67.64 
+[10:49:55] [600584.SH] [LANE 0] [REFERENCE] base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[10:49:55] [600584.SH] [LANE 0] [QUANTILE-TREND] score -0.333 | rank 0.543 | trigger-Q 0.532 | samples 70 | span 8d | ATR-units 0.250
+[10:49:55] [600584.SH] [LANE 0] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.543*(1-2*tail)) = Q0.532 -> raw 0.4171 * scale 0.60 = 0.2503
+[10:49:55] [600584.SH] [LANE 0] [VOLUME] last 525796 | prev10_avg 657290 (last/10d 0.80x) | prev20_avg 856805 (last/20d 0.61x) | n10=10 n20=20 | VALID
+[10:49:55] [600584.SH] [LANE 0] [FACTOR] trend_score -0.33 |  trend_rank +0.54 |  trigger_q +0.53 | 
+[10:49:55] [600584.SH] [LANE 0] [ACCOUNT] Position:500 sh Y34,045(56%) | Cash:Y7,492 | Sellable:5 lots(500 sh)
+[10:49:55] [600584.SH] [LANE 0] [REV-T] ENABLED plan 0 sh / remaining 4 entries | base-trigger Y67.64 = open Y66.91*(1+ATR 4.36%*(raw 0.417147*scale 0.600)) | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY | buyback Y67.20 = Y67.64*(1-4.36%*0.15)
+[10:49:55] [600584.SH] [LANE 0] [FWD-T] ENABLED plan 0 sh / remaining 5 entries | plan buy Y66.17 = max(floor Y64.90, trail Y66.17) | plan sell Y66.63 = Y66.17*(1+1.2%) | planned value~Y0
+[10:49:55] [600584.SH] [LANE 0] [MOM] 已屏蔽 (MOM_ENABLED=False)
+[10:49:55] [600584.SH] [LANE 0] [CONNECTION] market/trade probes OK
+[10:49:55] [600584.SH] [LANE 0] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:49:51 age=4.7s last_rpc_success=2026-09-16 10:49:55 last_confirmed_fresh=2026-09-16 10:49:55 reason=source quote within age limit action=LOG_ONLY
+[10:49:56] [600584.SH] [LANE 0] [CAPACITY] sellable=500 reserved=0 free=500 cash-free=Y5754.84 REV=True FWD=False |  insufficient cash for 1 lot
+[10:49:56] [600584.SH] [LANE 0] [MA-POS] price Y68.08 | MA5 Y67.43: ABOVE +0.97% | MA20 Y71.67: BELOW -5.01%
+[10:49:56] [600584.SH] [LANE 0] [MA20 RISK] price Y68.08 is below 97% of MA20 (risk line Y69.52)
+[10:49:57] [DailyData] excluded incomplete current-day bar 20260916
+[10:49:59] [DATA-HEALTH] last_complete=20260915 expected=20260915 raw_close=66.86 tick_lastClose=0.00 count=79 aligned=True status=OK
+[10:49:59] [600584.SH] [LANE 0] [STRENGTH SHADOW] EXISTING_LEG minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y66.91 base-trigger=Y67.64 candidate=NOT_READY execution=Y67.64 U0=0.0000 Ul=0.2624 U=0.0000 limit=- reason=EXISTING_LEG
+[10:49:59] [600584.SH] [LANE 0] [HB] SOLD Y68.08 sell Y67.69 +0.6% buyback Y67.25 ladder Y68.71
+[10:49:59] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[10:49:59] [600584.SH] [LANE 1] [START] v56 LIVE
+[10:50:00] [600584.SH] [LANE 1] [T-SIZE PLAN] at base Y66.91: REV 0 sh / FWD 0 sh; rechecked at order submission
+[10:50:00] [600584.SH] [LANE 1] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y66.91 (source: today open tick) | ATR 4.4% | RSI 32 | Vol_ratio 0.61 | Mult 0.25 | base-trigger Y67.64 
+[10:50:00] [600584.SH] [LANE 1] [REFERENCE] base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY
+[10:50:00] [600584.SH] [LANE 1] [QUANTILE-TREND] score -0.333 | rank 0.543 | trigger-Q 0.532 | samples 70 | span 8d | ATR-units 0.250
+[10:50:00] [600584.SH] [LANE 1] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.543*(1-2*tail)) = Q0.532 -> raw 0.4171 * scale 0.60 = 0.2503
+[10:50:00] [600584.SH] [LANE 1] [VOLUME] last 525796 | prev10_avg 657290 (last/10d 0.80x) | prev20_avg 856805 (last/20d 0.61x) | n10=10 n20=20 | VALID
+[10:50:00] [600584.SH] [LANE 1] [FACTOR] trend_score -0.33 |  trend_rank +0.54 |  trigger_q +0.53 | 
+[10:50:00] [600584.SH] [LANE 1] [ACCOUNT] Position:500 sh Y34,045(56%) | Cash:Y7,492 | Sellable:5 lots(500 sh)
+[10:50:02] [600584.SH] [LANE 1] [REV-T] ENABLED plan 0 sh / remaining 4 entries | base-trigger Y67.64 = open Y66.91*(1+ATR 4.36%*(raw 0.417147*scale 0.600)) | base-trigger Y67.64 | execution Y67.64 | shadow-candidate NOT_READY | buyback Y67.20 = Y67.64*(1-4.36%*0.15)
+[10:50:02] [600584.SH] [LANE 1] [FWD-T] ENABLED plan 0 sh / remaining 5 entries | plan buy Y66.12 = max(floor Y64.90, trail Y65.88) | plan sell Y66.58 = Y66.12*(1+1.2%) | planned value~Y0
+[10:50:02] [600584.SH] [LANE 1] [MOM] 已屏蔽 (MOM_ENABLED=False)
+[10:50:03] [600584.SH] [LANE 1] [CONNECTION] market/trade probes OK
+[10:50:03] [600584.SH] [LANE 1] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:50:00 age=2.8s last_rpc_success=2026-09-16 10:50:02 last_confirmed_fresh=2026-09-16 10:50:02 reason=source quote within age limit action=LOG_ONLY
+[10:50:03] [600584.SH] [LANE 1] [CAPACITY] sellable=500 reserved=0 free=500 cash-free=Y5754.84 REV=True FWD=False |  insufficient cash for 1 lot
+[10:50:03] [600584.SH] [LANE 1] [MA-POS] price Y68.08 | MA5 Y67.43: ABOVE +0.97% | MA20 Y71.67: BELOW -5.01%
+[10:50:03] [600584.SH] [LANE 1] [MA20 RISK] price Y68.08 is below 97% of MA20 (risk line Y69.52)
+[10:50:04] [DailyData] excluded incomplete current-day bar 20260916
+[10:50:06] [DATA-HEALTH] last_complete=20260915 expected=20260915 raw_close=66.86 tick_lastClose=0.00 count=79 aligned=True status=OK
+[10:50:06] [600584.SH] [LANE 1] [STRENGTH SHADOW] EXISTING_LEG minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y66.91 base-trigger=Y67.64 candidate=NOT_READY execution=Y67.64 U0=0.0000 Ul=0.2624 U=0.0000 limit=- reason=EXISTING_LEG
+[10:50:06] [600584.SH] [LANE 1] [HB] SOLD Y68.08 sell Y67.68 +0.6% buyback Y67.24 ladder Y68.70
+[10:50:06] [601869.SH] [LANE 0] [START] v56 LIVE
+[10:50:06] [601869.SH] [LANE 0] [TREND-GUARD BLOCK] 3-session return +6.03%
+[10:50:09] [601869.SH] [LANE 0] [T-SIZE PLAN] at base Y453.03: REV 100 sh / FWD 0 sh; rechecked at order submission
+[10:50:10] [601869.SH] [LANE 0] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y453.03 (source: today open tick) | ATR 6.5% | RSI 66 | Vol_ratio 0.81 | Mult 0.37 | base-trigger Y463.83 [REV-T blocked:REV-T blocked by 3-session return +6.03%]
+[10:50:10] [601869.SH] [LANE 0] [REFERENCE] base-trigger Y463.83 | execution Y463.83 | shadow-candidate NOT_READY
+[10:50:10] [601869.SH] [LANE 0] [QUANTILE-TREND] score +0.946 | rank 0.729 | trigger-Q 0.671 | samples 70 | span 8d | ATR-units 0.368
+[10:50:10] [601869.SH] [LANE 0] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.729*(1-2*tail)) = Q0.671 -> raw 0.6132 * scale 0.60 = 0.3679
+[10:50:10] [601869.SH] [LANE 0] [VOLUME] last 118593 | prev10_avg 138694 (last/10d 0.86x) | prev20_avg 147162 (last/20d 0.81x) | n10=10 n20=20 | VALID
+[10:50:10] [601869.SH] [LANE 0] [FACTOR] trend_score +0.95 |  trend_rank +0.73 |  trigger_q +0.67 | 
+[10:50:10] [601869.SH] [LANE 0] [ACCOUNT] Position:100 sh Y47,130(38%) | Cash:Y7,492 | Sellable:1 lots(100 sh)
+[10:50:13] [601869.SH] [LANE 0] [REV-T] BLOCKED REV-T blocked by 3-session return +6.03% | base-trigger Y463.83 = open Y453.03*(1+ATR 6.48%*(raw 0.613163*scale 0.600)) | base-trigger Y463.83 | execution Y463.83 | shadow-candidate NOT_READY | buyback Y459.32 = Y463.83*(1-6.48%*0.15)
+[10:50:13] [601869.SH] [LANE 0] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y453.72 = max(floor Y439.44, trail Y453.72) | plan sell Y459.16 = Y453.72*(1+1.2%) | planned value~Y0
+[10:50:13] [601869.SH] [LANE 0] [MOM] 已屏蔽 (MOM_ENABLED=False)
+[10:50:13] [601869.SH] [LANE 0] [CONNECTION] market/trade probes OK
+[10:50:13] [601869.SH] [LANE 0] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:50:09 age=4.5s last_rpc_success=2026-09-16 10:50:13 last_confirmed_fresh=2026-09-16 10:50:13 reason=source quote within age limit action=LOG_ONLY
+[10:50:14] [601869.SH] [LANE 0] [MA-POS] price Y471.43 | MA5 Y460.56: ABOVE +2.36% | MA20 Y414.65: ABOVE +13.69%
+[10:50:14] [601869.SH] [LANE 0] [STRENGTH SHADOW] WARMUP minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y453.03 base-trigger=Y463.83 candidate=NOT_READY execution=Y463.83 U0=0.0000 Ul=0.2904 U=0.0000 limit=- reason=WARMUP
+[10:50:14] [601869.SH] [LANE 0] [STANDBY] Y471.43 no trade direction
+[10:50:14] [601869.SH] [LANE 1] [START] v56 LIVE
+[10:50:14] [601869.SH] [LANE 1] [TREND-GUARD BLOCK] 3-session return +6.03%
+[10:50:16] [601869.SH] [LANE 1] [T-SIZE PLAN] at base Y453.03: REV 100 sh / FWD 0 sh; rechecked at order submission
+[10:50:16] [601869.SH] [LANE 1] [SIGNAL] ADAPTIVE-SIDEWAYS | SignalBase Y453.03 (source: today open tick) | ATR 6.5% | RSI 66 | Vol_ratio 0.81 | Mult 0.37 | base-trigger Y463.83 [REV-T blocked:REV-T blocked by 3-session return +6.03%]
+[10:50:16] [601869.SH] [LANE 1] [REFERENCE] base-trigger Y463.83 | execution Y463.83 | shadow-candidate NOT_READY
+[10:50:16] [601869.SH] [LANE 1] [QUANTILE-TREND] score +0.946 | rank 0.729 | trigger-Q 0.671 | samples 70 | span 8d | ATR-units 0.368
+[10:50:16] [601869.SH] [LANE 1] [QUANTILE-FORMULA] units=Quantile(next-day open-to-high, tail 0.125 + trend-rank 0.729*(1-2*tail)) = Q0.671 -> raw 0.6132 * scale 0.60 = 0.3679
+[10:50:16] [601869.SH] [LANE 1] [VOLUME] last 118593 | prev10_avg 138694 (last/10d 0.86x) | prev20_avg 147162 (last/20d 0.81x) | n10=10 n20=20 | VALID
+[10:50:16] [601869.SH] [LANE 1] [FACTOR] trend_score +0.95 |  trend_rank +0.73 |  trigger_q +0.67 | 
+[10:50:16] [601869.SH] [LANE 1] [ACCOUNT] Position:100 sh Y47,143(38%) | Cash:Y7,492 | Sellable:1 lots(100 sh)
+[10:50:19] [601869.SH] [LANE 1] [REV-T] BLOCKED REV-T blocked by 3-session return +6.03% | base-trigger Y463.83 = open Y453.03*(1+ATR 6.48%*(raw 0.613163*scale 0.600)) | base-trigger Y463.83 | execution Y463.83 | shadow-candidate NOT_READY | buyback Y459.32 = Y463.83*(1-6.48%*0.15)
+[10:50:19] [601869.SH] [LANE 1] [FWD-T] BLOCKED insufficient cash for 1 lot | plan buy Y453.01 = max(floor Y439.44, trail Y453.01) | plan sell Y458.45 = Y453.01*(1+1.2%) | planned value~Y0
+[10:50:19] [601869.SH] [LANE 1] [MOM] 已屏蔽 (MOM_ENABLED=False)
+[10:50:19] [601869.SH] [LANE 1] [CONNECTION] market/trade probes OK
+[10:50:19] [601869.SH] [LANE 1] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:50:15 age=4.2s last_rpc_success=2026-09-16 10:50:19 last_confirmed_fresh=2026-09-16 10:50:19 reason=source quote within age limit action=LOG_ONLY
+[10:50:20] [601869.SH] [LANE 1] [MA-POS] price Y471.50 | MA5 Y460.58: ABOVE +2.37% | MA20 Y414.66: ABOVE +13.71%
+[10:50:20] [601869.SH] [LANE 1] [STRENGTH SHADOW] WARMUP minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y453.03 base-trigger=Y463.83 candidate=NOT_READY execution=Y463.83 U0=0.0000 Ul=0.2904 U=0.0000 limit=- reason=WARMUP
+[10:50:20] [601869.SH] [LANE 1] [STANDBY] Y471.50 no trade direction
+[10:50:56] [600584.SH] [LANE 0] [HB] SOLD Y68.10 sell Y67.69 +0.6% buyback Y67.25 ladder Y68.71
+[10:51:03] [600584.SH] [LANE 1] [HB] SOLD Y68.09 sell Y67.68 +0.6% buyback Y67.24 ladder Y68.70
+[10:51:57] [600584.SH] [LANE 0] [HB] SOLD Y68.27 sell Y67.69 +0.9% buyback Y67.25 ladder Y68.71
+[10:52:04] [600584.SH] [LANE 1] [HB] SOLD Y68.28 sell Y67.68 +0.9% buyback Y67.24 ladder Y68.70
+[10:52:58] [600584.SH] [LANE 0] [HB] SOLD Y68.28 sell Y67.69 +0.9% buyback Y67.25 ladder Y68.71
+[10:53:05] [600584.SH] [LANE 1] [HB] SOLD Y68.29 sell Y67.68 +0.9% buyback Y67.24 ladder Y68.70
+[10:53:58] [600584.SH] [LANE 0] [HB] SOLD Y68.22 sell Y67.69 +0.8% buyback Y67.25 ladder Y68.71
+[10:54:05] [600584.SH] [LANE 1] [HB] SOLD Y68.20 sell Y67.68 +0.8% buyback Y67.24 ladder Y68.70
+[10:54:56] [600584.SH] [LANE 0] [STRENGTH SHADOW] EXISTING_LEG minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y66.91 base-trigger=Y67.64 candidate=NOT_READY execution=Y67.64 U0=0.0000 Ul=0.2624 U=0.0000 limit=- reason=EXISTING_LEG
+[10:55:01] [600584.SH] [LANE 0] [QUOTE-HEALTH] FRESH connection=OK quote_time=2026-09-16 10:54:57 age=3.9s last_rpc_success=2026-09-16 10:55:00 last_confirmed_fresh=2026-09-16 10:55:00 reason=source quote within age limit action=LOG_ONLY
+[10:55:01] [600584.SH] [LANE 0] [HB] SOLD Y68.33 sell Y67.69 +0.9% buyback Y67.25 ladder Y68.71
+[10:55:04] [STATE-SAVED] symbols=2 inflight=False path=D:\02Project\QMT-export\Stragety\MiniQMT_Stragety\DayT\state\v56_8890145315.json
+[10:55:04] [600584.SH] [LANE 1] [STRENGTH SHADOW] EXISTING_LEG minutes=0 components=[0.0, 0.0, 0.0] S=0.000 base=Y66.91 base-trigger=Y67.64 candidate=NOT_READY execution=Y67.64 U0=0.0000 Ul=0.2624 U=0.0000 limit=- reason=EXISTING_LEG
+[10:55:06] [600584.SH] [LANE 1] [CYCLE-RISK-EXIT] id=600584.SH:1:635106174 reason=ADVERSE_MOVE days=1 adverse=1.00%
+[10:55:06] [600584.SH] [LANE 1] [ORDER-REV-T risk buyback(ADVERSE_MOVE)] Y68.36 × 100 sh
+[10:55:08]   >>> 下单买入: PEER x 100股 600584.SH [COMPETE]
+[10:55:08] [委托] 买 Y73.55 0/100股 -> 已报
+[10:55:08] [委托] 买 Y73.55 0/100股 -> 已报
+[10:55:08] [成交] 买 600584.SH Y68.38 x 100股 = Y6,838
+[10:55:08] [委托] 买 Y73.55 100/100股 -> 全成
+[10:55:08] [600584.SH] [LANE 1] [CYCLE-CLOSED] REV-T risk buyback(ADVERSE_MOVE) gross=Y-70.00 fees=NOT_INCLUDED
+[10:55:08] [600584.SH] [LANE 1] [EXECUTION] order=635149113 REV-T risk buyback(ADVERSE_MOVE) qty=100 avg=Y68.3800 reference=Y68.3600 realized-gross=Y-70.00 total-gross=Y-70.00 fees=NOT_INCLUDED
+[10:55:09] [600584.SH] [LANE 1] [NEXT-T #1] REV-T risk buyback(ADVERSE_MOVE) | closing order=635149113 avg=Y68.3800 | ATR=4.36% Q=0.50 samples=70 | REV=base*(1+ATR*0.3200) -> Y69.34 | FWD=base*(1-ATR*0.3386) -> Y67.37 (outward tick rounding)
+[10:55:09] [600584.SH] [LANE 1] [REENTRY-UNIT-FORMULA] raw 0.399954 * scale 0.800 = 0.319963
+[10:55:09] [600584.SH] [LANE 1] [CAPACITY] sellable=500 reserved=0 free=500 cash-free=Y5913.83 REV=True FWD=False |  insufficient cash for 1 lot
+[10:55:09] [600584.SH] [LANE 1] [RESUME] → IDLE (REV-T 1/5)
+[10:55:09] [600584.SH] [LANE 1] [HB] IDLE Y68.36 REV-T: exceeded Y67.64 by Y0.72 | FWD-T: off (insufficient cash for 1 lot) | base-trigger Y69.34 | execution Y67.64 | shadow-candidate NOT_READY
+[10:55:11] [600584.SH] [LANE 0] [CYCLE-RISK-EXIT] id=600584.SH:0:635106068 reason=ADVERSE_MOVE days=1 adverse=1.02%
+[10:55:13] [600584.SH] [LANE 0] [ORDER-REV-T risk buyback(ADVERSE_MOVE)] Y68.38 × 400 sh
+[10:55:13]   >>> 下单买入: PEER x 400股 600584.SH [COMPETE]
+[10:55:13] [委托] 买 Y73.55 0/400股 -> 已报
+[10:55:13] [600584.SH] [LANE 0] [ORDER-REJECTED] no valid order id; no closing price recorded
+[10:55:13] [600584.SH] [LANE 0] [ERROR] submission outcome unknown; inspect broker before resuming
+[10:55:13] [委托] 买 Y73.55 0/400股 -> 已报
+[10:55:13] [600584.SH] [LANE 0] [WARN] position not bought back!
+[10:55:13] [600584.SH] [LANE 0] [STOP] 长电科技 v56 cum 0 days gross~Y0
+[10:55:13] [STATE-BLOCKED] STATE-BLOCKED: worker stopped; preserve checkpoint and reconcile; automatic trading stopped; checkpoint retained
+[10:55:13] [600584.SH] [LANE 1] [STOP] 长电科技 v56 cum 1 days gross~Y-70
+[10:55:13] [601869.SH] [LANE 0] [STOP] 长飞光纤 v56 cum 0 days gross~Y0
+[10:55:13] [601869.SH] [LANE 1] [STOP] 长飞光纤 v56 cum 0 days gross~Y0
+[10:55:13] [成交] 买 600584.SH Y68.36 x 400股 = Y27,344
+
+============================================================
+  日志结束: 2026-09-16 10:55:13
+============================================================
