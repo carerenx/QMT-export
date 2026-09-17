@@ -16,6 +16,35 @@ SPEC.loader.exec_module(MODULE)
 
 
 class ConfirmedReversalTests(unittest.TestCase):
+    def _portfolio_with_lanes(self, baseline=500):
+        portfolio = MODULE.PortfolioRunner(False)
+        lane0 = MODULE.StrategyRunner(portfolio, '600584.SH', lane=0)
+        lane1 = MODULE.StrategyRunner(portfolio, '600584.SH', lane=1)
+        portfolio.runners = {'600584.SH': lane0, '600584.SH#1': lane1}
+        for runner in (lane0, lane1):
+            runner._init_state()
+            runner.baseline_shares = baseline
+            runner.st.update(
+                initialized=True,
+                trade_date=MODULE.datetime.now().strftime('%Y%m%d'),
+                daily_signal={'atr_pct': 0.04})
+        return portfolio, lane0, lane1
+
+    def _open_short_cycle(self, runner, quantity=100, price=68.0):
+        cycle = MODULE.Cycle(
+            'manual-sync-cycle-{}'.format(runner.lane), runner.lane,
+            'SHORT', '20260917', '2026-09-17T09:30:00', 0.04)
+        cycle.label = 'REV-T sell'
+        cycle.fill('strategy-open-{}'.format(runner.lane), quantity,
+                   price, True, None)
+        runner.cycle = cycle
+        runner.execution_book.record(
+            'strategy-open-{}'.format(runner.lane), 'REV-T sell',
+            -quantity, price)
+        runner.st['short_legs'] = [(price, quantity)]
+        runner.st['fstate'] = MODULE.STATE_SOLD
+        return cycle
+
     def _short_cycle_runner(self, trading_days):
         portfolio = MODULE.PortfolioRunner(False)
         runner = MODULE.StrategyRunner(portfolio, '600584.SH', lane=0)
@@ -42,6 +71,78 @@ class ConfirmedReversalTests(unittest.TestCase):
     def test_accepts_extended_confirmed_reversal(self):
         self.assertTrue(MODULE.confirmed_short_reversal(
             100.0, 100.30, 100.05, 2))
+
+    def test_high_five_day_return_does_not_block_spike_arm(self):
+        portfolio = MODULE.PortfolioRunner(False)
+        runner = MODULE.StrategyRunner(portfolio, '601869.SH', lane=0)
+        runner._init_state()
+        runner.st.update(
+            do_short=True,
+            base_shares=100,
+            base_can_use=100,
+            trade_count_short=0,
+            ma_completed_closes=[100.0, 100.0, 100.0, 100.0, 100.0, 104.29],
+            daily_signal={'sell_trigger': 103.0})
+
+        with patch.object(MODULE.cfg, 'now_hms', return_value='10:00:00'):
+            runner._handle_idle(104.0)
+
+        self.assertEqual(MODULE.STATE_SPIKING, runner.st['fstate'])
+        self.assertEqual(1, runner.st['trade_count_short'])
+
+    def test_unique_manual_buy_fully_closes_matching_short_cycle(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes()
+        self._open_short_cycle(lane1)
+        order = SimpleNamespace(
+            order_id='manual-buy-1', stock_code='600584.SH',
+            order_status=56, order_type=23, traded_volume=100,
+            traded_price=67.5, order_time=1789609200)
+
+        changed = portfolio._reconcile_external_activity(
+            {'600584.SH': 500}, [order])
+
+        self.assertTrue(changed)
+        self.assertIsNone(lane1.cycle)
+        self.assertEqual([], lane1.st['short_legs'])
+        self.assertEqual(MODULE.STATE_IDLE, lane1.st['fstate'])
+        self.assertEqual(50.0, lane1.total_pnl)
+        self.assertIn('manual-buy-1', portfolio.external_synced_order_ids)
+        self.assertEqual('', lane0.paused_reason)
+        self.assertEqual('', lane1.paused_reason)
+
+    def test_ambiguous_manual_buy_keeps_both_lanes_paused(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes()
+        self._open_short_cycle(lane0)
+        self._open_short_cycle(lane1)
+        order = SimpleNamespace(
+            order_id='manual-buy-ambiguous', stock_code='600584.SH',
+            order_status=56, order_type=23, traded_volume=100,
+            traded_price=67.5, order_time=1789609200)
+
+        changed = portfolio._reconcile_external_activity(
+            {'600584.SH': 400}, [order])
+
+        self.assertFalse(changed)
+        self.assertIsNotNone(lane0.cycle)
+        self.assertIsNotNone(lane1.cycle)
+        self.assertIn('ambiguous', lane0.paused_reason)
+        self.assertIn('ambiguous', lane1.paused_reason)
+
+    def test_manual_trade_with_no_cycle_updates_baseline(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes()
+        order = SimpleNamespace(
+            order_id='manual-buy-baseline', stock_code='600584.SH',
+            order_status=56, order_type=23, traded_volume=100,
+            traded_price=67.5, order_time=1789609200)
+
+        changed = portfolio._reconcile_external_activity(
+            {'600584.SH': 600}, [order])
+
+        self.assertTrue(changed)
+        self.assertEqual(600, lane0.baseline_shares)
+        self.assertEqual(600, lane1.baseline_shares)
+        self.assertIn('manual-buy-baseline',
+                      portfolio.external_synced_order_ids)
 
     def test_core_position_limits_t_inventory(self):
         shares = MODULE.calculate_t_shares(
@@ -210,6 +311,33 @@ class ConfirmedReversalTests(unittest.TestCase):
         self.assertIn("_log_file_only('[STATE-SAVED]", save)
         self.assertIn("tag == 'QUOTE-HEALTH'", monitor)
         self.assertIn("('FRESH', 'NOT_APPLICABLE')", monitor)
+
+    def test_log_prefix_uses_plain_symbol_and_compact_lane(self):
+        portfolio = MODULE.PortfolioRunner(False)
+        runner = MODULE.StrategyRunner(portfolio, '601869.SH', lane=0)
+
+        with patch.object(MODULE, '_log') as terminal, \
+                patch.object(MODULE, '_log_file_only') as file_only:
+            runner._log('visible')
+            runner._file_log('quiet')
+
+        terminal.assert_called_once_with('[601869][L0] visible')
+        file_only.assert_called_once_with('[601869][L0] quiet')
+
+    def test_lane_one_restore_logs_saved_lane_prefix(self):
+        portfolio = MODULE.PortfolioRunner(False)
+        original = MODULE.StrategyRunner(portfolio, '601869.SH', lane=1)
+        original._init_state()
+        record = original.checkpoint_record()
+        restored = MODULE.StrategyRunner(portfolio, '601869.SH', lane=0)
+
+        with patch.object(MODULE, '_log') as terminal:
+            restored.restore_record(record)
+
+        self.assertEqual(1, restored.lane)
+        terminal.assert_any_call(
+            '[601869][L1] [STATE-RESTORED] ledger state=IDLE '
+            'REV-count=0 FWD-count=0')
 
 
 if __name__ == "__main__":

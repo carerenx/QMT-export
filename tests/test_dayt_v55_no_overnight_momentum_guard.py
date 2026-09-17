@@ -21,6 +21,15 @@ class NoOvernightMomentumGuardTests(unittest.TestCase):
         self.assertTrue(result['allowed'])
         self.assertAlmostEqual(result['return'], 0.03)
 
+    def test_research_threshold_can_be_overridden(self):
+        closes = [100.0, 100.5, 101.0, 101.5, 102.0, 104.0]
+
+        blocked = s.short_five_day_momentum_guard(closes, 0.03)
+        allowed = s.short_five_day_momentum_guard(closes, 0.05)
+
+        self.assertFalse(blocked['allowed'])
+        self.assertTrue(allowed['allowed'])
+
     def test_missing_history_fails_closed(self):
         result = s.short_five_day_momentum_guard([100.0, 101.0])
 
