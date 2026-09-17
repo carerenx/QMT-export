@@ -4,13 +4,17 @@
 __pycache__/
 *.pyc
 *.json
+*.log
+
+
+/tests
+/backtest
+backtest/cache
+.venv-bigqmt/
 
 .DS_Store
 Log/
 
-/backtest
-backtest/cache
-.venv-bigqmt/
-/tests
+tests/
 
 
