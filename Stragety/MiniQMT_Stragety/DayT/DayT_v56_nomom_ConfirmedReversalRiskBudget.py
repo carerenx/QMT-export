@@ -59,7 +59,7 @@ from Stragety.MiniQMT_Stragety.DayT.infra.connector import (
 # 仅调整未开仓反T启动价；原开盘价阈值和已有买回目标保持不变。
 # shadow：旧v50规则实际执行，新规则只观察；active须完成回放/影子验收后人工启用。
 INTRADAY_REFERENCE_MODE = 'shadow'
-QUANTILE_UNITS_SCALE = 0.60    # 首轮quantile_units乘此系数；1=原值，0.8=降低20%，须大于0
+QUANTILE_UNITS_SCALE = 0.66    # 首轮quantile_units乘此系数；1=原值，0.8=降低20%，须大于0
 REENTRY_UP_UNITS_SCALE = 0.80  # 第二轮及以后反T上行系数的独立缩放；1=原值，0.8=卖出距离缩短20%，须大于0
                              # 不叠乘首轮系数；不改变正T买入阈值或已成交交易的退出目标。
 STRENGTH_HISTORY_DAYS = 80       # 仅已完成日线；不得使用当前未完成日线

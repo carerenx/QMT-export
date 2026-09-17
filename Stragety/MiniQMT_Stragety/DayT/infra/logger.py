@@ -10,6 +10,68 @@ import sys
 from datetime import datetime
 
 
+CONSOLE_GRAY = '\033[90m'
+CONSOLE_RESET = '\033[0m'
+
+
+def _write_windows_gray(stream, message):
+    """Use the native Windows console color API; return False if unavailable."""
+    try:
+        import ctypes
+        import msvcrt
+        from ctypes import wintypes
+
+        class ConsoleScreenBufferInfo(ctypes.Structure):
+            _fields_ = [
+                ('size', wintypes._COORD),
+                ('cursor_position', wintypes._COORD),
+                ('attributes', wintypes.WORD),
+                ('window', wintypes.SMALL_RECT),
+                ('maximum_window_size', wintypes._COORD),
+            ]
+
+        handle = msvcrt.get_osfhandle(stream.fileno())
+        info = ConsoleScreenBufferInfo()
+        kernel32 = ctypes.windll.kernel32
+        if not kernel32.GetConsoleScreenBufferInfo(handle, ctypes.byref(info)):
+            return False
+        if not kernel32.SetConsoleTextAttribute(handle, 8):
+            return False
+        try:
+            try:
+                stream.write(message)
+            except UnicodeEncodeError:
+                encoding = stream.encoding or 'utf-8'
+                stream.write(message.encode(
+                    encoding, errors='replace').decode(encoding))
+        finally:
+            kernel32.SetConsoleTextAttribute(handle, info.attributes)
+        return True
+    except (AttributeError, ImportError, OSError, ValueError):
+        return False
+
+
+def _write_gray_stream(stream, message):
+    """Write gray to a real terminal and plain text to redirected streams."""
+    is_terminal = bool(getattr(stream, 'isatty', lambda: False)())
+    if not is_terminal:
+        stream.write(message)
+        return
+    if os.name == 'nt' and _write_windows_gray(stream, message):
+        return
+    colored = CONSOLE_GRAY + message + CONSOLE_RESET
+    try:
+        stream.write(colored)
+    except UnicodeEncodeError:
+        encoding = stream.encoding or 'utf-8'
+        stream.write(colored.encode(
+            encoding, errors='replace').decode(encoding))
+
+
+def _write_gray_console(message):
+    _write_gray_stream(sys.stdout, message)
+
+
 class FileLogger:
     """
     日志系统: 同时写入控制台和文件。
@@ -55,19 +117,23 @@ class FileLogger:
 
         if console:
             # 控制台 (TTY 自动行缓冲, 不手动 flush)
-            sys.stdout.write(msg)
+            _write_gray_console(msg)
 
         # 文件: 立即 flush 确保崩溃不丢日志
         try:
             self._file.write(msg)
             self._file.flush()
             if self._file_error_reported:
-                sys.stderr.write('[LOGGER-FILE-RECOVERED] file logging resumed\n')
+                _write_gray_stream(
+                    sys.stderr,
+                    '[LOGGER-FILE-RECOVERED] file logging resumed\n')
                 self._file_error_reported = False
         except Exception as error:
             if not self._file_error_reported:
-                sys.stderr.write('[LOGGER-FILE-ERROR] {}; messages may be missing from {}\n'.format(
-                    error, self.log_path))
+                _write_gray_stream(
+                    sys.stderr,
+                    '[LOGGER-FILE-ERROR] {}; messages may be missing from {}\n'.format(
+                        error, self.log_path))
                 self._file_error_reported = True
 
     def close(self):
@@ -116,11 +182,7 @@ def _write_log(args, console):
     if _logger_instance is not None:
         _logger_instance.write(msg, console=console)
     else:
-        try:
-            print(msg)
-        except UnicodeEncodeError:
-            encoding = sys.stdout.encoding or 'utf-8'
-            print(msg.encode(encoding, errors='replace').decode(encoding))
+        _write_gray_console(msg + '\n')
 
 
 def _log(*args):

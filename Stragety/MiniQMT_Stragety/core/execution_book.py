@@ -14,9 +14,15 @@ class ExecutionBook:
             raise ValueError('order already accounted: ' + key)
         if not math.isfinite(price) or price <= 0 or not signed_shares:
             raise ValueError('invalid execution')
-        opening = label in ('REV-T sell', 'FWD-T buy', 'MOM short', 'MOM long')
-        short = (label == 'REV-T sell' or 'buyback' in label or label == 'MOM short')
-        group = ('MOM ' if label.startswith('MOM') else '') + ('SHORT' if short else 'LONG')
+        risk = label in ('RISK-OFF sell', 'RISK-RESTORE buy')
+        opening = label in (
+            'REV-T sell', 'FWD-T buy', 'MOM short', 'MOM long',
+            'RISK-OFF sell')
+        short = (label == 'REV-T sell' or 'buyback' in label or
+                 label == 'MOM short' or risk)
+        group = ('RISK' if risk else
+                 ('MOM ' if label.startswith('MOM') else '') +
+                 ('SHORT' if short else 'LONG'))
         legs = self.legs.setdefault(group, [])
         quantity = abs(signed_shares)
         if not opening and quantity > sum(n for _, n in legs):

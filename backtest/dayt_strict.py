@@ -50,6 +50,7 @@ class StrictBroker(Broker):
         self.recorded=set()
         self.opened_times={}
         self.cycle_details=[]
+        self.risk_active_fn=None
         self.trader.query_stock_order=lambda account,oid:self.query_order(oid)
         self.trader.query_stock_orders=lambda account:list(self.exchange.orders.values())
 
@@ -97,12 +98,31 @@ class StrictBroker(Broker):
         self.query_order(oid)
         return True
 
+    def transfer_short_to_risk(self, quantity):
+        """Mirror a strategy bookkeeping transfer; this is not an exchange fill."""
+        short_legs = list(self.book.legs.get('SHORT', []))
+        if sum(shares for _, shares in short_legs) != int(quantity):
+            raise RuntimeError('strict broker short/risk transfer mismatch')
+        self.book.legs.setdefault('RISK', []).extend(short_legs)
+        self.book.legs['SHORT'] = []
+        self.book.cycle_gross['RISK'] = (
+            self.book.cycle_gross.get('RISK', 0.0) +
+            self.book.cycle_gross.get('SHORT', 0.0))
+        self.book.cycle_gross['SHORT'] = 0.0
+        opened = self.opened_times.pop('SHORT', None)
+        if opened and 'RISK' not in self.opened_times:
+            self.opened_times['RISK'] = opened
+
     def query_order(self,oid):
         order=self.exchange.orders[oid]
         if order.order_status in (53,54,56,57) and order.traded_volume and oid not in self.recorded:
             signed=order.traded_volume*(1 if order.signed_quantity>0 else -1)
-            short=order.label=='REV-T sell' or 'buyback' in order.label or order.label=='MOM short'
-            group=('MOM ' if order.label.startswith('MOM') else '')+('SHORT' if short else 'LONG')
+            risk=order.label in ('RISK-OFF sell','RISK-RESTORE buy')
+            short=(order.label=='REV-T sell' or 'buyback' in order.label or
+                   order.label=='MOM short' or risk)
+            group=('RISK' if risk else
+                   ('MOM ' if order.label.startswith('MOM') else '')+
+                   ('SHORT' if short else 'LONG'))
             if not self.book.legs.get(group): self.opened_times[group]=Clock.current.isoformat()
             gross,complete,cycle=self.book.record(oid,order.label,signed,order.traded_price)
             if complete:
@@ -146,8 +166,9 @@ class StrictBroker(Broker):
             price=float(row.close)
             self.equities.append(dict(time=stamp.isoformat(),equity=self.exchange.equity,
                 cash=self.cash,position=self.position,price=price,
+                risk_active=bool(self.risk_active_fn and self.risk_active_fn()),
                 unfinished_abs=sum(q for legs in self.book.legs.values() for _,q in legs),
-                occupied=sum(q*(max(p,price) if 'SHORT' in group else p)
+                occupied=sum(q*(max(p,price) if ('SHORT' in group or group == 'RISK') else p)
                              for group,legs in self.book.legs.items() for p,q in legs)))
         self.tick=dict(lastPrice=price,open=float(self.bars.iloc[0].open),
                        high=max(price,float(seen.high.max())),low=min(price,float(seen.low.min())),
@@ -166,8 +187,7 @@ class StrictBroker(Broker):
 
 def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False,
            symbol='601869.SH',stock_name='601869',initial_cash=100000.0,
-           initial_shares=200,research_short_cutoff=None,
-           research_short_5d_max_return=None):
+           initial_shares=200,research_short_cutoff=None):
     if legacy_carry and not version.startswith(('v39','v51')):
         raise ValueError('legacy carry is only defined for v39/v51')
     register_with_legacy_loader()
@@ -200,6 +220,9 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False,
             portfolio=mod.PortfolioRunner(False)
             runner=mod.StrategyRunner(portfolio,broker.code)
             portfolio.runners[broker.code]=runner
+            broker.risk_active_fn=lambda: bool(
+                getattr(runner, 'drawdown', None) and
+                runner.drawdown.target_fraction < 1.0)
             if hasattr(runner, 'baseline_shares'):
                 runner.baseline_shares=initial_shares
             stack.enter_context(patch.object(portfolio,'save_checkpoint',lambda *a,**kw:None))
@@ -220,12 +243,6 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False,
         original=runner._submit_order
         def submit(shares,price,label,style='COMPETE'):
             broker.label=label
-            if label=='REV-T sell' and research_short_5d_max_return is not None:
-                completed=broker.daily.close.tail(6)
-                if (len(completed)>=6 and
-                        float(completed.iloc[-1])/float(completed.iloc[-6])-1.0 >
-                        research_short_5d_max_return):
-                    return 'SKIP',0
             return original(shares,price,label,style)
         stack.enter_context(patch.object(runner,'_submit_order',submit))
         carry=None
@@ -278,7 +295,9 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False,
                     restored_shares = (
                         sum(quantity for _, quantity in runner.st.get('short_legs', [])) +
                         sum(quantity for _, quantity in runner.st.get('long_legs', [])) +
-                        int(runner.st.get('mom_leg_shares', 0) or 0))
+                        int(runner.st.get('mom_leg_shares', 0) or 0) +
+                        sum(quantity for _, quantity in
+                            runner.execution_book.legs.get('RISK', [])))
                     if restored_shares != expected_carry_shares:
                         failure = ('INVALID: overnight carry mismatch at {}: '
                                    'ledger={} strategy={}'.format(
@@ -296,11 +315,13 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False,
         durations=[sum(start[:10].replace('-','')<=day<=end[:10].replace('-','') for day in session_days)
                    for start,end in ([(row['opened'],row['closed']) for row in broker.cycle_details]+
                                     [(start,Clock.current.isoformat()) for start in broker.opened_times.values()])]
+        checkpoint = (runner.checkpoint_record()
+                      if hasattr(runner, 'baseline_shares') else {})
         return dict(version=version,rate=rate,failure=failure,stopped_at=stopped_at if failure else None,
             adaptation='LEGACY_CARRY_EXITS_ONLY' if carry else 'ORIGINAL',
             carry_events=carry.events if carry else [],
-            owned_cycle_records=(runner.checkpoint_record().get('v52')
-                                 if hasattr(runner, 'baseline_shares') else None),
+            owned_cycle_records=checkpoint.get('v52'),
+            drawdown_record=checkpoint.get('drawdown'),
             settings=overrides or {},days=len(broker.days),
             account_net=final-initial,
             excess_net=final-(initial_cash+initial_shares*float(minute.iloc[-1].close)),
@@ -312,7 +333,7 @@ def replay(version,daily,minute,rate=.0005,overrides=None,legacy_carry=False,
             longest_holding_sessions=max(durations,default=0),cycles=broker.cycle_details,
             unclosed=[dict(group=group,price=price,quantity=quantity,opened=broker.opened_times.get(group),
                            mark=float(minute.iloc[-1].close),
-                           unrealized=quantity*((price-float(minute.iloc[-1].close)) if 'SHORT' in group else (float(minute.iloc[-1].close)-price)))
+                           unrealized=quantity*((price-float(minute.iloc[-1].close)) if ('SHORT' in group or group == 'RISK') else (float(minute.iloc[-1].close)-price)))
                       for group,legs in broker.book.legs.items() for price,quantity in legs],
             rejection_counts=dict(Counter(row['reason'] for row in broker.exchange.rejections)),
             orders=[vars(order) for order in broker.exchange.orders.values()],

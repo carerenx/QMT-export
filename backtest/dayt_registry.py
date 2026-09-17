@@ -30,6 +30,8 @@ STRATEGIES = {
     'v54_nomom': 'DayT_v54_nomom_TrendGuard.py',
     'v55_nomom': 'DayT_v55_nomom_NoOvernightMomentumGuard.py',
     'v56_nomom': 'DayT_v56_nomom_ConfirmedReversalRiskBudget.py',
+    'v57_nomom': 'DayT_v57_nomom_AggressiveDrawdownLiquidation.py',
+    'v58_nomom': 'DayT_v58_nomom_StagedDrawdownDeRisk.py',
 }
 
 # External RedisQMT strategies use a different runner interface from the
