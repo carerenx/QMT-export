@@ -16,7 +16,6 @@ CYCLE_FEE_RATE = 0.0005  # 研究预留假设，不代表券商真实费率。
 CYCLE_MINIMUM_FEE = 5.0
 CYCLE_AGE_ALERT_DAYS = 3
 CYCLE_MAX_HOLDING_DAYS = 3
-SHORT_FIVE_DAY_RETURN_MAX = 0.03
 SHORT_NEW_ENTRY_CUTOFF = '14:20:00'
 SHORT_CONFIRM_MIN_BARS = 2
 SHORT_CONFIRM_MIN_EXTENSION_PCT = 0.0015
@@ -121,19 +120,6 @@ def short_trend_guard(completed_closes, lookback=SHORT_TREND_LOOKBACK):
         'return': trend_return,
         'reason': '3-session return {:+.2f}%'.format(trend_return * 100),
     }
-
-def short_five_day_momentum_guard(completed_closes,
-                                  maximum=SHORT_FIVE_DAY_RETURN_MAX):
-    """Allow a new REV-T only when five-session momentum is not excessive."""
-    closes = [float(value) for value in completed_closes]
-    if len(closes) < 6 or closes[-6] <= 0 or closes[-1] <= 0:
-        return {'allowed': False, 'return': None}
-    five_day_return = closes[-1] / closes[-6] - 1.0
-    return {
-        'allowed': five_day_return <= maximum + 1e-12,
-        'return': five_day_return,
-    }
-
 
 def confirmed_short_reversal(trigger, peak, price, armed_bars,
                              minimum_bars=SHORT_CONFIRM_MIN_BARS,
@@ -476,10 +462,10 @@ class ExecutionRunner:
             self.st.get('trade_count_long', 0)))
 
     def _log(self, message):
-        _log('[{}] {}'.format(self.stock_qmt, message))
+        _log('[{}]{}'.format(self.stock_code, message))
 
     def _file_log(self, message):
-        _log_file_only('[{}] {}'.format(self.stock_qmt, message))
+        _log_file_only('[{}]{}'.format(self.stock_code, message))
 
     def _monitor_connections(self, now_ts):
         """Log connection degradation/recovery without changing trade state."""
@@ -2109,6 +2095,7 @@ class ExecutionPortfolio:
         self.last_refresh = None
         self.order_uncertain = False
         self.own_order_ids = set()
+        self.external_synced_order_ids = set()
         self.watchdog = RuntimeWatchdog(_log, WATCHDOG_WARN_SEC)
         self.rpc_originals = []
         self.seen_trades = None
@@ -2202,6 +2189,7 @@ class ExecutionPortfolio:
         data = dict(schema=1, account=str(ACCOUNT),
                     date=today, inflight=pending,
                     order_uncertain=self.order_uncertain, own_order_ids=self.own_order_ids,
+                    external_synced_order_ids=self.external_synced_order_ids,
                     runners={code: r.checkpoint_record() for code, r in self.runners.items()},
                     broker=self._broker_snapshot())
         write_checkpoint(STATE_FILE, data, log=_log)
@@ -2394,15 +2382,18 @@ class StrategyRunner(ExecutionRunner):
         return record
 
     def _log(self, message):
-        super()._log('[LANE {}] {}'.format(getattr(self, 'lane', 0), message))
+        super()._log('[L{}] {}'.format(getattr(self, 'lane', 0), message))
+
+    def _file_log(self, message):
+        super()._file_log('[L{}] {}'.format(getattr(self, 'lane', 0), message))
 
     def restore_record(self, record):
         extra = record.get('v52')
         if not extra:
             raise RuntimeError('v52 cycle ownership missing; no implicit migration')
+        self.lane = extra['lane']
         super().restore_record(record)
         self.baseline_shares = extra['baseline']
-        self.lane = extra['lane']
         self.cycle = Cycle(**extra['cycle']) if extra['cycle'] else None
         self.cycle_history = extra['history']
         self.paused_reason = extra.get('paused', '')
@@ -2634,16 +2625,6 @@ class StrategyRunner(ExecutionRunner):
             self._log('[CYCLE-PAUSED] ' + self.paused_reason)
             return 'SKIP', 0
         if opening:
-            if label == 'REV-T sell':
-                closes = self.st.get('ma_completed_closes', [])
-                guard = short_five_day_momentum_guard(closes)
-                if not guard['allowed']:
-                    return_value = guard['return']
-                    display = 'unavailable' if return_value is None else '{:.2f}%'.format(
-                        return_value * 100)
-                    self._log('[MOMENTUM-GUARD] five-day return {} exceeds/has no safe history; REV-T blocked'.format(
-                        display))
-                    return 'SKIP', 0
             if LONG_RESEARCH_DISABLED and label == 'FWD-T buy':
                 return 'SKIP', 0
             if self._new_leg_block_reason():
@@ -2717,21 +2698,165 @@ class PortfolioRunner(ExecutionPortfolio):
     def symbol_runners(self, code):
         return [r for r in self.runners.values() if r.stock_qmt == code]
 
+    @staticmethod
+    def _external_order_side(order):
+        order_type = str(getattr(order, 'order_type', '')).upper()
+        if order_type in ('23', 'BUY', 'STOCK_BUY'):
+            return 'BUY'
+        if order_type in ('24', 'SELL', 'STOCK_SELL'):
+            return 'SELL'
+        return ''
+
+    @staticmethod
+    def _order_after_cycle(order, cycle):
+        try:
+            order_time = float(getattr(order, 'order_time', 0) or 0)
+            if order_time > 1e11:
+                order_time /= 1000
+            opened_time = datetime.fromisoformat(cycle.opened_time).timestamp()
+            return order_time >= opened_time
+        except (TypeError, ValueError, OverflowError, OSError):
+            return False
+
+    def _pause_symbol_once(self, code, reason):
+        changed = False
+        for runner in self.symbol_runners(code):
+            if runner.paused_reason != reason:
+                runner.paused_reason = reason
+                changed = True
+        if changed:
+            _log('[CYCLE-PAUSED] {} {}'.format(code, reason))
+
+    def _clear_reconciliation_pause(self, runners):
+        for runner in runners:
+            if (runner.paused_reason.startswith('external order') or
+                    'inventory mismatch' in runner.paused_reason or
+                    'manual order' in runner.paused_reason):
+                runner.paused_reason = ''
+
+    def _book_manual_cycle_close(self, runner, order):
+        cycle = runner.cycle
+        order_id = str(order.order_id)
+        quantity = int(order.traded_volume or 0)
+        price = float(order.traded_price or 0)
+        if cycle.direction == 'SHORT':
+            label = 'REV-T manual buyback'
+            signed_quantity = quantity
+            state_key = 'short_legs'
+            book_key = 'SHORT'
+        else:
+            label = 'FWD-T manual sell'
+            signed_quantity = -quantity
+            state_key = 'long_legs'
+            book_key = 'LONG'
+        gross, completed, cycle_gross = runner.execution_book.record(
+            order_id, label, signed_quantity, price)
+        cycle.fill(order_id, quantity, price, False, None)
+        runner.st[state_key] = list(runner.execution_book.legs.get(book_key, []))
+        runner.total_pnl += gross
+        runner.st['day_pnl'] = runner.st.get('day_pnl', 0) + gross
+        runner.total_t_days += int(completed)
+        runner._last_cycle_gross = cycle_gross
+        runner._last_executed_order = dict(order_id=order_id, shares=quantity)
+        runner.cycle_history.append(cycle.record())
+        runner.cycle = None
+        runner.st['fstate'] = STATE_IDLE
+        runner.st['peak_price'] = 0.0
+        runner.st['dip_price'] = 0.0
+        runner.st['sell_fill_price'] = 0.0
+        runner.st['buyback_target'] = 0.0
+        runner.st['ladder_sell_target'] = 0.0
+        runner.st['ladder_buy_target'] = 0.0
+        self.external_synced_order_ids.add(order_id)
+        runner._log('[MANUAL-SYNC] order={} {} qty={} avg=Y{:.4f} '
+                    'realized-gross=Y{:.2f} fees=UNKNOWN; cycle closed'.format(
+                        order_id, label, quantity, price, gross))
+
+    def _reconcile_external_activity(self, positions, orders):
+        changed = False
+        symbols = set(positions)
+        symbols.update(runner.stock_qmt for runner in self.runners.values())
+        for code in symbols:
+            runners = self.symbol_runners(code)
+            if not runners:
+                continue
+            base = runners[0].baseline_shares
+            if base is None or any(runner.baseline_shares != base for runner in runners):
+                self._pause_symbol_once(code, 'inconsistent original baseline')
+                continue
+            cycles = [runner.cycle for runner in runners
+                      if runner.cycle and runner.cycle.quantity]
+            actual = int(positions.get(code, 0))
+            expected = base + sum(
+                cycle.quantity * (1 if cycle.direction == 'LONG' else -1)
+                for cycle in cycles)
+            candidates = [order for order in orders
+                          if str(getattr(order, 'stock_code', '')) == code
+                          and str(getattr(order, 'order_id', '')) not in self.own_order_ids
+                          and str(getattr(order, 'order_id', '')) not in self.external_synced_order_ids
+                          and int(getattr(order, 'order_status', 0) or 0) == 56
+                          and int(getattr(order, 'traded_volume', 0) or 0) > 0
+                          and float(getattr(order, 'traded_price', 0) or 0) > 0
+                          and self._external_order_side(order)]
+            if not cycles:
+                if actual == base:
+                    continue
+                signed_total = sum(
+                    int(order.traded_volume) *
+                    (1 if self._external_order_side(order) == 'BUY' else -1)
+                    for order in candidates)
+                if candidates and signed_total == actual - base:
+                    for runner in runners:
+                        runner.baseline_shares = actual
+                        runner.st['base_shares'] = actual
+                    self.external_synced_order_ids.update(
+                        str(order.order_id) for order in candidates)
+                    self._clear_reconciliation_pause(runners)
+                    _log('[MANUAL-SYNC] {} baseline {} -> {}; orders={}'.format(
+                        code, base, actual,
+                        ','.join(str(order.order_id) for order in candidates)))
+                    changed = True
+                else:
+                    self._pause_symbol_once(
+                        code, 'manual order cannot uniquely explain flat inventory change')
+                continue
+            if actual == expected:
+                continue
+            if len(candidates) != 1:
+                reason = ('manual order ambiguous across cycles' if candidates else
+                          'cycle/account inventory mismatch')
+                self._pause_symbol_once(code, reason)
+                continue
+            order = candidates[0]
+            side = self._external_order_side(order)
+            quantity = int(order.traded_volume)
+            signed_quantity = quantity if side == 'BUY' else -quantity
+            owners = [runner for runner in runners
+                      if runner.cycle and runner.cycle.quantity == quantity
+                      and ((side == 'BUY' and runner.cycle.direction == 'SHORT') or
+                           (side == 'SELL' and runner.cycle.direction == 'LONG'))
+                      and self._order_after_cycle(order, runner.cycle)]
+            if len(owners) != 1 or actual - expected != signed_quantity:
+                self._pause_symbol_once(code, 'manual order ambiguous across cycles')
+                continue
+            self._book_manual_cycle_close(owners[0], order)
+            remaining = [runner.cycle for runner in runners
+                         if runner.cycle and runner.cycle.quantity]
+            try:
+                validate_cycles(remaining, base, actual)
+            except ValueError:
+                raise RuntimeError(
+                    'manual synchronization did not close account inventory')
+            self._clear_reconciliation_pause(runners)
+            changed = True
+        return changed
+
     def _audit_account_trades(self):
         super()._audit_account_trades()
         orders = self.conn.trader.query_stock_orders(self.conn._account_obj)
         if orders is None:
             raise RuntimeError('order audit unavailable')
-        seen = getattr(self, '_audited_order_ids', None)
-        current = {str(order.order_id) for order in orders}
-        if seen is not None:
-            for order in orders:
-                oid = str(order.order_id)
-                if oid not in seen and oid not in self.own_order_ids:
-                    for runner in self.symbol_runners(str(order.stock_code)):
-                        runner.paused_reason = 'external order detected: ' + oid
-                        runner._log('[CYCLE-PAUSED] ' + runner.paused_reason)
-        self._audited_order_ids = current if seen is None else seen | current
+        self._latest_account_orders = list(orders)
 
     def reserved_cash(self, exclude):
         total = 0.0
@@ -2770,6 +2895,8 @@ class PortfolioRunner(ExecutionPortfolio):
                 sibling.baseline_shares = runner.baseline_shares
                 self.runners[key + '#1'] = sibling
                 self.tasks[key + '#1'] = (sibling.run(), 0.0)
+        changed = self._reconcile_external_activity(
+            positions, getattr(self, '_latest_account_orders', []))
         for code in {r.stock_qmt for r in self.runners.values()}:
             siblings = self.symbol_runners(code)
             try:
@@ -2779,9 +2906,11 @@ class PortfolioRunner(ExecutionPortfolio):
                 cycles = [r.cycle for r in siblings if r.cycle]
                 validate_cycles(cycles, base, positions.get(code, 0))
             except ValueError as error:
-                for runner in siblings:
-                    runner.paused_reason = str(error)
-                _log('[CYCLE-PAUSED] {} {}'.format(code, error))
+                if not any(runner.paused_reason for runner in siblings):
+                    self._pause_symbol_once(code, str(error))
+        if changed and self.checkpoint_active and all(
+                runner.st.get('initialized') for runner in self.runners.values()):
+            self.save_checkpoint(force=True, settled=True)
 
     def restore_checkpoint(self):
         if self.dry_run:
@@ -2817,12 +2946,15 @@ class PortfolioRunner(ExecutionPortfolio):
             raise RuntimeError('v52 unresolved broker order; retained checkpoint requires reconciliation')
         current = self._broker_snapshot()
         previous = saved['broker']
-        # T+1 sellable changes at a verified new day; total inventory and orders must still agree.
-        def inventory(snapshot):
-            return [(row[0], row[1]) for row in snapshot['positions']]
-        if inventory(previous) != inventory(current) or previous['orders'] != current['orders']:
-            raise RuntimeError('v52 broker inventory/orders differ from checkpoint')
         self.own_order_ids = set(saved.get('own_order_ids', []))
+        self.external_synced_order_ids = set(
+            saved.get('external_synced_order_ids', []))
+        previous_orders = {row[0]: row for row in previous['orders']}
+        current_orders = {row[0]: row for row in current['orders']}
+        for order_id in self.own_order_ids:
+            if previous_orders.get(order_id) != current_orders.get(order_id):
+                raise RuntimeError(
+                    'v52 strategy order changed since checkpoint: ' + order_id)
         for key, record in saved['runners'].items():
             code = key.split('#')[0]
             runner = StrategyRunner(self, code, record.get('name', ''))
@@ -2830,6 +2962,19 @@ class PortfolioRunner(ExecutionPortfolio):
             self.runners[key] = runner
             self.tasks[key] = (runner.run(), 0.0)
         self.checkpoint_active = True
+        positions = {row[0]: row[1] for row in current['positions']}
+        orders = self.conn.trader.query_stock_orders(self.conn._account_obj)
+        if orders is None:
+            raise RuntimeError('order audit unavailable during restore')
+        changed = self._reconcile_external_activity(positions, orders)
+        for code in {runner.stock_qmt for runner in self.runners.values()}:
+            siblings = self.symbol_runners(code)
+            cycles = [runner.cycle for runner in siblings
+                      if runner.cycle and runner.cycle.quantity]
+            validate_cycles(cycles, siblings[0].baseline_shares,
+                            positions.get(code, 0))
+        if changed:
+            self.save_checkpoint(force=True, settled=True)
 
 
 def main():

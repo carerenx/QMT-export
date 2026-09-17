@@ -104,7 +104,8 @@ def _format_message(args):
     ts = ts_prefix()
     if not args:
         return ''
-    msg = f'{ts} {args[0]}'
+    separator = '' if str(args[0]).startswith('[') else ' '
+    msg = f'{ts}{separator}{args[0]}'
     if args[1:]:
         msg += ' ' + ' '.join(str(a) for a in args[1:])
     return msg
