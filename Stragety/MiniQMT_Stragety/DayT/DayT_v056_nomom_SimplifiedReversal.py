@@ -2866,7 +2866,9 @@ def main():
         _log('[SOURCE] path={} mtime={} sha256={}'.format(
             fingerprint['path'], fingerprint['mtime'], fingerprint['sha256']))
         if args.mode == 'live':
-            raise RuntimeError('v056 RESEARCH ONLY: live disabled pending validation')
+            print('LIVE: apply T strategy to ALL current and newly detected account holdings. Account: {}'.format(ACCOUNT))
+            if input('Type yes to continue: ').strip().lower() != 'yes':
+                return
         _log('[REFERENCE-MODE] {}: coefficient scaling affects execution baseline; shadow intraday strength is observation only; active requires user-approved validation'.format(
             INTRADAY_REFERENCE_MODE))
         PortfolioRunner(dry_run=args.mode == 'signal').run()
