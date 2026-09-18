@@ -156,9 +156,16 @@ class Broker:
         return oid
 
 
-def replay(version, daily, bars, slip=0):
+def replay(version, daily, bars, slip=0, initial_cash=100000.0,
+           initial_shares=200, symbol='601869.SH', overrides=None):
     mod = load_strategy(version)
-    broker = Broker(daily, bars, slip)
+    for key, value in (overrides or {}).items():
+        if not hasattr(mod, key):
+            raise ValueError('unknown research setting: ' + key)
+        setattr(mod, key, value)
+    broker = Broker(
+        daily, bars, slip, cash=initial_cash, shares=initial_shares)
+    broker.code = symbol
     logs = []
     class ConnectorFactory:
         def __new__(cls): return broker
@@ -166,12 +173,21 @@ def replay(version, daily, bars, slip=0):
         get_history_data = Broker.get_history_data
     Clock.current = datetime.strptime(bars.index[0], '%Y%m%d%H%M%S')
     with ExitStack() as stack:
-        for obj, name, value in [(mod, 'MiniQMTConnector', ConnectorFactory), (mod, '_time', Clock),
+        replacements = [(mod, 'MiniQMTConnector', ConnectorFactory), (mod, '_time', Clock),
                 (mod, 'datetime', Clock), (mod, '_log', lambda msg: logs.append(str(msg))),
                 (mod, 'get_logger', lambda: SimpleNamespace(close=lambda: None)),
                 (mod, 'set_global_conn', lambda *a: None), (mod, 'order_shares', broker.order),
                 (mod, 'get_trade_detail_data', lambda a,b,kind: broker.query_positions() if kind == 'POSITION' else [broker.query_account()]),
-                (mod.cfg, 'now_hms', lambda: Clock.current.strftime('%H:%M:%S'))]:
+                (mod.cfg, 'now_hms', lambda: Clock.current.strftime('%H:%M:%S'))]
+        symbol_code = symbol.split('.')[0]
+        for obj, name, value in (
+                (mod, 'STOCK_CODE', symbol_code),
+                (mod, 'STOCK_QMT', symbol),
+                (mod.cfg, 'STOCK_CODE', symbol_code),
+                (mod.cfg, 'STOCK_QMT', symbol)):
+            if hasattr(obj, name):
+                replacements.append((obj, name, value))
+        for obj, name, value in replacements:
             stack.enter_context(patch.object(obj, name, value))
         if not version.startswith('v39'):
             portfolio = mod.PortfolioRunner(False)
@@ -204,17 +220,19 @@ def replay(version, daily, bars, slip=0):
         if not runner.st.get('initialized'): failure = failure or 'not initialized'
         opening, closing = float(bars.iloc[0].open), float(bars.iloc[-1].close)
         final = broker.cash + broker.position*closing
-        hold = 100000 + 200*closing
+        hold = initial_cash + initial_shares*closing
         # A net-position mismatch measures residual exposure, not all hedged open legs.
         short_left = sum(q for p,q in runner.st.get('short_legs', []))
         long_left = sum(q for p,q in runner.st.get('long_legs', []))
         return dict(date=bars.index[0][:8], version=version, slip=slip, failure=failure,
             bars=len(bars), trades=broker.trades, orders=len(broker.orders),
             turnover=sum(t['turnover'] for t in broker.trades),
-            initial_equity=100000+200*opening, final_equity=final,
-            account_gross=final-100000-200*opening, hold_gross=200*(closing-opening),
+            initial_equity=initial_cash+initial_shares*opening, final_equity=final,
+            account_gross=final-initial_cash-initial_shares*opening,
+            hold_gross=initial_shares*(closing-opening),
             excess_gross=final-hold, final_position=broker.position,
-            position_gap=broker.position-200, short_unclosed=short_left, long_unclosed=long_left,
+            position_gap=broker.position-initial_shares,
+            short_unclosed=short_left, long_unclosed=long_left,
             mom_unclosed=runner.st.get('mom_leg_shares',0), state=runner.st.get('fstate'),
             cycles=len(broker.closed), cycle_gross=broker.closed,
             ledger_unclosed={k:sum(q for p,q in v) for k,v in broker.book.legs.items()},

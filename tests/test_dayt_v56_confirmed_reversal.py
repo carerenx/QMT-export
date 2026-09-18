@@ -16,6 +16,12 @@ SPEC.loader.exec_module(MODULE)
 
 
 class ConfirmedReversalTests(unittest.TestCase):
+    def test_three_session_trend_guard_is_absent(self):
+        self.assertFalse(hasattr(MODULE, 'SHORT_TREND_LOOKBACK'))
+        self.assertFalse(hasattr(MODULE, 'SHORT_TREND_GUARD_ENABLED'))
+        self.assertFalse(hasattr(MODULE, 'SHORT_TREND_RETURN_MAX'))
+        self.assertFalse(hasattr(MODULE, 'short_trend_guard'))
+
     def _portfolio_with_lanes(self, baseline=500):
         portfolio = MODULE.PortfolioRunner(False)
         lane0 = MODULE.StrategyRunner(portfolio, '600584.SH', lane=0)
@@ -143,6 +149,228 @@ class ConfirmedReversalTests(unittest.TestCase):
         self.assertEqual(600, lane1.baseline_shares)
         self.assertIn('manual-buy-baseline',
                       portfolio.external_synced_order_ids)
+
+    def test_flat_manual_round_trip_is_classified_without_changing_baseline(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes()
+        sell = SimpleNamespace(
+            order_id='manual-t-sell', stock_code='600584.SH',
+            order_status=56, order_type=24, traded_volume=100,
+            traded_price=68.0, order_time=1789609200)
+        buy = SimpleNamespace(
+            order_id='manual-t-buy', stock_code='600584.SH',
+            order_status=56, order_type=23, traded_volume=100,
+            traded_price=67.5, order_time=1789609260)
+
+        with patch.object(MODULE, '_log') as log:
+            changed = portfolio._reconcile_external_activity(
+                {'600584.SH': 500}, [sell, buy])
+
+        self.assertTrue(changed)
+        self.assertEqual(500, lane0.baseline_shares)
+        self.assertEqual(500, lane1.baseline_shares)
+        self.assertEqual({'manual-t-sell', 'manual-t-buy'},
+                         portfolio.external_synced_order_ids)
+        self.assertIn('[MANUAL-T]', log.call_args.args[0])
+
+    def test_multiple_net_flat_manual_orders_are_not_classified_as_manual_t(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes()
+        orders = [
+            SimpleNamespace(order_id='sell-200', stock_code='600584.SH',
+                            order_status=56, order_type=24, traded_volume=200,
+                            traded_price=68.0, order_time=1789609200),
+            SimpleNamespace(order_id='buy-100-a', stock_code='600584.SH',
+                            order_status=56, order_type=23, traded_volume=100,
+                            traded_price=67.5, order_time=1789609260),
+            SimpleNamespace(order_id='buy-100-b', stock_code='600584.SH',
+                            order_status=56, order_type=23, traded_volume=100,
+                            traded_price=67.4, order_time=1789609320),
+        ]
+
+        changed = portfolio._reconcile_external_activity(
+            {'600584.SH': 500}, orders)
+
+        self.assertFalse(changed)
+        self.assertEqual(set(), portfolio.external_synced_order_ids)
+        self.assertIn('unique T pair', lane0.paused_reason)
+        self.assertIn('unique T pair', lane1.paused_reason)
+
+    def test_new_inventory_mismatch_waits_before_pausing(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes(baseline=500)
+
+        with patch.object(MODULE._time, 'monotonic', side_effect=[100.0, 101.0]):
+            first = portfolio._reconcile_external_activity(
+                {'600584.SH': 600}, [])
+            second = portfolio._reconcile_external_activity(
+                {'600584.SH': 600}, [])
+
+        self.assertFalse(first)
+        self.assertFalse(second)
+        self.assertEqual('', lane0.paused_reason)
+        self.assertEqual('', lane1.paused_reason)
+
+    def test_inventory_mismatch_pauses_after_reconciliation_grace(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes(baseline=500)
+
+        with patch.object(MODULE._time, 'monotonic', side_effect=[100.0, 109.0]):
+            portfolio._reconcile_external_activity({'600584.SH': 600}, [])
+            portfolio._reconcile_external_activity({'600584.SH': 600}, [])
+
+        self.assertIn('manual order', lane0.paused_reason)
+        self.assertIn('manual order', lane1.paused_reason)
+
+    def test_unfinished_external_order_pauses_only_its_symbol(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes()
+        other0 = MODULE.StrategyRunner(portfolio, '601869.SH', lane=0)
+        other1 = MODULE.StrategyRunner(portfolio, '601869.SH', lane=1)
+        portfolio.runners.update({'601869.SH': other0, '601869.SH#1': other1})
+        for runner in (other0, other1):
+            runner._init_state()
+            runner.baseline_shares = 100
+            runner.st.update(initialized=True,
+                             trade_date=MODULE.datetime.now().strftime('%Y%m%d'))
+        order = SimpleNamespace(
+            order_id='manual-pending', stock_code='600584.SH',
+            order_status=50, order_type=24, traded_volume=0,
+            traded_price=0.0, order_time=1789609200)
+
+        portfolio._reconcile_external_activity(
+            {'600584.SH': 500, '601869.SH': 100}, [order])
+
+        self.assertIn('unfinished', lane0.paused_reason)
+        self.assertIn('unfinished', lane1.paused_reason)
+        self.assertEqual('', other0.paused_reason)
+        self.assertEqual('', other1.paused_reason)
+
+    def test_untracked_unfinished_order_conservatively_pauses_all_symbols(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes()
+        order = SimpleNamespace(
+            order_id='unknown-pending', stock_code='000001.SZ',
+            order_status=50, order_type=23, traded_volume=0,
+            traded_price=0.0, order_time=1789609200)
+
+        portfolio._reconcile_external_activity({'600584.SH': 500}, [order])
+
+        self.assertIn('outside tracked symbols', lane0.paused_reason)
+        self.assertIn('outside tracked symbols', lane1.paused_reason)
+
+    def test_unfinished_strategy_order_remains_globally_blocking(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes()
+        portfolio.own_order_ids.add('strategy-pending')
+        order = SimpleNamespace(
+            order_id='strategy-pending', stock_code='600584.SH',
+            order_status=50, order_type=24, traded_volume=0,
+            traded_price=0.0, order_time=1789609200)
+
+        with self.assertRaisesRegex(RuntimeError, 'strategy order unfinished'):
+            portfolio._reconcile_external_activity({'600584.SH': 500}, [order])
+
+    def test_active_cycle_waits_for_delayed_completed_manual_order(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes()
+        self._open_short_cycle(lane1)
+        order = SimpleNamespace(
+            order_id='manual-delayed-buy', stock_code='600584.SH',
+            order_status=56, order_type=23, traded_volume=100,
+            traded_price=67.5, order_time=1789609200)
+
+        with patch.object(MODULE._time, 'monotonic', return_value=100.0):
+            first = portfolio._reconcile_external_activity(
+                {'600584.SH': 500}, [])
+        second = portfolio._reconcile_external_activity(
+            {'600584.SH': 500}, [order])
+
+        self.assertFalse(first)
+        self.assertTrue(second)
+        self.assertEqual('', lane0.paused_reason)
+        self.assertEqual('', lane1.paused_reason)
+        self.assertIsNone(lane1.cycle)
+
+    def test_broker_snapshot_records_unfinished_order_without_global_error(self):
+        portfolio = MODULE.PortfolioRunner(False)
+        position = SimpleNamespace(
+            stock_code='600584.SH', volume=500, can_use_volume=500)
+        order = SimpleNamespace(
+            order_id='manual-pending', stock_code='600584.SH',
+            order_status=50, traded_volume=0, traded_price=0.0)
+        portfolio.conn._account_obj = object()
+        portfolio.conn.trader = SimpleNamespace(
+            query_stock_positions=Mock(return_value=[position]),
+            query_stock_orders=Mock(return_value=[order]))
+
+        snapshot = portfolio._broker_snapshot()
+
+        self.assertEqual(50, snapshot['orders'][0][2])
+
+    def test_identical_lane_block_log_is_emitted_once(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes()
+
+        with patch.object(MODULE, '_log') as log, \
+                patch.object(MODULE._time, 'monotonic', side_effect=[100.0, 101.0]):
+            lane0._log('[REV-T] BLOCKED test reason | lane 0 plan')
+            lane1._log('[REV-T] BLOCKED test reason | lane 1 plan')
+
+        log.assert_called_once()
+        self.assertNotIn('[L0]', log.call_args.args[0])
+
+    def test_lane_one_quote_health_file_log_is_suppressed(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes()
+
+        with patch.object(MODULE, '_log_file_only') as file_log:
+            lane0._file_log('[QUOTE-HEALTH] FRESH')
+            lane1._file_log('[QUOTE-HEALTH] FRESH')
+
+        file_log.assert_called_once()
+
+    def test_new_day_flat_ledger_refreshes_baseline_without_old_order(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes(baseline=500)
+        for runner in (lane0, lane1):
+            runner.st['trade_date'] = '20260917'
+            runner.st['fstate'] = MODULE.STATE_SPIKING
+
+        with patch.object(MODULE, 'datetime') as clock:
+            clock.now.return_value.strftime.return_value = '20260918'
+            changed = portfolio._reconcile_external_activity(
+                {'600584.SH': 1000}, [])
+
+        self.assertTrue(changed)
+        self.assertEqual(1000, lane0.baseline_shares)
+        self.assertEqual(1000, lane1.baseline_shares)
+        self.assertEqual('', lane0.paused_reason)
+        self.assertEqual('', lane1.paused_reason)
+        MODULE.validate_cycles([], lane0.baseline_shares, 1000)
+
+    def test_same_day_flat_inventory_change_without_order_still_pauses(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes(baseline=500)
+
+        with patch.object(MODULE._time, 'monotonic', side_effect=[100.0, 109.0]):
+            portfolio._reconcile_external_activity({'600584.SH': 1000}, [])
+            changed = portfolio._reconcile_external_activity(
+                {'600584.SH': 1000}, [])
+
+        self.assertFalse(changed)
+        self.assertIn('manual order', lane0.paused_reason)
+        self.assertIn('manual order', lane1.paused_reason)
+
+    def test_source_fingerprint_contains_path_mtime_and_sha256(self):
+        fingerprint = MODULE.source_fingerprint(PATH)
+
+        self.assertEqual(str(PATH.resolve()), fingerprint['path'])
+        self.assertTrue(fingerprint['mtime'])
+        self.assertEqual(64, len(fingerprint['sha256']))
+
+    def test_new_day_open_cycle_inventory_mismatch_still_pauses(self):
+        portfolio, lane0, lane1 = self._portfolio_with_lanes(baseline=500)
+        self._open_short_cycle(lane0)
+        for runner in (lane0, lane1):
+            runner.st['trade_date'] = '20260917'
+
+        with patch.object(MODULE, 'datetime') as clock:
+            clock.now.return_value.strftime.return_value = '20260918'
+            changed = portfolio._reconcile_external_activity(
+                {'600584.SH': 500}, [])
+
+        self.assertFalse(changed)
+        self.assertIn('inventory mismatch', lane0.paused_reason)
+        self.assertIn('inventory mismatch', lane1.paused_reason)
 
     def test_core_position_limits_t_inventory(self):
         shares = MODULE.calculate_t_shares(

@@ -1,18 +1,18 @@
 # -*- coding: gbk -*-
 """
-v56 ConfirmedReversalRiskBudget �� v55 with stricter reversal confirmation and a protected core position.
+v56 ConfirmedReversalRiskBudget ?? v55 with stricter reversal confirmation and a protected core position.
 Direction admission and serialized cycle ownership are under validation.
 Live mode is disabled. Legacy checkpoint import requires explicit reconciliation;
 do not replace the v51 state file with a v52 research checkpoint.
 """
-# v52�о�������ֻ���������������ڣ��������˳����ܷ���׼��Ӱ�졣
-DIRECTIONAL_THRESHOLD = 0.20  # ��ѡ�� 0 / 0.20 / 0.40�����ð���������������Ρ�
+# v52?��???????????????????????????????????????????????
+DIRECTIONAL_THRESHOLD = 0.20  # ????? 0 / 0.20 / 0.40?????e???????????????��?
 DIRECTIONAL_ENABLED = True
-LONG_RESEARCH_DISABLED = True  # v56����T����Ϊ���������ͨ��ֱ������������֤ͨ����
+LONG_RESEARCH_DISABLED = True  # v56????T????????????????????????????????????
 OVERNIGHT_ENABLED = True
-MAX_OPEN_CYCLES = 2  # �����������о�ͨ������������ԭ���ڡ�
-CYCLE_EXPOSURE_FRACTION = 0.50  # δƽ��������ֵ�ϼ�/ԭʼ�ײ֣�˫�򲻵õ�����
-CYCLE_FEE_RATE = 0.0005  # �о�Ԥ�����裬������ȯ����ʵ���ʡ�
+MAX_OPEN_CYCLES = 2  # ???????????��????????????????????
+CYCLE_EXPOSURE_FRACTION = 0.50  # ��?????????????/????????????????
+CYCLE_FEE_RATE = 0.0005  # ?��???????�k?????????????????
 CYCLE_MINIMUM_FEE = 5.0
 CYCLE_AGE_ALERT_DAYS = 3
 CYCLE_MAX_HOLDING_DAYS = 3
@@ -54,74 +54,47 @@ from Stragety.MiniQMT_Stragety.DayT.infra.connector import (
     get_trade_detail_data, order_shares, set_global_conn,
 )
 
-# ���ݾ�v49/v50�˻�״̬��ֻ�����Ѻ˶��˱������ӳֲַ��Ƴɽ���
-# ��ͨ����ÿ 30 �뱣�棻ÿ��ί��ǰ��������ɺ�ǿ�Ʊ��档
-# v52����v49�˻����㣬������ȷ�ϵĴ��������������˱�������ͬʱ���С�
-# ������δ���ַ�T�����ۣ�ԭ���̼���ֵ���������Ŀ�걣�ֲ��䡣
-# shadow����v50����ʵ��ִ�У��¹���ֻ�۲죻active����ɻط�/Ӱ�����պ��˹����á�
+# ?????v49/v50??????????????????????????????????
+# ???????? 30 ???��??????????????????????��
+# v52????v49????????????????????????????????????????????��?
+# ??????��?????T?????????????????????????????????
+# shadow????v50?????????��??1???????active???????/??????????????��?
 INTRADAY_REFERENCE_MODE = 'shadow'
-QUANTILE_UNITS_SCALE = 0.66    # ����quantile_units�˴�ϵ����1=ԭֵ��0.8=����20%�������0
-REENTRY_UP_UNITS_SCALE = 0.80  # �ڶ��ּ��Ժ�T����ϵ���Ķ������ţ�1=ԭֵ��0.8=������������20%�������0
-                             # ����������ϵ�������ı���T������ֵ���ѳɽ����׵��˳�Ŀ�ꡣ
-STRENGTH_HISTORY_DAYS = 80       # ����������ߣ�����ʹ�õ�ǰδ�������
-STRENGTH_LOWER_QUANTILE = 0.35   # ����ʱ��ʷ����ATR��λ��λ
-STRENGTH_LOOKBACK_MIN = 10      # �������к͵͵�۲촰��
-STRENGTH_SMOOTH_MIN = 3         # ������������ǿ��ƽ��
-STRENGTH_WARMUP_MIN = 15        # ����/����/���������������۲����
-STRENGTH_OPEN_UNITS = 0.25      # ��Կ����Ǵ˱�ATRʱ���÷���Ϊ1
-STRENGTH_AVERAGE_UNITS = 0.10   # ������ھ����Ǵ˱�ATRʱ���÷���Ϊ1
-STRENGTH_MOMENTUM_UNITS = 0.10  # 10�����Ǵ˱�ATRʱ���÷���Ϊ1
-STRENGTH_STRONG = 0.8          # ƽ��ǿ�ȴﵽ��ֵ���ؽ��ͺ��δ�ɽ����
-STRENGTH_REBOUND_UNITS = 0.25   # ���ڵ͵㷴��Ҫ��
-STRENGTH_REBOUND_MIN = 0.008    # ��С����0.8%
-STRENGTH_REBOUND_MAX = 0.02     # ��󷴵�Ҫ��2%������ֹ������
-STRENGTH_AVERAGE_BUFFER = 0.05 # ���ھ����Ϸ��˱�ATR
-STRENGTH_MAX_GAP_SEC = 90       # �����������ˣ����������ʱ����������
-STRENGTH_LOG_INTERVAL_SEC = 300 # �׶α仯��ʱ���������5���ӻ���
+QUANTILE_UNITS_SCALE = 0.66    # ????quantile_units????????1=????0.8=????20%???????0
+REENTRY_UP_UNITS_SCALE = 0.80  # ?????????T?????????????????1=????0.8=????????????20%???????0
+                             # ??????????????????????T????????????????????????
+STRENGTH_HISTORY_DAYS = 80       # ?????????????????????��???????
+STRENGTH_LOWER_QUANTILE = 0.35   # ????????????ATR??��??��
+STRENGTH_LOOKBACK_MIN = 10      # ???????��???????
+STRENGTH_SMOOTH_MIN = 3         # ??????????????????
+STRENGTH_WARMUP_MIN = 15        # ????/????/????????????????????
+STRENGTH_OPEN_UNITS = 0.25      # ??????????ATR????��????1
+STRENGTH_AVERAGE_UNITS = 0.10   # ??????????????ATR????��????1
+STRENGTH_MOMENTUM_UNITS = 0.10  # 10????????ATR????��????1
+STRENGTH_STRONG = 0.8          # ???????????????????��??????
+STRENGTH_REBOUND_UNITS = 0.25   # ???????????
+STRENGTH_REBOUND_MIN = 0.008    # ??��????0.8%
+STRENGTH_REBOUND_MAX = 0.02     # ????????2%?????????????
+STRENGTH_AVERAGE_BUFFER = 0.05 # ?????????????ATR
+STRENGTH_MAX_GAP_SEC = 90       # ?????????????????????????????????
+STRENGTH_LOG_INTERVAL_SEC = 300 # ??����????????????5???????
 REBOUND_ENABLED = True
-REBOUND_WINDOW_SEC = 600       # ���ڵ͵㴰�ڣ�10����
-REBOUND_CONFIRM_SEC = 180      # ��������ȷ�ϣ�3����
-REBOUND_ATR_UNITS = 0.25       # �ӽ��ڵ͵����ٷ������ٱ���ATR
-REBOUND_MIN_PCT = 0.008        # ��С����0.8%������΢С����
-REBOUND_MAX_PCT = 0.02         # �����������2%�������������ֹ������
-REBOUND_AVERAGE_UNITS = 0.05   # �����ο������������ھ����Ϸ�0.05��ATR
-REBOUND_WEAK_UNITS = 0.08      # ���ڿ��̼ۡ��������ٴ�ATR���Ȳ��ۼ�����ʱ��
-REBOUND_STRONG_UNITS = 0.15    # �ո����۲�������ATR���ȣ����ؽ���ֵ
-REENTRY_WEAK_DISCOUNT = 0.35   # �ڶ��ּ��Ժ�������ǿʱ������ATRϵ������ۼ�35%
-REENTRY_WEAK_FULL_UNITS = 0.25 # ���ڿ��̼�/���۽ϵ���0.25��ATRʱ�����Ƴ̶ȴﵽ1
+REBOUND_WINDOW_SEC = 600       # ?????????10????
+REBOUND_CONFIRM_SEC = 180      # ????????????3????
+REBOUND_ATR_UNITS = 0.25       # ?????????????????????ATR
+REBOUND_MIN_PCT = 0.008        # ??��????0.8%???????��????
+REBOUND_MAX_PCT = 0.02         # ???????????2%????????????????????
+REBOUND_AVERAGE_UNITS = 0.05   # ?????��???????????????????0.05??ATR
+REBOUND_WEAK_UNITS = 0.08      # ??????????????????ATR???????????????
+REBOUND_STRONG_UNITS = 0.15    # ??????????????ATR?????????????
+REENTRY_WEAK_DISCOUNT = 0.35   # ???????????????????????ATR?????????35%
+REENTRY_WEAK_FULL_UNITS = 0.25 # ????????/????????0.25??ATR??????????1
 CHECKPOINT_INTERVAL_SEC = 30
-STATE_SAVE_LOG_INTERVAL_SEC = 300  # ����ɹ���־���ÿ5���Ӵ�ӡһ�Σ���Ӱ��ʵ�ʱ���Ƶ��
-# �ǽ���ʱ�ε����ӡ���λ����ͨ״̬���������������Ź��Գ���������
+STATE_SAVE_LOG_INTERVAL_SEC = 300  # ?????????????5????????��???????????????
+# ???????��????????��???????????????????????????????????
 OFF_HOURS_REFRESH_SEC = 300
 STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'state', 'v57_{}.json'.format(cfg.ACCOUNT))
 DRAWDOWN_POLICY = aggressive_policy()
-
-SHORT_TREND_LOOKBACK = 3
-
-
-def short_trend_guard(completed_closes, lookback=SHORT_TREND_LOOKBACK):
-    """Allow a new REV-T only when completed-session momentum is nonpositive."""
-    closes = [float(value) for value in completed_closes]
-    if len(closes) <= lookback:
-        return {
-            'allowed': False,
-            'return': None,
-            'reason': 'trend history shorter than {} sessions'.format(lookback),
-        }
-    anchor = closes[-lookback - 1]
-    latest = closes[-1]
-    if anchor <= 0 or latest <= 0:
-        return {
-            'allowed': False,
-            'return': None,
-            'reason': 'invalid completed close for trend guard',
-        }
-    trend_return = latest / anchor - 1.0
-    return {
-        'allowed': trend_return <= 0.0,
-        'return': trend_return,
-        'reason': '3-session return {:+.2f}%'.format(trend_return * 100),
-    }
 
 def confirmed_short_reversal(trigger, peak, price, armed_bars,
                              minimum_bars=SHORT_CONFIRM_MIN_BARS,
@@ -145,16 +118,16 @@ STATE_DONE = cfg.STATE_DONE; STATE_FORCED = cfg.STATE_FORCED
 STATE_BT_DIPPING = cfg.STATE_BT_DIPPING; STATE_BT_BOUGHT = cfg.STATE_BT_BOUGHT
 STATE_BT_SPIKING = cfg.STATE_BT_SPIKING
 
-# ��T�������ȵ�������99%��δ����ԭ��ؼۼ�������99%ʱ���
+# ??T???????????????99%??��????????????????99%????
 
-# ���ݼӲ�/���ֲ��� (�ɹ�����/�����, �ڳɽ��ۻ����ϼӼ��ۼ��׷��)
-LADDER_UP_STEP_PCT   = 0.015   # ��T: ������۸����� +1.5% �� ׷�ӳ�߻�������
-LADDER_DOWN_STEP_PCT = 0.015   # ��T: �����۸��ٵ� -1.5% �� ׷��̽�׻�������
+# ??????/??????? (???????/?????, ????????????????????)
+LADDER_UP_STEP_PCT   = 0.015   # ??T: ???????????? +1.5% ?? ????????????
+LADDER_DOWN_STEP_PCT = 0.015   # ??T: ?????????? -1.5% ?? ?????????????
 
-# �ɽ��ж�
-FILL_TIMEOUT_SEC = 8.0   # �ȴ�����ɽ��ĳ�ʱ����
+# ????��?
+FILL_TIMEOUT_SEC = 8.0   # ?????????????????
 
-# ���߶�����ת���� (2�����¼�����, �����������ź�)
+# ?????????????? (2???????????, ?????????????)
 
 # v39: Freeze new legs near the normal 10% upper limit, then require a meaningful opening-board retreat to persist for 120s.
 LIMIT_UP_GUARD_PCT = 0.095
@@ -164,22 +137,22 @@ LIMIT_UP_RELEASE_HOLD_SEC = 120.0
 # Check live connectivity every 30 seconds.  The monitor only logs; it does
 # not reconnect, change strategy state, or place an order.
 CONNECTION_CHECK_INTERVAL_SEC = 30.0
-QUOTE_STALE_AFTER_SEC = 90       # ����Դ���۳���90����澯������ֹ���ס�
-QUOTE_FUTURE_TOLERANCE_SEC = 5   # Դ���۳�ǰ��������5�룬��¼ʱ���쳣��
-QUOTE_HEALTH_LOG_INTERVAL_SEC = 300  # ���ʶ�״̬�仯������ӡ��ͬ״̬ÿ5���ӻ��ܡ�
+QUOTE_STALE_AFTER_SEC = 90       # ????????????90????��????????????
+QUOTE_FUTURE_TOLERANCE_SEC = 5   # ???????????????5????????????
+QUOTE_HEALTH_LOG_INTERVAL_SEC = 300  # ????????��?????????????5????????
 
-# ÿ���������ȡ�˻��ֲ֣����³ֲּ�����ԣ��������Ĺ�Ʊ�������״̬��
+# ?????????????????????3??????????????????????????????
 PORTFOLIO_REFRESH_SEC = 60.0
 
-# �¿�һ����T��Ŀ����߼۹ɲ���һ��ʱ�԰�һ�֣�����Ӳ���ʽ����ޡ�
-WATCHDOG_WARN_SEC = 15.0  # �����߳�ÿ15�����������
-READ_RPC_TIMEOUT_SEC = 5.0  # BigQMTʵʱֻ��RPC�ȴ����ޣ��ײ�·���Կ������г�ʱ��
+# ????????T????????????????????????????????????????
+WATCHDOG_WARN_SEC = 15.0  # ????????15???????????
+READ_RPC_TIMEOUT_SEC = 5.0  # BigQMT?????RPC???????????��??????????��????
 CAPACITY_REFRESH_SEC = 30.0
 T_TARGET_VALUE = 40000.0
-# ���ʹ��δ��������Tռ�õĿ����ײֵĴ˱���������һ�ֵ�������ʱ��һ�֡�
+# ??????��????????T??????????????????????????????????????
 T_POSITION_FRACTION = 0.40
-# ���ʹ������ǣ���Ϊ�������룬���� {'600000.SH': 100}��
-# Ĭ����ͨ���100�ɣ�688/689��ͷ���200�ɣ������Ŀ�������ָ����
+# ??????????????????????????? {'600000.SH': 100}??
+# ?????????100???688/689??????200?????????????????????
 SYMBOL_LOT_OVERRIDES = {}
 
 
@@ -386,7 +359,7 @@ def format_signal_base_source(source):
 
 
 class ExecutionRunner:
-    """MiniQMT v56 �� confirmed reversals with a protected core position."""
+    """MiniQMT v56 ?? confirmed reversals with a protected core position."""
 
     def __init__(self, portfolio, stock_qmt, stock_name=''):
         self.portfolio = portfolio
@@ -532,7 +505,7 @@ class ExecutionRunner:
             'short_arm_bars': 0, 'short_arm_trigger': 0.0,
             'reentry_pending': None, 'reentry_history': None,
             '_pre_market_done': '', '_market_open_logged': False,
-            # �� v22/v23: ���ݼӲ�/����״̬ �� �ȼ�¼Ϊ (�ɽ���, �ɽ�����)
+            # ?? v22/v23: ??????/?????? ?? ????? (?????, ???????)
             'ladder_sell_target': 0.0, 'ladder_buy_target': 0.0,
             'ladder_sold_count': 0, 'ladder_bought_count': 0,
             'short_legs': [], 'long_legs': [],
@@ -609,8 +582,8 @@ class ExecutionRunner:
         if not is_new_day and saved_trail > 0:
             self.st['bt_max_trail'] = saved_trail; self.st['price_history'] = saved_history
 
-        # �� ����ˢ�����߻��棬ȷ��ָ�������������
-        # ��ǰʱ��۸���������ʷ���߷ֿ���������ֹ�� tick ������ʷK�ߡ�
+        # ?? ?????????????��?????????????????
+        # ?????????????????????????????????? tick ???????K???
         tick_data = self.ctx.get_full_tick([self.stock_qmt]).get(self.stock_qmt, {})
         today_open = float(tick_data.get('open', 0) or 0)
         curr_price_now = float(tick_data.get('lastPrice', 0) or 0)
@@ -840,7 +813,7 @@ class ExecutionRunner:
             result['unscaled_up_units'], result['up_units_scale'], result['up_units']))
         return True
 
-    # �T�T�T v23: �µ�ǰ��λ/�ֽ��� + �ϸ�ɽ��ж� �T�T�T
+    # ?T?T?T v23: ?��????��/????? + ??????��? ?T?T?T
 
     def _cur_price(self):
         tick = self.ctx.get_full_tick([self.stock_qmt])
@@ -873,14 +846,14 @@ class ExecutionRunner:
         return capacity
 
     def _clamp_sell_shares(self, planned):
-        """����ǰ��������λ: ʵ�ʿ��� = min(�ƻ�, base_can_use)��"""
-        # ÿ����������ȯ�����¿�����Ϊ׼������������ǰ tick ���������档
+        """?????????????��: ?????? = min(???, base_can_use)??"""
+        # ?????????????????????????????????????? tick ?????????��
         self._refresh_position()
         can_use = self.st.get('base_can_use', 0)
         return int(min(planned, can_use))
 
     def _clamp_buy_shares(self, planned, price):
-        """����ǰ����ֽ�: ʵ�ʿ��� = min(�ƻ�, �ֽ�������)��"""
+        """???????????: ?????? = min(???, ?????????)??"""
         if price <= 0:
             price = self._cur_price()
         avail = self._available_cash()
@@ -897,7 +870,7 @@ class ExecutionRunner:
         return sum(p * s for p, s in legs) / sh if sh > 0 else 0.0
 
     def _short_gross(self, legs, buyback_price):
-        """��Të�� = ��(�������� - ��ؼ�) �� ���ȹ�����"""
+        """??T??? = ??(???????? - ????) ?? ?????????"""
         return sum((p - buyback_price) * s for p, s in legs)
 
     def _buyback_limit_price(self, fallback_price):
@@ -927,7 +900,7 @@ class ExecutionRunner:
         capacity = self._paired_long_capacity(price)
         cash = None
         if side == 'BUY':
-            # �¿���T����ռ���κι�Ʊ��������ص��ʽ𣨰�������Ʊ����
+            # ?????T????????�ʦ�????????????????????????????
             own_reserve = (self.portfolio.reserved_cash(exclude='') -
                            self.portfolio.reserved_cash(exclude=self.stock_qmt))
             cash = max(0.0, self._available_cash() - own_reserve)
@@ -936,12 +909,12 @@ class ExecutionRunner:
             T_TARGET_VALUE, T_POSITION_FRACTION, cash)
 
     def _submit_order(self, shares, price, label, style='COMPETE'):
-        """�µ� + �ȴ��ɽ���shares>0 ����, <0 ������
+        """?��? + ????????shares>0 ????, <0 ??????
 
-        �µ�ǰ�����ò�λ(����)/�ֽ�(����), ��ʵ�ʿ��µ������µ���
-        ���� (status, actual_delta):
-          status: 'FILLED' ���� | 'PARTIAL' ���� | 'TIMEOUT' δ�ɽ� | 'SKIP' �޿���
-          actual_delta: ʵ�ʳɽ�����(������, ��������)
+        ?��???????��?��(????)/???(????), ???????��??????��???
+        ???? (status, actual_delta):
+          status: 'FILLED' ???? | 'PARTIAL' ???? | 'TIMEOUT' ��??? | 'SKIP' ?????
+          actual_delta: ?????????(??????, ????????)
         """
         self._last_executed_order = None
         side = 'SELL' if shares < 0 else 'BUY'
@@ -963,13 +936,13 @@ class ExecutionRunner:
                 label, side, actual, price))
             return 'SKIP', 0
         if actual < self.trade_lot:
-            self._log('[{} SKIP] {} ����: planned {} actual {}'.format(
-                label, '����' if side == 'SELL' else '�ֽ�', planned, actual))
+            self._log('[{} SKIP] {} ????: planned {} actual {}'.format(
+                label, '????' if side == 'SELL' else '???', planned, actual))
             return 'SKIP', 0
         signed = -actual if side == 'SELL' else actual
         snap = self._snapshot_account()
         price_str = 'MKT' if price <= 0 else 'Y{:.2f}'.format(price)
-        self._log('[ORDER-{}] {} �� {} sh'.format(label, price_str, actual))
+        self._log('[ORDER-{}] {} ?? {} sh'.format(label, price_str, actual))
         if self.portfolio.order_uncertain:
             self._log('[ORDER-BLOCKED] account has unresolved order')
             return 'SKIP', 0
@@ -993,7 +966,7 @@ class ExecutionRunner:
             self._last_executed_order = dict(order_id=order_id, shares=abs(delta))
         return status, delta
 
-    # �T�T�T �ɽ�ȷ�� �T�T�T
+    # ?T?T?T ?????? ?T?T?T
 
     def _wait_for_fill(self, snap_before, expected_shares_delta,
                        label, trade_price, trade_shares, timeout_sec=FILL_TIMEOUT_SEC):
@@ -1048,7 +1021,7 @@ class ExecutionRunner:
                     raise RuntimeError('unresolved broker order ' + str(order_id))
             _time.sleep(0.5)
 
-    # �T�T�T ���� & У�� �T�T�T
+    # ?T?T?T ???? & ��?? ?T?T?T
 
     def _snapshot_account(self):
         positions = get_trade_detail_data(ACCOUNT, 'STOCK', 'POSITION')
@@ -1065,9 +1038,9 @@ class ExecutionRunner:
         return {'shares': shares, 'can_use': can_use, 'cash': cash,
                 'cost': cost, 'total_asset': account[0].m_dBalance if account else 0.0, 'price': price}
 
-    # �� v21: �ɽ���־�Ż� �� ������ӡ�۸������+�ֱֲ仯
+    # ?? v21: ????????? ?? ???????????????+???��
 
-    # �T�T�T v21: �ź�+�ƻ��ϲ���� (�޷ָ���, �޿���) �T�T�T
+    # ?T?T?T v21: ???+????????? (??????, ?????) ?T?T?T
 
     def _print_daily_brief(self, signal):
         if not cfg.is_market_open(cfg.now_hms()):
@@ -1106,7 +1079,7 @@ class ExecutionRunner:
         pos_value = base_shares * curr_price
         trend_cn = trend_labels.get(trend, trend)
 
-        # ��1: ����ָ��
+        # ??1: ???????
         self._log('[SIGNAL] {} | SignalBase Y{:.2f} (source: {}) | ATR {:.1f}% | RSI {:.0f} | Vol_ratio {} | Mult {:.2f} | base-trigger Y{:.2f}{} {}'.format(
             trend_cn, open_p, open_source, atr_pct, rsi_v, vol_display, sell_mult, sell_trig,
             '(range-capped)' if range_capped else '',
@@ -1152,12 +1125,12 @@ class ExecutionRunner:
                  signal.get('volume_baseline_count', 0),
                  'VALID' if volume_valid else 'INVALID-neutral'))
 
-        # ����
+        # ????
         fd = signal.get('factor_details', {})
         if fd:
             self._log('[FACTOR] {}'.format(' '.join('{} {:+.2f} | '.format(k, v) for k, v in fd.items())))
 
-        # ��2: �ֲ� + ����
+        # ??2: ??? + ????
         bits = ['Position:{} sh Y{:,.0f}({:.0f}%)'.format(base_shares, pos_value, pos_pct),
                 'Cash:Y{:,.0f}'.format(avail_cash),
                 'Sellable:{} lots({} sh)'.format(
@@ -1168,7 +1141,7 @@ class ExecutionRunner:
         planned_long = self._new_t_shares(curr_price, 'BUY')
         remaining_short = max(0, cfg.MAX_DAILY_TRADES - self.st.get('trade_count_short', 0))
         remaining_long = max(0, cfg.MAX_DAILY_TRADES - self.st.get('trade_count_long', 0))
-        # ��3-4: ��T / ��T
+        # ??3-4: ??T / ??T
         guard_active = self.st.get('limit_up_guard', False)
         atr_fraction = float(signal.get('atr_pct', 0.0) or 0.0)
         rev_buyback_pct = atr_fraction * cfg.BUYBACK_TRIGGER_MULT
@@ -1238,11 +1211,11 @@ class ExecutionRunner:
             self._log('[FWD-T] BLOCKED {} | {}'.format(
                 self.st.get('long_reason', 'unknown'), fwd_plan))
 
-        # �ۼ�
+        # ???
         if self.total_t_days > 0:
             self._log('[CUM] {} trades gross~Y{:,.0f}'.format(self.total_t_days, self.total_pnl))
 
-    # �T�T�T ״̬�� �T�T�T
+    # ?T?T?T ???? ?T?T?T
 
 
 
@@ -1485,34 +1458,34 @@ class ExecutionRunner:
                 st['fstate'] = STATE_IDLE
                 st['peak_price'] = 0.0
                 return
-            self._log('[REV-T sell trig] peak Y{:.2f} pullback {:.2f}% �� Y{:.2f}'.format(peak, pullback * 100, price))
+            self._log('[REV-T sell trig] peak Y{:.2f} pullback {:.2f}% ?? Y{:.2f}'.format(peak, pullback * 100, price))
             atr_pct = st['daily_signal']['atr_pct']; buyback_pct = atr_pct * cfg.BUYBACK_TRIGGER_MULT
             buyback_target = round(price * (1.0 - buyback_pct), 2)
             st['buyback_target'] = buyback_target
             st['buyback_target_pct'] = buyback_pct * 100
             st['sell_elapsed_bars'] = 0; st['state_enter_time'] = cfg.now_hms()
-            # �� v23: �µ�ǰ��������λ, ��ʵ�ʿ��������µ�
+            # ?? v23: ?��??????????��, ?????????????��?
             status, delta = self._submit_order(-self.trade_lot, price, 'REV-T sell')
             if delta: price = self._execution_price
             if status in ('SKIP', 'TIMEOUT'):
                 if status == 'TIMEOUT':
-                    self._log('[REV-T sell TIMEOUT] δ�ɽ�, �� IDLE')
+                    self._log('[REV-T sell TIMEOUT] ��???, ?? IDLE')
                 st['trade_count_short'] = max(0, st.get('trade_count_short', 0) - 1)
                 st['fstate'] = STATE_IDLE
                 return
-            # FILLED / PARTIAL: ��ʵ�ʳɽ���������
+            # FILLED / PARTIAL: ???????????????
             actual_sold = -delta
             st['buyback_target'] = round(price * (1.0 - buyback_pct), 2)
             st['sell_fill_price'] = price
             st['short_legs'].append((price, actual_sold))
             st['ladder_sell_target'] = round(price * (1.0 + LADDER_UP_STEP_PCT), 2) if status == 'FILLED' else 0.0
             if status == 'PARTIAL':
-                self._log('[REV-T sell PARTIAL] ʵ������ {} sh'.format(actual_sold))
+                self._log('[REV-T sell PARTIAL] ??????? {} sh'.format(actual_sold))
             st['fstate'] = STATE_SOLD
 
     def _handle_sold(self, price):
         st = self.st; sp = st['sell_fill_price']; bt = st['buyback_target']
-        # �� v22: ���ݼ��� �� �۸���������һ��(����+���ݷ���) �� ׷�ӳ�߻�������
+        # ?? v22: ??????? ?? ??????????????(????+???????) ?? ????????????
         ladder = st.get('ladder_sell_target', 0.0)
         if ladder > 0 and price >= ladder:
             tc = st.get('trade_count_short', 0)
@@ -1533,7 +1506,7 @@ class ExecutionRunner:
             tightened_bt = sp * (1.0 - st['daily_signal']['atr_pct'] *
                                  cfg.BUYBACK_TRIGGER_MULT * cfg.BUYBACK_TIGHTEN_MULT)
             tightened_bt = round(max(tightened_bt, bt), 2)
-        # ԭ��ش��������ȣ�һ����������������v34��̽�׻���������̡�
+        # ???????????????????????????????v34????????????????
         if price <= tightened_bt:
             st['fstate'] = STATE_DIPPING; st['dip_price'] = price
             st['state_enter_time'] = cfg.now_hms()
@@ -1549,7 +1522,7 @@ class ExecutionRunner:
         if bounce >= cfg.BOUNCE_PCT:
             legs = st['short_legs'] or [(st['sell_fill_price'], self.trade_lot)]
             total_shares = self._leg_shares(legs)
-            self._log('[REV-T buyback trig] low Y{:.2f} bounce {:.2f}% �� Y{:.2f}'.format(
+            self._log('[REV-T buyback trig] low Y{:.2f} bounce {:.2f}% ?? Y{:.2f}'.format(
                 dip, bounce * 100, price))
             bought = self._do_buyback(price, 'NORMAL')
             if bought >= total_shares and total_shares > 0:
@@ -1560,7 +1533,7 @@ class ExecutionRunner:
 
     def _do_buyback(self, price, reason=''):
         st = self.st
-        # �� v23: һ�������ȫ��δƽ�ַ�T�� (��ʵ�ʹ���)
+        # ?? v23: ???????????��????T?? (????????)
         legs = st['short_legs'] or [(st.get('sell_fill_price', price), self.trade_lot)]
         shares = self._leg_shares(legs)
         if shares <= 0:
@@ -1570,7 +1543,7 @@ class ExecutionRunner:
         if delta: price = self._execution_price
         bought = delta if delta > 0 else 0
         if bought <= 0:
-            self._log('[Buyback {}-FAIL] δ�ɽ�, ���� SOLD �������'.format(reason))
+            self._log('[Buyback {}-FAIL] ��???, ???? SOLD ???????'.format(reason))
             st['fstate'] = STATE_SOLD
             return 0
         if bought >= shares:
@@ -1580,12 +1553,12 @@ class ExecutionRunner:
             self._recalculate_next_t_triggers('REV-T')
             self._maybe_resume_trading()
             return bought
-        # �������: ����δ��ز��ּ������
+        # ???????: ????��????????????
         remaining = shares - bought
         st['short_legs'] = list(self.execution_book.legs.get('SHORT', []))
         st['ladder_sell_target'] = 0.0
         st['fstate'] = STATE_SOLD
-        self._log('[Buyback PARTIAL] ����� {} sh, ʣ�� {} sh �������'.format(bought, remaining))
+        self._log('[Buyback PARTIAL] ????? {} sh, ??? {} sh ???????'.format(bought, remaining))
         return bought
 
     def _handle_bt_dipping(self, price):
@@ -1608,8 +1581,8 @@ class ExecutionRunner:
                     0, st.get('trade_count_long', 0) - 1)
                 st['fstate'] = STATE_BT_BOUGHT if st.get('long_legs') else STATE_IDLE
                 return
-            self._log('[FWD-T buy trig] low Y{:.2f} bounce {:.2f}% �� Y{:.2f}'.format(dip, bounce * 100, price))
-            # �� v23: �µ�ǰ����ֽ�, ��ʵ�ʿ��������µ�
+            self._log('[FWD-T buy trig] low Y{:.2f} bounce {:.2f}% ?? Y{:.2f}'.format(dip, bounce * 100, price))
+            # ?? v23: ?��????????, ?????????????��?
             status, delta = self._submit_order(self.trade_lot, price, 'FWD-T buy')
             if delta: price = self._execution_price
             if status in ('SKIP', 'TIMEOUT'):
@@ -1623,11 +1596,11 @@ class ExecutionRunner:
             st['bt_sellback_target'] = round(avg_bp * (1.0 + cfg.SELLBACK_RISE_PCT), 2)
             st['ladder_buy_target'] = round(price * (1.0 - LADDER_DOWN_STEP_PCT), 2) if status == 'FILLED' else 0.0
             if status == 'PARTIAL':
-                self._log('[FWD-T buy PARTIAL] ʵ������ {} sh'.format(delta))
+                self._log('[FWD-T buy PARTIAL] ??????? {} sh'.format(delta))
 
     def _handle_bt_bought(self, price):
         st = self.st; target = st.get('bt_sellback_target', 999999); bp = st.get('bt_buy_fill_price', 0)
-        # �� v22: ���ݼ��� �� �۸��������һ��(���-���ݷ���) �� ׷��̽�׻�������
+        # ?? v22: ??????? ?? ?????????????(???-???????) ?? ?????????????
         ladder = st.get('ladder_buy_target', 0.0)
         if ladder > 0 and price <= ladder:
             tc = st.get('trade_count_long', 0)
@@ -1643,30 +1616,30 @@ class ExecutionRunner:
                 self._log('[FWD-T ladder buy #{}/{}] Y{:.2f} <= Y{:.2f}(buy-{:.2f}%)'.format(
                     tc + 1, cfg.MAX_DAILY_TRADES, price, ladder, LADDER_DOWN_STEP_PCT * 100))
                 return
-        # �� v23: ֹ��/�����Ծ���Ϊ׼
+        # ?? v23: ???/???????????
         legs = st['long_legs']; avg_bp = self._leg_avg_price(legs) if legs else bp
         if avg_bp > 0 and price <= avg_bp * (1.0 - cfg.STOP_LOSS_PCT):
             self._log('[FWD-T stop-loss trig] avg Y{:.2f} now Y{:.2f}({:.1f}%)'.format(avg_bp, price, (price - avg_bp) / avg_bp * 100))
             self._do_bt_force_sell(); return
         if price >= target:
             st['fstate'] = STATE_BT_SPIKING; st['bt_sell_peak_price'] = price
-            self._log('[FWD-T sellback watch] +{:.2f}% �� Y{:.2f}'.format((price - avg_bp) / avg_bp * 100, price))
+            self._log('[FWD-T sellback watch] +{:.2f}% ?? Y{:.2f}'.format((price - avg_bp) / avg_bp * 100, price))
 
     def _handle_bt_spiking(self, price):
         st = self.st
         if price > st.get('bt_sell_peak_price', price): st['bt_sell_peak_price'] = price
         peak = st.get('bt_sell_peak_price', price); pullback = (peak - price) / peak if peak > 0 else 0
         if pullback >= cfg.PULLBACK_PCT:
-            # �� v23: ����ë�� = ��(���� - �������) �� ���ȹ���
+            # ?? v23: ??????? = ??(???? - ???????) ?? ???????
             legs = st['long_legs'] or [(st.get('bt_buy_fill_price', price), self.trade_lot)]
             total_shares = self._leg_shares(legs)
             gross = sum((price - p) * s for p, s in legs)
-            self._log('[FWD-T sell trig] peak Y{:.2f} pullback {:.2f}% �� Y{:.2f} gross~Y{:,.0f}'.format(
+            self._log('[FWD-T sell trig] peak Y{:.2f} pullback {:.2f}% ?? Y{:.2f} gross~Y{:,.0f}'.format(
                 peak, pullback * 100, price, gross))
             status, delta = self._submit_order(-total_shares, price, 'FWD-T sell')
             if delta: price = self._execution_price
             if status in ('SKIP', 'TIMEOUT'):
-                self._log('[FWD-T sell FAIL] δ�ɽ�, �� BT_BOUGHT')
+                self._log('[FWD-T sell FAIL] ��???, ?? BT_BOUGHT')
                 st['fstate'] = STATE_BT_BOUGHT
                 return
             sold = -delta
@@ -1681,7 +1654,7 @@ class ExecutionRunner:
                 st['long_legs'] = list(self.execution_book.legs.get('LONG', []))
                 st['ladder_buy_target'] = 0.0
                 st['fstate'] = STATE_BT_BOUGHT
-                self._log('[FWD-T sell PARTIAL] ���� {} sh, ʣ�� {} sh'.format(sold, remaining))
+                self._log('[FWD-T sell PARTIAL] ???? {} sh, ??? {} sh'.format(sold, remaining))
 
     def _do_bt_force_sell(self):
         self._log('[FWD-T force sell trig]')
@@ -1699,11 +1672,11 @@ class ExecutionRunner:
         elif sold > 0:
             st['long_legs'] = list(self.execution_book.legs.get('LONG', []))
             st['fstate'] = STATE_BT_BOUGHT
-            self._log('[FWD-T force PARTIAL] ������ {} sh, ʣ�� {} sh'.format(
+            self._log('[FWD-T force PARTIAL] ?????? {} sh, ??? {} sh'.format(
                 sold, shares - sold))
         else:
             st['fstate'] = STATE_BT_BOUGHT
-            self._log('[WARN] FWD-T force sell δ�ɽ�, ���ּ��')
+            self._log('[WARN] FWD-T force sell ��???, ??????')
 
     def _refresh_execution_capacity(self, force=False):
         now = _time.monotonic()
@@ -1751,7 +1724,7 @@ class ExecutionRunner:
             self._refresh_position()
             st['fstate'] = STATE_IDLE; st['peak_price'] = 0.0; st['dip_price'] = 0.0
             st['sell_fill_price'] = 0.0; st['buyback_target'] = 0.0
-            # �� v22: ��ս���״̬
+            # ?? v22: ????????
             st['short_legs'] = []; st['long_legs'] = []
             st['ladder_sell_target'] = 0.0; st['ladder_buy_target'] = 0.0
             st['ladder_sold_count'] = 0; st['ladder_bought_count'] = 0
@@ -1759,7 +1732,7 @@ class ExecutionRunner:
             parts = []
             if can_s: parts.append('REV-T {}/{}'.format(tc_s, cfg.MAX_DAILY_TRADES))
             if can_l: parts.append('FWD-T {}/{}'.format(tc_l, cfg.MAX_DAILY_TRADES))
-            self._log('[RESUME] �� IDLE ({})'.format(', '.join(parts)))
+            self._log('[RESUME] ?? IDLE ({})'.format(', '.join(parts)))
         elif block_reason and (can_s or can_l):
             self._log('[RESUME BLOCKED] {}'.format(block_reason))
         else:
@@ -1802,7 +1775,7 @@ class ExecutionRunner:
         else:
             st['lock_cooldown_until'] = 0.0
 
-    # �T�T�T v25/v26/v33: ���߶�����ת���� (2��������ӦATR + REV��Ȩ + �����س�) �T�T�T
+    # ?T?T?T v25/v26/v33: ?????????????? (2?????????ATR + REV??? + ???????) ?T?T?T
 
     def run(self):
         if not getattr(self, '_restored', False):
@@ -1913,11 +1886,11 @@ class ExecutionRunner:
                     continue
                 self._update_limit_up_guard(price, tick_data, now_ts)
                 self._update_fwd_buy_trigger(price)
-                # �� v21: �����׸���Чtick��ӡ����ȷ��
+                # ?? v21: ?????????��tick??????????
                 if not self.st.get('_market_open_logged', True):
                     self.st['_market_open_logged'] = True
                     sig_chk = self.st.get('daily_signal', {})
-                    # �ý��տ��̼����� sell_trigger (��ǰ��������������տ��̼�)
+                    # ?y??????????? sell_trigger (??????????????????????)
                     _open_now = self.ctx.get_full_tick([self.stock_qmt]).get(self.stock_qmt, {}).get('open', 0)
                     _open_old = sig_chk.get('open_price', 0)
                     if (sig_chk.get('trigger_base') != 'CLOSE_FILL_ATR' and _open_now > 0 and
@@ -1952,7 +1925,7 @@ class ExecutionRunner:
                         sig_chk['sellback_target_hint'] = round(
                             sig_chk['buy_trigger'] *
                             (1.0 + cfg.SELLBACK_RISE_PCT), 2)
-                        self._log('[SELL-TRIG RECALC] open Y{:.2f}��Y{:.2f} trig Y{:.2f}��Y{:.2f} (units {:.3f} ATR {:.1f}%)'.format(
+                        self._log('[SELL-TRIG RECALC] open Y{:.2f}??Y{:.2f} trig Y{:.2f}??Y{:.2f} (units {:.3f} ATR {:.1f}%)'.format(
                             _open_old, _open_now, _old_trig, _new_trig,
                             _effective_units, _atr * 100))
                     st_trig = sig_chk.get('sell_trigger', 0)
@@ -2456,23 +2429,6 @@ class StrategyRunner(ExecutionRunner):
             self._refresh_position()
             return
         super()._daily_init()
-        if not self.st.get('initialized'):
-            return
-        history = self.st.get('reentry_history')
-        closes = [] if history is None else history['close'].astype(float).tolist()
-        decision = short_trend_guard(closes)
-        signal = self.st.get('daily_signal') or {}
-        signal['short_trend_guard'] = decision
-        if decision['allowed']:
-            self._log('[TREND-GUARD PASS] {}'.format(decision['reason']))
-            return
-        reason = 'REV-T blocked by {}'.format(decision['reason'])
-        signal['short_signal_allowed'] = False
-        signal['short_signal_reason'] = reason
-        signal['do_short'] = False
-        signal['short_reason'] = reason
-        self.st['do_short'] = False
-        self._log('[TREND-GUARD BLOCK] {}'.format(decision['reason']))
 
     def _rollover_cycle_day(self):
         today = datetime.now().strftime('%Y%m%d')

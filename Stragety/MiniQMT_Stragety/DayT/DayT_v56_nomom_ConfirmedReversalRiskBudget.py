@@ -20,11 +20,18 @@ SHORT_NEW_ENTRY_CUTOFF = '14:20:00'
 SHORT_CONFIRM_MIN_BARS = 2
 SHORT_CONFIRM_MIN_EXTENSION_PCT = 0.0015
 SHORT_CONFIRM_MIN_PULLBACK_PCT = 0.0020
-import os, sys, time as _time, argparse, math, traceback as _traceback
+import argparse
+import hashlib
+import math
+import os
+import sys
+import time as _time
+import traceback as _traceback
 from collections import deque
 from datetime import datetime, timedelta
 from typing import Optional
-import numpy as np, pandas as pd
+import numpy as np
+import pandas as pd
 
 # Permit the documented ``python Stragety/.../DayT_v52...py`` command.
 _STRATEGY_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -89,36 +96,24 @@ REBOUND_STRONG_UNITS = 0.15    # 收复均价并超过此ATR幅度，撤回降�
 REENTRY_WEAK_DISCOUNT = 0.35   # 第二轮及以后：弱势最强时，上行ATR系数最多折减35%
 REENTRY_WEAK_FULL_UNITS = 0.25 # 低于开盘价/均价较低者0.25倍ATR时，弱势程度达到1
 CHECKPOINT_INTERVAL_SEC = 30
+MANUAL_RECONCILE_GRACE_SEC = 8.0
+TERMINAL_ORDER_STATUSES = (53, 54, 56, 57)
 STATE_SAVE_LOG_INTERVAL_SEC = 300  # 保存成功日志最多每5分钟打印一次；不影响实际保存频率
 # 非交易时段的连接、仓位与普通状态保存间隔；独立看门狗仍持续工作。
 OFF_HOURS_REFRESH_SEC = 300
 STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'state', 'v56_{}.json'.format(cfg.ACCOUNT))
 
-SHORT_TREND_LOOKBACK = 3
 
-
-def short_trend_guard(completed_closes, lookback=SHORT_TREND_LOOKBACK):
-    """Allow a new REV-T only when completed-session momentum is nonpositive."""
-    closes = [float(value) for value in completed_closes]
-    if len(closes) <= lookback:
-        return {
-            'allowed': False,
-            'return': None,
-            'reason': 'trend history shorter than {} sessions'.format(lookback),
-        }
-    anchor = closes[-lookback - 1]
-    latest = closes[-1]
-    if anchor <= 0 or latest <= 0:
-        return {
-            'allowed': False,
-            'return': None,
-            'reason': 'invalid completed close for trend guard',
-        }
-    trend_return = latest / anchor - 1.0
+def source_fingerprint(path):
+    resolved = os.path.abspath(str(path))
+    digest = hashlib.sha256()
+    with open(resolved, 'rb') as source:
+        for block in iter(lambda: source.read(1024 * 1024), b''):
+            digest.update(block)
     return {
-        'allowed': trend_return <= 0.0,
-        'return': trend_return,
-        'reason': '3-session return {:+.2f}%'.format(trend_return * 100),
+        'path': resolved,
+        'mtime': datetime.fromtimestamp(os.path.getmtime(resolved)).isoformat(timespec='seconds'),
+        'sha256': digest.hexdigest(),
     }
 
 def confirmed_short_reversal(trigger, peak, price, armed_bars,
@@ -1010,7 +1005,7 @@ class ExecutionRunner:
                     volume = int(order.traded_volume or 0)
                     actual_price = float(order.traded_price or 0)
                     # xtquant.xtconstant: PART_CANCEL=53 CANCELED=54 SUCCEEDED=56 JUNK=57.
-                    terminal = int(order.order_status) in (53, 54, 56, 57)
+                    terminal = int(order.order_status) in TERMINAL_ORDER_STATUSES
                     if volume > wanted:
                         raise ValueError('execution quantity exceeds submitted quantity')
                     if terminal and volume == 0:
@@ -2096,6 +2091,8 @@ class ExecutionPortfolio:
         self.order_uncertain = False
         self.own_order_ids = set()
         self.external_synced_order_ids = set()
+        self.pending_reconciliation = {}
+        self._symbol_log_cache = {}
         self.watchdog = RuntimeWatchdog(_log, WATCHDOG_WARN_SEC)
         self.rpc_originals = []
         self.seen_trades = None
@@ -2111,14 +2108,25 @@ class ExecutionPortfolio:
         orders = self.conn.trader.query_stock_orders(self.conn._account_obj)
         if positions is None or orders is None:
             raise RuntimeError('reconciliation query unavailable')
-        if any(int(order.order_status) not in (53, 54, 56, 57) for order in orders):
-            raise RuntimeError('account has unfinished orders; reconcile before starting')
         return dict(
             positions=sorted([[str(p.stock_code), int(p.volume), int(p.can_use_volume)]
                               for p in positions if int(p.volume) > 0]),
             orders=sorted([[str(o.order_id), str(o.stock_code), int(o.order_status),
                             int(o.traded_volume or 0), float(o.traded_price or 0)]
                            for o in orders]))
+
+    def log_symbol_throttled(self, code, message, interval=5.0, file_only=False):
+        reason = message.split(' | ', 1)[0]
+        key = (code, reason)
+        now = _time.monotonic()
+        if now - self._symbol_log_cache.get(key, float('-inf')) < interval:
+            return
+        self._symbol_log_cache[key] = now
+        output = '[{}] {}'.format(code.split('.')[0], message)
+        if file_only:
+            _log_file_only(output)
+        else:
+            _log(output)
 
     def restore_checkpoint(self):
         if self.dry_run:
@@ -2382,9 +2390,18 @@ class StrategyRunner(ExecutionRunner):
         return record
 
     def _log(self, message):
+        if getattr(self, 'lane', 0) > 0 and message.startswith(
+                ('[QUOTE-HEALTH]', '[QUOTE-RECOVERED]')):
+            return
+        if message.startswith(('[REV-T] BLOCKED', '[FWD-T] BLOCKED')):
+            self.portfolio.log_symbol_throttled(self.stock_qmt, message)
+            return
         super()._log('[L{}] {}'.format(getattr(self, 'lane', 0), message))
 
     def _file_log(self, message):
+        if getattr(self, 'lane', 0) > 0 and message.startswith(
+                ('[QUOTE-HEALTH]', '[QUOTE-RECOVERED]')):
+            return
         super()._file_log('[L{}] {}'.format(getattr(self, 'lane', 0), message))
 
     def restore_record(self, record):
@@ -2414,23 +2431,6 @@ class StrategyRunner(ExecutionRunner):
             self._refresh_position()
             return
         super()._daily_init()
-        if not self.st.get('initialized'):
-            return
-        history = self.st.get('reentry_history')
-        closes = [] if history is None else history['close'].astype(float).tolist()
-        decision = short_trend_guard(closes)
-        signal = self.st.get('daily_signal') or {}
-        signal['short_trend_guard'] = decision
-        if decision['allowed']:
-            self._log('[TREND-GUARD PASS] {}'.format(decision['reason']))
-            return
-        reason = 'REV-T blocked by {}'.format(decision['reason'])
-        signal['short_signal_allowed'] = False
-        signal['short_signal_reason'] = reason
-        signal['do_short'] = False
-        signal['short_reason'] = reason
-        self.st['do_short'] = False
-        self._log('[TREND-GUARD BLOCK] {}'.format(decision['reason']))
 
     def _rollover_cycle_day(self):
         today = datetime.now().strftime('%Y%m%d')
@@ -2772,14 +2772,85 @@ class PortfolioRunner(ExecutionPortfolio):
                     'realized-gross=Y{:.2f} fees=UNKNOWN; cycle closed'.format(
                         order_id, label, quantity, price, gross))
 
+    def _wait_for_manual_reconciliation(self, code, actual, expected, orders):
+        signature = (actual, expected, tuple(sorted(
+            (str(getattr(order, 'order_id', '')),
+             int(getattr(order, 'order_status', 0) or 0),
+             int(getattr(order, 'traded_volume', 0) or 0))
+            for order in orders if str(getattr(order, 'stock_code', '')) == code)))
+        now = _time.monotonic()
+        pending = self.pending_reconciliation.get(code)
+        if pending is None or pending['signature'] != signature:
+            self.pending_reconciliation[code] = {
+                'signature': signature,
+                'started': now,
+            }
+            _log_file_only('[MANUAL-SYNC-WAIT] {} inventory={} expected={}; '
+                           'waiting {:.0f}s for broker callbacks'.format(
+                               code, actual, expected, MANUAL_RECONCILE_GRACE_SEC))
+            return True
+        return now - pending['started'] < MANUAL_RECONCILE_GRACE_SEC
+
+    def _clear_manual_reconciliation(self, code):
+        self.pending_reconciliation.pop(code, None)
+
+    def _signed_external_volume(self, orders):
+        return sum(
+            int(order.traded_volume) *
+            (1 if self._external_order_side(order) == 'BUY' else -1)
+            for order in orders)
+
+    def _is_unique_manual_round_trip(self, orders):
+        if len(orders) != 2:
+            return False
+        buy_orders = [order for order in orders
+                      if self._external_order_side(order) == 'BUY']
+        sell_orders = [order for order in orders
+                       if self._external_order_side(order) == 'SELL']
+        return (len(buy_orders) == 1 and len(sell_orders) == 1 and
+                int(buy_orders[0].traded_volume) ==
+                int(sell_orders[0].traded_volume))
+
     def _reconcile_external_activity(self, positions, orders):
         changed = False
         symbols = set(positions)
         symbols.update(runner.stock_qmt for runner in self.runners.values())
+        unfinished = [order for order in orders
+                      if int(getattr(order, 'order_status', 0) or 0)
+                      not in TERMINAL_ORDER_STATUSES]
+        own_unfinished = [order for order in unfinished
+                          if str(getattr(order, 'order_id', '')) in self.own_order_ids]
+        if own_unfinished:
+            raise RuntimeError('strategy order unfinished during reconciliation: {}'.format(
+                ','.join(str(getattr(order, 'order_id', ''))
+                         for order in own_unfinished)))
+        unknown_unfinished = [order for order in unfinished
+                              if str(getattr(order, 'stock_code', '')) not in symbols]
+        if unknown_unfinished:
+            detail = 'external unfinished order outside tracked symbols: {}'.format(
+                ','.join(str(getattr(order, 'order_id', ''))
+                         for order in unknown_unfinished))
+            for code in symbols:
+                self._pause_symbol_once(code, detail)
+            return False
         for code in symbols:
             runners = self.symbol_runners(code)
             if not runners:
                 continue
+            unfinished = [order for order in orders
+                          if str(getattr(order, 'stock_code', '')) == code
+                          and str(getattr(order, 'order_id', '')) not in self.own_order_ids
+                          and int(getattr(order, 'order_status', 0) or 0)
+                          not in TERMINAL_ORDER_STATUSES]
+            if unfinished:
+                order_ids = ','.join(str(getattr(order, 'order_id', ''))
+                                     for order in unfinished)
+                self._pause_symbol_once(
+                    code, 'external unfinished order(s): ' + order_ids)
+                continue
+            for runner in runners:
+                if runner.paused_reason.startswith('external unfinished order'):
+                    runner.paused_reason = ''
             base = runners[0].baseline_shares
             if base is None or any(runner.baseline_shares != base for runner in runners):
                 self._pause_symbol_once(code, 'inconsistent original baseline')
@@ -2787,6 +2858,20 @@ class PortfolioRunner(ExecutionPortfolio):
             cycles = [runner.cycle for runner in runners
                       if runner.cycle and runner.cycle.quantity]
             actual = int(positions.get(code, 0))
+            today = datetime.now().strftime('%Y%m%d')
+            record_dates = {runner.st.get('trade_date', '') for runner in runners}
+            flat_cross_day = (not cycles and record_dates and '' not in record_dates and
+                              all(record_date < today for record_date in record_dates))
+            if flat_cross_day:
+                self._clear_manual_reconciliation(code)
+                if actual != base:
+                    for runner in runners:
+                        runner.baseline_shares = actual
+                    _log('[STATE-ROLLOVER] {} flat baseline {} -> {}; '
+                         'prior-day orders are not required'.format(code, base, actual))
+                    changed = True
+                self._clear_reconciliation_pause(runners)
+                continue
             expected = base + sum(
                 cycle.quantity * (1 if cycle.direction == 'LONG' else -1)
                 for cycle in cycles)
@@ -2800,29 +2885,47 @@ class PortfolioRunner(ExecutionPortfolio):
                           and self._external_order_side(order)]
             if not cycles:
                 if actual == base:
+                    if self._is_unique_manual_round_trip(candidates):
+                        order_ids = [str(order.order_id) for order in candidates]
+                        self.external_synced_order_ids.update(order_ids)
+                        self._clear_manual_reconciliation(code)
+                        self._clear_reconciliation_pause(runners)
+                        _log('[MANUAL-T] {} completed round trip; baseline unchanged {}; '
+                             'orders={}; excluded from strategy PnL'.format(
+                                 code, base, ','.join(order_ids)))
+                        changed = True
+                    elif candidates:
+                        self._pause_symbol_once(
+                            code, 'manual flat orders do not form one unique T pair')
                     continue
-                signed_total = sum(
-                    int(order.traded_volume) *
-                    (1 if self._external_order_side(order) == 'BUY' else -1)
-                    for order in candidates)
+                signed_total = self._signed_external_volume(candidates)
                 if candidates and signed_total == actual - base:
                     for runner in runners:
                         runner.baseline_shares = actual
                         runner.st['base_shares'] = actual
                     self.external_synced_order_ids.update(
                         str(order.order_id) for order in candidates)
+                    self._clear_manual_reconciliation(code)
                     self._clear_reconciliation_pause(runners)
-                    _log('[MANUAL-SYNC] {} baseline {} -> {}; orders={}'.format(
+                    _log('[MANUAL-BASE] {} baseline {} -> {}; orders={}'.format(
                         code, base, actual,
                         ','.join(str(order.order_id) for order in candidates)))
                     changed = True
                 else:
+                    if self._wait_for_manual_reconciliation(
+                            code, actual, base, orders):
+                        continue
                     self._pause_symbol_once(
                         code, 'manual order cannot uniquely explain flat inventory change')
                 continue
             if actual == expected:
+                self._clear_manual_reconciliation(code)
                 continue
             if len(candidates) != 1:
+                same_day = record_dates == {today}
+                if not candidates and same_day and self._wait_for_manual_reconciliation(
+                        code, actual, expected, orders):
+                    continue
                 reason = ('manual order ambiguous across cycles' if candidates else
                           'cycle/account inventory mismatch')
                 self._pause_symbol_once(code, reason)
@@ -2840,6 +2943,7 @@ class PortfolioRunner(ExecutionPortfolio):
                 self._pause_symbol_once(code, 'manual order ambiguous across cycles')
                 continue
             self._book_manual_cycle_close(owners[0], order)
+            self._clear_manual_reconciliation(code)
             remaining = [runner.cycle for runner in runners
                          if runner.cycle and runner.cycle.quantity]
             try:
@@ -2986,6 +3090,9 @@ def main():
     logger = FileLogger('portfolio', version='v56')
     set_logger(logger)
     try:
+        fingerprint = source_fingerprint(__file__)
+        _log('[SOURCE] path={} mtime={} sha256={}'.format(
+            fingerprint['path'], fingerprint['mtime'], fingerprint['sha256']))
         if args.mode == 'live':
             print('LIVE: apply T strategy to ALL current and newly detected account holdings. Account: {}'.format(ACCOUNT))
             if input('Type yes to continue: ').strip().lower() != 'yes':
