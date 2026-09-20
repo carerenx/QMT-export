@@ -30,7 +30,15 @@ STRATEGIES = {
     'v54_nomom': 'DayT_v54_nomom_TrendGuard.py',
     'v55_nomom': 'DayT_v55_nomom_NoOvernightMomentumGuard.py',
     'v56_nomom': 'DayT_v56_nomom_ConfirmedReversalRiskBudget.py',
+    'v056_nomom': 'DayT_v056_nomom_SimplifiedReversal.py',
+    'v0561': 'DayT_v0561_CoreT.py',
+    'v0562': 'DayT_v0562_CoreT_ATRReentry.py',
+    'capture_v1': 'CaptureT_v1_RangeCapture.py',
+    'capture_v2': 'CaptureT_v2_Symmetric.py',
+    'capture_v3': 'CaptureT_v3_ForwardOnly.py',
+    'capture_v4': 'CaptureT_v4_TrendGuarded.py',
     'v57_nomom': 'DayT_v57_nomom_RestartGuard.py',
+    'v58_nomom': 'DayT_v58_nomom_StagedDrawdownDeRisk.py',
 }
 
 # External RedisQMT strategies use a different runner interface from the

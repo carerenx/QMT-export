@@ -102,7 +102,7 @@ class Broker:
     def disconnect(self): pass
     def refresh_daily_cache(self, *args, **kwargs): pass
     def cancel_order(self, *args): return True
-    def get_stock_name(self, *args): return '601869'
+    def get_stock_name(self, *args): return self.code.split('.')[0]
     def load_daily_snapshot(self, length, **kwargs):
         frame = self.daily.tail(length).copy()
         assert frame.index.max() < self.bars.index[0][:8]
@@ -120,8 +120,14 @@ class Broker:
             bidPrice=[price]*5, askPrice=[price]*5, bidVol=[10000]*5, askVol=[10000]*5,
             time=int(Clock.time()*1000), stockStatus=0)}
     def query_positions(self):
+        # The stub must report the symbol actually being replayed.  Strategies
+        # match holdings on m_strInstrumentID, so a hardcoded id here makes every
+        # symbol other than that one look like a zero position: the strategy sees
+        # no sellable base, disables both lanes, and never trades.  StrictBroker
+        # already derives the instrument from self.code; this mirrors it.
+        instrument = self.code.split('.')[0]
         return [SimpleNamespace(stock_code=self.code, volume=self.position, can_use_volume=self.sellable,
-            open_price=self.avg_cost, stock_name='601869', m_strInstrumentID='601869',
+            open_price=self.avg_cost, stock_name=instrument, m_strInstrumentID=instrument,
             m_nVolume=self.position, m_nCanUseVolume=self.sellable, m_dOpenPrice=self.avg_cost)] if self.position else []
     def query_account(self):
         equity = self.cash + self.position * float(self.bars.iloc[self.idx].close)
@@ -157,12 +163,20 @@ class Broker:
 
 
 def replay(version, daily, bars, slip=0, initial_cash=100000.0,
-           initial_shares=200, symbol='601869.SH', overrides=None):
+           initial_shares=200, symbol='601869.SH', overrides=None,
+           cfg_overrides=None):
     mod = load_strategy(version)
     for key, value in (overrides or {}).items():
         if not hasattr(mod, key):
             raise ValueError('unknown research setting: ' + key)
         setattr(mod, key, value)
+    # Shared-config knobs (e.g. STOP_LOSS_PCT) live on core.config, not on the
+    # strategy module.  They are scoped to this replay through the ExitStack
+    # below so variants in one process cannot leak into each other.
+    cfg_overrides = dict(cfg_overrides or {})
+    for key in cfg_overrides:
+        if not hasattr(mod.cfg, key):
+            raise ValueError('unknown config setting: ' + key)
     broker = Broker(
         daily, bars, slip, cash=initial_cash, shares=initial_shares)
     broker.code = symbol
@@ -179,6 +193,8 @@ def replay(version, daily, bars, slip=0, initial_cash=100000.0,
                 (mod, 'set_global_conn', lambda *a: None), (mod, 'order_shares', broker.order),
                 (mod, 'get_trade_detail_data', lambda a,b,kind: broker.query_positions() if kind == 'POSITION' else [broker.query_account()]),
                 (mod.cfg, 'now_hms', lambda: Clock.current.strftime('%H:%M:%S'))]
+        replacements.extend(
+            (mod.cfg, key, value) for key, value in cfg_overrides.items())
         symbol_code = symbol.split('.')[0]
         for obj, name, value in (
                 (mod, 'STOCK_CODE', symbol_code),

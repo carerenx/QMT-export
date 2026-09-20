@@ -19,4 +19,7 @@ tests/
 
 /127.0.0.1
 
-
+# 面板数据（重建产物，体积 ~1.7GB）。用 analysis/panel_*_20xx/ 下的脚本
+# 可以完整复现，不需要入库。
+*.parquet
+analysis/panel_*/raw/
